@@ -16,6 +16,7 @@ class Project(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
     description = models.CharField(max_length=255, null=True, blank=True)
     groups = models.ManyToManyField(Group)
+    slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -27,6 +28,7 @@ class Layer(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True, blank=True)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
+    slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
