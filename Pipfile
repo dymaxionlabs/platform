@@ -10,6 +10,7 @@ django-anymail = {extras = ["mailgun"], version = "*"}
 "psycopg2-binary" = "*"
 
 [dev-packages]
+yapf = "*"
 
 [requires]
 python_version = "3.6"
