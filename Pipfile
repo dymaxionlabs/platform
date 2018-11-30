@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 python-dotenv = "*"
 django-anymail = {extras = ["mailgun"], version = "*"}
+"psycopg2-binary" = "*"
 
 [dev-packages]
 
