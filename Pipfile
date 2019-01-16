@@ -8,6 +8,7 @@ django = "*"
 python-dotenv = "*"
 django-anymail = {extras = ["mailgun"], version = "*"}
 "psycopg2-binary" = "*"
+djangorestframework = "*"
 
 [dev-packages]
 yapf = "*"
