@@ -25,14 +25,14 @@ router = routers.DefaultRouter()
 #router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    url(r'^api/auth/login/', LoginView.as_view(), name='knox_login'),
-    url(r'^api/auth/logout/',
+    url(r'^auth/login/', LoginView.as_view(), name='knox_login'),
+    url(r'^auth/logout/',
         knox_views.LogoutView.as_view(),
         name='knox_logout'),
-    url(r'^api/auth/logoutall/',
+    url(r'^auth/logoutall/',
         knox_views.LogoutAllView.as_view(),
         name='knox_logoutall'),
-    url(r'^api/example', ExampleView.as_view()),
-    url(r'^api/', include(router.urls)),
+    url(r'^example', ExampleView.as_view()),
     url(r'^admin/', admin.site.urls),
+    url(r'^', include(router.urls)),
 ]
