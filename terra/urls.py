@@ -19,7 +19,7 @@ from django.urls import include
 from knox import views as knox_views
 from rest_framework import routers
 
-from projects.views import LoginView
+from projects.views import LoginView, ExampleView
 
 router = routers.DefaultRouter()
 #router.register(r'users', UserViewSet)
@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^api/auth/logoutall/',
         knox_views.LogoutAllView.as_view(),
         name='knox_logoutall'),
+    url(r'^api/example', ExampleView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
 ]

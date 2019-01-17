@@ -36,12 +36,9 @@ def loginWithAPI(client, username, password):
     response = client.post('/api/auth/login/',
                            dict(username=username, password=password))
     if response.status_code != 200 or 'token' not in response.data:
-        raise RuntimeError('Login failed!')
+        raise RuntimeError('Login failed in test. Status code {}'.format(
+            response.status_code))
     return response.data['token']
-
-
-def authHeader(token):
-    return {'Authorization': 'Token {}'.format(token)}
 
 
 class LogoutViewTest(TestCase):
@@ -62,3 +59,21 @@ class LogoutViewTest(TestCase):
         response = self.client.post('/api/auth/logout/', format='json')
         self.assertEqual(401, response.status_code)
         self.assertEquals("Invalid token.", response.data['detail'])
+
+
+class ExampleViewTest(TestCase):
+    def setUp(self):
+        self.test_user = User(email="test@prueba.com", username='test')
+        self.test_user.set_password('secret')
+        self.test_user.save()
+        self.client = APIClient()
+        self.token = loginWithAPI(self.client, 'test', 'secret')
+
+    def test_auth_ok(self):
+        self.client.credentials(HTTP_AUTHORIZATION=('Token %s' % self.token))
+        response = self.client.get('/api/example/', {}, format='json')
+        self.assertEqual(204, response.status_code)
+
+    def test_auth_fail(self):
+        response = self.client.get('/api/example/', {}, format='json')
+        self.assertEqual(401, response.status_code)
