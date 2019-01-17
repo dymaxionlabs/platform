@@ -51,3 +51,9 @@ Now you can:
 
 * Run server: `./manage.py runserver`
 * Run tests: `./manage.py test`
+
+When deploying for the first time:
+
+* Set `DEBUG=0` and `ALLOWED_HOSTS` list with domains/subdomains and IPs
+* Also, set a long unique `SECRET_KEY`
+* Collect statics with `./manage.py collectstatic`
