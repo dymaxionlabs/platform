@@ -10,6 +10,7 @@ django-anymail = {extras = ["mailgun"], version = "*"}
 "psycopg2-binary" = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
+gunicorn = "*"
 
 [dev-packages]
 yapf = "*"
