@@ -18,13 +18,13 @@ from django.urls import include
 from django.conf.urls import url
 from rest_framework import routers
 
-from projects import views
+from projects.views import UserViewSet, LoginView
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    url(r'^api/auth/login/$', views.Login.as_view()),
+    url(r'^api/auth/login/$', LoginView.as_view()),
     url(r'^api/auth/', include('knox.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', admin.site.urls),

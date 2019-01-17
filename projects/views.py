@@ -15,12 +15,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
 
-class Login(generics.GenericAPIView):
+class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
     permission_classes = (AllowAny, )
 
     def post(self, request, *args, **kwargs):
-        print("POST!")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
