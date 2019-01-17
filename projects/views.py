@@ -1,19 +1,10 @@
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from knox.views import LoginView as KnoxLoginView
-from rest_framework import viewsets
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.permissions import AllowAny
 
 from .serializers import LoginUserSerializer, UserSerializer
-
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 
 class LoginView(KnoxLoginView):

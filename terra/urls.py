@@ -19,10 +19,10 @@ from django.urls import include
 from knox import views as knox_views
 from rest_framework import routers
 
-from projects.views import LoginView, UserViewSet
+from projects.views import LoginView
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+#router.register(r'users', UserViewSet)
 
 urlpatterns = [
     url(r'^api/auth/login/', LoginView.as_view(), name='knox_login'),
