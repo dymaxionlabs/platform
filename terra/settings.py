@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'projects.apps.ProjectsConfig',
     'rest_framework',
-    'knox',
+    'rest_framework.authtoken',
+    'rest_auth',
     'anymail',
 ]
 
@@ -152,6 +153,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated', )
 }

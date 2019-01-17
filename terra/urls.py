@@ -16,22 +16,15 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include
-from knox import views as knox_views
 from rest_framework import routers
 
-from projects.views import LoginView, ExampleView
+from projects.views import ExampleView
 
 router = routers.DefaultRouter()
 #router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    url(r'^auth/login/', LoginView.as_view(), name='knox_login'),
-    url(r'^auth/logout/',
-        knox_views.LogoutView.as_view(),
-        name='knox_logout'),
-    url(r'^auth/logoutall/',
-        knox_views.LogoutAllView.as_view(),
-        name='knox_logoutall'),
+    url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^example', ExampleView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
