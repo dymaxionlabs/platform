@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'projects.apps.ProjectsConfig',
     'rest_framework',
+    'knox',
     'anymail',
 ]
 
@@ -135,6 +136,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES':
-    ('rest_framework.permissions.IsAuthenticated', )
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser', )
 }

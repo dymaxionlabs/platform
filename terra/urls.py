@@ -24,6 +24,8 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url('^admin/', admin.site.urls),
+    url(r'^api/auth/login/$', views.Login.as_view()),
+    url(r'^api/auth/', include('knox.urls')),
+    url(r'^api/', include(router.urls)),
+    url(r'^admin/', admin.site.urls),
 ]
