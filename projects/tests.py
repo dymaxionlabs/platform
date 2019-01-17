@@ -17,10 +17,6 @@ class LoginViewTest(TestCase):
             'password': 'secret'
         })
         self.assertEquals(200, response.status_code)
-        self.assertEquals({
-            'username': 'test',
-            'email': 'test@prueba.com'
-        }, response.data['user'])
         self.assertTrue('token' in response.data)
 
     def test_login_fail(self):
