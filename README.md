@@ -45,7 +45,7 @@ pipenv install
 Then inside a pipenv shell (use `pipenv shell`) you should first do the following:
 
 * Run migrations: `./manage.py migrate`
-* Create superuser: `./maange.py createsuperuser`
+* Create superuser: `./manage.py createsuperuser`
 
 Now you can:
 
