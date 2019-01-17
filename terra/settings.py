@@ -12,6 +12,20 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+def get_allowed_hosts():
+    """
+    Get allowed hosts from .env file
+
+    If DEBUG = True and ALLOWED_HOSTS is empty or null,
+    default to ['.dymaxionlabs.com']
+
+    """
+    hosts = [s for s in os.getenv('ALLOWED_HOSTS', '').split(',') if s]
+    if not DEBUG and not hosts:
+        hosts = ['.dymaxionlabs.com']
+    return hosts
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +38,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.getenv('DEBUG', 0)) > 0
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = get_allowed_hosts()
 
 # Application definition
 
