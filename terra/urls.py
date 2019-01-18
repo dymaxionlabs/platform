@@ -24,8 +24,8 @@ router = routers.DefaultRouter()
 #router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    url(r'^example', ExampleView.as_view()),
+    url(r'^example/?', ExampleView.as_view()),
+    url(r'^auth/', include('rest_auth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
 ]

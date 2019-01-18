@@ -12,7 +12,7 @@ class LoginViewTest(TestCase):
 
     def test_login_ok(self):
         response = self.client.post(
-            '/rest-auth/login/', {
+            '/auth/login/', {
                 'username': 'test',
                 'password': 'secret'
             },
@@ -22,7 +22,7 @@ class LoginViewTest(TestCase):
 
     def test_login_fail(self):
         response = self.client.post(
-            '/rest-auth/login/', {
+            '/auth/login/', {
                 'username': 'test',
                 'password': 'bad_password'
             },
@@ -33,7 +33,7 @@ class LoginViewTest(TestCase):
 
 
 def loginWithAPI(client, username, password):
-    response = client.post('/rest-auth/login/',
+    response = client.post('/auth/login/',
                            dict(username=username, password=password))
     if response.status_code != 200 or 'key' not in response.data:
         raise RuntimeError('Login failed in test. Status code {}'.format(
@@ -51,13 +51,13 @@ class LogoutViewTest(TestCase):
     def test_logout_ok(self):
         token = loginWithAPI(self.client, username='test', password='secret')
         self.client.credentials(HTTP_AUTHORIZATION=('Token %s' % token))
-        response = self.client.post('/rest-auth/logout/', {}, format='json')
+        response = self.client.post('/auth/logout/', {}, format='json')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'detail': 'Successfully logged out.'}, response.data)
 
     def test_logout_invalid_token(self):
         self.client.credentials(HTTP_AUTHORIZATION=('Token foobar'))
-        response = self.client.post('/rest-auth/logout/', format='json')
+        response = self.client.post('/auth/logout/', format='json')
         self.assertEqual(403, response.status_code)
         self.assertEquals("Invalid token.", response.data['detail'])
 
