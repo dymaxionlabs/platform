@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'corsheaders',
     'anymail',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
