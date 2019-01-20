@@ -18,12 +18,9 @@ from django.contrib import admin
 from django.urls import include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions, routers
+from rest_framework import permissions
 
 from projects.views import ExampleView
-
-router = routers.DefaultRouter()
-#router.register(r'users', UserViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -51,5 +48,4 @@ urlpatterns = [
         name='schema-redoc'),
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(router.urls)),
 ]
