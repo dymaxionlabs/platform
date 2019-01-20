@@ -1,6 +1,17 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
-from rest_framework.test import APIClient
+from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+
+
+def loginWithAPI(client, username, password):
+    response = client.post('/auth/login/',
+                           dict(username=username, password=password))
+    if response.status_code != 200 or 'key' not in response.data:
+        raise RuntimeError('Login failed in test. Status code {}'.format(
+            response.status_code))
+    return response.data['key']
 
 
 class LoginViewTest(TestCase):
@@ -32,15 +43,6 @@ class LoginViewTest(TestCase):
                           response.data['non_field_errors'])
 
 
-def loginWithAPI(client, username, password):
-    response = client.post('/auth/login/',
-                           dict(username=username, password=password))
-    if response.status_code != 200 or 'key' not in response.data:
-        raise RuntimeError('Login failed in test. Status code {}'.format(
-            response.status_code))
-    return response.data['key']
-
-
 class LogoutViewTest(TestCase):
     def setUp(self):
         self.test_user = User(email="test@prueba.com", username='test')
@@ -60,6 +62,52 @@ class LogoutViewTest(TestCase):
         response = self.client.post('/auth/logout/', format='json')
         self.assertEqual(403, response.status_code)
         self.assertEquals("Invalid token.", response.data['detail'])
+
+
+class UserViewSetTest(APITestCase):
+    def setUp(self):
+        self.user = User(email='user@test.com', username='user')
+        self.user.set_password('secret')
+        self.user.save()
+
+        self.admin_user = User(
+            email='admin@test.com', username='admin', is_staff=True)
+        self.admin_user.set_password('secret')
+        self.admin_user.save()
+
+    def test_user_list_only_shows_logged_in_user(self):
+        loginWithAPI(self.client, 'user', 'secret')
+
+        url = reverse('user-list')
+        response = self.client.get(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([{
+            'username': 'user',
+            'email': 'user@test.com'
+        }], response.data)
+
+    def test_user_list_shows_all_if_admin(self):
+        loginWithAPI(self.client, 'admin', 'secret')
+
+        url = reverse('user-list')
+        response = self.client.get(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([{
+            'username': 'user',
+            'email': 'user@test.com'
+        }, {
+            'username': 'admin',
+            'email': 'admin@test.com'
+        }], response.data)
+
+    def test_user_create_fail(self):
+        pass
+
+    def test_user_update_fail(self):
+        pass
+
+    def test_user_delete_fail(self):
+        pass
 
 
 class ExampleViewTest(TestCase):
