@@ -12,6 +12,7 @@ djangorestframework = "*"
 gunicorn = "*"
 django-rest-auth = "*"
 django-cors-headers = "*"
+drf-yasg = "*"
 
 [dev-packages]
 yapf = "*"
