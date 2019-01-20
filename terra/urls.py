@@ -27,12 +27,12 @@ router = routers.DefaultRouter()
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Terra API",
+        title='Terra API',
         default_version='v1',
-        description="This is the description of the API",
-        terms_of_service="https://www.dymaxionlabs.com/terms/",
-        contact=openapi.Contact(email="contact@dymaxionlabs.com"),
-        license=openapi.License(name="BSD License"),
+        description='This is the description of the API',
+        terms_of_service='https://www.dymaxionlabs.com/terms/',
+        contact=openapi.Contact(email='contact@dymaxionlabs.com'),
+        license=openapi.License(name='BSD License'),
     ),
     public=True,
     permission_classes=(permissions.AllowAny, ),
