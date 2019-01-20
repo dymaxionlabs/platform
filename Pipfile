@@ -11,6 +11,7 @@ django-anymail = {extras = ["mailgun"], version = "*"}
 djangorestframework = "*"
 gunicorn = "*"
 django-rest-auth = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 yapf = "*"
