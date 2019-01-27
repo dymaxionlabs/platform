@@ -83,7 +83,9 @@ class UserViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual([{
             'username': 'user',
-            'email': 'user@test.com'
+            'email': 'user@test.com',
+            'first_name': '',
+            'last_name': ''
         }], response.data)
 
     def test_user_list_shows_all_if_admin(self):
@@ -92,13 +94,19 @@ class UserViewSetTest(APITestCase):
         url = reverse('user-list')
         response = self.client.get(url, {}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual([{
+        expectedUsers = [{
             'username': 'user',
-            'email': 'user@test.com'
-        }, {
-            'username': 'admin',
-            'email': 'admin@test.com'
-        }], response.data)
+            'email': 'user@test.com',
+            'first_name': '',
+            'last_name': '',
+        },
+                         {
+                             'username': 'admin',
+                             'email': 'admin@test.com',
+                             'first_name': '',
+                             'last_name': '',
+                         }]
+        self.assertEqual(expectedUsers, response.data)
 
     def test_user_create_fail(self):
         pass

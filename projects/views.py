@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from rest_framework import status, viewsets, permissions
+from rest_framework import status, viewsets, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -7,7 +7,7 @@ from .serializers import LoginUserSerializer, UserSerializer
 from .permissions import UserPermission
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (
