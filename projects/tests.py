@@ -52,13 +52,13 @@ class LogoutViewTest(TestCase):
 
     def test_logout_ok(self):
         token = loginWithAPI(self.client, username='test', password='secret')
-        self.client.credentials(HTTP_AUTHORIZATION=('Token %s' % token))
+        self.client.credentials(HTTP_AUTHORIZATION=token)
         response = self.client.post('/auth/logout/', {}, format='json')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'detail': 'Successfully logged out.'}, response.data)
 
     def test_logout_invalid_token(self):
-        self.client.credentials(HTTP_AUTHORIZATION=('Token foobar'))
+        self.client.credentials(HTTP_AUTHORIZATION='foobar')
         response = self.client.post('/auth/logout/', format='json')
         self.assertEqual(403, response.status_code)
         self.assertEquals("Invalid token.", response.data['detail'])
@@ -128,7 +128,7 @@ class ExampleViewTest(TestCase):
         self.client.session.delete()
 
         # Try to GET only with the token
-        self.client.credentials(HTTP_AUTHORIZATION=('Token %s' % token))
+        self.client.credentials(HTTP_AUTHORIZATION=token)
         response = self.client.get('/example/', {}, format='json')
         self.assertEqual(204, response.status_code)
 
