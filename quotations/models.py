@@ -9,8 +9,13 @@ class Quotation(models.Model):
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     message = models.TextField(null=True, blank=True)
-    areas_geom = models.MultiPolygonField(null=True, blank=True)
     layers = ArrayField(models.CharField(max_length=30), null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class QuotationArea(models.Model):
+    quotation = models.ForeignKey(
+        Quotation, on_delete=models.CASCADE, related_name='areas')
+    area_geom = models.PolygonField()
