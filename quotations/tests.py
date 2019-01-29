@@ -10,7 +10,10 @@ def loginWithAPI(client, username, password):
     if response.status_code != 200 or 'key' not in response.data:
         raise RuntimeError('Login failed in test. Status code {}'.format(
             response.status_code))
-    return response.data['key']
+    token = response.data['key']
+    # Set Authorization header with Token
+    client.credentials(HTTP_AUTHORIZATION=token)
+    return token
 
 
 class QuotationViewSetTest(TestCase):
@@ -23,14 +26,15 @@ class QuotationViewSetTest(TestCase):
                 'name': 'John',
                 'email': 'john@doe.com',
                 'message': 'This is a test message',
+                'areas': [],
             },
             format='json')
 
         self.assertEquals(201, response.status_code)
         self.assertEquals(
             sorted([
-                'url', 'name', 'email', 'message', 'areas_geom', 'layers',
-                'extra_fields', 'created_at', 'updated_at', 'user'
+                'url', 'name', 'email', 'message', 'areas', 'layers',
+                'extra_fields', 'created_at', 'user'
             ]), sorted(response.data.keys()))
         self.assertEquals('John', response.data['name'])
         self.assertEquals('john@doe.com', response.data['email'])
@@ -90,8 +94,8 @@ class QuotationViewSetTest(TestCase):
     def assertQuotationDetail(self, quotation, response_data):
         self.assertEquals(
             sorted([
-                'url', 'name', 'email', 'message', 'areas_geom', 'layers',
-                'extra_fields', 'created_at', 'updated_at', 'user'
+                'url', 'name', 'email', 'message', 'areas', 'layers',
+                'extra_fields', 'created_at', 'user'
             ]), sorted(response_data.keys()))
         self.assertEquals(quotation.name, response_data['name'])
         self.assertEquals(quotation.email, response_data['email'])

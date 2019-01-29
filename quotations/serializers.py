@@ -16,8 +16,8 @@ class QuotationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Quotation
-        fields = ('name', 'email', 'message', 'layers', 'areas',
-                  'extra_fields', 'user')
+        fields = ('url', 'name', 'email', 'message', 'layers', 'areas',
+                  'extra_fields', 'user', 'created_at')
 
     def create(self, validated_data):
         areas_data = validated_data.pop('areas')
