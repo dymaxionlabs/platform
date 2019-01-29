@@ -13,6 +13,7 @@ gunicorn = "*"
 django-rest-auth = "*"
 django-cors-headers = "*"
 drf-yasg = "*"
+djangorestframework-gis = "*"
 
 [dev-packages]
 yapf = "*"
