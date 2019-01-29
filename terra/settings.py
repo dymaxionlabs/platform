@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'quotations.apps.QuotationsConfig',
     'rest_framework',
+    'rest_framework_gis',
     'rest_framework.authtoken',
     'rest_auth',
     'corsheaders',
@@ -160,10 +161,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'terra.authentication.TokenAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    ('terra.authentication.TokenAuthentication', ),
     'DEFAULT_PERMISSION_CLASSES':
     ('rest_framework.permissions.IsAuthenticated', )
 }
