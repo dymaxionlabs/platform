@@ -14,6 +14,10 @@ class Quotation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        layers_sentence = ', '.join(self.layers)
+        return 'Quote from {} for layers: {}'.format(self.name, layers_sentence)
+
 
 class QuotationArea(models.Model):
     quotation = models.ForeignKey(
