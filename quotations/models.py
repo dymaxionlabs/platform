@@ -19,3 +19,7 @@ class QuotationArea(models.Model):
     quotation = models.ForeignKey(
         Quotation, on_delete=models.CASCADE, related_name='areas')
     area_geom = models.PolygonField()
+
+    def __str__(self):
+        geom = self.area_geom.transform(32721)
+        return "Area of {} km²".format(geom.area / 10000)
