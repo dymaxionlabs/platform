@@ -20,6 +20,10 @@ class QuotationArea(models.Model):
         Quotation, on_delete=models.CASCADE, related_name='areas')
     area_geom = models.PolygonField()
 
+    def area_km2(self):
+        geom = self.area_geom
+        geom.transform(32721)
+        return geom.area / 10000
+
     def __str__(self):
-        geom = self.area_geom.transform(32721)
-        return "Area of {} km²".format(geom.area / 10000)
+        return "Area of {} km²".format(round(self.area_km2()))
