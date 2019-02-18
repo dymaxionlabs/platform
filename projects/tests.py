@@ -135,3 +135,17 @@ class ExampleViewTest(TestCase):
     def test_auth_fail(self):
         response = self.client.get('/example/', {}, format='json')
         self.assertEqual(401, response.status_code)
+
+
+class ContactViewTest(TestCase):
+    def test_create_ok(self):
+        response = self.client.post(
+            '/contact/', {
+                'email': 'john@doe.com',
+                'message': 'This is a test message',
+            },
+            format='json')
+
+        self.assertEquals(200, response.status_code)
+        self.assertEquals('Contact message has been sent',
+                          response.data['detail'])

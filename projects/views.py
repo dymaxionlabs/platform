@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
-from rest_framework import status, viewsets, permissions, mixins
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
-from .serializers import LoginUserSerializer, UserSerializer
 from .permissions import UserPermission
+from .serializers import ContactSerializer, LoginUserSerializer, UserSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -24,6 +25,20 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(id=user.id)
 
 
-class ExampleView(APIView):
-    def get(self, request, format=None):
+class ExampleView(GenericAPIView):
+    def get(self, request):
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ContactView(GenericAPIView):
+    serializer_class = ContactSerializer
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            "detail": _("Contact message has been sent")
+        },
+                        status=status.HTTP_200_OK)

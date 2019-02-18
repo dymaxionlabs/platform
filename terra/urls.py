@@ -21,7 +21,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import ExampleView, UserViewSet
+from projects.views import ExampleView, UserViewSet, ContactView
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
@@ -43,6 +43,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     url(r'^example/?', ExampleView.as_view()),
+    url(r'^contact/?', ContactView.as_view()),
     url(r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'),

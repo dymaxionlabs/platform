@@ -1,6 +1,11 @@
+from html import escape
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from rest_framework import serializers
+
+from terra.settings import DEFAULT_FROM_EMAIL
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,3 +24,36 @@ class LoginUserSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError(
             "Unable to log in with provided credentials.")
+
+
+class ContactSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    message = serializers.CharField()
+
+    def save(self):
+        from_email = DEFAULT_FROM_EMAIL
+        recipients = ['contact@dymaxionlabs.com']
+        send_mail(
+            self.subject(),
+            self.body(),
+            from_email,
+            recipients,
+            html_message=self.html_body())
+
+    def subject(self):
+        email = self.data['email']
+        return "Consulta de {}".format(escape(email))
+
+    def body(self):
+        email, message = self.data['email'], self.data['message']
+        return "Consulta\n\n" \
+            "Email: {email}\n" \
+            "Mensaje: {message}\n".format(email=email, message=message)
+
+    def html_body(self):
+        email, message = self.data['email'], self.data['message']
+        return "<h3>Consulta</h3>" \
+            "<b>Email:</b> {email}<br />" \
+            "<b>Mensaje:</b> {message}<br />".format(
+                email=escape(email),
+                message=escape(message))
