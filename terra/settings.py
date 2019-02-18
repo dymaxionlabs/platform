@@ -103,7 +103,7 @@ ANYMAIL = {
 }
 EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = 'Terra <{email}>'.format(email=os.getenv('DEFAULT_FROM_EMAIL'))
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
