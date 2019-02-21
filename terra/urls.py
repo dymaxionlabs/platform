@@ -42,18 +42,26 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    url(r'^example/?', ExampleView.as_view()),
-    url(r'^contact/?', ContactView.as_view()),
-    url(r'^swagger(?P<format>\.json|\.yaml)$',
+    url(r'^admin/', admin.site.urls),
+
+    url(r'^api/swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'),
-    url(r'^swagger/$',
+    url(r'^api/swagger/$',
         schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui'),
-    url(r'^redoc/$',
+    url(r'^api/redoc/$',
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
+
+    url(r'^api/auth/', include('rest_auth.urls')),
+    url(r'^api/example/?', ExampleView.as_view()),
+    url(r'^api/contact/?', ContactView.as_view()),
+    url(r'^api/', include(router.urls)),
+
+    # Deprecated, remove these after DNS propagation:
     url(r'^auth/', include('rest_auth.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^example/?', ExampleView.as_view()),
+    url(r'^contact/?', ContactView.as_view()),
     url(r'^', include(router.urls)),
 ]
