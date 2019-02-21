@@ -66,3 +66,10 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         fields = '__all__'
+
+
+# FIXME Use HyperlinkedModelSerializer
+class SimpleMapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Map
+        exclude = ('project', 'is_private')
