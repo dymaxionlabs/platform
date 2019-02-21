@@ -7,6 +7,8 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
+from .models import Map
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -57,3 +59,10 @@ class ContactSerializer(serializers.Serializer):
             "<b>Mensaje:</b> {message}<br />".format(
                 email=escape(email),
                 message=escape(message))
+
+
+# FIXME Use HyperlinkedModelSerializer
+class MapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Map
+        fields = '__all__'

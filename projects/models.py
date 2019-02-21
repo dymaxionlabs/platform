@@ -88,9 +88,9 @@ class Layer(models.Model):
 
 
 class Map(models.Model):
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     layer_collections = models.ManyToManyField(LayerCollection)
     slug = models.SlugField()
-    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     center = models.PointField()
     zoom = models.IntegerField(
         default=13, validators=[MaxValueValidator(22),

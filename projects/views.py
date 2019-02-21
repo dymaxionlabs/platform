@@ -1,11 +1,14 @@
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
-from .permissions import UserPermission
-from .serializers import ContactSerializer, LoginUserSerializer, UserSerializer
+from .models import Map
+from .permissions import MapPermission, UserPermission
+from .serializers import (ContactSerializer, LoginUserSerializer,
+                          MapSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -25,7 +28,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(id=user.id)
 
 
-class ExampleView(GenericAPIView):
+class ExampleView(APIView):
     def get(self, request):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -42,3 +45,19 @@ class ContactView(GenericAPIView):
             "detail": _("Contact message has been sent")
         },
                         status=status.HTTP_200_OK)
+
+
+class MapViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Map.objects.all()
+    serializer_class = MapSerializer
+    permission_classes = (permissions.AllowAny, MapPermission)
+
+    def get_queryset(self):
+        # If logged-in user is not admin, filter public maps and owned by current user group
+        user = self.request.user
+        if user.is_anonymous:
+            return self.queryset.filter(is_private=False)
+        elif user.is_staff:
+            return self.queryset
+        else:
+            return self.queryset.filter(project__groups__user=user)
