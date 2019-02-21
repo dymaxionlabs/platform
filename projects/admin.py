@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import UserProfile, Client, Project, LayerCollection, Layer
+from .models import UserProfile, Client, Project, LayerCollection, Layer, Map
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -28,3 +28,4 @@ admin.site.register(Client)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(LayerCollection, LayerCollectionAdmin)
 admin.site.register(Layer, LayerAdmin)
+admin.site.register(Map)

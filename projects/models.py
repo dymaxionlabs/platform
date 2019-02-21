@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class UserProfile(models.Model):
@@ -84,3 +85,17 @@ class Layer(models.Model):
         ext = collection.tiles_extension()
         return '{base_url}/{date}'.format(
             base_url=base_url, date=date_str) + '/{z}/{x}/{y}.' + ext
+
+
+class Map(models.Model):
+    layer_collections = models.ManyToManyField(LayerCollection)
+    slug = models.SlugField()
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
+    center = models.PointField()
+    zoom = models.IntegerField(
+        default=13, validators=[MaxValueValidator(22),
+                                MinValueValidator(1)])
+    is_private = models.BooleanField(default=True)
+    extra_fields = JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
