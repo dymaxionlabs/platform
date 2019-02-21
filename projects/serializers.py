@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
-from .models import Map
+from .models import Map, Project
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -73,3 +73,10 @@ class SimpleMapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         exclude = ('project', 'is_private')
+
+
+# FIXME Use HyperlinkedModelSerializer
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'

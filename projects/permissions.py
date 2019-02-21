@@ -29,3 +29,16 @@ class MapPermission(permissions.BasePermission):
         else:
             return request.user.is_staff or obj.project.groups.filter(
                 user=request.user).exists()
+
+
+class ProjectPermission(permissions.BasePermission):
+    """
+    Custom permission for Projects
+
+    * Allow staff or user who has access to associated Project
+
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_staff or obj.project.groups.filter(
+            user=request.user).exists()

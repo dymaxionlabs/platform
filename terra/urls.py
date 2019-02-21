@@ -21,13 +21,14 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import ExampleView, UserViewSet, ContactView, MapViewSet
+from projects.views import ExampleView, UserViewSet, ContactView, MapViewSet, ProjectViewSet
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'quotations', QuotationViewSet, basename='quotation')
 router.register(r'maps', MapViewSet, basename='map')
+router.register(r'projects', ProjectViewSet, basename='project')
 
 schema_view = get_schema_view(
     openapi.Info(

@@ -1,14 +1,15 @@
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Map
-from .permissions import MapPermission, UserPermission
+from .models import Map, Project
+from .permissions import MapPermission, ProjectPermission, UserPermission
 from .serializers import (ContactSerializer, LoginUserSerializer,
-                          MapSerializer, SimpleMapSerializer, UserSerializer)
+                          MapSerializer, ProjectSerializer,
+                          SimpleMapSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -67,3 +68,17 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
             return SimpleMapSerializer
         else:
             return MapSerializer
+
+
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = (permissions.IsAuthenticated, ProjectPermission)
+
+    def get_queryset(self):
+        # Filter only projects that user has access to
+        user = self.request.user
+        if user.is_staff:
+            return self.queryset
+        else:
+            return self.queryset.filter(groups__user=user)
