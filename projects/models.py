@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
@@ -77,7 +78,6 @@ class Layer(models.Model):
 
 class Map(models.Model):
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
-    layers = models.ManyToManyField(Layer)
 
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
@@ -91,3 +91,36 @@ class Map(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class MapLayer(models.Model):
+    map = models.ForeignKey(Map, on_delete=models.CASCADE)
+    layer = models.OneToOneField(Layer, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = (('map', 'order'), )
+        ordering = ('order', )
+
+    def save(self, swapping=False, *args, **kwargs):
+        if not self.id:
+            try:
+                self.order = self.max_order() + 1
+            except IndexError:
+                self.order = 1  # 0 is a special index used in swap
+        if self.order == 0 and not swapping:
+            raise ValidationError("Cannot set order to 0")
+        super.save(*args, **kwargs)
+
+    @classmethod
+    def swap(cls, obj1, obj2):
+        tmp, obj2.order = obj2.order, 0
+        obj2.save(swapping=True)
+        obj2.order, obj1.order = obj1.order, tmp
+        obj1.save()
+        obj2.save()
+
+    @classmethod
+    def max_order(cls):
+        return cls.objects.order_by('-order')[0].order
