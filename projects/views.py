@@ -5,11 +5,12 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Map, Project
-from .permissions import MapPermission, ProjectPermission, UserPermission
-from .serializers import (ContactSerializer, LoginUserSerializer,
-                          MapSerializer, ProjectSerializer,
-                          SimpleMapSerializer, UserSerializer)
+from .models import Layer, Map, Project
+from .permissions import (LayerPermission, MapPermission, ProjectPermission,
+                          UserPermission)
+from .serializers import (ContactSerializer, LayerSerializer,
+                          LoginUserSerializer, MapSerializer,
+                          ProjectSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -48,8 +49,23 @@ class ContactView(GenericAPIView):
                         status=status.HTTP_200_OK)
 
 
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = (permissions.IsAuthenticated, ProjectPermission)
+
+    def get_queryset(self):
+        # Filter only projects that user has access to
+        user = self.request.user
+        if user.is_staff:
+            return self.queryset
+        else:
+            return self.queryset.filter(groups__user=user)
+
+
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Map.objects.all()
+    serializer_class = MapSerializer
     permission_classes = (permissions.AllowAny, MapPermission)
 
     def get_queryset(self):
@@ -63,22 +79,16 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         else:
             return self.queryset.filter(project__groups__user=user)
 
-    def get_serializer_class(self):
-        if self.request.user.is_anonymous:
-            return SimpleMapSerializer
-        else:
-            return MapSerializer
 
-
-class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated, ProjectPermission)
+class LayerViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Layer.objects.all()
+    serializer_class = LayerSerializer
+    permission_classes = (permissions.AllowAny, LayerPermission)
 
     def get_queryset(self):
-        # Filter only projects that user has access to
+        # Filter layers from projects that user has access to
         user = self.request.user
         if user.is_staff:
             return self.queryset
         else:
-            return self.queryset.filter(groups__user=user)
+            return self.queryset.filter(project__groups__user=user)

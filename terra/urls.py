@@ -27,8 +27,9 @@ from quotations.views import QuotationViewSet
 router = SimpleRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'quotations', QuotationViewSet, basename='quotation')
-router.register(r'maps', MapViewSet, basename='map')
 router.register(r'projects', ProjectViewSet, basename='project')
+router.register(r'maps', MapViewSet, basename='map')
+router.register(r'layers', MapViewSet, basename='layer')
 
 schema_view = get_schema_view(
     openapi.Info(

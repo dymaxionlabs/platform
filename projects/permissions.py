@@ -40,5 +40,18 @@ class ProjectPermission(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
+        return request.user.is_staff or obj.groups.filter(
+            user=request.user).exists()
+
+
+class LayerPermission(permissions.BasePermission):
+    """
+    Custom permission for Layer
+
+    * Allow staff or user who has access to associated Project
+
+    """
+
+    def has_object_permission(self, request, view, obj):
         return request.user.is_staff or obj.project.groups.filter(
             user=request.user).exists()

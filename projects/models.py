@@ -60,14 +60,16 @@ class Layer(models.Model):
     def __str__(self):
         return '{name} ({date})'.format(name=self.name, date=self.date)
 
+    @property
     def tiles_url(self):
         base_url = self.BASE_TILE_URL.format(
             project_slug=self.project.slug, slug=self.slug)
         date_str = self.date.strftime('%Y-%m-%d')
-        ext = self.tiles_extension()
         return '{base_url}/{date}'.format(
-            base_url=base_url, date=date_str) + '/{z}/{x}/{y}.' + ext
+            base_url=base_url,
+            date=date_str) + '/{z}/{x}/{y}.' + self.tiles_extension
 
+    @property
     def tiles_extension(self):
         if self.layer_type == self.RASTER:
             return 'png'
@@ -98,7 +100,8 @@ class Map(models.Model):
 
 
 class MapLayer(models.Model):
-    map = models.ForeignKey(Map, on_delete=models.CASCADE)
+    map = models.ForeignKey(
+        Map, related_name='layers', on_delete=models.CASCADE)
     layer = models.OneToOneField(Layer, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(blank=True)
     is_active = models.BooleanField(default=True)

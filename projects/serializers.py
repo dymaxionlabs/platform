@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
-from .models import Map, Project
+from .models import Map, Project, MapLayer, Layer
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -61,22 +61,31 @@ class ContactSerializer(serializers.Serializer):
                 message=escape(message))
 
 
-# FIXME Use HyperlinkedModelSerializer
-class MapSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Map
+        model = Project
         fields = '__all__'
 
 
-# FIXME Use HyperlinkedModelSerializer
-class SimpleMapSerializer(serializers.ModelSerializer):
+class LayerSerializer(serializers.HyperlinkedModelSerializer):
+    tiles_url = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Layer
+        fields = '__all__'
+
+
+class MapLayerSerializer(serializers.HyperlinkedModelSerializer):
+    layer = LayerSerializer(read_only=True)
+
+    class Meta:
+        model = MapLayer
+        fields = ('layer', 'order', 'is_active')
+
+
+class MapSerializer(serializers.HyperlinkedModelSerializer):
+    layers = MapLayerSerializer(many=True, read_only=True)
+
     class Meta:
         model = Map
-        exclude = ('project', 'is_private')
-
-
-# FIXME Use HyperlinkedModelSerializer
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
         fields = '__all__'
