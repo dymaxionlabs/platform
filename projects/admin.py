@@ -13,7 +13,7 @@ class LayerAdmin(admin.ModelAdmin):
                     'date', 'created_at', 'tiles_url')
     list_display_links = ('id', 'name')
     search_fields = ('project', 'layer_type', 'name', 'description', 'date')
-    prepopulated_fields = {'slug': ('name', 'date')}
+    prepopulated_fields = {'slug': ('name', )}
 
 
 admin.site.register(UserProfile)

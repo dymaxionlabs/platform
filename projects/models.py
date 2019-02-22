@@ -52,10 +52,10 @@ class Layer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'slug'), )
+        unique_together = (('project', 'slug', 'date'), )
 
     def __str__(self):
-        return '{name} ({date})'.format(self.name, self.date)
+        return '{name} ({date})'.format(name=self.name, date=self.date)
 
     def tiles_url(self):
         base_url = self.BASE_TILE_URL.format(
