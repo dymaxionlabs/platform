@@ -7,8 +7,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    location = models.CharField(max_length=120, blank=True)
     phone = models.CharField(max_length=40, blank=True)
+    city = models.CharField(max_length=120, blank=True)
+    country = models.CharField(max_length=60, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -18,7 +19,7 @@ class Project(models.Model):
     groups = models.ManyToManyField(Group)
 
     name = models.CharField(max_length=80)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(unique=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -42,7 +43,7 @@ class Layer(models.Model):
     layer_type = models.CharField(
         max_length=1, choices=LAYER_CHOICES, default=RASTER)
     name = models.CharField(max_length=80)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField()
     slug = models.SlugField()
@@ -79,7 +80,7 @@ class Map(models.Model):
     layers = models.ManyToManyField(Layer)
 
     name = models.CharField(max_length=80)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=255, blank=True)
     slug = models.SlugField()
     center = models.PointField()
     zoom = models.IntegerField(
