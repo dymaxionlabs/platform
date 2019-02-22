@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import UserProfile, Project, Layer, Map
+from .models import UserProfile, Project, Layer, Map, MapLayer
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -22,12 +22,17 @@ class LayerAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name', )}
 
 
+class MapLayerInline(admin.TabularInline):
+    model = MapLayer
+
+
 class MapAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'project', 'is_private',
                     'created_at')
     list_display_links = ('id', 'name')
     search_fields = ('name', 'description', 'project', 'slug', 'is_private')
     prepopulated_fields = {'slug': ('name', )}
+    inlines = [MapLayerInline]
 
 
 admin.site.register(UserProfile)

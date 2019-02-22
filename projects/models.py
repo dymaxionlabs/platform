@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import gettext as _
 
 
 class UserProfile(models.Model):
@@ -92,6 +93,9 @@ class Map(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class MapLayer(models.Model):
     map = models.ForeignKey(Map, on_delete=models.CASCADE)
@@ -103,6 +107,10 @@ class MapLayer(models.Model):
         unique_together = (('map', 'order'), )
         ordering = ('order', )
 
+    def __str__(self):
+        return '{layer_name} ({map_name})'.format(
+            layer_name=self.layer.name, map_name=self.map.name)
+
     def save(self, swapping=False, *args, **kwargs):
         if not self.id:
             try:
@@ -110,8 +118,8 @@ class MapLayer(models.Model):
             except IndexError:
                 self.order = 1  # 0 is a special index used in swap
         if self.order == 0 and not swapping:
-            raise ValidationError("Cannot set order to 0")
-        super.save(*args, **kwargs)
+            raise ValidationError(_('Cannot set order to 0'), code='invalid')
+        super().save(*args, **kwargs)
 
     @classmethod
     def swap(cls, obj1, obj2):
