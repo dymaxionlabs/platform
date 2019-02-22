@@ -17,7 +17,7 @@ class UserProfile(models.Model):
 class Project(models.Model):
     groups = models.ManyToManyField(Group)
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(unique=True)
 
@@ -41,7 +41,7 @@ class Layer(models.Model):
 
     layer_type = models.CharField(
         max_length=1, choices=LAYER_CHOICES, default=RASTER)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField()
@@ -78,6 +78,8 @@ class Map(models.Model):
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     layers = models.ManyToManyField(Layer)
 
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField()
     center = models.PointField()
     zoom = models.IntegerField(
