@@ -1,30 +1,22 @@
 from django.contrib import admin
 
-from .models import UserProfile, Project, LayerCollection, Layer, Map
+from .models import UserProfile, Project, Layer, Map
 
 
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'slug')
-    prepopulated_fields = {"slug": ("name", )}
-
-
-class LayerCollectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'layer_type', 'project', 'slug',
-                    'description', 'created_at')
-    list_display_links = ('id', 'name')
-    search_fields = ('name', 'description', 'slug')
-    prepopulated_fields = {"slug": ("name", )}
+    prepopulated_fields = {'slug': ('name', )}
 
 
 class LayerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'layer_collection', 'date', 'created_at',
-                    'tiles_url')
-    list_display_links = ('id', 'layer_collection', 'date')
-    search_fields = ('layer_collection', 'date')
+    list_display = ('id', 'project', 'layer_type', 'name', 'description',
+                    'date', 'created_at', 'tiles_url')
+    list_display_links = ('id', 'name')
+    search_fields = ('project', 'layer_type', 'name', 'description', 'date')
+    prepopulated_fields = {'slug': ('name', 'date')}
 
 
 admin.site.register(UserProfile)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(LayerCollection, LayerCollectionAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Map)
