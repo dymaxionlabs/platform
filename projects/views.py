@@ -77,7 +77,7 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         elif user.is_staff:
             return self.queryset
         else:
-            return self.queryset.filter(project__groups__user=user)
+            return self.queryset.filter(project__groups__user=user).distinct()
 
 
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,7 +88,9 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         # Filter layers from projects that user has access to
         user = self.request.user
-        if user.is_staff:
+        if user.is_anonymous:
+            return self.queryset.filter(id=None)
+        elif user.is_staff:
             return self.queryset
         else:
-            return self.queryset.filter(project__groups__user=user)
+            return self.queryset.filter(project__groups__user=user).distinct()
