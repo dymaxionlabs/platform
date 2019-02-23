@@ -130,7 +130,7 @@ class ExampleViewTest(TestCase):
     def test_auth_ok(self):
         loginWithAPI(self.client, 'test', 'secret')
         response = self.client.get('/example/', {}, format='json')
-        self.assertEqual(204, response.status_code)
+        self.assertEqual(200, response.status_code)
 
     def test_auth_fail(self):
         response = self.client.get('/example/', {}, format='json')

@@ -1,0 +1,76 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-02-23 11:22-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: projects/models.py:124
+msgid "Cannot set order to 0"
+msgstr "No es posible establecer orden a 0"
+
+#: projects/views.py:35
+msgid "Nothing"
+msgstr "Nada"
+
+#: projects/views.py:47
+msgid "Contact message has been sent"
+msgstr "Mensaje de contacto fue enviado"
+
+#: templates/admin/base_site.html:4
+msgid "Django site admin"
+msgstr "Admin de Django"
+
+#: templates/admin/base_site.html:10
+msgid "Terra Admininistration"
+msgstr "Administración de Terra"
+
+#: templates/registration/password_reset_email.html:2
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+"Está recibiendo este email porque Ud. pidió reestablecer la contraseña para "
+"la cuenta de usuario en %(site_name)s."
+
+#: templates/registration/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+"Por favor, dirígise a la siguiente página e ingrese una nueva contraseña:"
+
+#: templates/registration/password_reset_email.html:12
+msgid "Your username, in case you've forgotten:"
+msgstr "Su nombre de usuario, en caso de que se haya olvidado es:"
+
+#: templates/registration/password_reset_email.html:14
+msgid "Thanks for using our site!"
+msgstr "¡Muchas gracias por usar nuestro sitio!"
+
+#: templates/registration/password_reset_email.html:16
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "El equipo de %(site_name)s"
+
+#: terra/authentication.py:16
+msgid "Invalid token header. Token string should not contain spaces."
+msgstr "Encabezado de token inválido. El token no debe contener espacios."
+
+#: terra/authentication.py:27
+msgid ""
+"Invalid token header. Token string should not contain invalid characters."
+msgstr ""
+"Encabezado de token inválido. El token no debe contener caracteres inválidos."

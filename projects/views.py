@@ -32,7 +32,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ExampleView(APIView):
     def get(self, request):
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({ "detail": _("Nothing") }, status=status.HTTP_200_OK)
 
 
 class ContactView(GenericAPIView):
