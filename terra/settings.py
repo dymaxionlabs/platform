@@ -90,6 +90,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'global_settings': 'terra.templatetags.global_settings',
+            }
         },
     },
 ]
@@ -163,9 +166,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates', 'static')]
 
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale')
-]
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
@@ -188,3 +189,5 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
