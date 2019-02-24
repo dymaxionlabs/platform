@@ -62,12 +62,17 @@ class ContactSerializer(serializers.Serializer):
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='projects', lookup_field='uuid')
+
     class Meta:
         model = Project
         fields = '__all__'
 
 
 class LayerSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='layers', lookup_field='uuid')
     tiles_url = serializers.ReadOnlyField()
 
     class Meta:
@@ -84,6 +89,8 @@ class MapLayerSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MapSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='maps', lookup_field='uuid')
     layers = MapLayerSerializer(many=True, read_only=True)
 
     class Meta:

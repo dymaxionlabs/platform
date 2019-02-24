@@ -53,6 +53,7 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, ProjectPermission)
+    lookup_field = 'uuid'
 
     def get_queryset(self):
         # Filter only projects that user has access to
@@ -68,6 +69,7 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MapSerializer
     permission_classes = (permissions.IsAuthenticated,
                           ProjectAssociationPermission)
+    lookup_field = 'uuid'
 
     def get_queryset(self):
         # If logged-in user is not admin, filter public maps and owned by
@@ -84,6 +86,7 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LayerSerializer
     permission_classes = (permissions.IsAuthenticated,
                           ProjectAssociationPermission)
+    lookup_field = 'uuid'
 
     def get_queryset(self):
         # Filter layers from projects that user has access to
