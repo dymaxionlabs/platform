@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
-from .models import Map, Project, MapLayer, Layer
+from .models import Layer, Map, MapLayer, Project
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

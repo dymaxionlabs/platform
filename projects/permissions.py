@@ -14,21 +14,17 @@ class UserPermission(permissions.BasePermission):
         return request.user.is_staff or obj == request.user
 
 
-class MapPermission(permissions.BasePermission):
+class ProjectAssociationPermission(permissions.BasePermission):
     """
-    Custom permission for Maps
+    Custom permission for models associated to a Project (Maps, Layers, etc.)
 
-    * Allow any, but only for *public* maps
     * Allow staff or user who has access to associated Project
 
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.user.is_anonymous:
-            return not obj.is_private
-        else:
-            return request.user.is_staff or obj.project.groups.filter(
-                user=request.user).exists()
+        user = request.user
+        return user.is_staff or obj.project.groups.filter(user=user).exists()
 
 
 class ProjectPermission(permissions.BasePermission):
@@ -40,18 +36,5 @@ class ProjectPermission(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.groups.filter(
-            user=request.user).exists()
-
-
-class LayerPermission(permissions.BasePermission):
-    """
-    Custom permission for Layer
-
-    * Allow staff or user who has access to associated Project
-
-    """
-
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.project.groups.filter(
-            user=request.user).exists()
+        user = request.user
+        return user.is_staff or obj.groups.filter(user=user).exists()

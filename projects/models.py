@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
+import uuid
 
 
 class UserProfile(models.Model):
@@ -18,9 +19,10 @@ class UserProfile(models.Model):
 
 
 class Project(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     groups = models.ManyToManyField(Group)
 
-    name = models.CharField(max_length=80)
+    name = models.CharField(max_length=80, unique=True)
     description = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(unique=True)
 
@@ -38,8 +40,9 @@ class Layer(models.Model):
         (RASTER, 'Raster'),
         (VECTOR, 'Vector'),
     )
-    BASE_TILE_URL = 'https://storage.googleapis.com/dym-tiles/{project_slug}/{slug}'
+    BASE_TILE_URL = 'https://storage.googleapis.com/dym-tiles/{uuid}'
 
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
     layer_type = models.CharField(
@@ -60,16 +63,10 @@ class Layer(models.Model):
     def __str__(self):
         return '{name} ({date})'.format(name=self.name, date=self.date)
 
-    @property
     def tiles_url(self):
-        base_url = self.BASE_TILE_URL.format(
-            project_slug=self.project.slug, slug=self.slug)
-        date_str = self.date.strftime('%Y-%m-%d')
-        return '{base_url}/{date}'.format(
-            base_url=base_url,
-            date=date_str) + '/{z}/{x}/{y}.' + self.tiles_extension
+        base_url = self.BASE_TILE_URL.format(uuid=self.uuid)
+        return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
 
-    @property
     def tiles_extension(self):
         if self.layer_type == self.RASTER:
             return 'png'
@@ -80,6 +77,7 @@ class Layer(models.Model):
 
 
 class Map(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=80)
@@ -89,11 +87,13 @@ class Map(models.Model):
     zoom = models.IntegerField(
         default=13, validators=[MaxValueValidator(22),
                                 MinValueValidator(1)])
-    is_private = models.BooleanField(default=True)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (('project', 'name'), )
 
     def __str__(self):
         return self.name
@@ -107,7 +107,7 @@ class MapLayer(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = (('map', 'order'), )
+        unique_together = (('map', 'order'), ('map', 'layer'))
         ordering = ('order', )
 
     def __str__(self):

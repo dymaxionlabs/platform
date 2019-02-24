@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import UserProfile, Project, Layer, Map, MapLayer
+from .models import Layer, Map, MapLayer, Project, UserProfile
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -27,10 +27,9 @@ class MapLayerInline(admin.TabularInline):
 
 
 class MapAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'project', 'is_private',
-                    'created_at')
+    list_display = ('id', 'name', 'description', 'project', 'created_at')
     list_display_links = ('id', 'name')
-    search_fields = ('name', 'description', 'project', 'slug', 'is_private')
+    search_fields = ('name', 'description', 'project', 'slug')
     prepopulated_fields = {'slug': ('name', )}
     inlines = [MapLayerInline]
 

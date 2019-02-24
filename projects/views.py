@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Layer, Map, Project
-from .permissions import (LayerPermission, MapPermission, ProjectPermission,
+from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
 from .serializers import (ContactSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
@@ -32,7 +32,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ExampleView(APIView):
     def get(self, request):
-        return Response({ "detail": _("Nothing") }, status=status.HTTP_200_OK)
+        return Response({"detail": _("Nothing")}, status=status.HTTP_200_OK)
 
 
 class ContactView(GenericAPIView):
@@ -66,15 +66,14 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Map.objects.all()
     serializer_class = MapSerializer
-    permission_classes = (permissions.AllowAny, MapPermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          ProjectAssociationPermission)
 
     def get_queryset(self):
         # If logged-in user is not admin, filter public maps and owned by
         # current user group.
         user = self.request.user
-        if user.is_anonymous:
-            return self.queryset.filter(id=None)
-        elif user.is_staff:
+        if user.is_staff:
             return self.queryset
         else:
             return self.queryset.filter(project__groups__user=user).distinct()
@@ -83,14 +82,13 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Layer.objects.all()
     serializer_class = LayerSerializer
-    permission_classes = (permissions.AllowAny, LayerPermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          ProjectAssociationPermission)
 
     def get_queryset(self):
         # Filter layers from projects that user has access to
         user = self.request.user
-        if user.is_anonymous:
-            return self.queryset.filter(id=None)
-        elif user.is_staff:
+        if user.is_staff:
             return self.queryset
         else:
             return self.queryset.filter(project__groups__user=user).distinct()
