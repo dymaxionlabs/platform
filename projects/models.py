@@ -52,7 +52,7 @@ class Layer(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
-    date = models.DateField(blank=True)
+    date = models.DateField(null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
