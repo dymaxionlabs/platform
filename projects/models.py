@@ -58,7 +58,7 @@ class Layer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'slug', 'date'), )
+        unique_together = (('project', 'date'), )
 
     def __str__(self):
         return '{name} ({date})'.format(name=self.name, date=self.date)
