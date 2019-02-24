@@ -59,7 +59,7 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
-        else:
+        elif not user.is_anonymous:
             return self.queryset.filter(groups__user=user)
 
 
@@ -75,7 +75,7 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
-        else:
+        elif not user.is_anonymous:
             return self.queryset.filter(project__groups__user=user).distinct()
 
 
@@ -90,5 +90,5 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
-        else:
+        elif not user.is_anonymous:
             return self.queryset.filter(project__groups__user=user).distinct()
