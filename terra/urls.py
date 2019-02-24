@@ -25,11 +25,11 @@ from projects.views import ExampleView, UserViewSet, ContactView, MapViewSet, La
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'quotations', QuotationViewSet, basename='quotation')
-router.register(r'projects', ProjectViewSet, basename='project')
-router.register(r'maps', MapViewSet, basename='map')
-router.register(r'layers', LayerViewSet, basename='layer')
+router.register(r'users', UserViewSet)
+router.register(r'quotations', QuotationViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'maps', MapViewSet)
+router.register(r'layers', LayerViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(

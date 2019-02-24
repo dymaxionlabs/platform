@@ -10,7 +10,7 @@ from terra.settings import DEFAULT_FROM_EMAIL
 from .models import Layer, Map, MapLayer, Project
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
@@ -61,26 +61,21 @@ class ContactSerializer(serializers.Serializer):
                 message=escape(message))
 
 
-class ProjectSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='projects', lookup_field='uuid')
-
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = ('id', )
 
 
-class LayerSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='layers', lookup_field='uuid')
+class LayerSerializer(serializers.ModelSerializer):
     tiles_url = serializers.ReadOnlyField()
 
     class Meta:
         model = Layer
-        fields = '__all__'
+        exclude = ('id', )
 
 
-class MapLayerSerializer(serializers.HyperlinkedModelSerializer):
+class MapLayerSerializer(serializers.ModelSerializer):
     layer = LayerSerializer(read_only=True)
 
     class Meta:
@@ -88,11 +83,9 @@ class MapLayerSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('layer', 'order', 'is_active')
 
 
-class MapSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='maps', lookup_field='uuid')
+class MapSerializer(serializers.ModelSerializer):
     layers = MapLayerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Map
-        fields = '__all__'
+        exclude = ('id', )
