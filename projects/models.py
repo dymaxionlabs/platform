@@ -52,14 +52,14 @@ class Layer(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
-    date = models.DateField()
+    date = models.DateField(blank=True)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'date'), )
+        unique_together = (('project', 'name', 'date'), )
 
     def __str__(self):
         return '{name} ({date})'.format(name=self.name, date=self.date)
