@@ -39,7 +39,7 @@ class Layer(models.Model):
         (RASTER, 'Raster'),
         (VECTOR, 'Vector'),
     )
-    BASE_TILE_URL = 'https://storage.googleapis.com/dym-tiles/{uuid}'
+    BASE_TILE_URL = 'https://storage.googleapis.com/{bucket}/{uuid}'
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
@@ -62,7 +62,7 @@ class Layer(models.Model):
         return '{name} ({date})'.format(name=self.name, date=self.date)
 
     def tiles_url(self):
-        base_url = self.BASE_TILE_URL.format(uuid=self.uuid)
+        base_url = self.BASE_TILE_URL.format(bucket=settings.TILES_BUCKET, uuid=self.uuid)
         return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
 
     def tiles_extension(self):
