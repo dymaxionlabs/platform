@@ -24,7 +24,6 @@ class Project(models.Model):
 
     name = models.CharField(max_length=80, unique=True)
     description = models.CharField(max_length=255, blank=True)
-    slug = models.SlugField(unique=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -51,7 +50,6 @@ class Layer(models.Model):
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField()
-    slug = models.SlugField()
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -82,7 +80,6 @@ class Map(models.Model):
 
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
-    slug = models.SlugField()
     center = models.PointField()
     zoom = models.IntegerField(
         default=13, validators=[MaxValueValidator(22),
