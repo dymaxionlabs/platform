@@ -1,10 +1,13 @@
+import uuid
+
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
-import uuid
+
+from terra import settings
 
 
 class UserProfile(models.Model):
@@ -62,7 +65,8 @@ class Layer(models.Model):
         return '{name} ({date})'.format(name=self.name, date=self.date)
 
     def tiles_url(self):
-        base_url = self.BASE_TILE_URL.format(bucket=settings.TILES_BUCKET, uuid=self.uuid)
+        base_url = self.BASE_TILE_URL.format(
+            bucket=settings.TILES_BUCKET, uuid=self.uuid)
         return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
 
     def tiles_extension(self):
