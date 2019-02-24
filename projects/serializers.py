@@ -69,6 +69,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class LayerSerializer(serializers.ModelSerializer):
     tiles_url = serializers.ReadOnlyField()
+    extent = serializers.ReadOnlyField()
 
     class Meta:
         model = Layer

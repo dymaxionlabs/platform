@@ -77,6 +77,10 @@ class Layer(models.Model):
         else:
             raise TypeError('unknown layer type {}'.format(self.layer_type))
 
+    def extent(self):
+        """ Get area extent """
+        return self.area_geom and self.area_geom.extent
+
 
 class Map(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
