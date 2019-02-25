@@ -25,9 +25,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         # If logged-in user is not admin, filter by the current user
         user = self.request.user
         if user.is_staff:
-            return self.queryset
+            return self.queryset.all()
         else:
-            return self.queryset.filter(id=user.id)
+            return self.queryset.filter(id=user.id).all()
 
 
 class ExampleView(APIView):
@@ -43,10 +43,7 @@ class ContactView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({
-            "detail": _("Contact message has been sent")
-        },
-                        status=status.HTTP_200_OK)
+        return Response({"detail": _("Contact message has been sent")}, status=status.HTTP_200_OK)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -59,9 +56,9 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
         # Filter only projects that user has access to
         user = self.request.user
         if user.is_staff:
-            return self.queryset
+            return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(groups__user=user)
+            return self.queryset.filter(groups__user=user).all()
 
 
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
@@ -76,9 +73,9 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         # current user group.
         user = self.request.user
         if user.is_staff:
-            return self.queryset
+            return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(project__groups__user=user).distinct()
+            return self.queryset.filter(project__groups__user=user).distinct().all()
 
 
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
@@ -92,6 +89,6 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
         # Filter layers from projects that user has access to
         user = self.request.user
         if user.is_staff:
-            return self.queryset
+            return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(project__groups__user=user).distinct()
+            return self.queryset.filter(project__groups__user=user).distinct().all()
