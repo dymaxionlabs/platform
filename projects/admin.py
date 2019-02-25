@@ -1,7 +1,11 @@
-from django.contrib import admin
-from django import forms
-from django.contrib.gis.geos import GEOSGeometry
 import json
+
+from django import forms
+from django.contrib import admin
+from django.contrib.gis.geos import GEOSGeometry
+from jsoneditor.forms import JSONEditor
+
+from django.contrib.postgres.fields import JSONField
 
 from .models import Layer, Map, MapLayer, Project, UserProfile
 
@@ -29,7 +33,8 @@ class LayerForm(forms.ModelForm):
         if area_geojson_file:
             geojson = json.load(area_geojson_file)
             feature = geojson['features'][0]
-            polygon = GEOSGeometry(json.dumps(geojson['features'][0]['geometry']))
+            polygon = GEOSGeometry(
+                json.dumps(geojson['features'][0]['geometry']))
             instance.area_geom = polygon
         if commit:
             instance.save()
@@ -46,6 +51,11 @@ class LayerAdmin(admin.ModelAdmin):
                     'created_at', 'tiles_url')
     list_display_links = ('id', 'name')
     search_fields = ('name', 'description', 'project', 'layer_type', 'date')
+    formfield_overrides = {
+        JSONField: {
+            'widget': JSONEditor
+        },
+    }
 
 
 class MapLayerInline(admin.TabularInline):
@@ -57,6 +67,11 @@ class MapAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'name')
     search_fields = ('name', 'description', 'project')
     inlines = [MapLayerInline]
+    formfield_overrides = {
+        JSONField: {
+            'widget': JSONEditor
+        },
+    }
 
 
 admin.site.register(UserProfile)

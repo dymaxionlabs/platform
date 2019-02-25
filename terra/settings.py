@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'anymail',
     'drf_yasg',
+    'jsoneditor',
 ]
 
 MIDDLEWARE = [
