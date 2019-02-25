@@ -86,6 +86,7 @@ class MapLayerSerializer(serializers.ModelSerializer):
 
 class MapSerializer(serializers.ModelSerializer):
     layers = MapLayerSerializer(many=True, read_only=True)
+    extent = serializers.ReadOnlyField()
 
     class Meta:
         model = Map

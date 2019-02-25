@@ -103,6 +103,11 @@ class Map(models.Model):
     def __str__(self):
         return self.name
 
+    def extent(self):
+        """ Get map extent based on first active layer """
+        active_map_layer = self.layers.filter(is_active=True).first()
+        return active_map_layer and active_map_layer.layer.extent()
+
 
 class MapLayer(models.Model):
     map = models.ForeignKey(
