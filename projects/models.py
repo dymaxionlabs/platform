@@ -88,10 +88,6 @@ class Map(models.Model):
 
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
-    center = models.PointField()
-    zoom = models.IntegerField(
-        default=13, validators=[MaxValueValidator(22),
-                                MinValueValidator(1)])
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
