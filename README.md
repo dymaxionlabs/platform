@@ -57,3 +57,22 @@ When deploying for the first time:
 * Set `DEBUG=0` and `ALLOWED_HOSTS` list with domains/subdomains and IPs
 * Also, set a long unique `SECRET_KEY`
 * Collect statics with `./manage.py collectstatic`
+
+### Async tasks
+
+We use Celery for asynchronous tasks like preprocessing and prediction tasks.
+Redis is the current broker backend.
+
+* Run a worker
+
+```
+celery -A terra worker -l info
+```
+
+* Start Flower monitoring app.
+
+```
+celery -A terra flower
+```
+
+Then, visit http://localhost:5555
