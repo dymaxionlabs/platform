@@ -15,6 +15,7 @@ django-cors-headers = "*"
 drf-yasg = "*"
 djangorestframework-gis = "*"
 django-jsoneditor = "*"
+celery = {extras = ["redis"], version = "*"}
 
 [dev-packages]
 yapf = "*"
