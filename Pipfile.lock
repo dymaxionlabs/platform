@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "28abc90bfcdad281af407a2122b75d3ff0859ffc021565d1a9fa800a96028f0d"
+            "sha256": "3a564d82ee926e13ac41a03dce3242f38f832fae2f2cc0c87ce1e29ec3364a44"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -102,13 +102,21 @@
             "index": "pypi",
             "version": "==2.5.0"
         },
-        "django-jsoneditor": {
+        "django-guardian": {
             "hashes": [
-                "sha256:cc286803a2f1136d37cf3ff702b5b9a7f1f0208d9db855eb5713353344cf08f0",
-                "sha256:ec3fe9bb2d57ae9d425f92cd1095ee5f3b1341d8845f143b86147531706b5331"
+                "sha256:9e144bbdfa67f523dc6f70768653a19c0aac29394f947a80dcb8eb7900840637",
+                "sha256:ed47220d5e7a849c92ead9f25c5a576df3cebfd4ec398beee819418e0b6f2470"
             ],
             "index": "pypi",
-            "version": "==0.1.2"
+            "version": "==1.5.0"
+        },
+        "django-jsoneditor": {
+            "hashes": [
+                "sha256:0c04e420d1d547ab26c4e72fbc704e37c563f23164ae3e997c09621e88eeb437",
+                "sha256:68d2872a27ec27994b28fa679c4a118ea2c6f60cfae3ed57e1eea2fa7d846ff6"
+            ],
+            "index": "pypi",
+            "version": "==0.1.3"
         },
         "django-rest-auth": {
             "hashes": [
@@ -375,10 +383,10 @@
     "develop": {
         "astroid": {
             "hashes": [
-                "sha256:39183aecc01d6f74eb54edc6739992e842f3bf3068bdfaaba30b5a1742f44091",
-                "sha256:62bd1d8d2ace3e812b3a22eb3c4b7856536d8cc0cdb37466f6a53cf881dbad1f"
+                "sha256:6560e1e1749f68c64a4b5dee4e091fce798d2f0d84ebe638cf0e0585a343acf4",
+                "sha256:b65db1bbaac9f9f4d190199bb8680af6f6f84fd3769a5ea883df8a91fe68b4c4"
             ],
-            "version": "==2.2.4"
+            "version": "==2.2.5"
         },
         "backcall": {
             "hashes": [
@@ -411,10 +419,10 @@
         },
         "isort": {
             "hashes": [
-                "sha256:89041186651a9a6159683098f337eed0994d9d94e006f891c6e8cbeb8e65f1c7",
-                "sha256:ba51a651505242b0b37ad94b281e1154301e221a40c623e62334ed863fc1c98c"
+                "sha256:38a74a5ccf3a15a7a99f975071164f48d4d10eed4154879009c18e6e8933e5aa",
+                "sha256:abbb2684aa234d5eb8a67ef36d4aa62ea080d46c2eba36ad09e2990ae52e4305"
             ],
-            "version": "==4.3.12"
+            "version": "==4.3.13"
         },
         "jedi": {
             "hashes": [
