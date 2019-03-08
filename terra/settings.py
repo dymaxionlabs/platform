@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'anymail',
     'drf_yasg',
     'jsoneditor',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +125,11 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
