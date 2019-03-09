@@ -23,6 +23,10 @@ class UserProfile(models.Model):
 
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    owners = models.ManyToManyField(User)
+
+    # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group)
 
     name = models.CharField(max_length=80, unique=True)
