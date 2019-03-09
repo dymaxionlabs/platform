@@ -16,7 +16,7 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
 
     def owner_names(self, obj):
-        return ", ".join([u.name for u in obj.owners.all()])
+        return ", ".join([u.username for u in obj.owners.all()])
 
 
 class LayerForm(forms.ModelForm):
