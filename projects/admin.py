@@ -11,12 +11,12 @@ from .models import Layer, Map, MapLayer, Project, UserProfile
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'group_names', 'created_at')
+    list_display = ('id', 'name', 'description', 'owner_names', 'created_at')
     list_display_links = ('id', 'name')
     search_fields = ('name', 'description')
 
-    def group_names(self, obj):
-        return ", ".join([g.name for g in obj.groups.all()])
+    def owner_names(self, obj):
+        return ", ".join([u.name for u in obj.owners.all()])
 
 
 class LayerForm(forms.ModelForm):
