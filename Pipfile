@@ -19,6 +19,7 @@ celery = {extras = ["redis"], version = "*"}
 flower = "*"
 tornado = "<6.0.0,>=4.2.0"
 django-guardian = "*"
+django-storages = {extras = ["google"], version = "*"}
 
 [dev-packages]
 yapf = "*"
