@@ -149,9 +149,15 @@ class MapLayer(models.Model):
         return cls.objects.order_by('-order')[0].order
 
 
+def user_images_path(instance, filename):
+    return 'user_{user_id}/{filename}'.format(
+        user_id=instance.owner.id, filename=filename)
+
+
 class Image(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    file = models.FileField(upload_to=user_images_path)
     name = models.CharField(max_length=255)
     metadata = JSONField(null=True, blank=True)
 

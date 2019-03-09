@@ -111,12 +111,6 @@ class MapAdmin(admin.ModelAdmin):
 class ImageAdmin(admin.ModelAdmin):
     list_filter = ('owner', )
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 admin.site.register(UserProfile)
 admin.site.register(Project, ProjectAdmin)

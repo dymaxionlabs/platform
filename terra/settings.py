@@ -112,8 +112,10 @@ ANYMAIL = {
     'MAILGUN_API_KEY': os.getenv('MAILGUN_API_KEY'),
     'MAILGUN_SENDER_DOMAIN': os.getenv('MAILGUN_SENDER_DOMAIN'),
 }
+
 EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DEFAULT_FROM_EMAIL = 'Terra <{email}>'.format(
     email=os.getenv('DEFAULT_FROM_EMAIL'))
 
@@ -207,7 +209,10 @@ SITE_ID = 1
 ACCOUNT_ADAPTER = 'terra.adapter.DefaultAccountAdapterCustom'
 
 # For images and other uploaded files
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+
 GS_BUCKET_NAME = os.getenv('FILES_BUCKET')
 
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
