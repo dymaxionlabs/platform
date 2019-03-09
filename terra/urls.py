@@ -21,7 +21,9 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import ExampleView, UserViewSet, ContactView, MapViewSet, LayerViewSet, ProjectViewSet
+from projects.views import (ContactView, ExampleView, ImageUploadView,
+                            LayerViewSet, MapViewSet, ProjectViewSet,
+                            UserViewSet)
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
@@ -45,8 +47,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    url(r'^example/?', ExampleView.as_view()),
-    url(r'^contact/?', ContactView.as_view()),
+    # Documentation
     url(r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'),
@@ -56,8 +57,21 @@ urlpatterns = [
     url(r'^redoc/$',
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
+
+    # Authentication
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
+
+    # Administration
     url(r'^admin/', admin.site.urls),
+
+    # Custom views
+    url(r'^example/?', ExampleView.as_view()),
+    url(r'^contact/?', ContactView.as_view()),
+
+    # Layers
+    url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
+
+    # ...
     url(r'^', include(router.urls)),
 ]

@@ -3,17 +3,26 @@ import json
 from django import forms
 from django.contrib import admin
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.postgres.fields import JSONField
 from jsoneditor.forms import JSONEditor
 
-from django.contrib.postgres.fields import JSONField
-
-from .models import Layer, Map, MapLayer, Project, UserProfile
+from .models import Image, Layer, Map, MapLayer, Project, UserProfile
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'owner_names', 'created_at')
+    list_filter = ('owners', )
+    list_display = (
+        'id',
+        'name',
+        'description',
+        'owner_names',
+        'created_at',
+    )
     list_display_links = ('id', 'name')
-    search_fields = ('name', 'description')
+    search_fields = (
+        'name',
+        'description',
+    )
 
     def owner_names(self, obj):
         return ", ".join([u.username for u in obj.owners.all()])
@@ -47,10 +56,24 @@ class LayerForm(forms.ModelForm):
 
 class LayerAdmin(admin.ModelAdmin):
     form = LayerForm
-    list_display = ('id', 'name', 'layer_type', 'project', 'date',
-                    'created_at', 'tiles_url')
+    list_filter = ('project', 'layer_type')
+    list_display = (
+        'id',
+        'name',
+        'layer_type',
+        'project',
+        'date',
+        'created_at',
+        'tiles_url',
+    )
     list_display_links = ('id', 'name')
-    search_fields = ('name', 'description', 'project', 'layer_type', 'date')
+    search_fields = (
+        'name',
+        'description',
+        'project',
+        'layer_type',
+        'date',
+    )
     formfield_overrides = {
         JSONField: {
             'widget': JSONEditor
@@ -63,9 +86,20 @@ class MapLayerInline(admin.TabularInline):
 
 
 class MapAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'project', 'created_at')
+    list_filter = ('project', )
+    list_display = (
+        'id',
+        'name',
+        'description',
+        'project',
+        'created_at',
+    )
     list_display_links = ('id', 'name')
-    search_fields = ('name', 'description', 'project')
+    search_fields = (
+        'name',
+        'description',
+        'project',
+    )
     inlines = [MapLayerInline]
     formfield_overrides = {
         JSONField: {
@@ -74,7 +108,18 @@ class MapAdmin(admin.ModelAdmin):
     }
 
 
+class ImageAdmin(admin.ModelAdmin):
+    list_filter = ('owner', )
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 admin.site.register(UserProfile)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Map, MapAdmin)
+admin.site.register(Image, ImageAdmin)

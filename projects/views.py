@@ -2,10 +2,11 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Layer, Map, Project
+from .models import Image, Layer, Map, Project
 from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
 from .serializers import (ContactSerializer, LayerSerializer,
@@ -43,7 +44,10 @@ class ContactView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": _("Contact message has been sent")}, status=status.HTTP_200_OK)
+        return Response({
+            "detail": _("Contact message has been sent")
+        },
+                        status=status.HTTP_200_OK)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -92,3 +96,13 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.all()
         elif not user.is_anonymous:
             return self.queryset.filter(project__owners=user).distinct().all()
+
+
+class ImageUploadView(APIView):
+    parser_classes = (FileUploadParser, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def put(self, request, filename, format=None):
+        image = Image.objects.create(name=filename, owner=request.user)
+        image.upload_file(request.data['file'])
+        return Response(status=status.HTTP_204_NO_CONTENT)

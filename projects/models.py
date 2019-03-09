@@ -9,6 +9,8 @@ from django.utils.translation import gettext as _
 
 from terra import settings
 
+import time
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -145,3 +147,30 @@ class MapLayer(models.Model):
     @classmethod
     def max_order(cls):
         return cls.objects.order_by('-order')[0].order
+
+
+class Image(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255)
+    metadata = JSONField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (('owner', 'name'), )
+
+    def __str__(self):
+        return self.name
+
+    def bucket_path(self):
+        return '{bucket}/{username}/{filename}'.format(
+            bucket=settings.USER_IMAGES_BUCKET,
+            username=self.owner.username,
+            filename=self.name)
+
+    def upload_file(self, file):
+        print("Uploading file...")
+        time.sleep(3)
+        print("Done")
