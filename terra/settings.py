@@ -206,5 +206,10 @@ SITE_ID = 1
 
 ACCOUNT_ADAPTER = 'terra.adapter.DefaultAccountAdapterCustom'
 
+# For images and other uploaded files
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = os.getenv('FILES_BUCKET')
+
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
+
 TILES_BUCKET = os.getenv('TILES_BUCKET')
