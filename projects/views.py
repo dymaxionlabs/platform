@@ -117,7 +117,8 @@ class ImageUploadView(APIView):
     parser_classes = (FileUploadParser, )
     permission_classes = (permissions.IsAuthenticated, )
 
-    def post(self, request, name, format=None):
-        image = Image(name=name, owner=request.user)
+    def post(self, request, filename, format=None):
+        image = Image(name=filename, owner=request.user)
         image.file = request.data['file']
+        image.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

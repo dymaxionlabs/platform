@@ -71,7 +71,7 @@ urlpatterns = [
     # Custom views
     url(r'^example/?', ExampleView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
-    url(r'^images/upload/(?P<name>[^/]+)$', ImageUploadView.as_view()),
+    url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
 
     # ...
     url(r'^', include(router.urls)),
