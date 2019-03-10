@@ -91,3 +91,12 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         exclude = ('id', )
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(use_url=True, read_only=True)
+    metadata = serializers.JSONField()
+
+    class Meta:
+        model = Image
+        fields = ('name', 'metadata', 'file')

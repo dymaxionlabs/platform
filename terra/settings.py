@@ -212,6 +212,7 @@ ACCOUNT_ADAPTER = 'terra.adapter.DefaultAccountAdapterCustom'
 #DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_URL = '/uploads/'
 
 GS_BUCKET_NAME = os.getenv('FILES_BUCKET')
 

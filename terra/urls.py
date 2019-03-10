@@ -13,7 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include
 from drf_yasg import openapi
@@ -22,16 +24,17 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
 from projects.views import (ContactView, ExampleView, ImageUploadView,
-                            LayerViewSet, MapViewSet, ProjectViewSet,
-                            UserViewSet)
+                            ImageViewSet, LayerViewSet, MapViewSet,
+                            ProjectViewSet, UserViewSet)
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
-router.register(r'quotations', QuotationViewSet)
 router.register(r'projects', ProjectViewSet)
-router.register(r'maps', MapViewSet)
+router.register(r'images', ImageViewSet)
 router.register(r'layers', LayerViewSet)
+router.register(r'maps', MapViewSet)
+router.register(r'quotations', QuotationViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -68,10 +71,9 @@ urlpatterns = [
     # Custom views
     url(r'^example/?', ExampleView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
-
-    # Layers
-    url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
+    url(r'^images/upload/(?P<name>[^/]+)$', ImageUploadView.as_view()),
 
     # ...
     url(r'^', include(router.urls)),
-]
+] + static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

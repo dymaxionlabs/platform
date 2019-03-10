@@ -6,11 +6,11 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Image, Layer, Map, Project
+from .models import Image, Layer, Map, Project, Image
 from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
 from .serializers import (ContactSerializer, LayerSerializer,
-                          LoginUserSerializer, MapSerializer,
+                          LoginUserSerializer, MapSerializer, ImageSerializer,
                           ProjectSerializer, UserSerializer)
 
 
@@ -98,11 +98,26 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(project__owners=user).distinct().all()
 
 
+class ImageViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin, mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    lookup_field = 'name'
+
+    def get_queryset(self):
+        # Only return files from auth user
+        user = self.request.user
+        return self.queryset.filter(owner=user).all()
+
+
 class ImageUploadView(APIView):
     parser_classes = (FileUploadParser, )
     permission_classes = (permissions.IsAuthenticated, )
 
-    def put(self, request, filename, format=None):
-        image = Image.objects.create(name=filename, owner=request.user)
-        image.upload_file(request.data['file'])
+    def post(self, request, name, format=None):
+        image = Image(name=name, owner=request.user)
+        image.file = request.data['file']
         return Response(status=status.HTTP_204_NO_CONTENT)
