@@ -62,9 +62,16 @@ class ContactSerializer(serializers.Serializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    owners = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='username')
+
     class Meta:
         model = Project
-        exclude = ('id', )
+        exclude = ('id', 'groups')
+
+    def create(self, validated_data):
+        validated_data['owners'] = [self.context['request'].user]
+        return super().create(validated_data)
 
 
 class LayerSerializer(serializers.ModelSerializer):
