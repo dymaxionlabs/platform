@@ -217,6 +217,6 @@ TILES_BUCKET = os.getenv('TILES_BUCKET')
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 
 # For images and other uploaded files
-#DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+#DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 GS_BUCKET_NAME = FILES_BUCKET
