@@ -51,12 +51,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'django.contrib.sites',
     'projects.apps.ProjectsConfig',
     'quotations.apps.QuotationsConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'rest_auth',
+    'rest_auth.registration',
     'corsheaders',
     'anymail',
     'drf_yasg',
@@ -196,6 +201,8 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+SITE_ID = 1
 
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 TILES_BUCKET = os.getenv('TILES_BUCKET')
