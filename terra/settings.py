@@ -208,15 +208,15 @@ SITE_ID = 1
 
 ACCOUNT_ADAPTER = 'terra.adapter.DefaultAccountAdapterCustom'
 
-# For images and other uploaded files
-#DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = '/uploads/'
 
-GS_BUCKET_NAME = os.getenv('FILES_BUCKET')
+FILES_BUCKET = os.getenv('FILES_BUCKET')
+TILES_BUCKET = os.getenv('TILES_BUCKET')
 
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 
-TILES_BUCKET = os.getenv('TILES_BUCKET')
-USER_IMAGES_BUCKET = os.getenv('USER_IMAGES_BUCKET')
+# For images and other uploaded files
+#DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+GS_BUCKET_NAME = FILES_BUCKET

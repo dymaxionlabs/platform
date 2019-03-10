@@ -170,12 +170,6 @@ class Image(models.Model):
     def __str__(self):
         return self.name
 
-    def bucket_path(self):
-        return '{bucket}/{username}/{filename}'.format(
-            bucket=settings.USER_IMAGES_BUCKET,
-            username=self.owner.username,
-            filename=self.name)
-
     def upload_file(self, file):
         print("Uploading file...")
         time.sleep(3)
