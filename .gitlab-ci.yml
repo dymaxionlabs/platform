@@ -14,6 +14,7 @@ test:
     DB_USER: runner
     DB_PASSWORD: ""
     BROKER: redis://localhost:6379/0
+    SENTRY_DNS: ""
   script:
     - apt-get update -qy
     - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev
