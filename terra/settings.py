@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 def get_allowed_hosts():
@@ -115,7 +117,8 @@ ANYMAIL = {
 
 # In production, add this to your .env:
 #   EMAIL_BACKEND=anymail.backends.mailgun.EmailBackend
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND',
+                          'django.core.mail.backends.console.EmailBackend')
 
 DEFAULT_FROM_EMAIL = 'Terra <{email}>'.format(
     email=os.getenv('DEFAULT_FROM_EMAIL'))
@@ -220,6 +223,12 @@ WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 # For images and other uploaded files
 # In production, add this to your .env:
 #   DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-DEFAULT_FILE_STORAGE = os.getenv('DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
+DEFAULT_FILE_STORAGE = os.getenv(
+    'DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
 
 GS_BUCKET_NAME = FILES_BUCKET
+
+# Configure Sentry
+if os.environ['SENTRY_DNS']:
+    sentry_sdk.init(
+        dsn=os.environ['SENTRY_DNS'], integrations=[DjangoIntegration()])
