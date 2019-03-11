@@ -6,7 +6,7 @@ test:
     LANG: C.UTF-8
   script:
     - apt-get update -qy
-    - apt-get install -y python3-dev python3-pip
+    - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev
     - pip install pipenv
     - pipenv install
       # Workaround: install extra dependencies (pipenv is currently not tracking them)
