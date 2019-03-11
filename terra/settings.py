@@ -113,8 +113,9 @@ ANYMAIL = {
     'MAILGUN_SENDER_DOMAIN': os.getenv('MAILGUN_SENDER_DOMAIN'),
 }
 
-EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# In production, add this to your .env:
+#   EMAIL_BACKEND=anymail.backends.mailgun.EmailBackend
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 
 DEFAULT_FROM_EMAIL = 'Terra <{email}>'.format(
     email=os.getenv('DEFAULT_FROM_EMAIL'))
@@ -217,6 +218,8 @@ TILES_BUCKET = os.getenv('TILES_BUCKET')
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 
 # For images and other uploaded files
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-#DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+# In production, add this to your .env:
+#   DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = os.getenv('DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
+
 GS_BUCKET_NAME = FILES_BUCKET
