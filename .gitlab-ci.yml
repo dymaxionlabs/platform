@@ -8,6 +8,7 @@ test:
     POSTGRES_DB: nice_marmot
     POSTGRES_USER: runner
     POSTGRES_PASSWORD: ""
+    SECRET_KEY: "foobar"
     DB_HOST: postgres
     DB_USER: runner
     DB_PASSWORD: ""
