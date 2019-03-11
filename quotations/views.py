@@ -6,10 +6,20 @@ from .models import Quotation
 from .serializers import QuotationSerializer
 
 
-class QuotationViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class QuotationViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                       viewsets.GenericViewSet):
     serializer_class = QuotationSerializer
     queryset = Quotation.objects.all()
     permission_classes = (permissions.AllowAny, )
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return self.queryset.all()
+        elif not user.is_anonymous:
+            return self.queryset.filter(user=user).all()
+        else:
+            return self.queryset.none()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

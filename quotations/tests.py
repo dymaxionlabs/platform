@@ -71,7 +71,53 @@ class QuotationViewSetTest(TestCase):
 
         # User 2 tries to get quotation from User 1, but fails
         response = self.client.get('/quotations/{}/'.format(quotation.id))
-        self.assertEquals(401, response.status_code)
+        self.assertEquals(404, response.status_code)
+
+    def test_list_all_if_admin(self):
+        # User 1 creates a quotation
+        user = self.create_some_user()
+        quotation = self.create_some_quotation(user=user)
+
+        # User 2 creates a quotation
+        user2 = self.create_some_user(username='jane')
+        quotation2 = self.create_some_quotation(user=user2)
+
+        # An admin user authenticates
+        admin_user = self.create_some_admin_user(password='secret')
+        loginWithAPI(self.client, admin_user.username, 'secret')
+
+        response = self.client.get('/quotations/')
+        self.assertEquals(200, response.status_code)
+        data = response.data
+        self.assertEquals(2, len(data))
+        self.assertQuotationDetail(quotation, data[0])
+        self.assertQuotationDetail(quotation2, data[1])
+
+    def test_list_none_if_not_authenticated(self):
+        # Some user creates a quotation
+        user = self.create_some_user()
+        quotation = self.create_some_quotation(user=user)
+
+        response = self.client.get('/quotations/')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals([], response.data)
+
+    def test_list_quotations_from_user(self):
+        # User 1 creates a quotation
+        user = self.create_some_user()
+        quotation = self.create_some_quotation(user=user)
+
+        # User 2 creates a quotation
+        user2 = self.create_some_user(username='jane')
+        quotation2 = self.create_some_quotation(user=user2)
+
+        loginWithAPI(self.client, user2.username, 'secret')
+
+        response = self.client.get('/quotations/')
+        self.assertEquals(200, response.status_code)
+        data = response.data
+        self.assertEquals(1, len(data))
+        self.assertQuotationDetail(quotation2, data[0])
 
     def create_some_quotation(self, user=None):
         quotation = Quotation.objects.create(
