@@ -13,8 +13,8 @@ test:
     POSTGRES_PASSWORD: ""
 
     DB_NAME: terra
-    DB_HOST: postgres
-    DB_USER: runner
+    DB_HOST: mdillon__postgis
+    DB_USER: testuser
     DB_PASSWORD: ""
 
     BROKER: redis://localhost:6379/0
