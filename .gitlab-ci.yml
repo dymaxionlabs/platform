@@ -1,9 +1,18 @@
 image: python:3.6
 
+
 test:
+  services:
+    - postgres:latest
   variables:
     LC_ALL: C.UTF-8
     LANG: C.UTF-8
+    POSTGRES_DB: nice_marmot
+    POSTGRES_USER: runner
+    POSTGRES_PASSWORD: ""
+    DB_HOST: postgres
+    DB_USER: runner
+    DB_PASSWORD:
   script:
     - apt-get update -qy
     - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev postgresql postgis
