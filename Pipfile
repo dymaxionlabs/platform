@@ -20,6 +20,7 @@ flower = "*"
 tornado = "<6.0.0,>=4.2.0"
 django-guardian = "*"
 django-storages = {extras = ["google"], version = "*"}
+sentry-sdk = "==0.7.6"
 
 [dev-packages]
 yapf = "*"

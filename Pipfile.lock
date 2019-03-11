@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "66ea4bfaa798ea595abbfd294d58b487e17ed9008d368d7dc4c1b21046f21438"
+            "sha256": "65e75cc63913e212a711eb45bff458d11b790c533a4d070201f92032aabc0ac2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -101,7 +101,6 @@
             "hashes": [
                 "sha256:4444434c2f43188e16e0a7732c3638e12787ca7e5032f69b6d30b2912f53809e"
             ],
-            "markers": "extra == 'with_social'",
             "version": "==0.39.1"
         },
         "django-anymail": {
@@ -479,6 +478,14 @@
             ],
             "version": "==0.15.89"
         },
+        "sentry-sdk": {
+            "hashes": [
+                "sha256:dc207c083604bae01761866b3145ca9dcf5a45f3de048c4da22eac88889d49e7",
+                "sha256:f94cca2eb41d29fd2bdbedaf9d9a262ab3b4660e5d648d9920fae262e240c368"
+            ],
+            "index": "pypi",
+            "version": "==0.7.6"
+        },
         "six": {
             "hashes": [
                 "sha256:3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c",
@@ -561,10 +568,10 @@
         },
         "isort": {
             "hashes": [
-                "sha256:473c458f279f1545fe80a4c901fe83681c27fb6969ae0bd2f1472143fc46eb1f",
-                "sha256:7867309b5d81326e349e762dd4b4af364ff9cc48ac7e3d3e01f44d70684ae11a"
+                "sha256:18c796c2cd35eb1a1d3f012a214a542790a1aed95e29768bdcb9f2197eccbd0b",
+                "sha256:96151fca2c6e736503981896495d344781b60d18bfda78dc11b290c6125ebdb6"
             ],
-            "version": "==4.3.14"
+            "version": "==4.3.15"
         },
         "jedi": {
             "hashes": [
