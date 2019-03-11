@@ -31,9 +31,16 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(id=user.id).all()
 
 
-class ExampleView(APIView):
+class TestAuthView(APIView):
     def get(self, request):
         return Response({"detail": _("Nothing")}, status=status.HTTP_200_OK)
+
+
+class TestErrorView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        raise RuntimeError('Oops')
 
 
 class ContactView(GenericAPIView):

@@ -23,9 +23,9 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import (ContactView, ExampleView, ImageUploadView,
-                            ImageViewSet, LayerViewSet, MapViewSet,
-                            ProjectViewSet, UserViewSet)
+from projects.views import (ContactView, ImageUploadView, ImageViewSet,
+                            LayerViewSet, MapViewSet, ProjectViewSet,
+                            TestAuthView, TestErrorView, UserViewSet)
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
@@ -68,10 +68,13 @@ urlpatterns = [
     # Administration
     url(r'^admin/', admin.site.urls),
 
-    # Custom views
-    url(r'^example/?', ExampleView.as_view()),
+    # Other custom views
     url(r'^contact/?', ContactView.as_view()),
     url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
+
+    # Test views
+    url(r'^test/auth/?', TestAuthView.as_view()),
+    url(r'^test/error/?', TestErrorView.as_view()),
 
     # ...
     url(r'^', include(router.urls)),

@@ -128,7 +128,7 @@ class UserViewSetTest(APITestCase):
         pass
 
 
-class ExampleViewTest(TestCase):
+class TestAuthViewTest(TestCase):
     def setUp(self):
         self.test_user = User(email="test@prueba.com", username='test')
         self.test_user.set_password('secret')
@@ -137,11 +137,11 @@ class ExampleViewTest(TestCase):
 
     def test_auth_ok(self):
         loginWithAPI(self.client, 'test', 'secret')
-        response = self.client.get('/example/', {}, format='json')
+        response = self.client.get('/test/auth', {}, format='json')
         self.assertEqual(200, response.status_code)
 
     def test_auth_fail(self):
-        response = self.client.get('/example/', {}, format='json')
+        response = self.client.get('/test/auth', {}, format='json')
         self.assertEqual(401, response.status_code)
 
 
