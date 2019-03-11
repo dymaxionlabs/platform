@@ -12,12 +12,11 @@ test:
     POSTGRES_PASSWORD: ""
     DB_HOST: postgres
     DB_USER: runner
-    DB_PASSWORD:
+    DB_PASSWORD: ""
   script:
     - apt-get update -qy
     - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev
     - pip install pipenv
     - pipenv install
-      # Workaround: install extra dependencies (pipenv is currently not tracking them)
     - pipenv install django-anymail[mailgun] django-rest-auth[with_social] celery[redis] django-storages[google]
     - pipenv run ./manage.py test
