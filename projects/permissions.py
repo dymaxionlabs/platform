@@ -24,7 +24,10 @@ class ProjectAssociationPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        return user.is_staff or user in obj.project.owners.all()
+        user_is_project_owner = user in obj.project.owners.all()
+        user_belongs_to_some_project_group = obj.project.groups.filter(
+            user=user).exists()  # deprecated
+        return user.is_staff or user_is_project_owner or user_belongs_to_some_project_group
 
 
 class ProjectPermission(permissions.BasePermission):
@@ -37,4 +40,7 @@ class ProjectPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        return user.is_staff or obj.filter(owners=user).exists()
+        user_is_owner = obj.filter(owners=user).exists()
+        user_belongs_to_some_group = obj.groups.filter(
+            user=user).exists()  # deprecated
+        return user.is_staff or user_is_owner or user_belongs_to_some_group

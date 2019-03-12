@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.generics import GenericAPIView
@@ -6,11 +7,11 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Image, Layer, Map, Project, Image
+from .models import Image, Layer, Map, Project
 from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
-from .serializers import (ContactSerializer, LayerSerializer,
-                          LoginUserSerializer, MapSerializer, ImageSerializer,
+from .serializers import (ContactSerializer, ImageSerializer, LayerSerializer,
+                          LoginUserSerializer, MapSerializer,
                           ProjectSerializer, UserSerializer)
 
 
@@ -69,7 +70,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(owners=user).all()
+            cond = Q(owners=user) | Q(groups__user=user)
+            return self.queryset.filter(cond).all()
 
 
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
@@ -86,7 +88,8 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_staff:
             return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(project__owners=user).distinct().all()
+            cond = Q(project__owners=user) | Q(project__groups__user=user)
+            return self.queryset.filter(cond).distinct().all()
 
 
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
@@ -102,7 +105,8 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_staff:
             return self.queryset.all()
         elif not user.is_anonymous:
-            return self.queryset.filter(project__owners=user).distinct().all()
+            cond = Q(project__owners=user) | Q(project__groups__user=user)
+            return self.queryset.filter(cond).distinct().all()
 
 
 class ImageViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
