@@ -7,7 +7,8 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
-from .models import Layer, Map, MapLayer, Project, Image
+from .models import (Image, Layer, Map, MapLayer, Project,
+                     ProjectInvitationToken)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -59,6 +60,15 @@ class ContactSerializer(serializers.Serializer):
             "<b>Mensaje:</b> {message}<br />".format(
                 email=escape(email),
                 message=escape(message))
+
+
+class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField(read_only=True, slug_field='name')
+
+    class Meta:
+        model = ProjectInvitationToken
+        fields = ('key', 'project', 'email', 'confirmed', 'created_at',
+                  'updated_at')
 
 
 class ProjectSerializer(serializers.ModelSerializer):

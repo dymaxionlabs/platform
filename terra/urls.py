@@ -23,10 +23,10 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            ImageUploadView, ImageViewSet, LayerViewSet,
-                            MapViewSet, ProjectViewSet, TestAuthView,
-                            TestErrorView, UserViewSet)
+from projects.views import (
+    ConfirmProjectInvitationView, ContactView, ImageUploadView, ImageViewSet,
+    LayerViewSet, MapViewSet, ProjectViewSet, TestAuthView,
+    ProjectInvitationTokenViewSet, TestErrorView, UserViewSet)
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
@@ -36,6 +36,7 @@ router.register(r'images', ImageViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
 router.register(r'quotations', QuotationViewSet)
+router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -70,7 +71,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Other custom views
-    url(r'^projects/invite/?$', ConfirmProjectInvitationView.as_view()),
+    url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?$',
+        ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
     url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
 

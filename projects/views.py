@@ -14,7 +14,8 @@ from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
 from .serializers import (ContactSerializer, ImageSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
-                          ProjectSerializer, UserSerializer)
+                          ProjectInvitationTokenSerializer, ProjectSerializer,
+                          UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -34,15 +35,35 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(id=user.id).all()
 
 
+# class ProjectInvitationTokenViewSet(viewsets.ModelViewSet):
+#     queryset = ProjectInvitationToken.objects.all()
+#     serializer_class = ProjectInvitationTokenSerializer
+#     permission_classes = (permissions.Is, )
+
+#     def get_queryset(self):
+#         # If logged-in user is not admin, filter by the current user
+#         user = self.request.user
+#         if user.is_staff:
+#             return self.queryset.all()
+#         else:
+#             return self.queryset.filter(id=user.id).all()
+
+
+class ProjectInvitationTokenViewSet(mixins.RetrieveModelMixin,
+                                    viewsets.GenericViewSet):
+    queryset = ProjectInvitationToken.objects.all()
+    serializer_class = ProjectInvitationTokenSerializer
+    permission_classes = (permissions.AllowAny, )
+
+
 # FIXME Refactor (serializer, createapiview)
 class ConfirmProjectInvitationView(APIView):
     permission_classes = (permissions.AllowAny, )
 
-    def post(self, request):
-        key = request.params.key
+    def post(self, request, key):
         invitation = ProjectInvitationToken.objects.get(
             key=key, confirmed=False)
-        invitation.confirm(self.request)
+        invitation.confirm()
         return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
