@@ -4,10 +4,11 @@ from django import forms
 from django.contrib import admin
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.postgres.fields import JSONField
+from guardian.admin import GuardedModelAdmin
 from jsoneditor.forms import JSONEditor
 
-from .models import (Image, Layer, Map, MapLayer, Project, UserProfile,
-                     ProjectInvitationToken)
+from .models import (Image, Layer, Map, MapLayer, Project,
+                     ProjectInvitationToken, UserProfile)
 
 
 class ProjectInvitationTokenAdmin(admin.ModelAdmin):
@@ -30,7 +31,7 @@ class ProjectInvitationTokenAdmin(admin.ModelAdmin):
     )
 
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(GuardedModelAdmin):
     list_filter = ('owners', )
     list_display = (
         'id',

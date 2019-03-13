@@ -1,13 +1,15 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from guardian.shortcuts import get_objects_for_user
+from rest_auth.registration.views import RegisterView
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Image, Layer, Map, Project
+from .models import Image, Layer, Map, Project, ProjectInvitationToken
 from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
 from .serializers import (ContactSerializer, ImageSerializer, LayerSerializer,
@@ -30,6 +32,18 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.all()
         else:
             return self.queryset.filter(id=user.id).all()
+
+
+# FIXME Refactor (serializer, createapiview)
+class ConfirmProjectInvitationView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request):
+        key = request.params.key
+        invitation = ProjectInvitationToken.objects.get(
+            key=key, confirmed=False)
+        invitation.confirm(self.request)
+        return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
 class TestAuthView(APIView):
@@ -71,7 +85,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return self.queryset.all()
         elif not user.is_anonymous:
             cond = Q(owners=user) | Q(groups__user=user)
-            return self.queryset.filter(cond).all()
+            return (self.queryset.filter(cond) | get_objects_for_user(
+                user, 'projects.view_project')).distinct().all()
 
 
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,8 +103,10 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_staff:
             return self.queryset.all()
         elif not user.is_anonymous:
-            cond = Q(project__owners=user) | Q(project__groups__user=user)
-            return self.queryset.filter(cond).distinct().all()
+            cond = Q(owners=user) | Q(groups__user=user)
+            projects = (Project.objects.filter(cond) | get_objects_for_user(
+                user, 'projects.view_project')).distinct()
+            return self.queryset.filter(project__in=projects).distinct().all()
 
 
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
@@ -105,8 +122,10 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_staff:
             return self.queryset.all()
         elif not user.is_anonymous:
-            cond = Q(project__owners=user) | Q(project__groups__user=user)
-            return self.queryset.filter(cond).distinct().all()
+            cond = Q(owners=user) | Q(groups__user=user)
+            projects = (Project.objects.filter(cond) | get_objects_for_user(
+                user, 'projects.view_project')).distinct()
+            return self.queryset.filter(project__in=projects).distinct().all()
 
 
 class ImageViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,

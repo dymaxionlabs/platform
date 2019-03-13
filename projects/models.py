@@ -9,6 +9,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
+from guardian.shortcuts import assign_perm
 
 from terra import settings
 
@@ -65,6 +66,12 @@ class ProjectInvitationToken(models.Model):
 
     def generate_key(self):
         return binascii.hexlify(os.urandom(20)).decode()
+
+    def confirm(self):
+        user = User.objects.get(email=self.email)
+        assign_perm('view_project', user, self.project)
+        self.confirmed = True
+        self.save(update_fields=["confirmed"])
 
     def __str__(self):
         return self.key
