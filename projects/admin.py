@@ -6,7 +6,28 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.postgres.fields import JSONField
 from jsoneditor.forms import JSONEditor
 
-from .models import Image, Layer, Map, MapLayer, Project, UserProfile
+from .models import (Image, Layer, Map, MapLayer, Project, UserProfile,
+                     ProjectInvitationToken)
+
+
+class ProjectInvitationTokenAdmin(admin.ModelAdmin):
+    list_display = (
+        'key',
+        'project',
+        'email',
+        'confirmed',
+        'created_at',
+        'updated_at',
+    )
+    fields = (
+        'project',
+        'email',
+    )
+    ordering = (
+        '-created_at',
+        'project',
+        'email',
+    )
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -113,6 +134,7 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserProfile)
+admin.site.register(ProjectInvitationToken, ProjectInvitationTokenAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Map, MapAdmin)

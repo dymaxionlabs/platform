@@ -1,3 +1,6 @@
+import binascii
+import os
+import time
 import uuid
 
 from django.contrib.auth.models import Group, User
@@ -8,8 +11,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 
 from terra import settings
-
-import time
 
 
 class UserProfile(models.Model):
@@ -39,6 +40,34 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProjectInvitationToken(models.Model):
+    key = models.CharField(_("Key"), max_length=40, primary_key=True)
+
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, verbose_name=_("Project"))
+    email = models.CharField(_("Email"), max_length=75)
+    confirmed = models.BooleanField(_("Confirmed"), default=False)
+
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+
+    class Meta:
+        unique_together = (('project', 'email'), )
+        verbose_name = _("Project invitation token")
+        verbose_name_plural = _("Project invitation tokens")
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = self.generate_key()
+        return super().save(*args, **kwargs)
+
+    def generate_key(self):
+        return binascii.hexlify(os.urandom(20)).decode()
+
+    def __str__(self):
+        return self.key
 
 
 class Layer(models.Model):
