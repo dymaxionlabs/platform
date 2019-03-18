@@ -77,6 +77,33 @@ class ProjectInvitationToken(models.Model):
         return self.key
 
 
+def user_images_path(instance, filename):
+    return 'user_{user_id}/{filename}'.format(
+        user_id=instance.owner.id, filename=filename)
+
+
+class File(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    file = models.FileField(upload_to=user_images_path)
+    name = models.CharField(max_length=255)
+    metadata = JSONField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (('owner', 'name'), )
+
+    def __str__(self):
+        return self.name
+
+    def upload(self, file):
+        print("Uploading file...")
+        time.sleep(3)
+        print("Done")
+
+
 class Layer(models.Model):
     RASTER = 'R'
     VECTOR = 'V'
@@ -95,6 +122,7 @@ class Layer(models.Model):
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField(null=True, blank=True)
+    file = models.OneToOneField(File, null=True, on_delete=models.SET_NULL)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -183,30 +211,3 @@ class MapLayer(models.Model):
     @classmethod
     def max_order(cls):
         return cls.objects.order_by('-order')[0].order
-
-
-def user_images_path(instance, filename):
-    return 'user_{user_id}/{filename}'.format(
-        user_id=instance.owner.id, filename=filename)
-
-
-class File(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    file = models.FileField(upload_to=user_images_path)
-    name = models.CharField(max_length=255)
-    metadata = JSONField(null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = (('owner', 'name'), )
-
-    def __str__(self):
-        return self.name
-
-    def upload(self, file):
-        print("Uploading file...")
-        time.sleep(3)
-        print("Done")
