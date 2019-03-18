@@ -108,7 +108,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class MapViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Map.objects.all()
+    queryset = Map.objects.all().order_by('-created_at')
     serializer_class = MapSerializer
     permission_classes = (permissions.IsAuthenticated,
                           ProjectAssociationPermission)
@@ -128,7 +128,7 @@ class MapViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LayerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Layer.objects.all()
+    queryset = Layer.objects.all().order_by('-created_at')
     serializer_class = LayerSerializer
     permission_classes = (permissions.IsAuthenticated,
                           ProjectAssociationPermission)
@@ -149,7 +149,7 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
 class FileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin, mixins.ListModelMixin,
                   viewsets.GenericViewSet):
-    queryset = File.objects.all()
+    queryset = File.objects.all().order_by('-created_at')
     serializer_class = FileSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
