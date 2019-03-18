@@ -48,7 +48,8 @@ class ProjectInvitationToken(models.Model):
 
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, verbose_name=_("Project"))
-    email = models.CharField(_("Email"), max_length=75)
+    email = models.CharField(
+        _("Email"), max_length=75, blank=True, default=None)
     confirmed = models.BooleanField(_("Confirmed"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
@@ -67,8 +68,7 @@ class ProjectInvitationToken(models.Model):
     def generate_key(self):
         return binascii.hexlify(os.urandom(20)).decode()
 
-    def confirm(self):
-        user = User.objects.get(email=self.email)
+    def confirm_for(self, user):
         assign_perm('view_project', user, self.project)
         self.confirmed = True
         self.save(update_fields=["confirmed"])

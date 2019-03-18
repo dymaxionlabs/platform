@@ -56,14 +56,11 @@ class ProjectInvitationTokenViewSet(mixins.RetrieveModelMixin,
     permission_classes = (permissions.AllowAny, )
 
 
-# FIXME Refactor (serializer, createapiview)
+# FIXME Refactor (createapiview)
 class ConfirmProjectInvitationView(APIView):
-    permission_classes = (permissions.AllowAny, )
-
     def post(self, request, key):
-        invitation = ProjectInvitationToken.objects.get(
-            key=key, confirmed=False)
-        invitation.confirm()
+        invitation = ProjectInvitationToken.objects.get(key=key)
+        invitation.confirm_for(request.user)
         return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
