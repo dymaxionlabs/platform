@@ -190,7 +190,7 @@ def user_images_path(instance, filename):
         user_id=instance.owner.id, filename=filename)
 
 
-class Image(models.Model):
+class File(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     file = models.FileField(upload_to=user_images_path)
@@ -206,7 +206,7 @@ class Image(models.Model):
     def __str__(self):
         return self.name
 
-    def upload_file(self, file):
+    def upload(self, file):
         print("Uploading file...")
         time.sleep(3)
         print("Done")

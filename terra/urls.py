@@ -24,7 +24,7 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
 from projects.views import (
-    ConfirmProjectInvitationView, ContactView, ImageUploadView, ImageViewSet,
+    ConfirmProjectInvitationView, ContactView, FileUploadView, FileViewSet,
     LayerViewSet, MapViewSet, ProjectViewSet, TestAuthView,
     ProjectInvitationTokenViewSet, TestErrorView, UserViewSet)
 from quotations.views import QuotationViewSet
@@ -32,7 +32,7 @@ from quotations.views import QuotationViewSet
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
 router.register(r'projects', ProjectViewSet)
-router.register(r'images', ImageViewSet)
+router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
 router.register(r'quotations', QuotationViewSet)
@@ -74,7 +74,7 @@ urlpatterns = [
     url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?',
         ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
-    url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),
+    url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),

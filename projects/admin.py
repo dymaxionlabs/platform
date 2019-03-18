@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from guardian.admin import GuardedModelAdmin
 from jsoneditor.forms import JSONEditor
 
-from .models import (Image, Layer, Map, MapLayer, Project,
+from .models import (File, Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile)
 
 
@@ -130,7 +130,7 @@ class MapAdmin(admin.ModelAdmin):
     }
 
 
-class ImageAdmin(admin.ModelAdmin):
+class FileAdmin(admin.ModelAdmin):
     list_filter = ('owner', )
 
 
@@ -139,4 +139,4 @@ admin.site.register(ProjectInvitationToken, ProjectInvitationTokenAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Map, MapAdmin)
-admin.site.register(Image, ImageAdmin)
+admin.site.register(File, FileAdmin)

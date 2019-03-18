@@ -9,10 +9,10 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Image, Layer, Map, Project, ProjectInvitationToken
+from .models import File, Layer, Map, Project, ProjectInvitationToken
 from .permissions import (ProjectAssociationPermission, ProjectPermission,
                           UserPermission)
-from .serializers import (ContactSerializer, ImageSerializer, LayerSerializer,
+from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
                           UserSerializer)
@@ -146,11 +146,11 @@ class LayerViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(project__in=projects).distinct().all()
 
 
-class ImageViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin, mixins.ListModelMixin,
-                   viewsets.GenericViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+class FileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin, mixins.ListModelMixin,
+                  viewsets.GenericViewSet):
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
     lookup_field = 'name'
@@ -161,12 +161,12 @@ class ImageViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
         return self.queryset.filter(owner=user).all()
 
 
-class ImageUploadView(APIView):
+class FileUploadView(APIView):
     parser_classes = (FileUploadParser, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request, filename, format=None):
-        image = Image(name=filename, owner=request.user)
-        image.file = request.data['file']
-        image.save()
+        file = File(name=filename, owner=request.user)
+        file.file = request.data['file']
+        file.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

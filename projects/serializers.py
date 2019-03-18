@@ -7,8 +7,7 @@ from rest_framework import serializers
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
-from .models import (Image, Layer, Map, MapLayer, Project,
-                     ProjectInvitationToken)
+from .models import File, Layer, Map, MapLayer, Project, ProjectInvitationToken
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -110,10 +109,10 @@ class MapSerializer(serializers.ModelSerializer):
         exclude = ('id', )
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.ModelSerializer):
     file = serializers.FileField(use_url=True, read_only=True)
     metadata = serializers.JSONField()
 
     class Meta:
-        model = Image
+        model = File
         fields = ('name', 'metadata', 'file')
