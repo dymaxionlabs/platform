@@ -49,7 +49,7 @@ class ProjectInvitationToken(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, verbose_name=_("Project"))
     email = models.CharField(
-        _("Email"), max_length=75, blank=True, default=None)
+        _("Email"), max_length=75, blank=True, default=None, null=True)
     confirmed = models.BooleanField(_("Confirmed"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)

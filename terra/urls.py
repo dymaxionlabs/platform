@@ -71,7 +71,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Other custom views
-    url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?$',
+    url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?',
         ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
     url(r'^images/upload/(?P<filename>[^/]+)$', ImageUploadView.as_view()),

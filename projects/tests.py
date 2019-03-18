@@ -4,6 +4,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from projects.models import Project, ProjectInvitationToken
+
 
 def loginWithAPI(client, username, password):
     response = client.post('/auth/login/',
@@ -157,3 +159,62 @@ class ContactViewTest(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEquals('Contact message has been sent',
                           response.data['detail'])
+
+
+class ConfirmProjectInvitationViewTest(TestCase):
+    def setUp(self):
+        self.test_user = User(email="test@prueba.com", username='test')
+        self.test_user.set_password('secret')
+        self.test_user.save()
+        self.client = APIClient()
+
+    def test_create_public_token(self):
+        # Create a project
+        project = Project.objects.create(name='testproject')
+
+        # Create a project invitation token (without email)
+        invite_token = ProjectInvitationToken.objects.create(project=project)
+
+        self.assertFalse(self.test_user.has_perm('view_project', project))
+
+        loginWithAPI(self.client, 'test', 'secret')
+
+        url = '/projects/invitations/{key}/confirm/'.format(
+            key=invite_token.key)
+        response = self.client.post(url, {}, format='json')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTrue(self.test_user.has_perm('view_project', project))
+
+    def test_create_public_token_new_user(self):
+        # Create a project
+        project = Project.objects.create(name='testproject')
+
+        # Create a project invitation token (without email)
+        invite_token = ProjectInvitationToken.objects.create(project=project)
+
+        # Register a new user with API
+        response = self.client.post(
+            '/auth/registration/',
+            dict(
+                username='test2',
+                email='test@example.com',
+                password1='secret0345',
+                password2='secret0345'),
+            format='json')
+        self.assertEquals(201, response.status_code)
+        user_token = response.data['key']
+
+        # Get user and check permissions
+        user = User.objects.get(username='test2')
+        self.assertFalse(user.has_perm('view_project', project))
+
+        # Confirm invitation of user to project
+        url = '/projects/invitations/{key}/confirm/'.format(
+            key=invite_token.key)
+        self.client.credentials(HTTP_AUTHORIZATION=user_token)
+        response = self.client.post(url, {}, format='json')
+        self.assertEquals(200, response.status_code)
+
+        # Check permissions again
+        self.assertTrue(user.has_perm('view_project', project))
