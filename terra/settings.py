@@ -241,6 +241,8 @@ RQ_QUEUES = {
     }
 }
 
+RQ_SHOW_ADMIN_LINK = True
+
 # Configure Sentry
 if os.environ['SENTRY_DNS']:
     sentry_sdk.init(
