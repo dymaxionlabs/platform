@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'jsoneditor',
     'guardian',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -232,6 +233,13 @@ DEFAULT_FILE_STORAGE = os.getenv(
     'DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
 
 GS_BUCKET_NAME = FILES_BUCKET
+
+RQ_QUEUES = {
+    'default': {
+        'URL': os.getenv('RQ_REDIS_URL', 'redis://localhost:6379/0'),
+        'DEFAULT_TIMEOUT': os.getenv('RQ_TIMEOUT', 360),
+    }
+}
 
 # Configure Sentry
 if os.environ['SENTRY_DNS']:

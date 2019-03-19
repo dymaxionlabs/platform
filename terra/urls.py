@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include
+from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -25,8 +25,8 @@ from rest_framework.routers import SimpleRouter
 
 from projects.views import (
     ConfirmProjectInvitationView, ContactView, FileUploadView, FileViewSet,
-    LayerViewSet, MapViewSet, ProjectViewSet, TestAuthView,
-    ProjectInvitationTokenViewSet, TestErrorView, UserViewSet)
+    LayerViewSet, MapViewSet, ProjectInvitationTokenViewSet, ProjectViewSet,
+    TestAuthView, TestErrorView, UserViewSet)
 from quotations.views import QuotationViewSet
 
 router = SimpleRouter()
@@ -82,5 +82,7 @@ urlpatterns = [
 
     # ...
     url(r'^', include(router.urls)),
-] + static(
-    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
