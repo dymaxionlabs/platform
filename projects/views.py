@@ -91,7 +91,7 @@ class ContactView(GenericAPIView):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().order_by('-updated_at')
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, ProjectPermission)
     lookup_field = 'uuid'
