@@ -37,7 +37,6 @@ class ProjectRelatedModelListMixin:
         # Filter by uuid, if present
         project_uuid = self.request.query_params.get('project_uuid', None)
         if project_uuid is not None:
-            print("filter by project uuid")
             project = projects_qs.filter(uuid=project_uuid).first()
             return self.queryset.filter(project=project).all()
 
