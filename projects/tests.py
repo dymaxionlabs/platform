@@ -90,7 +90,7 @@ class UserViewSetTest(APITestCase):
             'email': 'user@test.com',
             'first_name': '',
             'last_name': ''
-        }], response.data)
+        }], response.data['results'])
 
     def test_user_list_shows_all_if_admin(self):
         loginWithAPI(self.client, 'admin', 'secret')
@@ -118,7 +118,7 @@ class UserViewSetTest(APITestCase):
                 'last_name': '',
             },
         ]
-        self.assertEqual(expectedUsers, response.data)
+        self.assertEqual(expectedUsers, response.data['results'])
 
     def test_user_create_fail(self):
         pass

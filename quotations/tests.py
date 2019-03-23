@@ -89,9 +89,9 @@ class QuotationViewSetTest(TestCase):
         response = self.client.get('/quotations/')
         self.assertEquals(200, response.status_code)
         data = response.data
-        self.assertEquals(2, len(data))
-        self.assertQuotationDetail(quotation, data[0])
-        self.assertQuotationDetail(quotation2, data[1])
+        self.assertEquals(2, data['count'])
+        self.assertQuotationDetail(quotation, data['results'][0])
+        self.assertQuotationDetail(quotation2, data['results'][1])
 
     def test_list_none_if_not_authenticated(self):
         # Some user creates a quotation
@@ -100,7 +100,9 @@ class QuotationViewSetTest(TestCase):
 
         response = self.client.get('/quotations/')
         self.assertEquals(200, response.status_code)
-        self.assertEquals([], response.data)
+        data = response.data
+        self.assertEquals(0, data['count'])
+        self.assertEquals([], data['results'])
 
     def test_list_quotations_from_user(self):
         # User 1 creates a quotation
@@ -116,8 +118,8 @@ class QuotationViewSetTest(TestCase):
         response = self.client.get('/quotations/')
         self.assertEquals(200, response.status_code)
         data = response.data
-        self.assertEquals(1, len(data))
-        self.assertQuotationDetail(quotation2, data[0])
+        self.assertEquals(1, data['count'])
+        self.assertQuotationDetail(quotation2, data['results'][0])
 
     def create_some_quotation(self, user=None):
         quotation = Quotation.objects.create(
