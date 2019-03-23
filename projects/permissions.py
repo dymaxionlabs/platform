@@ -14,7 +14,7 @@ class UserPermission(permissions.BasePermission):
         return request.user.is_staff or obj == request.user
 
 
-class ProjectAssociationPermission(permissions.BasePermission):
+class HasAccessToRelatedProjectPermission(permissions.BasePermission):
     """
     Custom permission for models associated to a Project (Maps, Layers, etc.)
 
@@ -31,7 +31,7 @@ class ProjectAssociationPermission(permissions.BasePermission):
         return user.is_staff or user_is_project_owner or user_can_view_project or user_belongs_to_some_project_group
 
 
-class ProjectPermission(permissions.BasePermission):
+class HasAccessToProjectPermission(permissions.BasePermission):
     """
     Custom permission for Projects
 

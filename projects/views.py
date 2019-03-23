@@ -10,12 +10,38 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import File, Layer, Map, Project, ProjectInvitationToken
-from .permissions import (ProjectAssociationPermission, ProjectPermission,
-                          UserPermission)
+from .permissions import (HasAccessToProjectPermission,
+                          HasAccessToRelatedProjectPermission, UserPermission)
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
                           UserSerializer)
+
+
+def allowed_projects_for(project_queryset, user):
+    if user.is_staff:
+        return project_queryset.all()
+    elif not user.is_anonymous:
+        # NOTE groups condition is deprecated
+        cond = Q(owners=user) | Q(groups__user=user)
+        return (project_queryset.filter(cond)
+                | get_objects_for_user(
+                    user, 'projects.view_project')).distinct().all()
+
+
+class ProjectRelatedModelListMixin:
+    def get_queryset(self):
+        user = self.request.user
+        projects_qs = allowed_projects_for(Project.objects, user)
+
+        # Filter by uuid, if present
+        project_uuid = self.request.query_params.get('project_uuid', None)
+        if project_uuid is not None:
+            print("filter by project uuid")
+            project = projects_qs.filter(uuid=project_uuid).first()
+            return self.queryset.filter(project=project).all()
+
+        return self.queryset.filter(project__in=projects_qs).distinct().all()
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -93,57 +119,31 @@ class ContactView(GenericAPIView):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all().order_by('-updated_at')
     serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated, ProjectPermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToProjectPermission)
     lookup_field = 'uuid'
 
     def get_queryset(self):
         # Filter only projects that user has access to
         user = self.request.user
-        if user.is_staff:
-            return self.queryset.all()
-        elif not user.is_anonymous:
-            cond = Q(owners=user) | Q(groups__user=user)
-            return (self.queryset.filter(cond) | get_objects_for_user(
-                user, 'projects.view_project')).distinct().all()
+        return allowed_projects_for(self.queryset, user)
 
 
-class MapViewSet(viewsets.ReadOnlyModelViewSet):
+class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Map.objects.all().order_by('-created_at')
     serializer_class = MapSerializer
     permission_classes = (permissions.IsAuthenticated,
-                          ProjectAssociationPermission)
+                          HasAccessToRelatedProjectPermission)
     lookup_field = 'uuid'
 
-    def get_queryset(self):
-        # If logged-in user is not admin, filter public maps and owned by
-        # current user group.
-        user = self.request.user
-        if user.is_staff:
-            return self.queryset.all()
-        elif not user.is_anonymous:
-            cond = Q(owners=user) | Q(groups__user=user)
-            projects = (Project.objects.filter(cond) | get_objects_for_user(
-                user, 'projects.view_project')).distinct()
-            return self.queryset.filter(project__in=projects).distinct().all()
 
-
-class LayerViewSet(viewsets.ReadOnlyModelViewSet):
+class LayerViewSet(ProjectRelatedModelListMixin,
+                   viewsets.ReadOnlyModelViewSet):
     queryset = Layer.objects.all().order_by('-created_at')
     serializer_class = LayerSerializer
     permission_classes = (permissions.IsAuthenticated,
-                          ProjectAssociationPermission)
+                          HasAccessToRelatedProjectPermission)
     lookup_field = 'uuid'
-
-    def get_queryset(self):
-        # Filter layers from projects that user has access to
-        user = self.request.user
-        if user.is_staff:
-            return self.queryset.all()
-        elif not user.is_anonymous:
-            cond = Q(owners=user) | Q(groups__user=user)
-            projects = (Project.objects.filter(cond) | get_objects_for_user(
-                user, 'projects.view_project')).distinct()
-            return self.queryset.filter(project__in=projects).distinct().all()
 
 
 class FileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
