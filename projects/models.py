@@ -84,6 +84,13 @@ def user_images_path(instance, filename):
 
 class File(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        verbose_name=_("Project"),
+        default=None,
+        blank=True,
+        null=True)
 
     file = models.FileField(upload_to=user_images_path)
     name = models.CharField(max_length=255)
@@ -93,15 +100,10 @@ class File(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('owner', 'name'), )
+        unique_together = (('owner', 'project', 'name'), )
 
     def __str__(self):
         return self.name
-
-    def upload(self, file):
-        print("Uploading file...")
-        time.sleep(3)
-        print("Done")
 
 
 class Layer(models.Model):

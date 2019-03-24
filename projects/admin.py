@@ -131,7 +131,17 @@ class MapAdmin(admin.ModelAdmin):
 
 
 class FileAdmin(admin.ModelAdmin):
-    list_filter = ('owner', )
+    list_filter = (
+        'owner',
+        'project',
+    )
+    list_display = (
+        'owner',
+        'project',
+        'name',
+        'created_at',
+    )
+    list_display_links = ('name', )
 
 
 admin.site.register(UserProfile)

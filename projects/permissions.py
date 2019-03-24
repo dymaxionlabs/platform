@@ -31,6 +31,13 @@ class HasAccessToRelatedProjectPermission(permissions.BasePermission):
         return user.is_staff or user_is_project_owner or user_can_view_project or user_belongs_to_some_project_group
 
 
+class HasAccessToRelatedProjectFilesPermission(
+        HasAccessToRelatedProjectPermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.owner == request.user or super().has_object_permission(
+            request, view, obj)
+
+
 class HasAccessToProjectPermission(permissions.BasePermission):
     """
     Custom permission for Projects

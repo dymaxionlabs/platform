@@ -110,9 +110,10 @@ class MapSerializer(serializers.ModelSerializer):
 
 
 class FileSerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField(slug_field='uuid', read_only=True)
     file = serializers.FileField(use_url=True, read_only=True)
     metadata = serializers.JSONField()
 
     class Meta:
         model = File
-        fields = ('name', 'metadata', 'file')
+        fields = ('project', 'name', 'metadata', 'file')

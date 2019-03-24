@@ -3,14 +3,15 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from guardian.shortcuts import get_objects_for_user
 from rest_auth.registration.views import RegisterView
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.generics import GenericAPIView
+from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.serializers import ValidationError
 
 from .models import File, Layer, Map, Project, ProjectInvitationToken
 from .permissions import (HasAccessToProjectPermission,
+                          HasAccessToRelatedProjectFilesPermission,
                           HasAccessToRelatedProjectPermission, UserPermission)
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
@@ -101,7 +102,7 @@ class TestErrorView(APIView):
         raise RuntimeError('Oops')
 
 
-class ContactView(GenericAPIView):
+class ContactView(generics.GenericAPIView):
     serializer_class = ContactSerializer
     permission_classes = (permissions.AllowAny, )
 
@@ -145,27 +146,54 @@ class LayerViewSet(ProjectRelatedModelListMixin,
     lookup_field = 'uuid'
 
 
-class FileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin, mixins.ListModelMixin,
-                  viewsets.GenericViewSet):
+class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+                  mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = File.objects.all().order_by('-created_at')
     serializer_class = FileSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectFilesPermission)
 
     lookup_field = 'name'
 
     def get_queryset(self):
-        # Only return files from auth user
+        # Also return files from user that are not associated with a project
+        # (backwards-compatibility)
+
         user = self.request.user
-        return self.queryset.filter(owner=user).all()
+        projects_qs = allowed_projects_for(Project.objects, user)
+
+        # Filter by uuid, if present
+        project_uuid = self.request.query_params.get('project_uuid', None)
+        if project_uuid is not None:
+            project = projects_qs.filter(uuid=project_uuid).first()
+            return self.queryset.filter(
+                Q(project=project) | Q(owner=user, project=None)).all()
+
+        return self.queryset.filter(
+            Q(project__in=projects_qs)
+            | Q(owner=user, project=None)).distinct().all()
 
 
+# FIXME Use CreateAPIView and a serializer for consistent validation
 class FileUploadView(APIView):
     parser_classes = (FileUploadParser, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request, filename, format=None):
-        file = File(name=filename, owner=request.user)
+        user = self.request.user
+
+        project = None
+        uuid = self.request.query_params.get('project_uuid', None)
+        if not uuid:
+            raise ValidationError({'project_uuid': 'Field not present'})
+
+        projects_qs = allowed_projects_for(Project.objects, user)
+        project = projects_qs.filter(uuid=uuid).first()
+        if not project:
+            raise ValidationError({'project_uuid': 'Invalid project uuid'})
+
+        file = File(name=filename, owner=request.user, project=project)
         file.file = request.data['file']
         file.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
