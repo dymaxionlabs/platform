@@ -33,11 +33,17 @@ class Project(models.Model):
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group)
 
-    name = models.CharField(max_length=80, unique=True)
-    description = models.CharField(max_length=255, blank=True)
+    name = models.CharField(_("Name"), max_length=80, unique=True)
+    description = models.CharField(
+        _("Description"), max_length=255, blank=True)
+    no_images = models.BooleanField(_("No images"), default=False)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+
+    class Meta:
+        verbose_name = _("Project")
+        verbose_name_plural = _("Projects")
 
     def __str__(self):
         return self.name
