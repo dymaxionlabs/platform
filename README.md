@@ -11,7 +11,7 @@
 * Install dependencies
 
 ```
-sudo apt-get install python3 postgresql postgis
+sudo apt-get install python3 python3-dev python3-pip libgdal-dev libproj-dev postgresql postgis
 ```
 
 * Create a role and database (e.g. `terra`)
@@ -40,6 +40,7 @@ cp env.sample .env
 ```
 pip install --user -U pipenv
 pipenv install
+pipenv install django-anymail[mailgun] django-rest-auth[with_social] celery[redis] django-storages[google]
 ```
 
 Then inside a pipenv shell (use `pipenv shell`) you should first do the following:
@@ -76,3 +77,12 @@ celery -A terra flower
 ```
 
 Then, visit http://localhost:5555
+
+### Honcho
+
+You can use [Honcho](https://honcho.readthedocs.io) to fire up everything (web
+server, workers and Flower) on your dev machine. Simple run `honcho start`.
+You can also start specific processes: `honcho start web`, `honcho start
+worker`, etc.
+
+See [Procfile](Procfile).
