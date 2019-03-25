@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-23 11:22-0300\n"
+"POT-Creation-Date: 2019-03-24 11:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: projects/models.py:124
+#: projects/models.py:36
+msgid "Name"
+msgstr "Nombre"
+
+#: projects/models.py:38
+msgid "Description"
+msgstr "Descripción"
+
+#: projects/models.py:39
+msgid "No images"
+msgstr "No hay imágenes"
+
+#: projects/models.py:41 projects/models.py:61
+msgid "Created at"
+msgstr "Creado en"
+
+#: projects/models.py:42 projects/models.py:62
+msgid "Updated at"
+msgstr "Actualizado en"
+
+#: projects/models.py:45 projects/models.py:56 projects/models.py:96
+msgid "Project"
+msgstr "Proyecto"
+
+#: projects/models.py:46
+msgid "Projects"
+msgstr "Proyectos"
+
+#: projects/models.py:53
+msgid "Key"
+msgstr "Clave"
+
+#: projects/models.py:58
+msgid "Email"
+msgstr "Email"
+
+#: projects/models.py:59
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#: projects/models.py:66
+msgid "Project invitation token"
+msgstr "Token de invitación a proyecto"
+
+#: projects/models.py:67
+msgid "Project invitation tokens"
+msgstr "Tokens de invitación a proyecto"
+
+#: projects/models.py:208
 msgid "Cannot set order to 0"
 msgstr "No es posible establecer orden a 0"
 
-#: projects/views.py:35
+#: projects/views.py:90
+msgid "ok"
+msgstr "ok"
+
+#: projects/views.py:95
 msgid "Nothing"
 msgstr "Nada"
 
-#: projects/views.py:47
+#: projects/views.py:114
 msgid "Contact message has been sent"
 msgstr "Mensaje de contacto fue enviado"
 
@@ -38,7 +90,7 @@ msgstr "Admin de Django"
 msgid "Terra Admininistration"
 msgstr "Administración de Terra"
 
-#: templates/registration/password_reset_email.html:2
+#: templates/registration/password_reset_email.html:3
 #, python-format
 msgid ""
 "You're receiving this email because you requested a password reset for your "
@@ -47,20 +99,20 @@ msgstr ""
 "Está recibiendo este email porque Ud. pidió reestablecer la contraseña para "
 "la cuenta de usuario en %(site_name)s."
 
-#: templates/registration/password_reset_email.html:4
+#: templates/registration/password_reset_email.html:5
 msgid "Please go to the following page and choose a new password:"
 msgstr ""
 "Por favor, dirígise a la siguiente página e ingrese una nueva contraseña:"
 
-#: templates/registration/password_reset_email.html:12
+#: templates/registration/password_reset_email.html:9
 msgid "Your username, in case you've forgotten:"
 msgstr "Su nombre de usuario, en caso de que se haya olvidado es:"
 
-#: templates/registration/password_reset_email.html:14
+#: templates/registration/password_reset_email.html:11
 msgid "Thanks for using our site!"
 msgstr "¡Muchas gracias por usar nuestro sitio!"
 
-#: templates/registration/password_reset_email.html:16
+#: templates/registration/password_reset_email.html:13
 #, python-format
 msgid "The %(site_name)s team"
 msgstr "El equipo de %(site_name)s"
