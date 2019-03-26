@@ -34,7 +34,7 @@ class ContactSerializer(serializers.Serializer):
 
     def save(self):
         from_email = DEFAULT_FROM_EMAIL
-        recipients = ['contact@dymaxionlabs.com']
+        recipients = ['contact@dymaxionlabs.com', 'gessica@dymaxionlabs.com']
         send_mail(
             self.subject(),
             self.body(),
