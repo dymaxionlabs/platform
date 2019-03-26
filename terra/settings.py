@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
     'quotations.apps.QuotationsConfig',
+    'tasks.apps.TasksConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
@@ -236,3 +237,5 @@ GS_BUCKET_NAME = FILES_BUCKET
 if os.environ['SENTRY_DNS']:
     sentry_sdk.init(
         dsn=os.environ['SENTRY_DNS'], integrations=[DjangoIntegration()])
+
+CELERY_RESULT_BACKEND = 'tasks.backends.DatabaseBackend'
