@@ -23,6 +23,7 @@ rasterio = "*"
 shapely = "*"
 rq = "*"
 django-rq = "*"
+rq-dashboard = "*"
 
 [dev-packages]
 yapf = "*"
