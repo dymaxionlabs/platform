@@ -31,7 +31,7 @@ class Project(models.Model):
     owners = models.ManyToManyField(User)
 
     # FIXME Deprecated, replaced by object-level permissions
-    groups = models.ManyToManyField(Group)
+    groups = models.ManyToManyField(Group, blank=True)
 
     name = models.CharField(_("Name"), max_length=80, unique=True)
     description = models.CharField(
@@ -130,7 +130,8 @@ class Layer(models.Model):
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField(null=True, blank=True)
-    file = models.OneToOneField(File, null=True, on_delete=models.SET_NULL)
+    file = models.OneToOneField(
+        File, blank=True, null=True, on_delete=models.SET_NULL)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
