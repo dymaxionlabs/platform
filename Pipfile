@@ -24,6 +24,7 @@ shapely = "*"
 rq = "*"
 django-rq = "*"
 rq-dashboard = "*"
+pyproj = "*"
 
 [dev-packages]
 yapf = "*"
