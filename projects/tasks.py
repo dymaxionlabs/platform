@@ -11,16 +11,18 @@ from terra import settings
 from terra.celery import app
 
 
+def update_progress(task, step, total, **meta):
+    meta.update({'current': step, 'total': total})
+    print("Meta:", meta)
+    task.update_state(state='PROGRESS', meta=meta)
+
+
 @app.task(bind=True)
 def test_sleep(self, foo=1, bar=2):
     n = 60
     for i in range(0, n):
         if not self.request.called_directly:
-            self.update_state(
-                state='PROGRESS', meta={
-                    'current': i,
-                    'total': n
-                })
+            update_progress(self, i, n)
         time.sleep(1)
         print("Sleeping ({})".format(i))
 
@@ -32,12 +34,16 @@ def test_fail(self):
 
 @app.task(bind=True)
 def generate_raster_tiles(self, file_pk):
+    update_progress(self, 1, 3, file_pk=file_pk)
+
     file = File.objects.get(pk=file_pk)
 
     # First, download file from storage to temporary local file
     with tempfile.NamedTemporaryFile() as tmpfile:
         shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
+
+        update_progress(self, 2, 3, file_pk=file_pk)
 
         # For now, we are going to generate tiles for a specific zoom range
         zoom_range = '4-18'
@@ -56,6 +62,8 @@ def generate_raster_tiles(self, file_pk):
         )
         print(cmd)
         subprocess.run(cmd, shell=True, check=True)
+
+    update_progress(self, 3, 3, file_pk=file_pk)
 
     return dict(tiles_path=tiles_dir)
 
