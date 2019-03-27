@@ -4,17 +4,24 @@ import shutil
 import subprocess
 import tempfile
 import time
+from functools import partial
 
 import django_rq
+import pyproj
 import rasterio
 from django.contrib.gis.geos import GEOSGeometry
 from django_rq import job
 from rq import get_current_job
 from shapely.geometry import box, mapping
+from shapely.ops import transform
 
 from terra import settings
 
 from .models import File, Layer
+
+GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
+                               'gdal2tilesp.py')
+EPSG_4326 = dict(init='epsg:4326')
 
 
 def update_progress(step, total, **meta):
@@ -31,7 +38,16 @@ def update_progress(step, total, **meta):
 
 def get_raster_extent_polygon(raster):
     with rasterio.open(raster) as src:
-        return box(*src.bounds)
+        s = box(*src.bounds)
+        s = reproject_shape(s, src.crs, EPSG_4326)
+        return s
+
+
+def reproject_shape(shape, src_crs, dst_crs):
+    """Reprojects a shape from some projection to another"""
+    project = partial(pyproj.transform, pyproj.Proj(init=src_crs['init']),
+                      pyproj.Proj(init=dst_crs['init']))
+    return transform(project, shape)
 
 
 def run_subprocess(cmd):
@@ -70,7 +86,7 @@ def generate_raster_tiles(file_pk):
         shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
 
-        area_geom = get_raster_extent_polygon(src)
+        area_geom = mapping(get_raster_extent_polygon(src))
 
         update_progress(2, 3, file_pk=file_pk)
 
@@ -84,7 +100,8 @@ def generate_raster_tiles(file_pk):
         dst = tiles_dir
 
         # Use gdal2tiles.py to generate raster tiles
-        cmd = 'gdal2tiles.py -e -w none -n -z {zoom_range} {src} {dst}'.format(
+        cmd = '{gdal2tiles} -e -w none -n -z {zoom_range} {src} {dst}'.format(
+            gdal2tiles=GDAL2TILES_PATH,
             zoom_range=zoom_range,
             src=src,
             dst=dst,
@@ -105,7 +122,7 @@ def create_raster_layer(file_pk, tiles_dir, area_geom):
 
     file = File.objects.get(pk=file_pk)
 
-    area_geos_geometry = GEOSGeometry(json.dumps(mapping(area_geom)))
+    area_geos_geometry = GEOSGeometry(json.dumps(area_geom))
 
     try:
         layer = Layer.objects.get(name=file.name, project=file.project)

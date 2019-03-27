@@ -251,3 +251,5 @@ CELERY_RESULT_BACKEND = 'tasks.backends.DatabaseBackend'
 
 # Path to directory that holds temporary raster/vector tiles
 TILES_DIR = os.path.join(BASE_DIR, 'tiles')
+
+SCRIPT_DIR = os.path.join(BASE_DIR, 'script')
