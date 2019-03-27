@@ -148,6 +148,10 @@ class Layer(models.Model):
             bucket=settings.TILES_BUCKET, uuid=self.uuid)
         return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
 
+    def tiles_bucket_url(self):
+        return 'gs://{bucket}/{uuid}'.format(
+            bucket=settings.TILES_BUCKET, uuid=self.uuid)
+
     def tiles_extension(self):
         if self.layer_type == self.RASTER:
             return 'png'

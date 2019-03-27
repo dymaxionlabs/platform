@@ -4,17 +4,40 @@ import subprocess
 import tempfile
 import time
 
-from celery import states
+import rasterio
+from celery import Task, chain, states
+from shapely.geometry import box
 
-from projects.models import File
+from projects.models import File, Layer
 from terra import settings
 from terra.celery import app
+
+
+class ChainedTask(Task):
+    abstract = True
+
+    def __call__(self, *args, **kwargs):
+        if len(args) == 1 and isinstance(args[0], dict):
+            kwargs.update(args[0])
+            args = ()
+        return super(ChainedTask, self).__call__(*args, **kwargs)
 
 
 def update_progress(task, step, total, **meta):
     meta.update({'current': step, 'total': total})
     print("Meta:", meta)
     task.update_state(state='PROGRESS', meta=meta)
+
+
+def get_raster_extent_polygon(raster):
+    with rasterio.open(raster) as src:
+        return box(*src.bounds)
+
+
+def upload_directory_to_gs_bucket(src, dst):
+    cmd = 'gsutil -m cp -r {src} {dst}'.format(src=src, dst=dst)
+    print(cmd)
+    subprocess.run(cmd, shell=True, check=True)
 
 
 @app.task(bind=True)
@@ -32,7 +55,7 @@ def test_fail(self):
     raise RuntimeError("oops")
 
 
-@app.task(bind=True)
+@app.task(base=ChainedTask, bind=True)
 def generate_raster_tiles(self, file_pk):
     update_progress(self, 1, 3, file_pk=file_pk)
 
@@ -42,6 +65,8 @@ def generate_raster_tiles(self, file_pk):
     with tempfile.NamedTemporaryFile() as tmpfile:
         shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
+
+        area_geom = get_raster_extent_polygon(src)
 
         update_progress(self, 2, 3, file_pk=file_pk)
 
@@ -65,7 +90,34 @@ def generate_raster_tiles(self, file_pk):
 
     update_progress(self, 3, 3, file_pk=file_pk)
 
-    return dict(tiles_path=tiles_dir)
+    return dict(tiles_path=tiles_dir, area_geom=area_geom)
+
+
+@app.task(base=ChainedTask, bind=True)
+def create_raster_layer(self, file_pk, tiles_dir, area_geom):
+    update_progress(self, 0, 100, file_pk=file_pk, tiles=tiles_dir)
+
+    file = File.objects.get(pk=file_pk)
+
+    layer = Layer.objects.create(
+        name=file.name,
+        project=file.project,
+        layer_type=Layer.RASTER,
+        area_geom=area_geom,
+        file=file,
+    )
+
+    # Upload tiles to corresponding Tiles bucket
+    upload_directory_to_gs_bucket(tiles_dir, layer.tiles_bucket_url)
+
+    return dict(layer_pk=layer.pk)
+
+
+def process_raster_file(file):
+    pipe = chain(
+        generate_raster_tiles.s(file_pk=file.pk)
+        | create_raster_layer.s(file_pk=file.pk))
+    return pipe.apply_async()
 
 
 #def test_generate_raster_tiles():
