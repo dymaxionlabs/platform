@@ -3,11 +3,14 @@ import os
 import time
 import uuid
 
+import django_rq
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
 
@@ -224,3 +227,9 @@ class MapLayer(models.Model):
     @classmethod
     def max_order(cls):
         return cls.objects.order_by('-order')[0].order
+
+
+@receiver(post_save, sender=File)
+def preprocess_raster_file(sender, instance, created, **kwargs):
+    if created:
+        django_rq.enqueue('projects.tasks.generate_raster_tiles', instance.pk)
