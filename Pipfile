@@ -22,6 +22,8 @@ django-guardian = "*"
 django-storages = {extras = ["google"], version = "*"}
 sentry-sdk = "==0.7.6"
 honcho = "*"
+rasterio = "*"
+shapely = "*"
 
 [dev-packages]
 yapf = "*"
