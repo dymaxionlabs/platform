@@ -15,6 +15,14 @@ class Request(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def state(self):
+        last_state_update = self.state_updates.last()
+        if last_state_update:
+            return last_state_update.state
+        else:
+            return RequestStateUpdate.PENDING_STATE
+
     def __str__(self):
         layers_sentence = ', '.join(self.layers)
         return 'Request from {} for layers: {}'.format(self.name,
@@ -61,3 +69,6 @@ class RequestStateUpdate(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('created_at', )

@@ -12,12 +12,13 @@ class RequestAreaInline(OSMStackedInline):
     extra = 0
 
 
-class RequestStateUpdateInline(admin.StackedInline):
+class RequestStateUpdateInline(admin.TabularInline):
     model = RequestStateUpdate
+    extra = 0
 
 
 class RequestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'message', 'created_at',
+    list_display = ('id', 'name', 'state', 'email', 'message', 'created_at',
                     'total_area')
     list_display_links = ('id', 'name')
     inlines = [RequestAreaInline, RequestStateUpdateInline]
@@ -28,6 +29,9 @@ class RequestAdmin(admin.ModelAdmin):
     def total_area(self, obj):
         return "{} km²".format(
             round(sum(area.area_km2() for area in obj.areas.all())))
+
+    def state_name(self, obj):
+        return _(obj.state)
 
 
 admin.site.register(Request, RequestAdmin)
