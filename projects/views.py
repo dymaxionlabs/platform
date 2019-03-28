@@ -6,11 +6,12 @@ from rest_auth.registration.views import RegisterView
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
 
 from .models import File, Layer, Map, Project, ProjectInvitationToken
-from .permissions import (HasAccessToProjectPermission,
+from .permissions import (HasAccessToMapPermission,
+                          HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
                           HasAccessToRelatedProjectPermission, UserPermission)
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
@@ -33,6 +34,10 @@ def allowed_projects_for(project_queryset, user):
 class ProjectRelatedModelListMixin:
     def get_queryset(self):
         user = self.request.user
+
+        if user.is_anonymous:
+            return self.queryset.none()
+
         projects_qs = allowed_projects_for(Project.objects, user)
 
         # Filter by uuid, if present
@@ -110,9 +115,7 @@ class ContactView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({
-            "detail": _("Contact message has been sent")
-        },
+        return Response({"detail": _("Contact message has been sent")},
                         status=status.HTTP_200_OK)
 
 
@@ -132,9 +135,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Map.objects.all().order_by('-created_at')
     serializer_class = MapSerializer
-    permission_classes = (permissions.IsAuthenticated,
-                          HasAccessToRelatedProjectPermission)
+    permission_classes = (permissions.AllowAny, HasAccessToMapPermission)
     lookup_field = 'uuid'
+
+    def get_queryset(self):
+        private_maps = super().get_queryset()
+        public_maps = self.queryset.filter(extra_fields__public=True)
+        return (private_maps | public_maps).distinct().all()
 
 
 class LayerViewSet(ProjectRelatedModelListMixin,
