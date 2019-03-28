@@ -2,7 +2,7 @@ from django.contrib.gis import admin
 
 from terra.admin import OSMStackedInline
 
-from .models import Request, RequestArea
+from .models import Request, RequestArea, RequestStateUpdate
 
 
 class RequestAreaInline(OSMStackedInline):
@@ -12,11 +12,15 @@ class RequestAreaInline(OSMStackedInline):
     extra = 0
 
 
+class RequestStateUpdateInline(admin.StackedInline):
+    model = RequestStateUpdate
+
+
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'message', 'created_at',
                     'total_area')
     list_display_links = ('id', 'name')
-    inlines = [RequestAreaInline]
+    inlines = [RequestAreaInline, RequestStateUpdateInline]
     search_fields = ('name', 'message', 'email')
     list_per_page = 25
     modifiable = False
