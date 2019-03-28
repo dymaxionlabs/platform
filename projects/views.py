@@ -139,9 +139,15 @@ class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        private_maps = super().get_queryset()
-        public_maps = self.queryset.filter(extra_fields__public=True)
-        return (private_maps | public_maps).distinct().all()
+        res = super().get_queryset().distinct()
+
+        # If not requesting a specific project_uuid, include *all* public maps
+        project_uuid = self.request.query_params.get('project_uuid', None)
+        if project_uuid is None:
+            res = (res | self.queryset.filter(
+                extra_fields__public=True).distinct()).distinct()
+
+        return res.all()
 
 
 class LayerViewSet(ProjectRelatedModelListMixin,

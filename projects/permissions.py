@@ -38,10 +38,11 @@ class HasAccessToRelatedProjectFilesPermission(
             request, view, obj)
 
 
-class HasAccessToMapPermission(HasAccessToRelatedProjectFilesPermission):
+class HasAccessToMapPermission(HasAccessToRelatedProjectPermission):
     def has_object_permission(self, request, view, obj):
         """Same as super(), but check first if map is public"""
-        is_public_map = obj.extra_fields and obj.extra_fields['public'] == True
+        is_public_map = obj.extra_fields and obj.extra_fields.get(
+            'public', False)
         return is_public_map or super().has_object_permission(
             request, view, obj)
 
