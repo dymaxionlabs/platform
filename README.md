@@ -86,3 +86,11 @@ You can also start specific processes: `honcho start web`, `honcho start
 worker`, etc.
 
 See [Procfile](Procfile).
+
+### Translations
+
+When adding new translated strings:
+
+* Run `django-admin makemessages`
+* Update .po files
+* Run `django-admin compilemessages`
