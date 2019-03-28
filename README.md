@@ -40,7 +40,7 @@ cp env.sample .env
 ```
 pip install --user -U pipenv
 pipenv install
-pipenv install django-anymail[mailgun] django-rest-auth[with_social] celery[redis] django-storages[google]
+pipenv install django-anymail[mailgun] django-rest-auth[with_social] django-storages[google]
 ```
 
 Then inside a pipenv shell (use `pipenv shell`) you should first do the following:
