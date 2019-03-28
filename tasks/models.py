@@ -1,4 +1,3 @@
-from celery import states
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -8,7 +7,7 @@ from projects.models import Project
 
 from .managers import TaskResultManager
 
-ALL_STATES = sorted(list(states.ALL_STATES) + ['PROGRESS'])
+ALL_STATES = sorted(['STARTED', 'PROGRESS', 'FINISHED', 'FAILED'])
 TASK_STATE_CHOICES = sorted(zip(ALL_STATES, ALL_STATES))
 
 

@@ -35,7 +35,7 @@ class RequestViewSetTest(TestCase):
         self.assertEquals(
             sorted([
                 'url', 'name', 'email', 'message', 'areas', 'layers',
-                'extra_fields', 'created_at', 'user'
+                'last_state_update', 'extra_fields', 'created_at', 'user'
             ]), sorted(response.data.keys()))
         self.assertEquals('John', response.data['name'])
         self.assertEquals('john@doe.com', response.data['email'])
@@ -144,7 +144,7 @@ class RequestViewSetTest(TestCase):
         self.assertEquals(
             sorted([
                 'url', 'name', 'email', 'message', 'areas', 'layers',
-                'extra_fields', 'created_at', 'user'
+                'last_state_update', 'extra_fields', 'created_at', 'user'
             ]), sorted(response_data.keys()))
         self.assertEquals(request.name, response_data['name'])
         self.assertEquals(request.email, response_data['email'])
