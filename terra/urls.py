@@ -27,7 +27,7 @@ from projects.views import (
     ConfirmProjectInvitationView, ContactView, FileUploadView, FileViewSet,
     LayerViewSet, MapViewSet, ProjectInvitationTokenViewSet, ProjectViewSet,
     TestAuthView, TestErrorView, UserViewSet)
-from quotations.views import QuotationViewSet
+from quotations.views import RequestViewSet
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
@@ -35,7 +35,7 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
-router.register(r'quotations', QuotationViewSet)
+router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
 
 schema_view = get_schema_view(

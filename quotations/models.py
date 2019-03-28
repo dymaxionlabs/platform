@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import ArrayField, JSONField
 from django.contrib.gis.db import models
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.utils.translation import gettext as _
 
 
-class Quotation(models.Model):
+class Request(models.Model):
     user = models.ForeignKey(
         User, blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=255)
@@ -16,12 +17,13 @@ class Quotation(models.Model):
 
     def __str__(self):
         layers_sentence = ', '.join(self.layers)
-        return 'Quote from {} for layers: {}'.format(self.name, layers_sentence)
+        return 'Request from {} for layers: {}'.format(self.name,
+                                                       layers_sentence)
 
 
-class QuotationArea(models.Model):
-    quotation = models.ForeignKey(
-        Quotation, on_delete=models.CASCADE, related_name='areas')
+class RequestArea(models.Model):
+    request = models.ForeignKey(
+        Request, on_delete=models.CASCADE, related_name='areas')
     area_geom = models.PolygonField()
 
     def area_km2(self):

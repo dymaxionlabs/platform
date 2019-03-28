@@ -1,27 +1,27 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
-from .models import Quotation, QuotationArea
+from .models import Request, RequestArea
 
 
-class QuotationAreaSerializer(GeoFeatureModelSerializer):
+class RequestAreaSerializer(GeoFeatureModelSerializer):
     class Meta:
-        model = QuotationArea
+        model = RequestArea
         geo_field = 'area_geom'
         fields = ('area_geom', )
 
 
-class QuotationSerializer(serializers.HyperlinkedModelSerializer):
-    areas = QuotationAreaSerializer(many=True)
+class RequestSerializer(serializers.HyperlinkedModelSerializer):
+    areas = RequestAreaSerializer(many=True)
 
     class Meta:
-        model = Quotation
+        model = Request
         fields = ('url', 'name', 'email', 'message', 'layers', 'areas',
                   'extra_fields', 'user', 'created_at')
 
     def create(self, validated_data):
         areas_data = validated_data.pop('areas')
-        quotation = Quotation.objects.create(**validated_data)
+        request = Request.objects.create(**validated_data)
         for area_data in areas_data:
-            QuotationArea.objects.create(quotation=quotation, **area_data)
-        return quotation
+            RequestArea.objects.create(request=request, **area_data)
+        return request

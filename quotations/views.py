@@ -2,14 +2,14 @@ from django.shortcuts import render
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.response import Response
 
-from .models import Quotation
-from .serializers import QuotationSerializer
+from .models import Request
+from .serializers import RequestSerializer
 
 
-class QuotationViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
-                       viewsets.GenericViewSet):
-    serializer_class = QuotationSerializer
-    queryset = Quotation.objects.all()
+class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                     viewsets.GenericViewSet):
+    serializer_class = RequestSerializer
+    queryset = Request.objects.all()
     permission_classes = (permissions.AllowAny, )
 
     def get_queryset(self):
