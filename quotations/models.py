@@ -17,11 +17,14 @@ class Request(models.Model):
 
     @property
     def state(self):
-        last_state_update = self.state_updates.last()
+        last_state_update = self.last_state_update()
         if last_state_update:
             return last_state_update.state
         else:
             return RequestStateUpdate.PENDING_STATE
+
+    def last_state_update(self):
+        return self.state_updates.last()
 
     def __str__(self):
         layers_sentence = ', '.join(self.layers)
