@@ -17,15 +17,18 @@ test:
     DB_USER: testuser
     DB_PASSWORD: ""
 
-    BROKER: redis://localhost:6379/0
+    RQ_REDIS_URL: redis://localhost:6379/0
+    RQ_TIMEOUT: 360
 
     SECRET_KEY: "foobar"
     SENTRY_DNS: ""
+
+    WEBCLIENT_URL: http://localhost:3000
 
   script:
     - apt-get update -qy
     - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev postgresql postgis
     - pip install pipenv
     - pipenv install
-    - pipenv install django-anymail[mailgun] django-rest-auth[with_social] celery[redis] django-storages[google]
+    - pipenv install django-anymail[mailgun] django-rest-auth[with_social] django-storages[google]
     - pipenv run ./manage.py test
