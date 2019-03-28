@@ -18,7 +18,7 @@ sudo apt-get install python3 python3-dev python3-pip libgdal-dev libproj-dev pos
 
 ```
 sudo -u postgres createuser --interactive
-sudo -u postgres createdb
+sudo -u postgres createdb terra
 ```
 
 * Set user password for Django
