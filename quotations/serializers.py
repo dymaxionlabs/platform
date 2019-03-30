@@ -20,11 +20,11 @@ class RequestStateUpdateSerializer(serializers.ModelSerializer):
 class RequestSerializer(serializers.ModelSerializer):
     areas = RequestAreaSerializer(many=True)
     last_state_update = RequestStateUpdateSerializer(read_only=True)
+    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
         model = Request
-        fields = ('url', 'name', 'email', 'message', 'layers', 'areas',
-                  'last_state_update', 'extra_fields', 'user', 'created_at')
+        fields = '__all__'
 
     def create(self, validated_data):
         areas_data = validated_data.pop('areas')

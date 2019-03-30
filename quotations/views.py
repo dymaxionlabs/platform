@@ -28,3 +28,6 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
