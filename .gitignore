@@ -122,3 +122,5 @@ dmypy.json
 /static/
 /uploads/
 /tiles/
+
+.mercadopago.json
