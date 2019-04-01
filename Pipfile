@@ -25,6 +25,7 @@ rq = "*"
 django-rq = "*"
 rq-dashboard = "*"
 pyproj = "*"
+mercadopago = "*"
 
 [dev-packages]
 yapf = "*"
