@@ -23,6 +23,16 @@ class Request(models.Model):
         else:
             return RequestStateUpdate.PENDING_STATE
 
+    @property
+    def payment_id(self):
+        return self.extra_fields and self.extra_fields.get('payment_id')
+
+    @payment_id.setter
+    def payment_id(self, new_id):
+        if not self.extra_fields:
+            self.extra_fields = {}
+        self.extra_fields['payment_id'] = new_id
+
     def last_state_update(self):
         return self.state_updates.last()
 

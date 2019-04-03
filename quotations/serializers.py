@@ -21,6 +21,7 @@ class RequestSerializer(serializers.ModelSerializer):
     areas = RequestAreaSerializer(many=True)
     last_state_update = RequestStateUpdateSerializer(read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    payment_id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Request

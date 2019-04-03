@@ -36,11 +36,12 @@ class RequestViewSetTest(TestCase):
             sorted([
                 'id', 'name', 'email', 'message', 'areas', 'layers',
                 'last_state_update', 'extra_fields', 'created_at',
-                'updated_at', 'user'
+                'updated_at', 'user', 'payment_id'
             ]), sorted(response.data.keys()))
         self.assertEquals('John', response.data['name'])
         self.assertEquals('john@doe.com', response.data['email'])
         self.assertEquals('This is a test message', response.data['message'])
+        self.assertIsNotNone(response.data['payment_id'])
 
     def test_create_with_user(self):
         user = self.create_some_user()
@@ -58,12 +59,27 @@ class RequestViewSetTest(TestCase):
             sorted([
                 'id', 'name', 'email', 'message', 'areas', 'layers',
                 'last_state_update', 'extra_fields', 'created_at',
-                'updated_at', 'user'
+                'updated_at', 'user', 'payment_id'
             ]), sorted(response.data.keys()))
         self.assertEqual(user.username, response.data['user'])
         self.assertIsNone(response.data['name'])
         self.assertIsNone(response.data['email'])
         self.assertEquals('This is a test message', response.data['message'])
+        self.assertIsNotNone(response.data['payment_id'])
+
+    def test_create_only_request(self):
+        user = self.create_some_user()
+        loginWithAPI(self.client, user.username, 'secret')
+
+        response = self.client.post(
+            '/requests/?only_request=1', {
+                'message': 'This is a test message',
+                'areas': [],
+            },
+            format='json')
+
+        self.assertEquals(201, response.status_code)
+        self.assertIsNone(response.data['payment_id'])
 
     def test_retrieve_ok_if_admin(self):
         request = self.create_some_request()
@@ -169,8 +185,9 @@ class RequestViewSetTest(TestCase):
             sorted([
                 'id', 'name', 'email', 'message', 'areas', 'layers',
                 'last_state_update', 'extra_fields', 'created_at',
-                'updated_at', 'user'
+                'updated_at', 'user', 'payment_id'
             ]), sorted(response_data.keys()))
         self.assertEquals(request.name, response_data['name'])
         self.assertEquals(request.email, response_data['email'])
         self.assertEquals(request.message, response_data['message'])
+        self.assertEquals(request.payment_id, response_data['payment_id'])

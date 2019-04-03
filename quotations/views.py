@@ -40,4 +40,13 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             raise ValidationError(
                 "name and email must be present if user is blank")
 
-        serializer.save(user=user)
+        instance = serializer.save(user=user)
+
+        # If not requesting a specific project_uuid, include *all* public maps
+        only_request = self.request.query_params.get('only_request', None)
+        if not only_request:
+            self._create_payment(instance)
+
+    def _create_payment(self, instance):
+        instance.payment_id = 1234
+        instance.save()
