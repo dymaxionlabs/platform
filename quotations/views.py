@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
 
 from .models import Request
@@ -33,4 +34,10 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         # If there is an authenticated user, assign it to `user` field
         user = self.request.user
         user = user if not user.is_anonymous else None
+
+        data = serializer.validated_data
+        if not user and (not data.get('name') or not data.get('email')):
+            raise ValidationError(
+                "name and email must be present if user is blank")
+
         serializer.save(user=user)

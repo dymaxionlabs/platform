@@ -7,8 +7,8 @@ from django.utils.translation import gettext as _
 class Request(models.Model):
     user = models.ForeignKey(
         User, blank=True, null=True, on_delete=models.SET_NULL)
-    name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
     message = models.TextField(null=True, blank=True)
     layers = ArrayField(models.CharField(max_length=30), null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
