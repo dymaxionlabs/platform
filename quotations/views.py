@@ -61,7 +61,5 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             title=REQUEST_ITEM_TITLE, layers=layers_sentence, area=area_km2)
         preference = MP_CLIENT.create_preference(
             title=title, unit_price=obj.price_usd)
-        import pdb
-        pdb.set_trace()
         obj.payment_id = preference['id']
         obj.save()
