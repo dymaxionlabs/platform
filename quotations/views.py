@@ -62,4 +62,7 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         preference = MP_CLIENT.create_preference(
             title=title, unit_price=obj.price_usd)
         obj.payment_id = preference['id']
+        obj.extra_fields['payment_init_point'] = preference['init_point']
+        obj.extra_fields['payment_sandbox_init_point'] = preference[
+            'sandbox_init_point']
         obj.save()
