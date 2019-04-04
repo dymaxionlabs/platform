@@ -39,7 +39,7 @@ class Request(models.Model):
 
     @property
     def price_usd(self):
-        return self.total_area * 5
+        return self.total_area * 10
 
     def last_state_update(self):
         return self.state_updates.last()
