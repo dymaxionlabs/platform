@@ -27,8 +27,7 @@ class RequestAdmin(admin.ModelAdmin):
     modifiable = False
 
     def total_area(self, obj):
-        return "{} km²".format(
-            round(sum(area.area_km2() for area in obj.areas.all())))
+        return "{} km²".format(round(obj.total_area))
 
     def state_name(self, obj):
         return _(obj.state)

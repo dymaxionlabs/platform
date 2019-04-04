@@ -33,6 +33,14 @@ class Request(models.Model):
             self.extra_fields = {}
         self.extra_fields['payment_id'] = new_id
 
+    @property
+    def total_area(self):
+        return sum(area.area_km2() for area in self.areas.all())
+
+    @property
+    def price_usd(self):
+        return self.total_area * 5
+
     def last_state_update(self):
         return self.state_updates.last()
 

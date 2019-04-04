@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-28 16:48-0300\n"
+"POT-Creation-Date: 2019-04-04 09:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,29 +82,77 @@ msgstr "Nada"
 msgid "Contact message has been sent"
 msgstr "Mensaje de contacto fue enviado"
 
-#: quotations/models.py:55
+#: quotations/models.py:76
 msgid "pending"
 msgstr "pendiente"
 
-#: quotations/models.py:56
+#: quotations/models.py:77
 msgid "evaluating"
 msgstr "evaluando"
 
-#: quotations/models.py:57
+#: quotations/models.py:78
 msgid "awaiting payment"
 msgstr "esperando pago"
 
-#: quotations/models.py:58
+#: quotations/models.py:79
 msgid "processing"
 msgstr "procesando"
 
-#: quotations/models.py:59
+#: quotations/models.py:80
 msgid "finished"
 msgstr "terminado"
 
-#: quotations/models.py:60
+#: quotations/models.py:81
 msgid "canceled"
 msgstr "cancelado"
+
+#: quotations/views.py:12
+msgid "Analytics service"
+msgstr "Servicio de Analytics"
+
+#: tasks/models.py:18
+msgid "task id"
+msgstr ""
+
+#: tasks/models.py:21
+msgid "task name"
+msgstr ""
+
+#: tasks/models.py:22
+msgid "task arguments"
+msgstr ""
+
+#: tasks/models.py:23
+msgid "task kwargs"
+msgstr ""
+
+#: tasks/models.py:25
+msgid "state"
+msgstr ""
+
+#: tasks/models.py:29
+msgid "content type"
+msgstr ""
+
+#: tasks/models.py:30
+msgid "content encoding"
+msgstr ""
+
+#: tasks/models.py:32
+msgid "done at"
+msgstr ""
+
+#: tasks/models.py:33
+msgid "traceback"
+msgstr ""
+
+#: tasks/models.py:51
+msgid "task result"
+msgstr ""
+
+#: tasks/models.py:52
+msgid "task results"
+msgstr ""
 
 #: templates/admin/base_site.html:4
 msgid "Django site admin"

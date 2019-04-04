@@ -1,10 +1,15 @@
 from django.shortcuts import render
+from django.utils.translation import gettext as _
 from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+
+from terra.payments import MP_CLIENT
 
 from .models import Request
 from .serializers import RequestSerializer
+
+REQUEST_ITEM_TITLE = _('Analytics service')
 
 
 class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -47,6 +52,16 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         if not only_request:
             self._create_payment(instance)
 
-    def _create_payment(self, instance):
-        instance.payment_id = 1234
-        instance.save()
+    def _create_payment(self, obj):
+        if obj.total_area == 0:
+            return
+        layers_sentence = ", ".join(obj.layers or [])
+        area_km2 = "{} km²".format(round(obj.total_area))
+        title = '{title}: {layers} (area: {area})'.format(
+            title=REQUEST_ITEM_TITLE, layers=layers_sentence, area=area_km2)
+        preference = MP_CLIENT.create_preference(
+            title=title, unit_price=obj.price_usd)
+        import pdb
+        pdb.set_trace()
+        obj.payment_id = preference['id']
+        obj.save()
