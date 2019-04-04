@@ -22,6 +22,7 @@ class RequestSerializer(serializers.ModelSerializer):
     last_state_update = RequestStateUpdateSerializer(read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
     payment_id = serializers.CharField(required=False)
+    total_area_km2 = serializers.SerializerMethodField()
 
     class Meta:
         model = Request
@@ -33,3 +34,6 @@ class RequestSerializer(serializers.ModelSerializer):
         for area_data in areas_data:
             RequestArea.objects.create(request=request, **area_data)
         return request
+
+    def get_total_area_km2(self, obj):
+        return obj.total_area
