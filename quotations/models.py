@@ -41,6 +41,10 @@ class Request(models.Model):
     def price_usd(self):
         return self.total_area * 10
 
+    def update_state(self, state, **kwargs):
+        return RequestStateUpdate.objects.create(
+            state=state, request=self, **kwargs)
+
     def last_state_update(self):
         return self.state_updates.last()
 

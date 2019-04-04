@@ -6,7 +6,7 @@ from rest_framework.serializers import ValidationError
 
 from terra.payments import MP_CLIENT
 
-from .models import Request
+from .models import Request, RequestStateUpdate
 from .serializers import RequestSerializer
 
 REQUEST_ITEM_TITLE = _('Analytics service')
@@ -66,3 +66,6 @@ class RequestViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         obj.extra_fields['payment_sandbox_init_point'] = preference[
             'sandbox_init_point']
         obj.save()
+        obj.update_state(
+            RequestStateUpdate.AWAITING_PAYMENT_STATE,
+            extra_fields=dict(preference=preference))
