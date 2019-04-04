@@ -38,4 +38,8 @@ class MercadoPagoClient:
 
 
 secrets_file = os.getenv('MERCADOPAGO_SECRETS', '.mercadopago.json')
-MP_CLIENT = MercadoPagoClient(secrets_file)
+if os.path.exists(secrets_file):
+    MP_CLIENT = MercadoPagoClient(secrets_file)
+else:
+    print("Warning! {} was not found".format(secrets_file))
+    MP_CLIENT = None
