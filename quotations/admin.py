@@ -1,3 +1,5 @@
+import math
+
 from django.contrib.gis import admin
 
 from terra.admin import OSMStackedInline
@@ -27,7 +29,7 @@ class RequestAdmin(admin.ModelAdmin):
     modifiable = False
 
     def total_area(self, obj):
-        return "{} km²".format(round(obj.total_area))
+        return "{} km²".format(math.ceil(obj.total_area))
 
     def state_name(self, obj):
         return _(obj.state)

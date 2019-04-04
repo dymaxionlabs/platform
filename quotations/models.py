@@ -58,7 +58,7 @@ class RequestArea(models.Model):
     def area_km2(self):
         geom = self.area_geom
         geom.transform(32721)
-        return geom.area / 10000
+        return geom.area / 1000000
 
     def __str__(self):
         return "Area of {} km²".format(round(self.area_km2()))
