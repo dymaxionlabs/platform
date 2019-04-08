@@ -4,9 +4,9 @@ from html import escape
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from mailchimp3 import MailChimp
 from rest_framework import serializers
 
-from mailchimp3 import MailChimp
 from terra import settings
 
 from .models import File, Layer, Map, MapLayer, Project, ProjectInvitationToken
@@ -38,33 +38,10 @@ class ContactSerializer(serializers.Serializer):
 
     def save(self):
         from_email = settings.DEFAULT_FROM_EMAIL
-        recipients = ['contact@dymaxionlabs.com', 'gessica@dymaxionlabs.com']
-        client = MailChimp(
-            mc_api=settings.MAILCHIMP_APIKEY, mc_user=settings.MAILCHIMP_USER)
-        data = client.lists.all(get_all=True)
-        landing = self.data['landing']
-        email = self.data['email']
-        name = self.data['name'].split(" ")
+        recipients = ['contact@dymaxionlabs.com']
 
-        if landing == "Urbano":
-            audience_id = settings.MAILCHIMP_AUDIENCE_IDS['urban']
-        elif landing == "Agro":
-            audience_id = settings.MAILCHIMP_AUDIENCE_IDS['agri']
-        else:
-            raise RuntimeError("invalid landing")
-
-        try:
-            client.lists.members.create(
-                audience_id, {
-                    'email_address': email,
-                    'status': 'subscribed',
-                    'merge_fields': {
-                        'FNAME': name[0],
-                        'LNAME': name[1]
-                    }
-                })
-        except Exception as e:
-            print("Error al cargar el mensaje: {}".format(str(e)))
+        if self._has_landing():
+            self._create_mailchimp_audience()
 
         send_mail(
             self.subject(),
@@ -93,6 +70,40 @@ class ContactSerializer(serializers.Serializer):
             "<b>Mensaje:</b> {message}<br />".format(
                 email=escape(email),
                 message=escape(message))
+
+    def _has_landing(self):
+        return self.data['landing'] != ''
+
+    def _get_mailchimp_audience_id(self):
+        landing = self.data['landing']
+        if landing == "Urbano":
+            return settings.MAILCHIMP_AUDIENCE_IDS['urban']
+        elif landing == "Agro":
+            return settings.MAILCHIMP_AUDIENCE_IDS['agri']
+        else:
+            raise RuntimeError("Invalid landing")
+
+    def _create_mailchimp_audience(self):
+        email = self.data['email']
+        name = self.data['name'].split(' ')
+        try:
+            audience_id = self._get_mailchimp_audience_id()
+
+            client = MailChimp(
+                mc_api=settings.MAILCHIMP_APIKEY,
+                mc_user=settings.MAILCHIMP_USER)
+
+            return client.lists.members.create(
+                audience_id, {
+                    'email_address': email,
+                    'status': 'subscribed',
+                    'merge_fields': {
+                        'FNAME': name[0],
+                        'LNAME': name[1]
+                    }
+                })
+        except Exception as e:
+            print("Failed to create audience:", str(e))
 
 
 class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
