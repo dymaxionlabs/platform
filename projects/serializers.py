@@ -4,10 +4,16 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from rest_framework import serializers
+from mailchimp3 import MailChimp
+import os 
 
 from terra.settings import DEFAULT_FROM_EMAIL
 
 from .models import File, Layer, Map, MapLayer, Project, ProjectInvitationToken
+
+# ids mailchimp lists
+AUDIENCE_ID_AGRO = '73d5a1e868'
+AUDIENCE_ID_URBAN= '69a9ec43f4'
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,12 +35,37 @@ class LoginUserSerializer(serializers.Serializer):
 
 
 class ContactSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False, default='')
     email = serializers.EmailField()
     message = serializers.CharField()
+    landing = serializers.CharField(required=False, default='')
 
     def save(self):
         from_email = DEFAULT_FROM_EMAIL
         recipients = ['contact@dymaxionlabs.com', 'gessica@dymaxionlabs.com']
+        client = MailChimp(DIR_API = os.path.join(MC_API), DIR_USER = os.path.join(MC_USER))
+        data = client.lists.all(get_all=True)
+        landing = self.data['landing']
+        email = self.data['email']
+        name = self.data['name'].split(" ")
+
+        status = client.lists.members.create(audience_id, {        
+                'email_address': email,
+                'status': 'subscribed',
+                'merge_fields': {
+                    'FNAME': name[0],
+                    'LNAME': name[1]}}),      
+
+        try:
+            if landing == "Urbano":
+                audience_id = AUDIENCE_ID_URBAN
+                status
+               
+            elif landing == "Agro":
+                audience_id = AUDIENCE_ID_AGRO
+                status
+        except Exception as e:
+            print("Error al cargar el mensaje: {}".format(str(e)))
         send_mail(
             self.subject(),
             self.body(),
@@ -48,10 +79,12 @@ class ContactSerializer(serializers.Serializer):
 
     def body(self):
         email, message = self.data['email'], self.data['message']
-        return "Consulta\n\n" \
+        landing = self.data['landing']
+        resp = "Consulta\n\n" \
+            "Landing: {landing}\n"\
             "Email: {email}\n" \
-            "Mensaje: {message}\n".format(email=email, message=message)
-
+            "Mensaje: {message}\n".format(email=email, message=message, landing=landing)
+        return resp
     def html_body(self):
         email, message = self.data['email'], self.data['message']
         return "<h3>Consulta</h3>" \
