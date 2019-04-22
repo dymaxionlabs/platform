@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
     'quotations.apps.QuotationsConfig',
+    'estimators.apps.EstimatorsConfig',
     #'tasks.apps.TasksConfig',
     'rest_framework',
     'rest_framework_gis',
