@@ -23,6 +23,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
+from estimators.views import EstimatorViewSet
 from projects.views import (
     ConfirmProjectInvitationView, ContactView, FileUploadView, FileViewSet,
     LayerViewSet, MapViewSet, ProjectInvitationTokenViewSet, ProjectViewSet,
@@ -35,6 +36,7 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
+router.register(r'estimators', EstimatorViewSet)
 router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
 
