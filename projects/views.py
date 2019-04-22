@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from guardian.shortcuts import get_objects_for_user
 from rest_auth.registration.views import RegisterView
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.parsers import FileUploadParser
@@ -9,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
+from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
 from .models import File, Layer, Map, Project, ProjectInvitationToken
 from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
@@ -18,35 +18,6 @@ from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
                           UserSerializer)
-
-
-def allowed_projects_for(project_queryset, user):
-    if user.is_staff:
-        return project_queryset.all()
-    elif not user.is_anonymous:
-        # NOTE groups condition is deprecated
-        cond = Q(owners=user) | Q(groups__user=user)
-        return (project_queryset.filter(cond)
-                | get_objects_for_user(
-                    user, 'projects.view_project')).distinct().all()
-
-
-class ProjectRelatedModelListMixin:
-    def get_queryset(self):
-        user = self.request.user
-
-        if user.is_anonymous:
-            return self.queryset.none()
-
-        projects_qs = allowed_projects_for(Project.objects, user)
-
-        # Filter by uuid, if present
-        project_uuid = self.request.query_params.get('project_uuid', None)
-        if project_uuid is not None:
-            project = projects_qs.filter(uuid=project_uuid).first()
-            return self.queryset.filter(project=project).all()
-
-        return self.queryset.filter(project__in=projects_qs).distinct().all()
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
