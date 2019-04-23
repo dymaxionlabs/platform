@@ -67,11 +67,30 @@ class CreateStep extends React.Component {
         routerPush(`/models/new/od/upload?id=${modelId}`);
       })
       .catch(error => {
-        console.error(error.response);
-        this.setState({
-          errorMsg: t("create_step.error_msg"),
-          isSubmitting: false
-        });
+        if (error.response) {
+          const { response } = error;
+          if (response.status === 400) {
+            if (response.data.hasOwnProperty("non_field_errors")) {
+              this.setState({
+                errorMsg: t("create_step.error_msg_duplicate"),
+                isSubmitting: false
+              });
+            }
+            if (response.data.hasOwnProperty("classes")) {
+              this.setState({
+                errorMsg: t("create_step.error_msg_classes"),
+                isSubmitting: false
+              });
+            }
+          }
+        }
+
+        if (!error.response || error.response.status >= 500) {
+          this.setState({
+            errorMsg: t("create_step.error_msg_internal"),
+            isSubmitting: false
+          });
+        }
       });
   };
 

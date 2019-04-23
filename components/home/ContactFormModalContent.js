@@ -30,9 +30,15 @@ const styles = theme => ({
 
 class ContactFormModalContent extends React.Component {
   state = {
+    open: false,
     message: "",
     isSubmitting: false
   };
+
+  constructor(props) {
+    super(props);
+    this.setState({ open: this.props.open });
+  }
 
   handleMessageChange = event => {
     this.setState({ message: event.target.value });
@@ -99,6 +105,7 @@ class ContactFormModalContent extends React.Component {
           });
       });
   };
+
   render() {
     const { classes, t } = this.props;
 
@@ -144,9 +151,12 @@ class ContactFormModalContent extends React.Component {
     );
   }
 }
+
 ContactFormModalContent.propTypes = {
   classes: PropTypes.object.isRequired
 };
-ContactFormModalContent = withNamespaces("models")(ContactFormModalContent);
 
-export default withStyles(styles)(ContactFormModalContent);
+ContactFormModalContent = withNamespaces("models")(ContactFormModalContent);
+ContactFormModalContent = withStyles(styles)(ContactFormModalContent);
+
+export default ContactFormModalContent;

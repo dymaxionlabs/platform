@@ -2,20 +2,21 @@ import axios from "axios";
 import Head from "next/head";
 import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
+import StepperContent from "../../../components/home/StepperContent";
 import AnnotateStep from "../../../components/models/new/od/AnnotateStep";
 import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
-import { routerReplace } from "../../../utils/router";
 import { i18n, withNamespaces } from "../../../i18n";
 import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
+import { routerReplace } from "../../../utils/router";
 
 const steps = ["initial", "create", "upload", "annotate", "test", "improve"];
 
 class NewODModel extends React.Component {
   state = {
-    step: "initial"
+    step: steps[0]
   };
 
   static async getInitialProps({ query }) {
@@ -76,7 +77,6 @@ class NewODModel extends React.Component {
 
   render() {
     const { t } = this.props;
-
     return (
       <>
         <Head>
@@ -84,6 +84,8 @@ class NewODModel extends React.Component {
         </Head>
         <BasicAppbar />
         {this.stepContent()}
+        <br />
+        <StepperContent activeStep={this.state.step} steps={steps} />
       </>
     );
   }

@@ -227,6 +227,6 @@ models,success_msg,Tu mensaje ha sido enviado. ¡Gracias!,Your message has been 
 models,title_consult,Consultar sobre modelos,Consult about models
 models,label_msg,Mensaje,Message
 models,new_title,Nuevo Modelo,New Model
-models,create_step.error_msg_duplicate,"El nombre ya existe, ingrese otro.","Name already exists, please enter another."
-models,create_step.error_msg_classes,Deben ingresarse clases.,Please input classes.
-models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente la operación.,An error has ocurred. Please retry.
+models,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
+models,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.
+models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.

@@ -8,9 +8,9 @@
   "classification_btn": "Clasificaci\u00f3n (BETA)",
   "create_step": {
     "classes_label": "Clases de objetos",
-    "error_msg_classes": "Deben ingresarse clases.",
-    "error_msg_duplicate": "El nombre ya existe, ingrese otro.",
-    "error_msg_internal": "Ha ocurrido un error. Por favor reintente la operaci\u00f3n.",
+    "error_msg_classes": "Debe ingresar al menos una clase de objeto.",
+    "error_msg_duplicate": "Ya existe un modelo con ese nombre, ingrese otro.",
+    "error_msg_internal": "Ha ocurrido un error. Por favor reintente.",
     "name_label": "Nombre",
     "submit_btn": "Crear",
     "title": "Crear nuevo modelo"

@@ -2,7 +2,6 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
-import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import Head from "next/head";
@@ -25,7 +24,6 @@ const styles = theme => ({
       marginTop: 15
     }
   },
-
   paper: {
     marginTop: theme.spacing.unit * 8,
     display: "flex",
@@ -38,11 +36,6 @@ const styles = theme => ({
 });
 
 class NewODModel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClickOpen = this.handleClickOpen.bind(this);
-  }
-
   static async getInitialProps() {
     return {
       namespacesRequired: ["models"]

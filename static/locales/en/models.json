@@ -8,8 +8,8 @@
   "classification_btn": "Classification (BETA)",
   "create_step": {
     "classes_label": "Object classes",
-    "error_msg_classes": "Please input classes.",
-    "error_msg_duplicate": "Name already exists, please enter another.",
+    "error_msg_classes": "Please add at least one object class.",
+    "error_msg_duplicate": "Model already exists, please enter another name.",
     "error_msg_internal": "An error has ocurred. Please retry.",
     "name_label": "Name",
     "submit_btn": "Create",
