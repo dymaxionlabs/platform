@@ -54,3 +54,15 @@ class ImageTile(models.Model):
 
     def __str__(self):
         return '{file} ({x}, {y})'.format(file=self.file, x=self.x, y=self.y)
+
+
+class Annotation(models.Model):
+    estimator = models.ForeignKey(
+        Estimator, on_delete=models.CASCADE, verbose_name=_('estimator'))
+    image_tile = models.OneToOneField(
+        ImageTile, on_delete=models.CASCADE, verbose_name=_('image tile'))
+    segments = JSONField(null=True, blank=True, verbose_name=_('segments'))
+
+    def __str__(self):
+        return 'Annotation for {image_tile} with {segments} segments'.format(
+            image_tile=self.image_tile, segments=len(self.segments))
