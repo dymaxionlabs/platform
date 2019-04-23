@@ -41,3 +41,16 @@ class Estimator(models.Model):
     def __str__(self):
         return '{name} ({type})'.format(
             name=self.name, type=self.estimator_type)
+
+
+class ImageTile(models.Model):
+    file = models.ForeignKey(
+        File, on_delete=models.CASCADE, verbose_name=_('file'))
+    x = models.IntegerField(default=0)
+    y = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = (('file', 'x', 'y'))
+
+    def __str__(self):
+        return '{file} ({x}, {y})'.format(file=self.file, x=self.x, y=self.y)
