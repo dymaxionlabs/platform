@@ -2,7 +2,7 @@ import uuid
 
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
 
 from projects.models import Project
@@ -28,6 +28,7 @@ class Estimator(models.Model):
         choices=TYPE_CHOICES,
         default=OBJECT_DETECTION)
     name = models.CharField(_('name'), max_length=255)
+    classes = ArrayField(models.CharField(max_length=32), default=list)
     metadata = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
