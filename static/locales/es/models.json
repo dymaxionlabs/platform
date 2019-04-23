@@ -1,10 +1,15 @@
 {
+  "cancel_btn": "Cancelar",
+  "classification_btn": "Clasificaci\u00f3n (BETA)",
   "create_step": {
     "classes_label": "Clases de objetos",
     "name_label": "Nombre",
     "submit_btn": "Crear",
     "title": "Crear nuevo modelo"
   },
+  "error_msg": "Por favor escribe un mensaje.",
+  "error_sending": "Error de Env\u00edo.",
+  "label_msg": "Mensaje",
   "new": {
     "header": "Nuevo Modelo",
     "od": {
@@ -12,6 +17,13 @@
     },
     "start_building": "Comenzar"
   },
+  "new_title": "Nuevo Modelo",
+  "object_btn": "Detecci\u00f3n de Objetos",
+  "others_btn": "Otros",
+  "segmentation_btn": "Segmentaci\u00f3n (BETA)",
+  "send_btn": "Enviar",
+  "success_msg": "Tu mensaje ha sido enviado. \u00a1Gracias!",
+  "title_consult": "Consultar sobre modelos",
   "upload_step": {
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
     "submit_btn": "Subir",
