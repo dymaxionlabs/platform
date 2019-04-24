@@ -56,9 +56,12 @@ def run_subprocess(cmd):
 
 
 def upload_directory_to_gs_bucket(src, dst):
-    run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=src, dst=dst))
-    run_subprocess('gsutil -m cp -a public-read -r {src}/* {dst}'.format(
-        src=src, dst=dst))
+    if settings.DEBUG:
+        print("Fake upload directory to GS bucket")
+    else:
+        run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=src, dst=dst))
+        run_subprocess('gsutil -m cp -a public-read -r {src}/* {dst}'.format(
+            src=src, dst=dst))
 
 
 @job
