@@ -233,3 +233,4 @@ class MapLayer(models.Model):
 def preprocess_raster_file(sender, instance, created, **kwargs):
     if created:
         django_rq.enqueue('projects.tasks.generate_raster_tiles', instance.pk)
+        django_rq.enqueue('projects.tasks.generate_image_tiles', instance.pk)
