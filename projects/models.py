@@ -37,8 +37,9 @@ class Project(models.Model):
     groups = models.ManyToManyField(Group, blank=True)
 
     name = models.CharField(_("Name"), max_length=80, unique=True)
-    description = models.CharField(
-        _("Description"), max_length=255, blank=True)
+    description = models.CharField(_("Description"),
+                                   max_length=255,
+                                   blank=True)
     no_images = models.BooleanField(_("No images"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
@@ -55,10 +56,14 @@ class Project(models.Model):
 class ProjectInvitationToken(models.Model):
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
 
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, verbose_name=_("Project"))
-    email = models.CharField(
-        _("Email"), max_length=75, blank=True, default=None, null=True)
+    project = models.ForeignKey(Project,
+                                on_delete=models.CASCADE,
+                                verbose_name=_("Project"))
+    email = models.CharField(_("Email"),
+                             max_length=75,
+                             blank=True,
+                             default=None,
+                             null=True)
     confirmed = models.BooleanField(_("Confirmed"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
@@ -87,19 +92,18 @@ class ProjectInvitationToken(models.Model):
 
 
 def user_images_path(instance, filename):
-    return 'user_{user_id}/{filename}'.format(
-        user_id=instance.owner.id, filename=filename)
+    return 'user_{user_id}/{filename}'.format(user_id=instance.owner.id,
+                                              filename=filename)
 
 
 class File(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        verbose_name=_("Project"),
-        default=None,
-        blank=True,
-        null=True)
+    project = models.ForeignKey(Project,
+                                on_delete=models.CASCADE,
+                                verbose_name=_("Project"),
+                                default=None,
+                                blank=True,
+                                null=True)
 
     file = models.FileField(upload_to=user_images_path)
     name = models.CharField(max_length=255)
@@ -127,14 +131,17 @@ class Layer(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
-    layer_type = models.CharField(
-        max_length=1, choices=LAYER_CHOICES, default=RASTER)
+    layer_type = models.CharField(max_length=1,
+                                  choices=LAYER_CHOICES,
+                                  default=RASTER)
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
     date = models.DateField(null=True, blank=True)
-    file = models.OneToOneField(
-        File, blank=True, null=True, on_delete=models.SET_NULL)
+    file = models.OneToOneField(File,
+                                blank=True,
+                                null=True,
+                                on_delete=models.SET_NULL)
     extra_fields = JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -147,13 +154,13 @@ class Layer(models.Model):
         return '{name} ({date})'.format(name=self.name, date=self.date)
 
     def tiles_url(self):
-        base_url = self.BASE_TILE_URL.format(
-            bucket=settings.TILES_BUCKET, uuid=self.uuid)
+        base_url = self.BASE_TILE_URL.format(bucket=settings.TILES_BUCKET,
+                                             uuid=self.uuid)
         return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
 
     def tiles_bucket_url(self):
-        return 'gs://{bucket}/{uuid}'.format(
-            bucket=settings.TILES_BUCKET, uuid=self.uuid)
+        return 'gs://{bucket}/{uuid}'.format(bucket=settings.TILES_BUCKET,
+                                             uuid=self.uuid)
 
     def tiles_extension(self):
         if self.layer_type == self.RASTER:
@@ -192,8 +199,9 @@ class Map(models.Model):
 
 
 class MapLayer(models.Model):
-    map = models.ForeignKey(
-        Map, related_name='layers', on_delete=models.CASCADE)
+    map = models.ForeignKey(Map,
+                            related_name='layers',
+                            on_delete=models.CASCADE)
     layer = models.OneToOneField(Layer, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(blank=True)
     is_active = models.BooleanField(default=True)
@@ -203,8 +211,8 @@ class MapLayer(models.Model):
         ordering = ('order', )
 
     def __str__(self):
-        return '{layer_name} ({map_name})'.format(
-            layer_name=self.layer.name, map_name=self.map.name)
+        return '{layer_name} ({map_name})'.format(layer_name=self.layer.name,
+                                                  map_name=self.map.name)
 
     def save(self, swapping=False, *args, **kwargs):
         if not self.id:
