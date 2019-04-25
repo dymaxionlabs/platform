@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import rasterio
@@ -46,8 +47,9 @@ class Estimator(models.Model):
 
 def tile_images_path(instance, filename):
     file = instance.file
-    return 'user_{user_id}/{filename}/tiles/{id}'.format(
-        user_id=file.owner.id, filename=file.filename, id=instance.id)
+    raster_fname = os.path.basename(file.file.name)
+    return 'user_{user_id}/tiles/{raster_fname}/{filename}'.format(
+        user_id=file.owner.id, raster_fname=raster_fname, filename=filename)
 
 
 class ImageTile(models.Model):

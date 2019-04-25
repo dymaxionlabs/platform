@@ -4,6 +4,7 @@ import tempfile
 
 import numpy as np
 import rasterio
+from django.core.files import File as DjangoFile
 from django_rq import job
 from rasterio.windows import Window
 from skimage import exposure
@@ -24,7 +25,7 @@ def generate_image_tiles(file_pk):
         src = tmpfile.name
 
         with rasterio.open(src) as ds:
-            print('Raster size: %s', (ds.width, ds.height))
+            print('Raster size:', (ds.width, ds.height))
 
             if ds.count < 3:
                 raise RuntimeError(
@@ -34,26 +35,28 @@ def generate_image_tiles(file_pk):
                 print("WARNING: Raster has {} bands. " \
                     "Going to assume first 3 bands are RGB...".format(ds.count))
 
-            size = (512, 512)
+            size = (1000, 1000)
             windows = list(sliding_windows(size, size, ds.width, ds.height))
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 for window, (i, j) in windows:
-                    print("%s %s", window, (i, j))
+                    print(window, (i, j))
                     img = ds.read(window=window)
                     img = img[:3, :, :]
 
-                    img_path = os.path.join(tmpdir, '{i}_{j}.jpg'.format(i=i,
-                                                                         j=j))
+                    img_fname = '{i}_{j}.jpg'.format(i=i, j=j)
+                    img_path = os.path.join(tmpdir, img_fname)
                     was_image_written = write_image(img, img_path)
+
                     if was_image_written:
                         tile = ImageTile(file=file,
                                          col_off=window.col_off,
                                          row_off=window.row_off,
                                          width=window.width,
                                          height=window.height)
-                        tile.tile_file = open(img_path)
-                        tile.save()
+                        with open(img_path, 'rb') as f:
+                            tile.tile_file = DjangoFile(f, name=img_fname)
+                            tile.save()
 
 
 def sliding_windows(size, step_size, width, height):
