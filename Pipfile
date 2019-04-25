@@ -26,6 +26,7 @@ django-rq = "*"
 pyproj = "*"
 mercadopago = "*"
 mailchimp3 = "*"
+scikit-image = "*"
 
 [dev-packages]
 yapf = "*"
