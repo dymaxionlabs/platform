@@ -144,8 +144,18 @@ me,sidebar.layers,Capas,Layers
 me,sidebar.maps,Mapas,Maps
 me,sidebar.images,Imágenes,Images
 me,sidebar.requests,Pedidos,Requests
+me,sidebar.models,Modelos,Models
+me,sidebar.estimators,Modelos,Models
 me,download,Descargar,Download
 me,view,Ver,View
+me,estimators.title,Tus Modelos,Your Models
+me,"estimators.name
+",Nombre,Name
+me,"estimators.type
+",Tipo,Type
+me,"estimators.created_at
+","Fecha de creación
+",Creation date
 me,layers.title,Tus capas,Your layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name

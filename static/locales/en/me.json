@@ -1,5 +1,11 @@
 {
   "download": "Download",
+  "estimators": {
+    "created_at": "Creation date",
+    "name": "Name",
+    "title": "Your Models",
+    "type": "Type"
+  },
   "images": {
     "created_at": "Creation date",
     "name": "Image name",
@@ -30,9 +36,11 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
+    "estimators": "Models",
     "images": "Images",
     "layers": "Layers",
     "maps": "Maps",
+    "models": "Models",
     "requests": "Requests"
   },
   "view": "View"

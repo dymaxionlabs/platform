@@ -1,5 +1,11 @@
 {
   "download": "Descargar",
+  "estimators": {
+    "created_at": "Fecha de creaci\u00f3n",
+    "name": "Nombre",
+    "title": "Tus Modelos",
+    "type": "Tipo"
+  },
   "images": {
     "created_at": "Fecha de creaci\u00f3n",
     "name": "Nombre de imagen",
@@ -30,9 +36,11 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
+    "estimators": "Modelos",
     "images": "Im\u00e1genes",
     "layers": "Capas",
     "maps": "Mapas",
+    "models": "Modelos",
     "requests": "Pedidos"
   },
   "view": "Ver"

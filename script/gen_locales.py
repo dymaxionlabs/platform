@@ -24,8 +24,8 @@ with open('i18n.csv') as csvfile:
                 data[locale] = {}
             is_first_row = False
 
-        ns = row['namespace']
-        key = row['key']
+        ns = row['namespace'].strip()
+        key = row['key'].strip()
 
         for locale in all_locales:
             data_local = data[locale]
@@ -38,7 +38,7 @@ with open('i18n.csv') as csvfile:
                 if part not in k:
                     k[part] = {}
                 k = k[part]
-            k[key_parts[-1]] = row[locale]
+            k[key_parts[-1]] = row[locale].strip()
 
 shutil.rmtree(BASE_LOCALE_PATH)
 for locale, locale_data in data.items():

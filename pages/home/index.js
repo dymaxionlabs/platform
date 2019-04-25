@@ -16,6 +16,7 @@ import CollectionsIcon from "@material-ui/icons/Collections";
 import LayersIcon from "@material-ui/icons/Layers";
 import MapIcon from "@material-ui/icons/Map";
 import MessageIcon from "@material-ui/icons/Message";
+import MemoryIcon from "@material-ui/icons/Memory";
 // import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
 import classNames from "classnames";
@@ -24,6 +25,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import FileUploadDialog from "../../components/FileUploadDialog";
 import Button from "@material-ui/core/Button";
+import EstimatorsContent from "../../components/home/EstimatorsContent";
 import ImagesContent from "../../components/home/ImagesContent";
 import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
@@ -125,7 +127,7 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["images", "layers", "maps"];
+const sortedSections = ["estimators", "images", "layers", "maps"];
 
 const sections = {
   // dashboard: {
@@ -138,6 +140,14 @@ const sections = {
     path: "/requests",
     icon: <MessageIcon />,
     content: <RequestsContent />
+  },
+
+  estimators: {
+    key: "estimators",
+    path: "/estimators",
+    icon: <MemoryIcon />,
+    content: <EstimatorsContent />
+
   },
   maps: {
     key: "maps",
@@ -157,6 +167,7 @@ const sections = {
     icon: <CollectionsIcon />,
     content: <ImagesContent />
   }
+
 };
 
 let QuoteButton = ({ t, classes }) => (
