@@ -29,7 +29,9 @@ class Estimator(models.Model):
     name = models.CharField(_('name'), max_length=255)
     classes = ArrayField(models.CharField(max_length=32), default=list)
     metadata = JSONField(null=True, blank=True)
-    image_files = models.ManyToManyField(File, related_name='files')
+    image_files = models.ManyToManyField(File,
+                                         related_name='files',
+                                         blank=True)
 
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
