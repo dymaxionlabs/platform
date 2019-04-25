@@ -42,6 +42,12 @@ class Estimator(models.Model):
                                         type=self.estimator_type)
 
 
+def tile_images_path(instance, filename):
+    file = instance.file
+    return 'user_{user_id}/{filename}/tiles/{id}'.format(
+        user_id=file.owner.id, filename=file.filename, id=instance.id)
+
+
 class ImageTile(models.Model):
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
@@ -50,6 +56,8 @@ class ImageTile(models.Model):
     row_off = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
+    tile_file = models.FileField(upload_to=tile_images_path,
+                                 verbose_name=_('image'))
 
     class Meta:
         unique_together = (('file', 'col_off', 'row_off', 'width', 'height'))
