@@ -5,9 +5,9 @@ import Typography from "@material-ui/core/Typography";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
-import BasicAppbar from "../../../../components/BasicAppbar";
-import { Link, withNamespaces } from "../../../../i18n";
-import { withAuthSync } from "../../../../utils/auth";
+import BasicAppbar from "../../../components/BasicAppbar";
+import { Link, withNamespaces } from "../../../i18n";
+import { withAuthSync } from "../../../utils/auth";
 
 const styles = theme => ({
   main: {
@@ -31,11 +31,29 @@ const styles = theme => ({
   }
 });
 
+const steps = ["initial", "create"];
+
 class NewODModel extends React.Component {
-  static async getInitialProps(ctx) {
+  state = {
+    step: "initial"
+  };
+
+  static async getInitialProps({ query }) {
     return {
-      namespacesRequired: ["models"]
+      namespacesRequired: ["models"],
+      query: query
     };
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { step } = props.query;
+
+    // Set current step based on path
+    if (step && steps.includes(step)) {
+      this.state.step = step;
+    }
   }
 
   render() {
