@@ -1,3 +1,4 @@
+import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -11,7 +12,7 @@ import cookie from "js-cookie";
 import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
-import { i18n, withNamespaces } from "../../i18n";
+import { i18n, Link, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 
@@ -25,8 +26,19 @@ const styles = theme => ({
   },
   title: {
     marginBottom: theme.spacing.units * 10
+  },
+  estimatorBtn: {
+    float: "right"
   }
 });
+
+let NewEstimatorButton = ({ t, ...props }) => (
+  <Link href="/models/new">
+    <Button {...props}>{t("estimators.new_btn")}</Button>
+  </Link>
+);
+
+NewEstimatorButton = withNamespaces("me")(NewEstimatorButton);
 
 class EstimatorsContent extends React.Component {
   state = {
@@ -67,6 +79,7 @@ class EstimatorsContent extends React.Component {
           gutterBottom
           component="h2"
         >
+          <NewEstimatorButton className={classes.estimatorBtn} />
           {t("estimators.title")}
         </Typography>
         <Paper className={classes.root}>

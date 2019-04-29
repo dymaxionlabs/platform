@@ -156,6 +156,7 @@ me,"estimators.type
 me,"estimators.created_at
 ","Fecha de creación
 ",Creation date
+me,estimators.new_btn,Nuevo Modelo,New Model
 me,layers.title,Tus capas,Your layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name

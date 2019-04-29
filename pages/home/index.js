@@ -147,7 +147,6 @@ const sections = {
     path: "/estimators",
     icon: <MemoryIcon />,
     content: <EstimatorsContent />
-
   },
   maps: {
     key: "maps",
@@ -167,7 +166,6 @@ const sections = {
     icon: <CollectionsIcon />,
     content: <ImagesContent />
   }
-
 };
 
 let QuoteButton = ({ t, classes }) => (

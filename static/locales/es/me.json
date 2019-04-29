@@ -3,6 +3,7 @@
   "estimators": {
     "created_at": "Fecha de creaci\u00f3n",
     "name": "Nombre",
+    "new_btn": "Nuevo Modelo",
     "title": "Tus Modelos",
     "type": "Tipo"
   },
