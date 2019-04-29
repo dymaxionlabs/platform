@@ -1,10 +1,11 @@
 import AppBar from "@material-ui/core/AppBar";
-import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
+import { Link } from "../i18n";
 
 const styles = theme => ({
   appBar: {
@@ -12,17 +13,30 @@ const styles = theme => ({
   },
   logo: {
     height: 25,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing.unit,
+    cursor: "pointer"
+  },
+  title: {
+    cursor: "pointer"
   }
 });
 
 const BasicAppbar = withStyles(styles)(({ classes }) => (
   <AppBar position="absolute" color="default" className={classes.appBar}>
     <Toolbar>
-      <img src="/static/logo.png" className={classes.logo} />
-      <Typography variant="h6" color="inherit" noWrap>
-        Analytics
-      </Typography>
+      <Link href="/" className={classes.link}>
+        <img src="/static/logo.png" className={classes.logo} />
+      </Link>
+      <Link href="/">
+        <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.title}
+        >
+          Analytics
+        </Typography>
+      </Link>
     </Toolbar>
   </AppBar>
 ));
