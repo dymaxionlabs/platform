@@ -6,8 +6,12 @@ import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
+import ChipInput from "material-ui-chip-input";
 
 const styles = theme => ({
+  classesLabel: {
+    paddingBottom: theme.spacing.unit
+  },
   submit: {
     marginTop: theme.spacing.unit * 3
   }
@@ -15,12 +19,22 @@ const styles = theme => ({
 
 class CreateStep extends React.Component {
   state = {
-    name: null,
+    name: "",
     classes: [],
     isSubmitting: false
   };
 
-  handleSubmit() {}
+  handleSubmit = event => {
+    event.preventDefault();
+  };
+
+  handleNameChange = e => {
+    this.setState({ name: e.target.value });
+  };
+
+  handleChangeClasses = chips => {
+    this.setState({ classes: chips });
+  };
 
   render() {
     const { classes, t } = this.props;
@@ -43,25 +57,16 @@ class CreateStep extends React.Component {
             <Input
               id="name"
               name="name"
-              autoComplete="Name"
               autoFocus
-              onInput={this.handleChange}
-              onChange={this.handleChange}
+              onInput={this.handleNameChange}
+              onChange={this.handleNameChange}
               value={this.state.name}
             />
           </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="classes">
-              {t("create_step.classes_label")}
-            </InputLabel>
-            <Input
-              id="classes"
-              name="classes"
-              type="classes"
-              autoComplete="classes"
-              onInput={this.handleChange}
-              onChange={this.handleChange}
-              value={this.state.classes}
+          <FormControl margin="normal" fullWidth>
+            <ChipInput
+              label={t("create_step.classes_label")}
+              onChange={chips => this.handleChangeClasses(chips)}
             />
           </FormControl>
           <Button
