@@ -1,0 +1,15 @@
+{
+  "create_step": {
+    "classes_label": "Object classes",
+    "name_label": "Name",
+    "submit_btn": "Create",
+    "title": "Create new model"
+  },
+  "new": {
+    "header": "New Model",
+    "od": {
+      "header": "Object Detection"
+    },
+    "start_building": "Start Building"
+  }
+}

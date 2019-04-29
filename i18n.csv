@@ -204,3 +204,10 @@ common,request.state.awaiting_payment,Esperando confirmación de pago,Awaiting p
 common,request.state.processing,Procesando,Processing
 common,request.state.finished,Terminado,Finished
 common,request.state.canceled,Cancelado,Canceled
+models,new.header,Nuevo Modelo,New Model
+models,new.od.header,Detección de Objetos,Object Detection
+models,new.start_building,Comenzar,Start Building
+models,create_step.title,Crear nuevo modelo,Create new model
+models,create_step.name_label,Nombre,Name
+models,create_step.classes_label,Clases de objetos,Object classes
+models,create_step.submit_btn,Crear,Create

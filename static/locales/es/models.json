@@ -1,0 +1,15 @@
+{
+  "create_step": {
+    "classes_label": "Clases de objetos",
+    "name_label": "Nombre",
+    "submit_btn": "Crear",
+    "title": "Crear nuevo modelo"
+  },
+  "new": {
+    "header": "Nuevo Modelo",
+    "od": {
+      "header": "Detecci\u00f3n de Objetos"
+    },
+    "start_building": "Comenzar"
+  }
+}

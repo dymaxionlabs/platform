@@ -1,12 +1,12 @@
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
-import { Link, withNamespaces } from "../../../i18n";
+import InitialStep from "../../../components/models/new/od/InitialStep";
+import CreateStep from "../../../components/models/new/od/CreateStep";
+import { withNamespaces } from "../../../i18n";
 import { withAuthSync } from "../../../utils/auth";
 
 const styles = theme => ({
@@ -31,7 +31,7 @@ const styles = theme => ({
   }
 });
 
-const steps = ["initial", "create"];
+const steps = ["initial", "create", "upload", "annotate", "test", "improve"];
 
 class NewODModel extends React.Component {
   state = {
@@ -56,24 +56,30 @@ class NewODModel extends React.Component {
     }
   }
 
+  stepContent() {
+    const { step } = this.state;
+
+    switch (step) {
+      case "initial": {
+        return <InitialStep />;
+      }
+      case "create": {
+        return <CreateStep />;
+      }
+    }
+  }
+
   render() {
     const { t, classes } = this.props;
 
     return (
       <div>
         <Head>
-          <title>{t("new.od.title")}</title>
+          <title>{t("new.od.header")}</title>
         </Head>
         <BasicAppbar />
         <main className={classes.main}>
-          <Paper className={classes.paper}>
-            <Typography className={classes.header} component="h1" variant="h5">
-              {t("new.od.header")}
-            </Typography>
-            <Link href="/models/new/od/create">
-              <Button color="primary">Start building</Button>
-            </Link>
-          </Paper>
+          <Paper className={classes.paper}>{this.stepContent()}</Paper>
         </main>
       </div>
     );

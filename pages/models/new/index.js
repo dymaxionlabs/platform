@@ -53,7 +53,7 @@ class NewModel extends React.Component {
               {t("new.header")}
             </Typography>
             <Link href="/models/new/od">
-              <Button color="primary">Object Detection</Button>
+              <Button color="primary">{t("new.od.header")}</Button>
             </Link>
           </Paper>
         </main>
