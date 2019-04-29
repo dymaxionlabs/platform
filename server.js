@@ -38,6 +38,10 @@ const handle = app.getRequestHandler();
     return app.render(req, res, "/home", { section: section });
   });
 
+  server.get("/models", (req, res) => {
+    return res.redirect("/models/new");
+  });
+
   server.get("/models/new/od/:step", (req, res) => {
     const step = req.params.step;
     return app.render(req, res, "/models/new/od", { step: step });
