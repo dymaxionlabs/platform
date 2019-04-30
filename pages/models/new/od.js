@@ -6,6 +6,7 @@ import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import CreateStep from "../../../components/models/new/od/CreateStep";
+import UploadStep from "../../../components/models/new/od/UploadStep";
 import { withNamespaces } from "../../../i18n";
 import { withAuthSync } from "../../../utils/auth";
 
@@ -66,6 +67,9 @@ class NewODModel extends React.Component {
       }
       case "create": {
         return <CreateStep token={token} k />;
+      }
+      case "upload": {
+        return <UploadStep token={token} k />;
       }
     }
   }

@@ -11,5 +11,10 @@
       "header": "Object Detection"
     },
     "start_building": "Start Building"
+  },
+  "upload_step": {
+    "dropzone": "Drag and drop your images here, or click.",
+    "submit_btn": "Upload",
+    "title": "Upload images"
   }
 }

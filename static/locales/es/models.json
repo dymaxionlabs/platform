@@ -11,5 +11,10 @@
       "header": "Detecci\u00f3n de Objetos"
     },
     "start_building": "Comenzar"
+  },
+  "upload_step": {
+    "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
+    "submit_btn": "Subir",
+    "title": "Subir im\u00e1genes"
   }
 }

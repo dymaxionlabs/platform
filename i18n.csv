@@ -209,3 +209,6 @@ models,create_step.title,Crear nuevo modelo,Create new model
 models,create_step.name_label,Nombre,Name
 models,create_step.classes_label,Clases de objetos,Object classes
 models,create_step.submit_btn,Crear,Create
+models,upload_step.title,Subir imágenes,Upload images
+models,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
+models,upload_step.submit_btn,Subir,Upload

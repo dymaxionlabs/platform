@@ -60,7 +60,8 @@ class CreateStep extends React.Component {
         }
       })
       .then(response => {
-        routerPush("/models/new/od/upload");
+        const modelId = response.data.uuid;
+        routerPush(`/models/new/od/upload?id=${modelId}`);
       })
       .catch(error => {
         console.error(error);
