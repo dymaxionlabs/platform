@@ -1,12 +1,17 @@
-import Typography from "@material-ui/core/Typography";
-import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import { withNamespaces } from "../../../../i18n";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import axios from "axios";
+import cookie from "js-cookie";
 import ChipInput from "material-ui-chip-input";
+import React from "react";
+import { i18n, withNamespaces } from "../../../../i18n";
+import { routerPush } from "../../../../utils/router";
+import { buildApiUrl } from "../../../../utils/api";
+import { withAuthSync } from "../../../../utils/auth";
 
 const styles = theme => ({
   classesLabel: {
@@ -14,6 +19,9 @@ const styles = theme => ({
   },
   submit: {
     marginTop: theme.spacing.unit * 3
+  },
+  errorMsg: {
+    color: "red"
   }
 });
 
@@ -26,6 +34,44 @@ class CreateStep extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
+    const project = cookie.get("project");
+    const { t, token } = this.props;
+    const { name, classes } = this.state;
+
+    const dataSend = {
+      project: project,
+      estimator_type: "OD",
+      name: name,
+      classes: classes
+    };
+
+    // Reset messages
+    this.setState({
+      errorMsg: "",
+      isSubmitting: true
+    });
+
+    axios
+      .post(buildApiUrl("/estimators/"), dataSend, {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+      })
+      .then(response => {
+        routerPush("/models/new/od/upload");
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({
+          //errorMsg: t("create_step.error_msg", { message: error }),
+          errorMsg: JSON.stringify(
+            error.response && error.response.data.detail
+          ),
+          isSubmitting: false
+        });
+      });
   };
 
   handleNameChange = e => {
@@ -38,13 +84,14 @@ class CreateStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { isSubmitting } = this.state;
+    const { isSubmitting, errorMsg } = this.state;
 
     return (
       <div>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("create_step.title")}
         </Typography>
+        <Typography className={classes.errorMessage}>{errorMsg}</Typography>
         <form
           className={classes.form}
           method="post"

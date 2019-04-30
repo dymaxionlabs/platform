@@ -57,14 +57,15 @@ class NewODModel extends React.Component {
   }
 
   stepContent() {
+    const { token } = this.props;
     const { step } = this.state;
 
     switch (step) {
       case "initial": {
-        return <InitialStep />;
+        return <InitialStep token={token} />;
       }
       case "create": {
-        return <CreateStep />;
+        return <CreateStep token={token} k />;
       }
     }
   }

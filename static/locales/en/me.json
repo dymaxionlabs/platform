@@ -22,11 +22,15 @@
     "title": "Your maps"
   },
   "models": {
+    "classes": "Classes",
     "created_at": "Creation date",
+    "estimator_type": "Type",
     "name": "Name",
     "new_btn": "New Model",
     "title": "Your Models",
-    "type": "Type"
+    "types": {
+      "OD": "Object Detection"
+    }
   },
   "requests": {
     "area_km2": "Area (km\u00b2)",
