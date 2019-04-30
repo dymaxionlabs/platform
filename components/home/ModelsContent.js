@@ -3,6 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import Chip from "@material-ui/core/Chip";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -29,12 +30,15 @@ const styles = theme => ({
   },
   modelBtn: {
     float: "right"
+  },
+  chip: {
+    marginRight: theme.spacing.unit
   }
 });
 
-let NewModelButton = ({ t, ...props }) => (
+let NewModelButton = ({ t, className }) => (
   <Link href="/models/new">
-    <Button {...props}>{t("models.new_btn")}</Button>
+    <Button className={className}>{t("models.new_btn")}</Button>
   </Link>
 );
 
@@ -66,6 +70,11 @@ class ModelsContent extends React.Component {
       });
   }
 
+  estimatorTypeName(model) {
+    const { t } = this.props;
+    return t(`models.types.${model.estimator_type}`);
+  }
+
   render() {
     const { t, classes } = this.props;
     const { models: models } = this.state;
@@ -87,7 +96,8 @@ class ModelsContent extends React.Component {
             <TableHead>
               <TableRow>
                 <TableCell>{t("models.name")}</TableCell>
-                <TableCell>{t("models.type")}</TableCell>
+                <TableCell>{t("models.estimator_type")}</TableCell>
+                <TableCell>{t("models.classes")}</TableCell>
                 <TableCell>{t("models.created_at")}</TableCell>
               </TableRow>
             </TableHead>
@@ -97,10 +107,11 @@ class ModelsContent extends React.Component {
                   <TableCell component="th" scope="row">
                     {model.name}
                   </TableCell>
+                  <TableCell>{this.estimatorTypeName(model)}</TableCell>
                   <TableCell>
-                    <Moment locale={locale} fromNow>
-                      {model.type}
-                    </Moment>
+                    {model.classes.map(cls => (
+                      <Chip className={classes.chip} key={cls} label={cls} />
+                    ))}
                   </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
