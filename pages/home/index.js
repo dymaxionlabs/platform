@@ -25,7 +25,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import FileUploadDialog from "../../components/FileUploadDialog";
 import Button from "@material-ui/core/Button";
-import EstimatorsContent from "../../components/home/EstimatorsContent";
+import ModelsContent from "../../components/home/ModelsContent";
 import ImagesContent from "../../components/home/ImagesContent";
 import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
@@ -127,7 +127,7 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["estimators", "images", "layers", "maps"];
+const sortedSections = ["models", "images", "layers", "maps"];
 
 const sections = {
   // dashboard: {
@@ -141,12 +141,11 @@ const sections = {
     icon: <MessageIcon />,
     content: <RequestsContent />
   },
-
-  estimators: {
-    key: "estimators",
-    path: "/estimators",
+  models: {
+    key: "models",
+    path: "/models",
     icon: <MemoryIcon />,
-    content: <EstimatorsContent />
+    content: <ModelsContent />
   },
   maps: {
     key: "maps",

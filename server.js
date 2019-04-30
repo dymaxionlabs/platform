@@ -13,12 +13,20 @@ const handle = app.getRequestHandler();
 
   server.use(nextI18NextMiddleware(nextI18next));
 
+  server.get("/layers", (req, res) => {
+    return res.redirect("/home/layers");
+  });
+
   server.get("/layers/:uuid", (req, res) => {
     const actualPage = "/layers";
     const queryParams = {
       uuid: req.params.uuid
     };
     app.render(req, res, actualPage, queryParams);
+  });
+
+  server.get("/maps", (req, res) => {
+    return res.redirect("/home/maps");
   });
 
   server.get("/maps/:uuid", (req, res) => {
@@ -39,7 +47,7 @@ const handle = app.getRequestHandler();
   });
 
   server.get("/models", (req, res) => {
-    return res.redirect("/models/new");
+    return res.redirect("/home/models");
   });
 
   server.get("/models/new/od/:step", (req, res) => {

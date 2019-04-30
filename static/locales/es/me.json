@@ -1,12 +1,5 @@
 {
   "download": "Descargar",
-  "estimators": {
-    "created_at": "Fecha de creaci\u00f3n",
-    "name": "Nombre",
-    "new_btn": "Nuevo Modelo",
-    "title": "Tus Modelos",
-    "type": "Tipo"
-  },
   "images": {
     "created_at": "Fecha de creaci\u00f3n",
     "name": "Nombre de imagen",
@@ -28,6 +21,13 @@
     "name": "Nombre",
     "title": "Tus mapas"
   },
+  "models": {
+    "created_at": "Fecha de creaci\u00f3n",
+    "name": "Nombre",
+    "new_btn": "Nuevo Modelo",
+    "title": "Tus Modelos",
+    "type": "Tipo"
+  },
   "requests": {
     "area_km2": "\u00c1rea (km\u00b2)",
     "created_at": "Fecha",
@@ -37,7 +37,6 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "estimators": "Modelos",
     "images": "Im\u00e1genes",
     "layers": "Capas",
     "maps": "Mapas",

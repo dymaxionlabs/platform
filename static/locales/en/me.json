@@ -1,12 +1,5 @@
 {
   "download": "Download",
-  "estimators": {
-    "created_at": "Creation date",
-    "name": "Name",
-    "new_btn": "New Model",
-    "title": "Your Models",
-    "type": "Type"
-  },
   "images": {
     "created_at": "Creation date",
     "name": "Image name",
@@ -28,6 +21,13 @@
     "name": "Name",
     "title": "Your maps"
   },
+  "models": {
+    "created_at": "Creation date",
+    "name": "Name",
+    "new_btn": "New Model",
+    "title": "Your Models",
+    "type": "Type"
+  },
   "requests": {
     "area_km2": "Area (km\u00b2)",
     "created_at": "Date",
@@ -37,7 +37,6 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "estimators": "Models",
     "images": "Images",
     "layers": "Layers",
     "maps": "Maps",

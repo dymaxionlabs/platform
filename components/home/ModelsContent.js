@@ -27,22 +27,22 @@ const styles = theme => ({
   title: {
     marginBottom: theme.spacing.units * 10
   },
-  estimatorBtn: {
+  modelBtn: {
     float: "right"
   }
 });
 
-let NewEstimatorButton = ({ t, ...props }) => (
+let NewModelButton = ({ t, ...props }) => (
   <Link href="/models/new">
-    <Button {...props}>{t("estimators.new_btn")}</Button>
+    <Button {...props}>{t("models.new_btn")}</Button>
   </Link>
 );
 
-NewEstimatorButton = withNamespaces("me")(NewEstimatorButton);
+NewModelButton = withNamespaces("me")(NewModelButton);
 
-class EstimatorsContent extends React.Component {
+class ModelsContent extends React.Component {
   state = {
-    estimators: []
+    models: []
   };
 
   componentDidMount() {
@@ -54,7 +54,7 @@ class EstimatorsContent extends React.Component {
         headers: { Authorization: this.props.token }
       })
       .then(response => {
-        this.setState({ estimators: response.data.results });
+        this.setState({ models: response.data.results });
       })
       .catch(err => {
         const response = err.response;
@@ -68,7 +68,7 @@ class EstimatorsContent extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { estimators: estimators } = this.state;
+    const { models: models } = this.state;
     const locale = i18n.language;
 
     return (
@@ -79,32 +79,32 @@ class EstimatorsContent extends React.Component {
           gutterBottom
           component="h2"
         >
-          <NewEstimatorButton className={classes.estimatorBtn} />
-          {t("estimators.title")}
+          <NewModelButton className={classes.modelBtn} />
+          {t("models.title")}
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell>{t("estimators.name")}</TableCell>
-                <TableCell>{t("estimators.type")}</TableCell>
-                <TableCell>{t("estimators.created_at")}</TableCell>
+                <TableCell>{t("models.name")}</TableCell>
+                <TableCell>{t("models.type")}</TableCell>
+                <TableCell>{t("models.created_at")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {estimators.map((estimators, i) => (
+              {models.map((model, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
-                    {estimators.name}
+                    {model.name}
                   </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
-                      {estimators.type}
+                      {model.type}
                     </Moment>
                   </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
-                      {estimators.created_at}
+                      {model.created_at}
                     </Moment>
                   </TableCell>
                 </TableRow>
@@ -117,11 +117,11 @@ class EstimatorsContent extends React.Component {
   }
 }
 
-EstimatorsContent.propTypes = {
+ModelsContent.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-EstimatorsContent = withStyles(styles)(EstimatorsContent);
-EstimatorsContent = withNamespaces("me")(EstimatorsContent);
+ModelsContent = withStyles(styles)(ModelsContent);
+ModelsContent = withNamespaces("me")(ModelsContent);
 
-export default EstimatorsContent;
+export default ModelsContent;
