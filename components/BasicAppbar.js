@@ -1,5 +1,4 @@
 import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
