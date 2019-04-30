@@ -23,7 +23,7 @@ const styles = theme => ({
 const BasicAppbar = withStyles(styles)(({ classes }) => (
   <AppBar position="absolute" color="default" className={classes.appBar}>
     <Toolbar>
-      <Link href="/" className={classes.link}>
+      <Link href="/">
         <img src="/static/logo.png" className={classes.logo} />
       </Link>
       <Link href="/">
