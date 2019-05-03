@@ -3,7 +3,9 @@ import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import IconButton from "@material-ui/core/IconButton";
 import Chip from "@material-ui/core/Chip";
+import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -99,6 +101,7 @@ class ModelsContent extends React.Component {
                 <TableCell>{t("models.estimator_type")}</TableCell>
                 <TableCell>{t("models.classes")}</TableCell>
                 <TableCell>{t("models.created_at")}</TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -117,6 +120,16 @@ class ModelsContent extends React.Component {
                     <Moment locale={locale} fromNow>
                       {model.created_at}
                     </Moment>
+                  </TableCell>
+                  <TableCell align="right">
+                    <a href={`/models/upload-images/${model.uuid}`}>
+                      <IconButton
+                        className={classes.button}
+                        aria-label="Upload images"
+                      >
+                        <AddToPhotosIcon />
+                      </IconButton>
+                    </a>
                   </TableCell>
                 </TableRow>
               ))}
