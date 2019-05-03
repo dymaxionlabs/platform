@@ -20,7 +20,7 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3
   },
-  errorMsg: {
+  errorMessage: {
     color: "red"
   }
 });
@@ -64,12 +64,9 @@ class CreateStep extends React.Component {
         routerPush(`/models/new/od/upload?id=${modelId}`);
       })
       .catch(error => {
-        console.error(error);
+        console.error(error.response);
         this.setState({
-          //errorMsg: t("create_step.error_msg", { message: error }),
-          errorMsg: JSON.stringify(
-            error.response && error.response.data.detail
-          ),
+          errorMsg: t("create_step.error_msg"),
           isSubmitting: false
         });
       });
@@ -92,7 +89,9 @@ class CreateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("create_step.title")}
         </Typography>
-        <Typography className={classes.errorMessage}>{errorMsg}</Typography>
+        {errorMsg && (
+          <Typography className={classes.errorMessage}>{errorMsg}</Typography>
+        )}
         <form
           className={classes.form}
           method="post"
@@ -111,7 +110,7 @@ class CreateStep extends React.Component {
               value={this.state.name}
             />
           </FormControl>
-          <FormControl margin="normal" fullWidth>
+          <FormControl margin="normal" required fullWidth>
             <ChipInput
               label={t("create_step.classes_label")}
               onChange={chips => this.handleChangeClasses(chips)}
