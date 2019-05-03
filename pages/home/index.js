@@ -26,7 +26,7 @@ import React from "react";
 import FileUploadDialog from "../../components/FileUploadDialog";
 import Button from "@material-ui/core/Button";
 import ModelsContent from "../../components/home/ModelsContent";
-import ImagesContent from "../../components/home/ImagesContent";
+import FilesContent from "../../components/home/FilesContent";
 import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
 import RequestsContent from "../../components/home/RequestsContent";
@@ -127,7 +127,7 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["models", "images", "layers", "maps"];
+const sortedSections = ["models", "files", "layers", "maps"];
 
 const sections = {
   // dashboard: {
@@ -159,11 +159,11 @@ const sections = {
     icon: <LayersIcon />,
     content: <LayersContent />
   },
-  images: {
-    key: "images",
-    path: "/images",
+  files: {
+    key: "files",
+    path: "/files",
     icon: <CollectionsIcon />,
-    content: <ImagesContent />
+    content: <FilesContent />
   }
 };
 

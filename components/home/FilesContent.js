@@ -72,9 +72,9 @@ class NotImplementedSnackbar extends React.Component {
 
 NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 
-class ImagesContent extends React.Component {
+class FilesContent extends React.Component {
   state = {
-    images: [],
+    files: [],
     notImplementedOpen: false
   };
 
@@ -87,7 +87,7 @@ class ImagesContent extends React.Component {
         headers: { Authorization: this.props.token }
       })
       .then(response => {
-        this.setState({ images: response.data.results });
+        this.setState({ files: response.data.results });
       })
       .catch(err => {
         const response = err.response;
@@ -105,7 +105,7 @@ class ImagesContent extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { images: images, notImplementedOpen } = this.state;
+    const { files: files, notImplementedOpen } = this.state;
     const locale = i18n.language;
 
     return (
@@ -116,31 +116,31 @@ class ImagesContent extends React.Component {
           gutterBottom
           component="h2"
         >
-          {t("images.title")}
+          {t("files.title")}
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell>{t("images.created_at")}</TableCell>
-                <TableCell>{t("images.name")}</TableCell>
+                <TableCell>{t("files.created_at")}</TableCell>
+                <TableCell>{t("files.name")}</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
-              {images.map((image, i) => (
+              {files.map((file, i) => (
                 <TableRow key={i}>
                   <TableCell>
                     <Moment locale={locale} fromNow>
-                      {image.created_at}
+                      {file.created_at}
                     </Moment>
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    {image.name}
+                    {file.name}
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title={t("download")}>
-                      <a href={image.file} download>
+                      <a href={file.file} download>
                         <IconButton
                           className={classes.button}
                           aria-label={t("download")}
@@ -173,11 +173,11 @@ class ImagesContent extends React.Component {
   }
 }
 
-ImagesContent.propTypes = {
+FilesContent.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-ImagesContent = withStyles(styles)(ImagesContent);
-ImagesContent = withNamespaces("me")(ImagesContent);
+FilesContent = withStyles(styles)(FilesContent);
+FilesContent = withNamespaces("me")(FilesContent);
 
-export default ImagesContent;
+export default FilesContent;

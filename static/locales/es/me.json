@@ -1,9 +1,9 @@
 {
   "download": "Descargar",
-  "images": {
-    "created_at": "Fecha de creaci\u00f3n",
-    "name": "Nombre de imagen",
-    "title": "Tus im\u00e1genes"
+  "files": {
+    "created_at": "Fecha de subida",
+    "name": "Nombre del archivo",
+    "title": "Tus archivos"
   },
   "layers": {
     "created_at": "Fecha de creaci\u00f3n",
@@ -41,7 +41,7 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "images": "Im\u00e1genes",
+    "files": "Archivos",
     "layers": "Capas",
     "maps": "Mapas",
     "models": "Modelos",

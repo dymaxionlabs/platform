@@ -1,9 +1,9 @@
 {
   "download": "Download",
-  "images": {
-    "created_at": "Creation date",
-    "name": "Image name",
-    "title": "Your images"
+  "files": {
+    "created_at": "Upload date",
+    "name": "File name",
+    "title": "Your files"
   },
   "layers": {
     "created_at": "Creation date",
@@ -41,7 +41,7 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "images": "Images",
+    "files": "Files",
     "layers": "Layers",
     "maps": "Maps",
     "models": "Models",

@@ -142,7 +142,7 @@ case_study__agri,crop_lots_type_G1,Girasol 1°,Sunflower 1st
 me,sidebar.dashboard,Dashboard,Dashboard
 me,sidebar.layers,Capas,Layers
 me,sidebar.maps,Mapas,Maps
-me,sidebar.images,Imágenes,Images
+me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
 me,download,Descargar,Download
@@ -167,9 +167,9 @@ me,maps.title,Tus mapas,Your maps
 me,maps.name,Nombre,Name
 me,maps.description,Descripción,Description
 me,maps.created_at,Fecha de creación,Creation date
-me,images.title,Tus imágenes,Your images
-me,images.name,Nombre de imagen,Image name
-me,images.created_at,Fecha de creación,Creation date
+me,files.title,Tus archivos,Your files
+me,files.name,Nombre del archivo,File name
+me,files.created_at,Fecha de subida,Upload date
 me,requests.title,Tus pedidos,Your requests
 me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
