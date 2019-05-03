@@ -43,12 +43,11 @@ class ContactSerializer(serializers.Serializer):
         if self._has_landing():
             self._create_mailchimp_audience()
 
-        send_mail(
-            self.subject(),
-            self.body(),
-            from_email,
-            recipients,
-            html_message=self.html_body())
+        send_mail(self.subject(),
+                  self.body(),
+                  from_email,
+                  recipients,
+                  html_message=self.html_body())
 
     def subject(self):
         email = self.data['email']
@@ -89,9 +88,8 @@ class ContactSerializer(serializers.Serializer):
         try:
             audience_id = self._get_mailchimp_audience_id()
 
-            client = MailChimp(
-                mc_api=settings.MAILCHIMP_APIKEY,
-                mc_user=settings.MAILCHIMP_USER)
+            client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
+                               mc_user=settings.MAILCHIMP_USER)
 
             return client.lists.members.create(
                 audience_id, {
@@ -116,8 +114,9 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    owners = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field='username')
+    owners = serializers.SlugRelatedField(many=True,
+                                          read_only=True,
+                                          slug_field='username')
 
     class Meta:
         model = Project
@@ -161,4 +160,4 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = File
-        fields = ('project', 'name', 'metadata', 'file')
+        fields = ('project', 'name', 'metadata', 'file', 'created_at')
