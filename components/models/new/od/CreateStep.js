@@ -9,11 +9,14 @@ import cookie from "js-cookie";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
 import { i18n, withNamespaces } from "../../../../i18n";
-import { routerPush } from "../../../../utils/router";
 import { buildApiUrl } from "../../../../utils/api";
-import { withAuthSync } from "../../../../utils/auth";
+import { routerPush } from "../../../../utils/router";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
+  header: {
+    marginBottom: theme.spacing.unit * 3
+  },
   classesLabel: {
     paddingBottom: theme.spacing.unit
   },
@@ -85,7 +88,7 @@ class CreateStep extends React.Component {
     const { isSubmitting, errorMsg } = this.state;
 
     return (
-      <div>
+      <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("create_step.title")}
         </Typography>
@@ -127,7 +130,7 @@ class CreateStep extends React.Component {
             {t("create_step.submit_btn")}
           </Button>
         </form>
-      </div>
+      </StepContentContainer>
     );
   }
 }

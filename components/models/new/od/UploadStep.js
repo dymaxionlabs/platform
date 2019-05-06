@@ -8,6 +8,7 @@ import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import { routerPush, routerReplace } from "../../../../utils/router";
 import DropzoneArea from "../../../upload/DropzoneArea";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
@@ -128,7 +129,7 @@ class UploadStep extends React.Component {
     const { isUploading } = this.state;
 
     return (
-      <>
+      <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("upload_step.title")}
         </Typography>
@@ -146,7 +147,7 @@ class UploadStep extends React.Component {
         {isUploading && (
           <LinearProgress variant="determinate" value={progress} />
         )}
-      </>
+      </StepContentContainer>
     );
   }
 }

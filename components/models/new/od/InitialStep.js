@@ -1,20 +1,25 @@
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
 import { Link, withNamespaces } from "../../../../i18n";
-import Button from "@material-ui/core/Button";
+import StepContentContainer from "../StepContentContainer";
 
-const styles = theme => ({});
+const styles = theme => ({
+  header: {
+    marginBottom: theme.spacing.unit * 3
+  }
+});
 
 let InitialStep = ({ classes, t }) => (
-  <div>
+  <StepContentContainer>
     <Typography className={classes.header} component="h1" variant="h5">
       {t("new.od.header")}
     </Typography>
     <Link href="/models/new/od/create">
       <Button color="primary">{t("new.start_building")}</Button>
     </Link>
-  </div>
+  </StepContentContainer>
 );
 
 InitialStep = withStyles(styles)(InitialStep);
