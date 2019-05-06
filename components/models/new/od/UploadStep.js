@@ -6,7 +6,7 @@ import cookie from "js-cookie";
 import React from "react";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
+import { routerPush, routerReplace } from "../../../../utils/router";
 import DropzoneArea from "../../../upload/DropzoneArea";
 
 const styles = theme => ({
@@ -26,64 +26,106 @@ const styles = theme => ({
 
 class UploadStep extends React.Component {
   state = {
-    name: "",
-    classes: [],
-    isSubmitting: false
+    files: [],
+    uploading: false,
+    uploadProgress: 0
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
+  componentDidMount() {
+    const { estimatorId } = this.props;
+    if (!estimatorId) {
+      console.log("no estimator id");
+      routerReplace(`/models/new/od`);
+    }
+  }
 
+  handleSubmit = async () => {
     const project = cookie.get("project");
-    const { t, token } = this.props;
-    const { name, classes } = this.state;
+    const { estimatorId } = this.props;
+    const { files } = this.state;
 
-    const dataSend = {
-      project: project,
-      estimator_type: "OD",
-      name: name,
-      classes: classes
-    };
+    if (files.length == 0) return;
 
-    // Reset messages
-    this.setState({
-      errorMsg: "",
-      isSubmitting: true
-    });
+    this.setState({ uploading: true, uploadProgress: 0 });
+
+    let count = 0;
+    for (const file of files) {
+      try {
+        await axios.post(
+          buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
+          file,
+          {
+            headers: {
+              Authorization: this.props.token,
+              "Accept-Language": i18n.language
+            }
+          }
+        );
+      } catch (err) {
+        console.error(err);
+      }
+
+      count += 1;
+      this.setState({ uploadProgress: (count / files.length) * 100 });
+      if (count === files.length) {
+        this._setFilesOnEstimator(files, estimatorId);
+      }
+      if (!this.state.uploading) return;
+    }
+  };
+
+  _setFilesOnEstimator = (files, estimatorId) => {
+    console.log(`Associate ${files} to estimator ${estimatorId}`);
 
     axios
-      .post(buildApiUrl("/estimators/"), dataSend, {
+      .get(buildApiUrl(`/estimators/${estimatorId}/`), {
         headers: {
-          Authorization: token,
+          Authorization: this.props.token,
           "Accept-Language": i18n.language
         }
       })
-      .then(response => {
-        routerPush("/models/new/od/upload");
-      })
-      .catch(error => {
-        console.error(error);
-        this.setState({
-          //errorMsg: t("upload_step.error_msg", { message: error }),
-          errorMsg: JSON.stringify(
-            error.response && error.response.data.detail
-          ),
-          isSubmitting: false
-        });
+      .then(res => {
+        const { project, name, image_files } = res.data;
+        const newFiles = files.map(file => file.name);
+        const uniqueImageFiles = [...new Set(image_files.concat(newFiles))];
+
+        const dataSend = {
+          project: project,
+          name: name,
+          image_files: uniqueImageFiles
+        };
+
+        axios
+          .put(buildApiUrl(`/estimators/${estimatorId}/`), dataSend, {
+            headers: {
+              Authorization: this.props.token,
+              "Accept-Language": i18n.language
+            }
+          })
+          .then(() => {
+            this.setState({ uploading: false });
+            routerPush(`/models/new/od/annotate?id=${estimatorId}`);
+          })
+          .catch(error => {
+            console.error(error);
+            this.setState({
+              //errorMsg: t("upload_step.error_msg", { message: error }),
+              errorMsg: JSON.stringify(
+                error.response && error.response.data.detail
+              ),
+              uploading: false
+            });
+          });
       });
   };
 
-  handleNameChange = e => {
-    this.setState({ name: e.target.value });
-  };
-
-  handleChangeClasses = chips => {
-    this.setState({ classes: chips });
+  handleDropzoneChange = files => {
+    this.setState({ files: files });
   };
 
   render() {
     const { classes, t } = this.props;
-    const { isSubmitting } = this.state;
+    const { isUploading } = this.state;
 
     return (
       <>
@@ -95,11 +137,13 @@ class UploadStep extends React.Component {
           filesLimit={10}
           showPreviews={false}
           maxFileSize={2000000000} /* 2gb */
+          onChange={this.handleDropzoneChange}
+          showFileNamesInPreview={true}
         />
         <Button color="primary" onClick={this.handleSubmit}>
           {t("upload_step.submit_btn")}
         </Button>
-        {isSubmitting && (
+        {isUploading && (
           <LinearProgress variant="determinate" value={progress} />
         )}
       </>

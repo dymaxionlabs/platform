@@ -58,7 +58,7 @@ class NewODModel extends React.Component {
   }
 
   stepContent() {
-    const { token } = this.props;
+    const { token, query } = this.props;
     const { step } = this.state;
 
     switch (step) {
@@ -66,10 +66,10 @@ class NewODModel extends React.Component {
         return <InitialStep token={token} />;
       }
       case "create": {
-        return <CreateStep token={token} k />;
+        return <CreateStep token={token} />;
       }
       case "upload": {
-        return <UploadStep token={token} k />;
+        return <UploadStep token={token} estimatorId={query.id} />;
       }
     }
   }
