@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from projects.models import Project, File
 from projects.mixins import allowed_projects_for
+from projects.models import File, Project
 
-from .models import Estimator
+from .models import Estimator, ImageTile
 
 
 class ProjectSlugField(serializers.SlugRelatedField):
@@ -26,3 +26,11 @@ class EstimatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Estimator
         exclude = ('id', )
+
+
+class ImageTileSerializer(serializers.ModelSerializer):
+    file = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
+    class Meta:
+        model = ImageTile
+        fields = '__all__'

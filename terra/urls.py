@@ -23,11 +23,12 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from estimators.views import EstimatorViewSet
-from projects.views import (
-    ConfirmProjectInvitationView, ContactView, FileUploadView, FileViewSet,
-    LayerViewSet, MapViewSet, ProjectInvitationTokenViewSet, ProjectViewSet,
-    TestAuthView, TestErrorView, UserViewSet)
+from estimators.views import EstimatorViewSet, ImageTileViewSet
+from projects.views import (ConfirmProjectInvitationView, ContactView,
+                            FileUploadView, FileViewSet, LayerViewSet,
+                            MapViewSet, ProjectInvitationTokenViewSet,
+                            ProjectViewSet, TestAuthView, TestErrorView,
+                            UserViewSet)
 from quotations.views import RequestViewSet
 
 router = SimpleRouter()
@@ -37,6 +38,7 @@ router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
 router.register(r'estimators', EstimatorViewSet)
+router.register(r'image_tiles', ImageTileViewSet)
 router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
 
