@@ -1,4 +1,5 @@
 import os
+import random
 import uuid
 
 import rasterio
@@ -52,6 +53,10 @@ def tile_images_path(instance, filename):
         user_id=file.owner.id, raster_fname=raster_fname, filename=filename)
 
 
+def get_random_integer_value():
+    return random.randint(-2147483648, 2147483647)
+
+
 class ImageTile(models.Model):
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
@@ -62,9 +67,11 @@ class ImageTile(models.Model):
     height = models.IntegerField(default=0)
     tile_file = models.FileField(upload_to=tile_images_path,
                                  verbose_name=_('image'))
+    index = models.IntegerField(default=get_random_integer_value)
 
     class Meta:
         unique_together = (('file', 'col_off', 'row_off', 'width', 'height'))
+        indexes = [models.Index(fields=['file', 'index'])]
 
     def __str__(self):
         return '{file} ({col_off}, {row_off}, {width}, {height})'.format(
