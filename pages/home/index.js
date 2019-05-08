@@ -127,7 +127,7 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["models", "files", "layers", "maps"];
+const sortedSections = ["files", "layers", "maps"];
 
 const sections = {
   // dashboard: {
