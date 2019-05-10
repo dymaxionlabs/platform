@@ -5,14 +5,16 @@ import { Layer, Rect, Stage, Transformer } from "react-konva";
 
 class Rectangle extends React.Component {
   render() {
+    const { x, y, width, height, name, onDragEnd } = this.props;
+
     return (
       <Rect
-        x={this.props.x}
-        y={this.props.y}
-        width={this.props.width}
-        height={this.props.height}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
         fill="#0080ff40"
-        name={this.props.name}
+        name={name}
         draggable
       />
     );
@@ -63,7 +65,7 @@ class TransformerComponent extends React.Component {
   }
 }
 
-class DeleteRectangleHandle extends React.Component {
+class DeleteRectangleFab extends React.Component {
   render() {
     const { shape, onClick } = this.props;
 
@@ -165,6 +167,11 @@ class AnnotateTest extends React.Component {
     this.setState({ rectangles: newRectangles });
   };
 
+  selectedShape() {
+    const { rectangles, selectedShapeName } = this.state;
+    return rectangles.find(r => r.name === selectedShapeName);
+  }
+
   render() {
     const {
       innerWidth,
@@ -173,7 +180,7 @@ class AnnotateTest extends React.Component {
       selectedShapeName
     } = this.state;
 
-    const selectedShape = rectangles.find(r => r.name === selectedShapeName);
+    const selectedShape = this.selectedShape();
 
     return (
       <React.Fragment>
@@ -190,7 +197,7 @@ class AnnotateTest extends React.Component {
           </Layer>
         </Stage>
         {selectedShape && (
-          <DeleteRectangleHandle
+          <DeleteRectangleFab
             shape={selectedShape}
             onClick={this.handleDeleteRectangle}
           />
