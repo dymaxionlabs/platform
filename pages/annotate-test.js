@@ -1,5 +1,7 @@
+import Fab from "@material-ui/core/Fab";
+import RemoveIcon from "@material-ui/icons/Remove";
 import React from "react";
-import { Stage, Layer, Rect, Transformer } from "react-konva";
+import { Layer, Rect, Stage, Transformer } from "react-konva";
 
 class Rectangle extends React.Component {
   render() {
@@ -57,6 +59,29 @@ class TransformerComponent extends React.Component {
         keepRatio={false}
         ignoreStroke={true}
       />
+    );
+  }
+}
+
+class DeleteRectangleHandle extends React.Component {
+  render() {
+    const { shape, onClick } = this.props;
+
+    const center = {
+      x: shape.x + shape.width / 2,
+      y: shape.y + shape.height / 2
+    };
+
+    return (
+      <Fab
+        size="small"
+        color="secondary"
+        aria-label="Remove"
+        onClick={onClick}
+        style={{ position: "fixed", top: center.y, left: center.x }}
+      >
+        <RemoveIcon />
+      </Fab>
     );
   }
 }
@@ -127,6 +152,19 @@ class AnnotateTest extends React.Component {
     }
   };
 
+  handleDeleteRectangle = e => {
+    console.log(`delete rectangle`);
+
+    const { selectedShapeName } = this.state;
+
+    // If there is no shape selected, do nothing
+    if (!selectedShapeName) return;
+
+    const { rectangles } = this.state;
+    const newRectangles = rectangles.filter(r => r.name !== selectedShapeName);
+    this.setState({ rectangles: newRectangles });
+  };
+
   render() {
     const {
       innerWidth,
@@ -135,19 +173,29 @@ class AnnotateTest extends React.Component {
       selectedShapeName
     } = this.state;
 
+    const selectedShape = rectangles.find(r => r.name === selectedShapeName);
+
     return (
-      <Stage
-        width={innerWidth}
-        height={innerHeight}
-        onMouseDown={this.handleStageMouseDown}
-      >
-        <Layer>
-          {rectangles.map((rect, i) => (
-            <Rectangle key={i} {...rect} />
-          ))}
-          <TransformerComponent selectedShapeName={selectedShapeName} />
-        </Layer>
-      </Stage>
+      <React.Fragment>
+        <Stage
+          width={innerWidth}
+          height={innerHeight}
+          onMouseDown={this.handleStageMouseDown}
+        >
+          <Layer>
+            {rectangles.map((rect, i) => (
+              <Rectangle key={i} {...rect} />
+            ))}
+            <TransformerComponent selectedShapeName={selectedShapeName} />
+          </Layer>
+        </Stage>
+        {selectedShape && (
+          <DeleteRectangleHandle
+            shape={selectedShape}
+            onClick={this.handleDeleteRectangle}
+          />
+        )}
+      </React.Fragment>
     );
   }
 }
