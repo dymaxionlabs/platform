@@ -9,7 +9,9 @@ class Rectangle extends React.Component {
         y={this.props.y}
         width={this.props.width}
         height={this.props.height}
-        fill={this.props.fill}
+        strokeWidth={2}
+        stroke="#0080ff"
+        fill="#0080ff40"
         name={this.props.name}
         draggable
       />
@@ -68,7 +70,6 @@ class AnnotateTest extends React.Component {
         y: 10,
         width: 100,
         height: 100,
-        fill: "red",
         name: "rect1"
       },
       {
@@ -76,7 +77,6 @@ class AnnotateTest extends React.Component {
         y: 150,
         width: 100,
         height: 100,
-        fill: "green",
         name: "rect2"
       }
     ],
