@@ -61,7 +61,7 @@ class Rectangle extends React.Component {
   }
 }
 
-class TransformerComponent extends React.Component {
+class RectangleTransformer extends React.Component {
   componentDidMount() {
     this.checkNode();
   }
@@ -266,7 +266,7 @@ class AnnotateTest extends React.Component {
                 {...rect}
               />
             ))}
-            <TransformerComponent
+            <RectangleTransformer
               selectedShapeName={selectedShapeName}
               onTransform={this.handleTransform}
             />
