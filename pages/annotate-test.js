@@ -31,21 +31,41 @@ class AnnotationImage extends React.Component {
 }
 
 class Rectangle extends React.Component {
+  state = {
+    hover: false
+  };
+
   handleMouseEnter = e => {
-    const container = e.target.getStage().container();
-    container.style.cursor = "pointer";
+    this.setState({ hover: true });
   };
 
   handleMouseLeave = e => {
-    const container = e.target.getStage().container();
-    container.style.cursor = "default";
+    this.setState({ hover: false });
   };
+
+  componentDidUpdate() {
+    const { hover } = this.state;
+    const { selected } = this.props;
+
+    const container = this.rect.getStage().container();
+
+    if (hover) {
+      if (selected) {
+        container.style.cursor = "move";
+      } else {
+        container.style.cursor = "pointer";
+      }
+    } else {
+      container.style.cursor = "crosshair";
+    }
+  }
 
   render() {
     const { x, y, width, height, name, onDragMove } = this.props;
 
     return (
       <Rect
+        ref={node => (this.rect = node)}
         x={x}
         y={y}
         width={width}
@@ -106,9 +126,7 @@ class RectangleTransformer extends React.Component {
 
     return (
       <Transformer
-        ref={node => {
-          this.transformer = node;
-        }}
+        ref={node => (this.transformer = node)}
         rotateEnabled={false}
         keepRatio={false}
         ignoreStroke={true}
@@ -266,6 +284,7 @@ class AnnotateTest extends React.Component {
               <Rectangle
                 key={name}
                 onDragMove={this.handleRectangleDragMove}
+                selected={name === selectedShapeName}
                 {...rect}
               />
             ))}
