@@ -1,7 +1,7 @@
 import Fab from "@material-ui/core/Fab";
 import RemoveIcon from "@material-ui/icons/Remove";
 import React from "react";
-import { Layer, Rect, Stage, Transformer } from "react-konva";
+import { Layer, Rect, Stage, Transformer, Image } from "react-konva";
 
 const MIN_RECT_SIZE = 50;
 
@@ -258,6 +258,9 @@ class AnnotateTest extends React.Component {
           height={innerHeight}
           onMouseDown={this.handleStageMouseDown}
         >
+          <Layer>
+            <AnnotationImage src="/static/1_1.jpg" width={500} height={500} />
+          </Layer>
           <Layer>
             {Object.entries(rectangles).map(([name, rect]) => (
               <Rectangle
