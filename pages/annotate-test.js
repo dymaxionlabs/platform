@@ -3,6 +3,8 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import React from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
 
+const MIN_RECT_SIZE = 50;
+
 class Rectangle extends React.Component {
   handleMouseEnter = e => {
     const container = e.target.getStage().container();
@@ -64,6 +66,16 @@ class TransformerComponent extends React.Component {
     this.transformer.getLayer().batchDraw();
   }
 
+  boundBoxFunc = (oldBox, newBox) => {
+    if (newBox.width < MIN_RECT_SIZE) {
+      newBox.width = MIN_RECT_SIZE;
+    }
+    if (newBox.height < MIN_RECT_SIZE) {
+      newBox.height = MIN_RECT_SIZE;
+    }
+    return newBox;
+  };
+
   render() {
     const { onTransform } = this.props;
 
@@ -76,6 +88,7 @@ class TransformerComponent extends React.Component {
         keepRatio={false}
         ignoreStroke={true}
         onTransform={onTransform}
+        boundBoxFunc={this.boundBoxFunc}
       />
     );
   }
