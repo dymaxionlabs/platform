@@ -4,8 +4,18 @@ import React from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
 
 class Rectangle extends React.Component {
+  handleMouseEnter = e => {
+    const container = e.target.getStage().container();
+    container.style.cursor = "pointer";
+  };
+
+  handleMouseLeave = e => {
+    const container = e.target.getStage().container();
+    container.style.cursor = "default";
+  };
+
   render() {
-    const { x, y, width, height, name, onDragEnd } = this.props;
+    const { x, y, width, height, name, onDragMove } = this.props;
 
     return (
       <Rect
@@ -16,6 +26,9 @@ class Rectangle extends React.Component {
         fill="#0080ff40"
         name={name}
         draggable
+        onDragMove={onDragMove}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
       />
     );
   }
@@ -52,6 +65,8 @@ class TransformerComponent extends React.Component {
   }
 
   render() {
+    const { onTransform } = this.props;
+
     return (
       <Transformer
         ref={node => {
@@ -60,6 +75,7 @@ class TransformerComponent extends React.Component {
         rotateEnabled={false}
         keepRatio={false}
         ignoreStroke={true}
+        onTransform={onTransform}
       />
     );
   }
@@ -70,8 +86,8 @@ class DeleteRectangleFab extends React.Component {
     const { shape, onClick } = this.props;
 
     const center = {
-      x: shape.x + shape.width / 2,
-      y: shape.y + shape.height / 2
+      x: shape.x + shape.width / 2 - 20,
+      y: shape.y + shape.height / 2 - 20
     };
 
     return (
@@ -92,22 +108,22 @@ class AnnotateTest extends React.Component {
   state = {
     innerWidth: 0,
     innerHeight: 0,
-    rectangles: [
-      {
+    rectangles: {
+      "0": {
         x: 10,
         y: 10,
         width: 100,
         height: 100,
-        name: "rect1"
+        name: "0"
       },
-      {
+      "1": {
         x: 150,
         y: 150,
-        width: 100,
-        height: 100,
-        name: "rect2"
+        width: 200,
+        height: 120,
+        name: "1"
       }
-    ],
+    },
     selectedShapeName: ""
   };
 
@@ -142,7 +158,7 @@ class AnnotateTest extends React.Component {
 
     // Find clicked rect by its name
     const name = e.target.name();
-    const rect = this.state.rectangles.find(r => r.name === name);
+    const rect = this.state.rectangles[name];
     if (rect) {
       this.setState({
         selectedShapeName: name
@@ -155,21 +171,36 @@ class AnnotateTest extends React.Component {
   };
 
   handleDeleteRectangle = e => {
-    console.log(`delete rectangle`);
-
-    const { selectedShapeName } = this.state;
+    const { selectedShapeName, rectangles } = this.state;
 
     // If there is no shape selected, do nothing
     if (!selectedShapeName) return;
 
-    const { rectangles } = this.state;
-    const newRectangles = rectangles.filter(r => r.name !== selectedShapeName);
+    const { [selectedShapeName]: deletedRect, ...newRectangles } = rectangles;
     this.setState({ rectangles: newRectangles });
   };
 
-  selectedShape() {
+  handleRectangleDragMove = e => {
+    this.updateSelectedRectangle(rect => {
+      rect.x = e.target.x();
+      rect.y = e.target.y();
+    });
+  };
+
+  handleTransform = e => {
+    const transformer = e.currentTarget;
+
+    this.updateSelectedRectangle(rect => {
+      rect.width = transformer.getWidth();
+      rect.height = transformer.getHeight();
+    });
+  };
+
+  updateSelectedRectangle(updateCallback) {
     const { rectangles, selectedShapeName } = this.state;
-    return rectangles.find(r => r.name === selectedShapeName);
+    const selectedShape = rectangles[selectedShapeName];
+    updateCallback(selectedShape);
+    this.setState({ rectangles: rectangles });
   }
 
   render() {
@@ -180,7 +211,7 @@ class AnnotateTest extends React.Component {
       selectedShapeName
     } = this.state;
 
-    const selectedShape = this.selectedShape();
+    const selectedShape = rectangles[selectedShapeName];
 
     return (
       <React.Fragment>
@@ -190,10 +221,17 @@ class AnnotateTest extends React.Component {
           onMouseDown={this.handleStageMouseDown}
         >
           <Layer>
-            {rectangles.map((rect, i) => (
-              <Rectangle key={i} {...rect} />
+            {Object.entries(rectangles).map(([name, rect]) => (
+              <Rectangle
+                key={name}
+                onDragMove={this.handleRectangleDragMove}
+                {...rect}
+              />
             ))}
-            <TransformerComponent selectedShapeName={selectedShapeName} />
+            <TransformerComponent
+              selectedShapeName={selectedShapeName}
+              onTransform={this.handleTransform}
+            />
           </Layer>
         </Stage>
         {selectedShape && (
