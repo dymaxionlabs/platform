@@ -5,6 +5,31 @@ import { Layer, Rect, Stage, Transformer } from "react-konva";
 
 const MIN_RECT_SIZE = 50;
 
+class AnnotationImage extends React.Component {
+  state = {
+    image: null
+  };
+
+  componentDidMount() {
+    const { src } = this.props;
+
+    const image = new window.Image();
+    image.src = src;
+    image.onload = () => {
+      this.setState({
+        image
+      });
+    };
+  }
+
+  render() {
+    const { image } = this.state;
+    const { width, height } = this.props;
+
+    return <Image width={width} height={height} image={image} />;
+  }
+}
+
 class Rectangle extends React.Component {
   handleMouseEnter = e => {
     const container = e.target.getStage().container();
