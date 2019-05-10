@@ -9,8 +9,6 @@ class Rectangle extends React.Component {
         y={this.props.y}
         width={this.props.width}
         height={this.props.height}
-        strokeWidth={2}
-        stroke="#0080ff"
         fill="#0080ff40"
         name={this.props.name}
         draggable
@@ -55,6 +53,9 @@ class TransformerComponent extends React.Component {
         ref={node => {
           this.transformer = node;
         }}
+        rotateEnabled={false}
+        keepRatio={false}
+        ignoreStroke={true}
       />
     );
   }
