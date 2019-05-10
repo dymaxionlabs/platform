@@ -4,6 +4,8 @@ import React from "react";
 import { Layer, Rect, Stage, Transformer, Image } from "react-konva";
 
 const MIN_RECT_SIZE = 50;
+const RECT_FILL = "#0080ff40";
+const RECT_STROKE = "#0080ff";
 
 class AnnotationImage extends React.Component {
   state = {
@@ -61,7 +63,7 @@ class Rectangle extends React.Component {
   }
 
   render() {
-    const { x, y, width, height, name, onDragMove } = this.props;
+    const { x, y, width, height, name, selected, onDragMove } = this.props;
 
     return (
       <Rect
@@ -70,7 +72,9 @@ class Rectangle extends React.Component {
         y={y}
         width={width}
         height={height}
-        fill="#0080ff40"
+        stroke={RECT_STROKE}
+        strokeWidth={selected ? 0 : 1}
+        fill={RECT_FILL}
         name={name}
         draggable
         onDragMove={onDragMove}
