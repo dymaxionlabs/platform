@@ -27,21 +27,21 @@ class TransformerComponent extends React.Component {
   }
 
   checkNode() {
-    // here we need to manually attach or detach Transformer node
+    // Here we need to manually attach or detach Transformer node
     const stage = this.transformer.getStage();
     const { selectedShapeName } = this.props;
 
     const selectedNode = stage.findOne("." + selectedShapeName);
-    // do nothing if selected node is already attached
+    // Do nothing if selected node is already attached
     if (selectedNode === this.transformer.node()) {
       return;
     }
 
     if (selectedNode) {
-      // attach to another node
+      // Attach to another node
       this.transformer.attachTo(selectedNode);
     } else {
-      // remove transformer
+      // Remove transformer
       this.transformer.detach();
     }
     this.transformer.getLayer().batchDraw();
@@ -98,7 +98,7 @@ class AnnotateTest extends React.Component {
   }
 
   handleStageMouseDown = e => {
-    // clicked on stage - clear selection
+    // Clicked on stage - clear selection
     if (e.target === e.target.getStage()) {
       this.setState({
         selectedShapeName: ""
@@ -106,14 +106,14 @@ class AnnotateTest extends React.Component {
       return;
     }
 
-    // clicked on transformer - do nothing
+    // Clicked on transformer - do nothing
     const clickedOnTransformer =
       e.target.getParent().className === "Transformer";
     if (clickedOnTransformer) {
       return;
     }
 
-    // find clicked rect by its name
+    // Find clicked rect by its name
     const name = e.target.name();
     const rect = this.state.rectangles.find(r => r.name === name);
     if (rect) {
@@ -128,7 +128,12 @@ class AnnotateTest extends React.Component {
   };
 
   render() {
-    const { innerWidth, innerHeight } = this.state;
+    const {
+      innerWidth,
+      innerHeight,
+      rectangles,
+      selectedShapeName
+    } = this.state;
 
     return (
       <Stage
@@ -137,12 +142,10 @@ class AnnotateTest extends React.Component {
         onMouseDown={this.handleStageMouseDown}
       >
         <Layer>
-          {this.state.rectangles.map((rect, i) => (
+          {rectangles.map((rect, i) => (
             <Rectangle key={i} {...rect} />
           ))}
-          <TransformerComponent
-            selectedShapeName={this.state.selectedShapeName}
-          />
+          <TransformerComponent selectedShapeName={selectedShapeName} />
         </Layer>
       </Stage>
     );
