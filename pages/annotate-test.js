@@ -24,11 +24,24 @@ class AnnotationImage extends React.Component {
     };
   }
 
+  handleMouseMove = e => {
+    const container = e.target.getStage().container();
+    container.style.cursor = "crosshair";
+  };
+
   render() {
     const { image } = this.state;
     const { width, height } = this.props;
 
-    return <Image width={width} height={height} image={image} />;
+    return (
+      <Image
+        ref={node => (this.image = node)}
+        onMouseMove={this.handleMouseMove}
+        width={width}
+        height={height}
+        image={image}
+      />
+    );
   }
 }
 
@@ -57,8 +70,6 @@ class Rectangle extends React.Component {
       } else {
         container.style.cursor = "pointer";
       }
-    } else {
-      container.style.cursor = "crosshair";
     }
   }
 
@@ -168,22 +179,9 @@ class AnnotateTest extends React.Component {
   state = {
     innerWidth: 0,
     innerHeight: 0,
-    rectangles: {
-      "0": {
-        x: 10,
-        y: 10,
-        width: 100,
-        height: 100,
-        name: "0"
-      },
-      "1": {
-        x: 150,
-        y: 150,
-        width: 200,
-        height: 120,
-        name: "1"
-      }
-    },
+    mouseDraw: false,
+    rectCount: 0,
+    rectangles: {},
     selectedShapeName: ""
   };
 
@@ -202,8 +200,18 @@ class AnnotateTest extends React.Component {
 
   handleStageMouseDown = e => {
     // Clicked on stage - clear selection
-    if (e.target === e.target.getStage()) {
+    if (e.target.className === "Image") {
+      const stage = e.target.getStage();
+      const mousePos = stage.getPointerPosition();
+      const newRect = {
+        x: mousePos.x,
+        y: mousePos.y,
+        width: 0,
+        height: 0
+      };
       this.setState({
+        mouseDown: true,
+        newRect: newRect,
         selectedShapeName: ""
       });
       return;
@@ -228,6 +236,34 @@ class AnnotateTest extends React.Component {
         selectedShapeName: ""
       });
     }
+  };
+
+  handleStageMouseMove = e => {
+    const stage = e.target.getStage();
+    const mousePos = stage.getPointerPosition();
+
+    // Update new rectangle, if drawing any
+    let newRect = this.state.newRect;
+    if (newRect) {
+      newRect.width = mousePos.x - newRect.x;
+      newRect.height = mousePos.y - newRect.y;
+      this.setState({ newRect, mouseDraw: true });
+    }
+  };
+
+  handleStageMouseUp = () => {
+    const { rectangles, newRect, mouseDraw } = this.state;
+
+    if (mouseDraw) {
+      const newRectName = String(Object.keys(rectangles).length + 1);
+      const newRectangles = {
+        ...rectangles,
+        [newRectName]: { name: newRectName, ...newRect }
+      };
+      this.setState({ rectangles: newRectangles, mouseDraw: false });
+    }
+
+    this.setState({ mouseDown: false });
   };
 
   handleDeleteRectangle = e => {
@@ -268,10 +304,14 @@ class AnnotateTest extends React.Component {
       innerWidth,
       innerHeight,
       rectangles,
-      selectedShapeName
+      selectedShapeName,
+      newRect,
+      mouseDraw,
+      mouseDown
     } = this.state;
 
     const selectedShape = rectangles[selectedShapeName];
+    const rect = mouseDraw;
 
     return (
       <React.Fragment>
@@ -279,6 +319,8 @@ class AnnotateTest extends React.Component {
           width={innerWidth}
           height={innerHeight}
           onMouseDown={this.handleStageMouseDown}
+          onMouseUp={mouseDown && this.handleStageMouseUp}
+          onMouseMove={mouseDown && this.handleStageMouseMove}
         >
           <Layer>
             <AnnotationImage src="/static/1_1.jpg" width={500} height={500} />
@@ -292,6 +334,7 @@ class AnnotateTest extends React.Component {
                 {...rect}
               />
             ))}
+            {mouseDraw && <Rectangle {...newRect} />}
             <RectangleTransformer
               selectedShapeName={selectedShapeName}
               onTransform={this.handleTransform}
