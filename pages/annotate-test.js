@@ -1,5 +1,5 @@
 import Fab from "@material-ui/core/Fab";
-import RemoveIcon from "@material-ui/icons/Remove";
+import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
 import { Layer, Rect, Stage, Transformer, Image } from "react-konva";
 
@@ -169,7 +169,7 @@ class DeleteRectangleFab extends React.Component {
         onClick={onClick}
         style={{ position: "fixed", top: center.y, left: center.x }}
       >
-        <RemoveIcon />
+        <ClearIcon />
       </Fab>
     );
   }
@@ -260,7 +260,11 @@ class AnnotateTest extends React.Component {
         ...rectangles,
         [newRectName]: { name: newRectName, ...newRect }
       };
-      this.setState({ rectangles: newRectangles, mouseDraw: false });
+      this.setState({
+        rectangles: newRectangles,
+        mouseDraw: false,
+        selectedShapeName: newRectName
+      });
     }
 
     this.setState({ mouseDown: false });
@@ -287,15 +291,17 @@ class AnnotateTest extends React.Component {
     const transformer = e.currentTarget;
 
     this.updateSelectedRectangle(rect => {
+      rect.x = transformer.getX();
+      rect.y = transformer.getY();
       rect.width = transformer.getWidth();
       rect.height = transformer.getHeight();
     });
   };
 
-  updateSelectedRectangle(updateCallback) {
+  updateSelectedRectangle(cb) {
     const { rectangles, selectedShapeName } = this.state;
     const selectedShape = rectangles[selectedShapeName];
-    updateCallback(selectedShape);
+    cb(selectedShape);
     this.setState({ rectangles: rectangles });
   }
 
@@ -311,7 +317,6 @@ class AnnotateTest extends React.Component {
     } = this.state;
 
     const selectedShape = rectangles[selectedShapeName];
-    const rect = mouseDraw;
 
     return (
       <React.Fragment>
