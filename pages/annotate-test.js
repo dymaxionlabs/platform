@@ -341,9 +341,14 @@ class AnnotatedImage extends React.Component {
 
   handleStageMouseUp = () => {
     const { mouseDraw } = this.state;
+    const { labels } = this.props;
 
     if (mouseDraw) {
-      this.setState({ showLabelMenu: true });
+      if (labels.length > 1) {
+        this.setState({ showLabelMenu: true });
+      } else {
+        this.addNewRectangle(labels[0]);
+      }
     }
 
     this.setState({ mouseDown: false });
@@ -385,11 +390,15 @@ class AnnotatedImage extends React.Component {
     });
   };
 
-  handleLabelItemClick = item => {
+  handleLabelItemClick = label => {
+    this.addNewRectangle(label);
+  };
+
+  addNewRectangle(label) {
     const { labels, rectangles } = this.props;
     const { newRect } = this.state;
 
-    const labelIndex = labels.indexOf(item);
+    const labelIndex = labels.indexOf(label);
     const labelColor = LABEL_COLORS[labelIndex % LABEL_COLORS.length];
 
     const newRectName = String(Object.keys(rectangles).length + 42);
@@ -398,7 +407,7 @@ class AnnotatedImage extends React.Component {
       [newRectName]: {
         ...newRect,
         name: newRectName,
-        label: item,
+        label: label,
         fill: `${labelColor}30`,
         stroke: labelColor
       }
@@ -409,7 +418,7 @@ class AnnotatedImage extends React.Component {
       selectedShapeName: newRectName
     });
     this.triggerOnChange(newRectangles);
-  };
+  }
 
   updateSelectedRectangle(cb) {
     const { rectangles } = this.props;
@@ -509,7 +518,7 @@ class AnnotateTest extends React.Component {
 
   componentDidMount() {
     // This would come from an API response...
-    const labels = ["Car", "Bus"];
+    const labels = ["Roof", "Other"];
     const images = [
       {
         src: "/static/tiles/1_1.jpg",
