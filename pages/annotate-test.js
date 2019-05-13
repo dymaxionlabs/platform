@@ -115,6 +115,10 @@ class Rectangle extends React.Component {
       onDragMove
     } = this.props;
 
+    const textPadding = 5;
+    const textX = textPadding + (width < 0 ? x + width : x);
+    const textY = textPadding + (height < 0 ? y + height : y);
+
     return (
       <React.Fragment>
         <Rect
@@ -133,8 +137,8 @@ class Rectangle extends React.Component {
           onMouseLeave={this.handleMouseLeave}
         />
         <Text
-          x={x + 5}
-          y={y + 5}
+          x={textX}
+          y={textY}
           text={label}
           fill="#ffffff"
           fontVariant="small-caps"
