@@ -6,7 +6,7 @@ import Popover from "@material-ui/core/Popover";
 import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
 import { Image, Layer, Rect, Stage, Text, Transformer } from "react-konva";
-import { Typography } from "@material-ui/core";
+import randomColor from "randomcolor";
 
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
@@ -86,6 +86,8 @@ class Rectangle extends React.Component {
       height,
       label,
       name,
+      stroke,
+      fill,
       selected,
       onDragMove
     } = this.props;
@@ -98,9 +100,9 @@ class Rectangle extends React.Component {
           y={y}
           width={width}
           height={height}
-          stroke={RECT_STROKE}
-          strokeWidth={selected ? 0 : 1}
-          fill={RECT_FILL}
+          stroke={stroke}
+          strokeWidth={selected ? 0 : 2}
+          fill={fill}
           name={name}
           draggable
           onDragMove={onDragMove}
@@ -178,6 +180,9 @@ class RectangleTransformer extends React.Component {
         rotateEnabled={false}
         keepRatio={false}
         ignoreStroke={true}
+        anchorCornerRadius={3}
+        anchorStrokeWidth={2}
+        anchorFill={RECT_STROKE}
         onTransform={onTransform}
         boundBoxFunc={this.boundBoxFunc}
       />
@@ -257,7 +262,9 @@ class AnnotatedImage extends React.Component {
         x: mousePos.x,
         y: mousePos.y,
         width: 0,
-        height: 0
+        height: 0,
+        stroke: RECT_STROKE,
+        fill: RECT_FILL
       };
       this.setState({
         mouseDown: true,
@@ -352,13 +359,22 @@ class AnnotatedImage extends React.Component {
   };
 
   handleLabelItemClick = item => {
-    const { rectangles } = this.props;
+    const { labels, labelColors, rectangles } = this.props;
     const { newRect } = this.state;
 
-    const newRectName = String(Object.keys(rectangles).length + 1);
+    const labelIndex = labels.indexOf(item);
+    const labelColor = labelColors[labelIndex];
+
+    const newRectName = String(Object.keys(rectangles).length + 42);
     const newRectangles = {
       ...rectangles,
-      [newRectName]: { name: newRectName, label: item, ...newRect }
+      [newRectName]: {
+        ...newRect,
+        name: newRectName,
+        label: item,
+        fill: `${labelColor}30`,
+        stroke: labelColor
+      }
     };
     this.setState({
       mouseDraw: false,
@@ -377,7 +393,16 @@ class AnnotatedImage extends React.Component {
   }
 
   render() {
-    const { src, width, height, rectangles, style, className } = this.props;
+    const {
+      src,
+      width,
+      height,
+      rectangles,
+      labels,
+      style,
+      className
+    } = this.props;
+
     const {
       showLabelMenu,
       selectedShapeName,
@@ -429,7 +454,7 @@ class AnnotatedImage extends React.Component {
         <LabelMenu
           open={showLabelMenu}
           onItemClick={this.handleLabelItemClick}
-          items={["Car", "Bus"]}
+          items={labels}
           left={showLabelMenu ? mouseX : 0}
           top={showLabelMenu ? mouseY : 0}
         />
@@ -441,7 +466,8 @@ class AnnotatedImage extends React.Component {
 class AnnotateTest extends React.Component {
   state = {
     images: [],
-    rectanglesPerImage: {}
+    labels: [],
+    labelColors: []
   };
 
   static async getInitialProps({ res }) {
@@ -450,30 +476,47 @@ class AnnotateTest extends React.Component {
     };
   }
 
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
-    // This would come from an API response
+    // This would come from an API response...
+    const labels = ["Car", "Bus"];
+    const images = [
+      {
+        src: "/static/tiles/1_1.jpg",
+        width: 500,
+        height: 500,
+        annotations: {}
+      },
+      {
+        src: "/static/tiles/1_2.jpg",
+        width: 500,
+        height: 500,
+        annotations: {}
+      },
+      {
+        src: "/static/tiles/1_3.jpg",
+        width: 500,
+        height: 500,
+        annotations: {}
+      }
+    ];
+
     this.setState({
-      images: [
-        {
-          src: "/static/tiles/1_1.jpg",
-          width: 500,
-          height: 500,
-          annotations: {}
-        },
-        {
-          src: "/static/tiles/1_2.jpg",
-          width: 500,
-          height: 500,
-          annotations: {}
-        },
-        {
-          src: "/static/tiles/1_3.jpg",
-          width: 500,
-          height: 500,
-          annotations: {}
-        }
-      ]
+      images: images,
+      labels: labels
     });
+
+    // Set random colors for each label
+    const labelColors = randomColor({
+      format: "hex",
+      luminosity: "bright",
+      count: labels.length
+    });
+    console.log(`labelColors: ${JSON.stringify(labelColors)}`);
+    this.setState({ labelColors });
   }
 
   handleChange = (src, rectangles) => {
@@ -484,7 +527,7 @@ class AnnotateTest extends React.Component {
   };
 
   render() {
-    const { images } = this.state;
+    const { images, labels, labelColors } = this.state;
 
     return images.map(image => (
       <AnnotatedImage
@@ -493,6 +536,8 @@ class AnnotateTest extends React.Component {
         width={image.width}
         height={image.height}
         rectangles={image.annotations}
+        labels={labels}
+        labelColors={labelColors}
         onChange={this.handleChange}
         style={{ margin: 10 }}
       />
