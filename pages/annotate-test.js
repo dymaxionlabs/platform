@@ -188,7 +188,7 @@ class DeleteRectangleFab extends React.Component {
   }
 }
 
-class AnnotateTest extends React.Component {
+class AnnotatedImage extends React.Component {
   state = {
     innerWidth: 0,
     innerHeight: 0,
@@ -197,12 +197,6 @@ class AnnotateTest extends React.Component {
     rectangles: {},
     selectedShapeName: ""
   };
-
-  static async getInitialProps({ res }) {
-    return {
-      namespacesRequired: []
-    };
-  }
 
   componentDidMount() {
     this.setState({
@@ -239,7 +233,7 @@ class AnnotateTest extends React.Component {
 
     // Find clicked rect by its name
     const name = e.target.name();
-    const rect = this.state.rectangles[name];
+    const rect = this.props.rectangles[name];
     if (rect) {
       this.setState({
         selectedShapeName: name
@@ -265,7 +259,8 @@ class AnnotateTest extends React.Component {
   };
 
   handleStageMouseUp = () => {
-    const { rectangles, newRect, mouseDraw } = this.state;
+    const { rectangles } = this.props;
+    const { newRect, mouseDraw } = this.state;
 
     if (mouseDraw) {
       const newRectName = String(Object.keys(rectangles).length + 1);
@@ -274,23 +269,30 @@ class AnnotateTest extends React.Component {
         [newRectName]: { name: newRectName, ...newRect }
       };
       this.setState({
-        rectangles: newRectangles,
         mouseDraw: false,
         selectedShapeName: newRectName
       });
+      this.triggerOnChange(newRectangles);
     }
 
     this.setState({ mouseDown: false });
   };
 
+  triggerOnChange(rectangles) {
+    const { src, onChange } = this.props;
+    console.log(JSON.stringify(rectangles));
+    onChange(src, rectangles);
+  }
+
   handleDeleteRectangle = e => {
-    const { selectedShapeName, rectangles } = this.state;
+    const { rectangles } = this.props;
+    const { selectedShapeName } = this.state;
 
     // If there is no shape selected, do nothing
     if (!selectedShapeName) return;
 
     const { [selectedShapeName]: deletedRect, ...newRectangles } = rectangles;
-    this.setState({ rectangles: newRectangles });
+    this.triggerOnChange(newRectangles);
   };
 
   handleRectangleDragMove = e => {
@@ -314,24 +316,26 @@ class AnnotateTest extends React.Component {
   };
 
   updateSelectedRectangle(cb) {
-    const { rectangles, selectedShapeName } = this.state;
+    const { rectangles } = this.props;
+    const { selectedShapeName } = this.state;
     const selectedShape = rectangles[selectedShapeName];
-    cb(selectedShape);
-    this.setState({ rectangles: rectangles });
+    if (selectedShape) cb(selectedShape);
+    this.triggerOnChange(rectangles);
   }
 
   render() {
+    const { src, width, height, rectangles } = this.props;
+
     const {
       innerWidth,
       innerHeight,
-      rectangles,
       selectedShapeName,
       newRect,
       mouseDraw,
       mouseDown
     } = this.state;
 
-    const selectedShape = rectangles[selectedShapeName];
+    const selectedShape = rectangles && rectangles[selectedShapeName];
 
     return (
       <React.Fragment>
@@ -343,7 +347,7 @@ class AnnotateTest extends React.Component {
           onMouseMove={mouseDown && this.handleStageMouseMove}
         >
           <Layer>
-            <AnnotationImage src="/static/1_1.jpg" width={500} height={500} />
+            <AnnotationImage src={src} width={width} height={height} />
           </Layer>
           <Layer>
             {Object.entries(rectangles).map(([name, rect]) => (
@@ -371,6 +375,50 @@ class AnnotateTest extends React.Component {
         )}
       </React.Fragment>
     );
+  }
+}
+
+class AnnotateTest extends React.Component {
+  state = {
+    images: [],
+    rectanglesPerImage: {}
+  };
+
+  static async getInitialProps({ res }) {
+    return {
+      namespacesRequired: []
+    };
+  }
+
+  componentDidMount() {
+    // This would come from an API response
+    this.setState({
+      images: [
+        { src: "/static/1_1.jpg", width: 500, height: 500, annotations: {} }
+      ]
+    });
+  }
+
+  handleChange = (src, rectangles) => {
+    const { images } = this.state;
+    let image = images.find(img => img.src === src);
+    image.annotations = rectangles;
+    this.setState({ images });
+  };
+
+  render() {
+    const { images } = this.state;
+
+    return images.map(image => (
+      <AnnotatedImage
+        key={image.src}
+        src={image.src}
+        width={image.width}
+        height={image.height}
+        rectangles={image.annotations}
+        onChange={this.handleChange}
+      />
+    ));
   }
 }
 
