@@ -127,11 +127,21 @@ class RectangleTransformer extends React.Component {
   }
 
   boundBoxFunc = (oldBox, newBox) => {
+    const { imageWidth, imageHeight } = this.props;
+
+    // Minimum bounding box size
     if (newBox.width < MIN_RECT_SIZE) {
       newBox.width = MIN_RECT_SIZE;
     }
     if (newBox.height < MIN_RECT_SIZE) {
       newBox.height = MIN_RECT_SIZE;
+    }
+    // Limit rectangle inside AnnotationImage
+    if (imageWidth && newBox.x + newBox.width > imageWidth) {
+      newBox.width = imageWidth - newBox.x;
+    }
+    if (imageHeight && newBox.y + newBox.height > imageHeight) {
+      newBox.height = imageHeight - newBox.y;
     }
     return newBox;
   };
@@ -221,8 +231,8 @@ class AnnotateTest extends React.Component {
     }
 
     // Clicked on transformer - do nothing
-    const clickedOnTransformer =
-      e.target.getParent().className === "Transformer";
+    const parent = e.target.getParent();
+    const clickedOnTransformer = parent && parent.className === "Transformer";
     if (clickedOnTransformer) {
       return;
     }
@@ -348,6 +358,8 @@ class AnnotateTest extends React.Component {
             <RectangleTransformer
               selectedShapeName={selectedShapeName}
               onTransform={this.handleTransform}
+              imageWidth={500}
+              imageHeight={500}
             />
           </Layer>
         </Stage>
