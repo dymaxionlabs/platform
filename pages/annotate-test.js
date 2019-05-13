@@ -6,11 +6,34 @@ import Popover from "@material-ui/core/Popover";
 import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
 import { Image, Layer, Rect, Stage, Text, Transformer } from "react-konva";
-import randomColor from "randomcolor";
 
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
 const RECT_STROKE = "#0080ff";
+const LABEL_COLORS = [
+  "#e6194B",
+  "#3cb44b",
+  "#ffe119",
+  "#4363d8",
+  "#f58231",
+  "#911eb4",
+  "#42d4f4",
+  "#f032e6",
+  "#bfef45",
+  "#fabebe",
+  "#469990",
+  "#e6beff",
+  "#9A6324",
+  "#fffac8",
+  "#800000",
+  "#aaffc3",
+  "#808000",
+  "#ffd8b1",
+  "#000075",
+  "#a9a9a9",
+  "#ffffff",
+  "#000000"
+];
 
 class AnnotationImage extends React.Component {
   state = {
@@ -359,11 +382,11 @@ class AnnotatedImage extends React.Component {
   };
 
   handleLabelItemClick = item => {
-    const { labels, labelColors, rectangles } = this.props;
+    const { labels, rectangles } = this.props;
     const { newRect } = this.state;
 
     const labelIndex = labels.indexOf(item);
-    const labelColor = labelColors[labelIndex];
+    const labelColor = LABEL_COLORS[labelIndex % LABEL_COLORS.length];
 
     const newRectName = String(Object.keys(rectangles).length + 42);
     const newRectangles = {
@@ -466,8 +489,7 @@ class AnnotatedImage extends React.Component {
 class AnnotateTest extends React.Component {
   state = {
     images: [],
-    labels: [],
-    labelColors: []
+    labels: []
   };
 
   static async getInitialProps({ res }) {
@@ -508,15 +530,6 @@ class AnnotateTest extends React.Component {
       images: images,
       labels: labels
     });
-
-    // Set random colors for each label
-    const labelColors = randomColor({
-      format: "hex",
-      luminosity: "bright",
-      count: labels.length
-    });
-    console.log(`labelColors: ${JSON.stringify(labelColors)}`);
-    this.setState({ labelColors });
   }
 
   handleChange = (src, rectangles) => {
@@ -527,7 +540,7 @@ class AnnotateTest extends React.Component {
   };
 
   render() {
-    const { images, labels, labelColors } = this.state;
+    const { images, labels } = this.state;
 
     return images.map(image => (
       <AnnotatedImage
@@ -537,7 +550,6 @@ class AnnotateTest extends React.Component {
         height={image.height}
         rectangles={image.annotations}
         labels={labels}
-        labelColors={labelColors}
         onChange={this.handleChange}
         style={{ margin: 10 }}
       />
