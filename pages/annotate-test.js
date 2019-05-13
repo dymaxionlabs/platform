@@ -1,11 +1,12 @@
 import Fab from "@material-ui/core/Fab";
-import ClearIcon from "@material-ui/icons/Clear";
-import React from "react";
-import { Image, Layer, Rect, Stage, Transformer } from "react-konva";
-import Popover from "@material-ui/core/Popover";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Popover from "@material-ui/core/Popover";
+import ClearIcon from "@material-ui/icons/Clear";
+import React from "react";
+import { Image, Layer, Rect, Stage, Text, Transformer } from "react-konva";
+import { Typography } from "@material-ui/core";
 
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
@@ -78,24 +79,42 @@ class Rectangle extends React.Component {
   }
 
   render() {
-    const { x, y, width, height, name, selected, onDragMove } = this.props;
+    const {
+      x,
+      y,
+      width,
+      height,
+      label,
+      name,
+      selected,
+      onDragMove
+    } = this.props;
 
     return (
-      <Rect
-        ref={node => (this.rect = node)}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        stroke={RECT_STROKE}
-        strokeWidth={selected ? 0 : 1}
-        fill={RECT_FILL}
-        name={name}
-        draggable
-        onDragMove={onDragMove}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-      />
+      <React.Fragment>
+        <Rect
+          ref={node => (this.rect = node)}
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          stroke={RECT_STROKE}
+          strokeWidth={selected ? 0 : 1}
+          fill={RECT_FILL}
+          name={name}
+          draggable
+          onDragMove={onDragMove}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        />
+        <Text
+          x={x + 5}
+          y={y + 5}
+          text={label}
+          fill="#ffffff"
+          fontVariant="small-caps"
+        />
+      </React.Fragment>
     );
   }
 }
@@ -274,7 +293,7 @@ class AnnotatedImage extends React.Component {
     const mousePos = stage.getPointerPosition();
 
     // Update new rectangle, if drawing any
-    let newRect = this.state.newRect;
+    let { newRect } = this.state;
     if (newRect) {
       newRect.width = mousePos.x - newRect.x;
       newRect.height = mousePos.y - newRect.y;
@@ -339,7 +358,7 @@ class AnnotatedImage extends React.Component {
     const newRectName = String(Object.keys(rectangles).length + 1);
     const newRectangles = {
       ...rectangles,
-      [newRectName]: { name: newRectName, ...newRect }
+      [newRectName]: { name: newRectName, label: item, ...newRect }
     };
     this.setState({
       mouseDraw: false,
