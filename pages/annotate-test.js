@@ -156,9 +156,12 @@ class DeleteRectangleFab extends React.Component {
   render() {
     const { shape, onClick } = this.props;
 
+    const shapeWidth = shape.widthAfterResize || shape.width;
+    const shapeHeight = shape.heightAfterResize || shape.height;
+
     const center = {
-      x: shape.x + shape.width / 2 - 20,
-      y: shape.y + shape.height / 2 - 20
+      x: shape.x + shapeWidth / 2 - 20,
+      y: shape.y + shapeHeight / 2 - 20
     };
 
     return (
@@ -293,8 +296,10 @@ class AnnotateTest extends React.Component {
     this.updateSelectedRectangle(rect => {
       rect.x = transformer.getX();
       rect.y = transformer.getY();
-      rect.width = transformer.getWidth();
-      rect.height = transformer.getHeight();
+      // Workaround for Transformer bug when resizing with top-left handlers:
+      // Store new width and height in different variables.
+      rect.widthAfterResize = transformer.getWidth();
+      rect.heightAfterResize = transformer.getHeight();
     });
   };
 
