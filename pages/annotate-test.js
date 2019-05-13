@@ -7,6 +7,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
 import { Image, Layer, Rect, Stage, Text, Transformer } from "react-konva";
 
+const IMAGE_SIZE = 600;
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
 const RECT_STROKE = "#0080ff";
@@ -532,20 +533,14 @@ class AnnotateTest extends React.Component {
     const images = [
       {
         src: "/static/tiles/1_1.jpg",
-        width: 500,
-        height: 500,
         annotations: {}
       },
       {
         src: "/static/tiles/1_2.jpg",
-        width: 500,
-        height: 500,
         annotations: {}
       },
       {
         src: "/static/tiles/1_3.jpg",
-        width: 500,
-        height: 500,
         annotations: {}
       }
     ];
@@ -566,18 +561,29 @@ class AnnotateTest extends React.Component {
   render() {
     const { images, labels } = this.state;
 
-    return images.map(image => (
-      <AnnotatedImage
-        key={image.src}
-        src={image.src}
-        width={image.width}
-        height={image.height}
-        rectangles={image.annotations}
-        labels={labels}
-        onChange={this.handleChange}
-        style={{ margin: 10 }}
-      />
-    ));
+    return (
+      <div
+        style={{
+          height: 500,
+          width: IMAGE_SIZE + 20,
+          overflowX: "hidden",
+          overflowY: "scroll"
+        }}
+      >
+        {images.map(image => (
+          <AnnotatedImage
+            key={image.src}
+            src={image.src}
+            width={IMAGE_SIZE}
+            height={IMAGE_SIZE}
+            rectangles={image.annotations}
+            labels={labels}
+            onChange={this.handleChange}
+            style={{ margin: 5 }}
+          />
+        ))}
+      </div>
+    );
   }
 }
 
