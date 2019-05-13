@@ -1,7 +1,7 @@
 import Fab from "@material-ui/core/Fab";
 import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
-import { Layer, Rect, Stage, Transformer, Image } from "react-konva";
+import { Image, Layer, Rect, Stage, Transformer } from "react-konva";
 
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
@@ -180,7 +180,11 @@ class DeleteRectangleFab extends React.Component {
         color="secondary"
         aria-label="Remove"
         onClick={onClick}
-        style={{ position: "fixed", top: center.y, left: center.x }}
+        style={{
+          position: "absolute",
+          top: center.y,
+          left: center.x
+        }}
       >
         <ClearIcon />
       </Fab>
@@ -190,20 +194,11 @@ class DeleteRectangleFab extends React.Component {
 
 class AnnotatedImage extends React.Component {
   state = {
-    innerWidth: 0,
-    innerHeight: 0,
     mouseDraw: false,
     rectCount: 0,
     rectangles: {},
     selectedShapeName: ""
   };
-
-  componentDidMount() {
-    this.setState({
-      innerWidth: window.innerWidth,
-      innerHeight: window.innerHeight
-    });
-  }
 
   handleStageMouseDown = e => {
     // Clicked on stage - clear selection
@@ -324,24 +319,16 @@ class AnnotatedImage extends React.Component {
   }
 
   render() {
-    const { src, width, height, rectangles } = this.props;
-
-    const {
-      innerWidth,
-      innerHeight,
-      selectedShapeName,
-      newRect,
-      mouseDraw,
-      mouseDown
-    } = this.state;
+    const { src, width, height, rectangles, style, className } = this.props;
+    const { selectedShapeName, newRect, mouseDraw, mouseDown } = this.state;
 
     const selectedShape = rectangles && rectangles[selectedShapeName];
 
     return (
-      <React.Fragment>
+      <div style={{ position: "relative", ...style }} className={className}>
         <Stage
-          width={innerWidth}
-          height={innerHeight}
+          width={width}
+          height={height}
           onMouseDown={this.handleStageMouseDown}
           onMouseUp={mouseDown && this.handleStageMouseUp}
           onMouseMove={mouseDown && this.handleStageMouseMove}
@@ -362,8 +349,8 @@ class AnnotatedImage extends React.Component {
             <RectangleTransformer
               selectedShapeName={selectedShapeName}
               onTransform={this.handleTransform}
-              imageWidth={500}
-              imageHeight={500}
+              imageWidth={width}
+              imageHeight={height}
             />
           </Layer>
         </Stage>
@@ -373,7 +360,7 @@ class AnnotatedImage extends React.Component {
             onClick={this.handleDeleteRectangle}
           />
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }
@@ -394,7 +381,24 @@ class AnnotateTest extends React.Component {
     // This would come from an API response
     this.setState({
       images: [
-        { src: "/static/1_1.jpg", width: 500, height: 500, annotations: {} }
+        {
+          src: "/static/tiles/1_1.jpg",
+          width: 500,
+          height: 500,
+          annotations: {}
+        },
+        {
+          src: "/static/tiles/1_2.jpg",
+          width: 500,
+          height: 500,
+          annotations: {}
+        },
+        {
+          src: "/static/tiles/1_3.jpg",
+          width: 500,
+          height: 500,
+          annotations: {}
+        }
       ]
     });
   }
@@ -417,6 +421,7 @@ class AnnotateTest extends React.Component {
         height={image.height}
         rectangles={image.annotations}
         onChange={this.handleChange}
+        style={{ margin: 10 }}
       />
     ));
   }
