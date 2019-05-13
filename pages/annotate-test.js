@@ -108,6 +108,8 @@ class Rectangle extends React.Component {
       y,
       width,
       height,
+      widthAfterResize,
+      heightAfterResize,
       label,
       name,
       stroke,
@@ -117,8 +119,10 @@ class Rectangle extends React.Component {
     } = this.props;
 
     const textPadding = 5;
-    const textX = textPadding + (width < 0 ? x + width : x);
-    const textY = textPadding + (height < 0 ? y + height : y);
+    const realWidth = widthAfterResize || width;
+    const realHeight = heightAfterResize || height;
+    const textX = (realWidth < 0 ? x + realWidth : x) || 0;
+    const textY = (realHeight < 0 ? y + realHeight : y) || 0;
 
     return (
       <React.Fragment>
@@ -138,8 +142,8 @@ class Rectangle extends React.Component {
           onMouseLeave={this.handleMouseLeave}
         />
         <Text
-          x={textX}
-          y={textY}
+          x={textPadding + textX}
+          y={textPadding + textY}
           text={label}
           fill="#ffffff"
           fontVariant="small-caps"
@@ -183,12 +187,13 @@ class RectangleTransformer extends React.Component {
     const { imageWidth, imageHeight } = this.props;
 
     // Minimum bounding box size
-    if (newBox.width < MIN_RECT_SIZE) {
-      newBox.width = MIN_RECT_SIZE;
+    if (Math.abs(newBox.width) < MIN_RECT_SIZE) {
+      newBox.width = newBox.width < 0 ? -MIN_RECT_SIZE : MIN_RECT_SIZE;
     }
-    if (newBox.height < MIN_RECT_SIZE) {
-      newBox.height = MIN_RECT_SIZE;
+    if (Math.abs(newBox.height) < MIN_RECT_SIZE) {
+      newBox.height = newBox.height < 0 ? -MIN_RECT_SIZE : MIN_RECT_SIZE;
     }
+
     // Limit rectangle inside AnnotationImage
     if (imageWidth && newBox.x + newBox.width > imageWidth) {
       newBox.width = imageWidth - newBox.x;
@@ -345,15 +350,35 @@ class AnnotatedImage extends React.Component {
     this.setState({ mouseX, mouseY });
   };
 
+  isNewRectValid() {
+    const { newRect } = this.state;
+    return (
+      newRect &&
+      Math.abs(newRect.width) >= MIN_RECT_SIZE &&
+      Math.abs(newRect.height) >= MIN_RECT_SIZE
+    );
+  }
+
   handleStageMouseUp = () => {
-    const { mouseDraw } = this.state;
+    const { newRect, mouseDraw } = this.state;
     const { labels } = this.props;
 
+    // If rect is too small, enlarge it to minimum size
+    if (mouseDraw && !this.isNewRectValid()) {
+      newRect.width = newRect.width < 0 ? -MIN_RECT_SIZE : MIN_RECT_SIZE;
+      newRect.height = newRect.height < 0 ? -MIN_RECT_SIZE : MIN_RECT_SIZE;
+      this.setState({ newRect });
+    }
+
     if (mouseDraw) {
-      if (labels.length > 1) {
-        this.setState({ showLabelMenu: true });
+      if (this.isNewRectValid()) {
+        if (labels.length > 1) {
+          this.setState({ showLabelMenu: true });
+        } else {
+          this.addNewRectangle(newRect, labels[0]);
+        }
       } else {
-        this.addNewRectangle(labels[0]);
+        this.setState({ newRect: null });
       }
     }
 
@@ -401,12 +426,12 @@ class AnnotatedImage extends React.Component {
   };
 
   handleLabelMenuItemClick = label => {
-    this.addNewRectangle(label);
+    const { newRect } = this.state;
+    this.addNewRectangle(newRect, label);
   };
 
-  addNewRectangle(label) {
+  addNewRectangle(rect, label) {
     const { labels, rectangles } = this.props;
-    const { newRect } = this.state;
 
     const labelIndex = labels.indexOf(label);
     const labelColor = LABEL_COLORS[labelIndex % LABEL_COLORS.length];
@@ -415,18 +440,20 @@ class AnnotatedImage extends React.Component {
     const newRectangles = {
       ...rectangles,
       [newRectName]: {
-        ...newRect,
+        ...rect,
         name: newRectName,
         label: label,
         fill: `${labelColor}30`,
         stroke: labelColor
       }
     };
+
     this.setState({
       mouseDraw: false,
       showLabelMenu: false,
       selectedShapeName: newRectName
     });
+
     this.triggerOnChange(newRectangles);
   }
 
