@@ -2,6 +2,10 @@ import Fab from "@material-ui/core/Fab";
 import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
 import { Image, Layer, Rect, Stage, Transformer } from "react-konva";
+import Popover from "@material-ui/core/Popover";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const MIN_RECT_SIZE = 50;
 const RECT_FILL = "#0080ff40";
@@ -192,12 +196,37 @@ class DeleteRectangleFab extends React.Component {
   }
 }
 
+class LabelMenu extends React.Component {
+  render() {
+    const { open, items, top, left, onItemClick } = this.props;
+
+    return (
+      <Popover
+        anchorReference="anchorPosition"
+        anchorPosition={{ top: top, left: left }}
+        open={open}
+      >
+        <List>
+          {items.map(item => (
+            <ListItem key={item} button onClick={() => onItemClick(item)}>
+              <ListItemText primary={item} />
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+    );
+  }
+}
+
 class AnnotatedImage extends React.Component {
   state = {
     mouseDraw: false,
     rectCount: 0,
     rectangles: {},
-    selectedShapeName: ""
+    selectedShapeName: "",
+    showLabelMenu: false,
+    mouseX: 0,
+    mouseY: 0
   };
 
   handleStageMouseDown = e => {
@@ -251,23 +280,17 @@ class AnnotatedImage extends React.Component {
       newRect.height = mousePos.y - newRect.y;
       this.setState({ newRect, mouseDraw: true });
     }
+
+    const mouseX = e.evt.clientX;
+    const mouseY = e.evt.clientY;
+    this.setState({ mouseX, mouseY });
   };
 
   handleStageMouseUp = () => {
-    const { rectangles } = this.props;
-    const { newRect, mouseDraw } = this.state;
+    const { mouseDraw } = this.state;
 
     if (mouseDraw) {
-      const newRectName = String(Object.keys(rectangles).length + 1);
-      const newRectangles = {
-        ...rectangles,
-        [newRectName]: { name: newRectName, ...newRect }
-      };
-      this.setState({
-        mouseDraw: false,
-        selectedShapeName: newRectName
-      });
-      this.triggerOnChange(newRectangles);
+      this.setState({ showLabelMenu: true });
     }
 
     this.setState({ mouseDown: false });
@@ -275,7 +298,6 @@ class AnnotatedImage extends React.Component {
 
   triggerOnChange(rectangles) {
     const { src, onChange } = this.props;
-    console.log(JSON.stringify(rectangles));
     onChange(src, rectangles);
   }
 
@@ -310,6 +332,23 @@ class AnnotatedImage extends React.Component {
     });
   };
 
+  handleLabelItemClick = item => {
+    const { rectangles } = this.props;
+    const { newRect } = this.state;
+
+    const newRectName = String(Object.keys(rectangles).length + 1);
+    const newRectangles = {
+      ...rectangles,
+      [newRectName]: { name: newRectName, ...newRect }
+    };
+    this.setState({
+      mouseDraw: false,
+      showLabelMenu: false,
+      selectedShapeName: newRectName
+    });
+    this.triggerOnChange(newRectangles);
+  };
+
   updateSelectedRectangle(cb) {
     const { rectangles } = this.props;
     const { selectedShapeName } = this.state;
@@ -320,7 +359,15 @@ class AnnotatedImage extends React.Component {
 
   render() {
     const { src, width, height, rectangles, style, className } = this.props;
-    const { selectedShapeName, newRect, mouseDraw, mouseDown } = this.state;
+    const {
+      showLabelMenu,
+      selectedShapeName,
+      newRect,
+      mouseDraw,
+      mouseDown,
+      mouseX,
+      mouseY
+    } = this.state;
 
     const selectedShape = rectangles && rectangles[selectedShapeName];
 
@@ -360,6 +407,13 @@ class AnnotatedImage extends React.Component {
             onClick={this.handleDeleteRectangle}
           />
         )}
+        <LabelMenu
+          open={showLabelMenu}
+          onItemClick={this.handleLabelItemClick}
+          items={["Car", "Bus"]}
+          left={showLabelMenu ? mouseX : 0}
+          top={showLabelMenu ? mouseY : 0}
+        />
       </div>
     );
   }
