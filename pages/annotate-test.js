@@ -253,13 +253,14 @@ class DeleteRectangleFab extends React.Component {
 
 class LabelMenu extends React.Component {
   render() {
-    const { open, items, top, left, onItemClick } = this.props;
+    const { open, items, top, left, onClose, onItemClick } = this.props;
 
     return (
       <Popover
         anchorReference="anchorPosition"
         anchorPosition={{ top: top, left: left }}
         open={open}
+        onClose={onClose}
       >
         <List>
           {items.map(item => (
@@ -394,7 +395,11 @@ class AnnotatedImage extends React.Component {
     });
   };
 
-  handleLabelItemClick = label => {
+  handleLabelMenuClose = () => {
+    this.setState({ newRect: null, showLabelMenu: false });
+  };
+
+  handleLabelMenuItemClick = label => {
     this.addNewRectangle(label);
   };
 
@@ -494,7 +499,8 @@ class AnnotatedImage extends React.Component {
         )}
         <LabelMenu
           open={showLabelMenu}
-          onItemClick={this.handleLabelItemClick}
+          onClose={this.handleLabelMenuClose}
+          onItemClick={this.handleLabelMenuItemClick}
           items={labels}
           left={showLabelMenu ? mouseX : 0}
           top={showLabelMenu ? mouseY : 0}
