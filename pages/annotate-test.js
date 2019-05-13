@@ -195,7 +195,7 @@ class RectangleTransformer extends React.Component {
   };
 
   render() {
-    const { onTransform } = this.props;
+    const { selectedShape, onTransform } = this.props;
 
     return (
       <Transformer
@@ -205,7 +205,10 @@ class RectangleTransformer extends React.Component {
         ignoreStroke={true}
         anchorCornerRadius={3}
         anchorStrokeWidth={2}
-        anchorFill={RECT_STROKE}
+        anchorStroke={selectedShape && selectedShape.stroke}
+        anchorFill={selectedShape && selectedShape.fill}
+        borderStroke={selectedShape && selectedShape.stroke}
+        borderStrokeWidth={2}
         onTransform={onTransform}
         boundBoxFunc={this.boundBoxFunc}
       />
@@ -233,6 +236,7 @@ class DeleteRectangleFab extends React.Component {
         onClick={onClick}
         style={{
           position: "absolute",
+          backgroundColor: `${shape.stroke}80`,
           top: center.y,
           left: center.x
         }}
@@ -462,6 +466,7 @@ class AnnotatedImage extends React.Component {
             {mouseDraw && <Rectangle {...newRect} />}
             <RectangleTransformer
               selectedShapeName={selectedShapeName}
+              selectedShape={selectedShape}
               onTransform={this.handleTransform}
               imageWidth={width}
               imageHeight={height}
