@@ -57,8 +57,8 @@ class NewODModel extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({ open: false });
     this.setState({
+      open: false,
       errorMsg: "",
       successMsg: "",
       isSubmitting: false
