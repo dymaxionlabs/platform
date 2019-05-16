@@ -1,10 +1,15 @@
 {
+  "cancel_btn": "Cancel",
+  "classification_btn": "Classification (BETA)",
   "create_step": {
     "classes_label": "Object classes",
     "name_label": "Name",
     "submit_btn": "Create",
     "title": "Create new model"
   },
+  "error_msg": "Please write a message.",
+  "error_sending": "Sending error.",
+  "label_msg": "Message",
   "new": {
     "header": "New Model",
     "od": {
@@ -12,6 +17,13 @@
     },
     "start_building": "Start Building"
   },
+  "new_title": "New Model",
+  "object_btn": "Object Detection",
+  "others_btn": "Others",
+  "segmentation_btn": "Segmentation (BETA)",
+  "send_btn": "Send",
+  "success_msg": "Your message has been sent. Thank you!",
+  "title_consult": "Consult about models",
   "upload_step": {
     "dropzone": "Drag and drop your images here, or click.",
     "submit_btn": "Upload",
