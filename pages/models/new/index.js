@@ -49,7 +49,6 @@ class NewODModel extends React.Component {
   }
 
   state = {
-    spacing: "16",
     open: false
   };
 
