@@ -10,8 +10,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
 import ContactFormModalContent from "../../../components/home/ContactFormModalContent";
-import { Link, withNamespaces } from "../../../i18n";
+import { withNamespaces } from "../../../i18n";
 import { withAuthSync } from "../../../utils/auth";
+import { routerPush } from "../../../utils/router";
 
 const styles = theme => ({
   card: {
@@ -52,6 +53,10 @@ class NewODModel extends React.Component {
     open: false
   };
 
+  handleClick = type => {
+    routerPush(`/models/new/${type}`);
+  };
+
   handleClickOpen = () => {
     this.setState({ open: true });
   };
@@ -77,22 +82,23 @@ class NewODModel extends React.Component {
           <Grid item xs={12} sm={4}>
             <Card className={classes.card}>
               <CardActionArea>
-                <Link href="new/od/">
-                  <CardMedia
-                    component="img"
-                    alt={t("object_btn")}
-                    className={classes.paper}
-                    height="140"
-                    image="/static/clasificacion.png"
-                  />
-                </Link>
+                <CardMedia
+                  onClick={() => this.handleClick("od")}
+                  name="od"
+                  component="img"
+                  alt={t("object_btn")}
+                  height="140"
+                  image="/static/clasificacion.png"
+                />
               </CardActionArea>
               <CardActions>
-                <Link href="new/od/">
-                  <Button size="small" color="primary">
-                    {t("object_btn")}
-                  </Button>
-                </Link>
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => this.handleClick("od")}
+                >
+                  {t("object_btn")}
+                </Button>
               </CardActions>
             </Card>
           </Grid>
@@ -102,7 +108,6 @@ class NewODModel extends React.Component {
                 <CardMedia
                   component="img"
                   alt={t("classification_btn")}
-                  className={classes.paper}
                   height="140"
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
@@ -130,7 +135,6 @@ class NewODModel extends React.Component {
                 <CardMedia
                   component="img"
                   alt={t("segmentation_btn")}
-                  className={classes.paper}
                   height="140"
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
@@ -158,7 +162,6 @@ class NewODModel extends React.Component {
                 <CardMedia
                   component="img"
                   alt={t("others_btn")}
-                  className={classes.paper}
                   height="140"
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
