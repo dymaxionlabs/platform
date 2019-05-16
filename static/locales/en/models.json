@@ -1,4 +1,8 @@
 {
+  "annotate_step": {
+    "submit_btn": "Save",
+    "title": "Annotate images"
+  },
   "cancel_btn": "Cancel",
   "classification_btn": "Classification (BETA)",
   "create_step": {

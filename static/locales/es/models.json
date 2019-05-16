@@ -1,4 +1,8 @@
 {
+  "annotate_step": {
+    "submit_btn": "Guardar",
+    "title": "Anotar im\u00e1genes"
+  },
   "cancel_btn": "Cancelar",
   "classification_btn": "Clasificaci\u00f3n (BETA)",
   "create_step": {
