@@ -73,7 +73,7 @@ class NewODModel extends React.Component {
           <title>{t("new_title")}</title>
         </Head>
         <BasicAppbar />
-        <Grid container spacing={12}>
+        <Grid container spacing={16}>
           <Grid item xs={12} sm={4}>
             <Card className={classes.card}>
               <CardActionArea>
