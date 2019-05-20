@@ -21,7 +21,7 @@ class FileSlugField(serializers.SlugRelatedField):
 
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
-    image_files = FileSlugField(many=True, slug_field='name')
+    image_files = FileSlugField(many=True, slug_field='name', required=False)
 
     class Meta:
         model = Estimator
