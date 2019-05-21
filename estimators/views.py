@@ -3,8 +3,9 @@ from rest_framework import permissions, viewsets
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission
 
-from .models import Estimator, ImageTile
-from .serializers import EstimatorSerializer, ImageTileSerializer
+from .models import Annotation, Estimator, ImageTile
+from .serializers import (AnnotationSerializer, EstimatorSerializer,
+                          ImageTileSerializer)
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -30,3 +31,10 @@ class ImageTileViewSet(viewsets.ReadOnlyModelViewSet):
         if files:
             queryset = queryset.filter(file__name__in=files)
         return queryset
+
+
+class AnnotationViewSet(viewsets.ModelViewSet):
+    queryset = Annotation.objects.all().order_by('-created_at')
+    serializer_class = AnnotationSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
