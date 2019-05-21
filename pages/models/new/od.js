@@ -36,37 +36,27 @@ class NewODModel extends React.Component {
     }
   }
 
-  async doesEstimatorExist(id) {
-    const { token } = this.props;
+  componentDidMount() {
+    const { token, query } = this.props;
 
-    try {
-      await axios.head(buildApiUrl(`/estimators/${id}`), {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      });
-
-      console.log(response);
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
+    if (query.id) {
+      axios
+        .head(buildApiUrl(`/estimators/${query.id}`), {
+          headers: {
+            Authorization: token,
+            "Accept-Language": i18n.language
+          }
+        })
+        .catch(() => {
+          console.log("Invalid estimator id. Redirecting...");
+          routerReplace(`/models/new/od`);
+        });
     }
   }
 
   stepContent() {
     const { token, query } = this.props;
     const { step } = this.state;
-
-    if (query.id) {
-      this.doesEstimatorExist(query.id).then(doesExist => {
-        if (!doesExist) {
-          console.log("Invalid estimator id. Redirecting...");
-          routerReplace(`/models/new/od`);
-        }
-      });
-    }
 
     switch (step) {
       case "initial": {
