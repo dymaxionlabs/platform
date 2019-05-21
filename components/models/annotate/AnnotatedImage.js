@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Layer, Stage } from "react-konva";
 import AnnotationImage from "./AnnotationImage";
 import DeleteRectangleFab from "./DeleteRectangleFab";
@@ -292,5 +293,14 @@ class AnnotatedImage extends React.Component {
     );
   }
 }
+
+AnnotatedImage.propTypes = {
+  src: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  rectangles: PropTypes.object.isRequired,
+  labels: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired
+};
 
 export default AnnotatedImage;

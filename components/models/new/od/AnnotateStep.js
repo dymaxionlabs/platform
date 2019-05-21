@@ -1,17 +1,19 @@
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import cookie from "js-cookie";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import React from "react";
+import AnnotatedImage from "../../../../components/models/annotate/AnnotatedImage";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
-import { routerPush, routerReplace } from "../../../../utils/router";
 import StepContentContainer from "../StepContentContainer";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
+
+const IMAGE_SIZE = 600;
 
 const styles = theme => ({
   header: {
@@ -30,23 +32,46 @@ const styles = theme => ({
   paper: {
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
+  },
+  submitBtn: {
+    marginTop: theme.spacing.unit * 2
   }
 });
 
-let ImageTileList = ({ classes, imageTiles }) => (
-  <GridList
-    cellHeight="auto"
-    className={classes.imageTileList}
-    cols={1}
-    spacing={1}
-  >
-    {imageTiles.map(tile => (
-      <GridListTile key={tile.tile_file}>
-        <img src={tile.tile_file} width="100%" />
-      </GridListTile>
-    ))}
-  </GridList>
-);
+class ImageTileList extends React.Component {
+  getAnnotations(tile) {
+    // TODO Build rectangles object from tile.annotations
+    return {};
+  }
+
+  render() {
+    const { classes, labels, imageTiles, onChange } = this.props;
+
+    return (
+      <GridList
+        cellHeight="auto"
+        className={classes.imageTileList}
+        cols={1}
+        spacing={1}
+      >
+        {imageTiles.map(tile => (
+          <GridListTile key={tile.tile_file}>
+            <AnnotatedImage
+              key={tile.tile_file}
+              src={tile.tile_file}
+              width={IMAGE_SIZE}
+              height={IMAGE_SIZE}
+              rectangles={this.getAnnotations(tile)}
+              labels={labels || []}
+              onChange={onChange}
+              style={{ margin: 5 }}
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+    );
+  }
+}
 
 ImageTileList = withStyles(styles)(ImageTileList);
 
@@ -54,16 +79,10 @@ class AnnotateStep extends React.Component {
   state = {
     offset: 0,
     imageTiles: [],
-    estimator: []
+    estimator: null
   };
 
   async componentDidMount() {
-    const { estimatorId } = this.props;
-    if (!estimatorId) {
-      console.log("no estimator id");
-      routerReplace(`/models/new/od`);
-    }
-
     await this.fetchEstimator();
     await this.fetchImageTiles();
 
@@ -112,7 +131,10 @@ class AnnotateStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { imageTiles } = this.state;
+    const { imageTiles, estimator } = this.state;
+
+    // FIXME
+    const labels = estimator && estimator.classes;
 
     return (
       <StepContentContainer width={1000}>
@@ -122,7 +144,11 @@ class AnnotateStep extends React.Component {
         <Grid container spacing={24}>
           <Grid item xs={9}>
             <div className={classes.imageTileListContainer}>
-              <ImageTileList imageTiles={imageTiles} />
+              <ImageTileList
+                labels={labels}
+                imageTiles={imageTiles}
+                onChange={e => console.log(e)}
+              />
             </div>
           </Grid>
           <Grid item xs={3}>
@@ -131,7 +157,12 @@ class AnnotateStep extends React.Component {
             </Paper>
           </Grid>
         </Grid>
-        <Button color="primary" onClick={this.handleSubmit}>
+        <Button
+          className={classes.submitBtn}
+          color="primary"
+          variant="contained"
+          onClick={this.handleSubmit}
+        >
           {t("annotate_step.submit_btn")}
         </Button>
       </StepContentContainer>
