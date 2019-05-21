@@ -32,14 +32,6 @@ class UploadStep extends React.Component {
     uploadProgress: 0
   };
 
-  componentDidMount() {
-    const { estimatorId } = this.props;
-    if (!estimatorId) {
-      console.log("no estimator id");
-      routerReplace(`/models/new/od`);
-    }
-  }
-
   handleSubmit = async () => {
     const project = cookie.get("project");
     const { estimatorId } = this.props;

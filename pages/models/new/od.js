@@ -1,3 +1,4 @@
+import axios from "axios";
 import Head from "next/head";
 import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
@@ -5,7 +6,9 @@ import AnnotateStep from "../../../components/models/new/od/AnnotateStep";
 import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
-import { withNamespaces } from "../../../i18n";
+import { routerReplace } from "../../../utils/router";
+import { i18n, withNamespaces } from "../../../i18n";
+import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
 
 const steps = ["initial", "create", "upload", "annotate", "test", "improve"];
@@ -33,9 +36,37 @@ class NewODModel extends React.Component {
     }
   }
 
+  async doesEstimatorExist(id) {
+    const { token } = this.props;
+
+    try {
+      await axios.head(buildApiUrl(`/estimators/${id}`), {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+      });
+
+      console.log(response);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   stepContent() {
     const { token, query } = this.props;
     const { step } = this.state;
+
+    if (query.id) {
+      this.doesEstimatorExist(query.id).then(doesExist => {
+        if (!doesExist) {
+          console.log("Invalid estimator id. Redirecting...");
+          routerReplace(`/models/new/od`);
+        }
+      });
+    }
 
     switch (step) {
       case "initial": {
