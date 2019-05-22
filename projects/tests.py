@@ -9,6 +9,12 @@ from terra.tests import loginWithAPI
 from .models import Project, ProjectInvitationToken
 
 
+def create_some_project(*, owners, **data):
+    project = Project.objects.create(**data)
+    project.owners.set(owners)
+    return project
+
+
 class LoginViewTest(TestCase):
     def setUp(self):
         self.test_user = User(email="test@prueba.com", username='test')
