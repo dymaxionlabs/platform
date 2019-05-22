@@ -6,6 +6,11 @@ from projects.models import File, Project
 from .models import Annotation, Estimator, ImageTile
 
 
+def non_empty(value):
+    if not value:
+        raise serializers.ValidationError('This field is required.')
+
+
 class ProjectSlugField(serializers.SlugRelatedField):
     def get_queryset(self):
         user = self.context['request'].user
@@ -22,6 +27,7 @@ class FileSlugField(serializers.SlugRelatedField):
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
     image_files = FileSlugField(many=True, slug_field='name', required=False)
+    classes = serializers.ListField(required=True, validators=[non_empty])
 
     class Meta:
         model = Estimator

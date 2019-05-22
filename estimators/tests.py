@@ -58,3 +58,25 @@ class EstimatorTest(TestCase):
                     'The fields project, estimator_type, name must make a unique set.'
                 ]
             }, response.data)
+
+    def test_classes_required(self):
+        response = self.client.post('/estimators/', {
+            'name': 'Foo',
+            'project': self.project.uuid,
+        },
+                                    format='json')
+
+        self.assertEquals(400, response.status_code)
+        self.assertEquals({'classes': ['This field is required.']},
+                          response.data)
+
+        response = self.client.post('/estimators/', {
+            'name': 'Foo',
+            'project': self.project.uuid,
+            'classes': []
+        },
+                                    format='json')
+
+        self.assertEquals(400, response.status_code)
+        self.assertEquals({'classes': ['This field is required.']},
+                          response.data)
