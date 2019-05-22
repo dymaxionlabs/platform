@@ -8,7 +8,7 @@ django = "*"
 python-dotenv = "*"
 django-anymail = {extras = ["mailgun"],version = "*"}
 "psycopg2-binary" = "*"
-djangorestframework = "*"
+djangorestframework = "==3.9.4"
 gunicorn = "*"
 django-rest-auth = {extras = ["with_social"],version = "*"}
 django-cors-headers = "*"
