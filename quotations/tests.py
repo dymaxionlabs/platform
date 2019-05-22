@@ -2,19 +2,9 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from terra.tests import loginWithAPI
+
 from .models import Request
-
-
-def loginWithAPI(client, username, password):
-    response = client.post('/auth/login/',
-                           dict(username=username, password=password))
-    if response.status_code != 200 or 'key' not in response.data:
-        raise RuntimeError('Login failed in test. Status code {}'.format(
-            response.status_code))
-    token = response.data['key']
-    # Set Authorization header with Token
-    client.credentials(HTTP_AUTHORIZATION=token)
-    return token
 
 
 class RequestViewSetTest(TestCase):
@@ -22,14 +12,13 @@ class RequestViewSetTest(TestCase):
         self.client = APIClient()
 
     def test_create_ok(self):
-        response = self.client.post(
-            '/requests/', {
-                'name': 'John',
-                'email': 'john@doe.com',
-                'message': 'This is a test message',
-                'areas': [],
-            },
-            format='json')
+        response = self.client.post('/requests/', {
+            'name': 'John',
+            'email': 'john@doe.com',
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
 
         self.assertEquals(201, response.status_code)
         self.assertEquals(
@@ -48,12 +37,11 @@ class RequestViewSetTest(TestCase):
         user = self.create_some_user()
         loginWithAPI(self.client, user.username, 'secret')
 
-        response = self.client.post(
-            '/requests/', {
-                'message': 'This is a test message',
-                'areas': [],
-            },
-            format='json')
+        response = self.client.post('/requests/', {
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
 
         self.assertEquals(201, response.status_code)
         self.assertEquals(
@@ -73,12 +61,11 @@ class RequestViewSetTest(TestCase):
         user = self.create_some_user()
         loginWithAPI(self.client, user.username, 'secret')
 
-        response = self.client.post(
-            '/requests/?only_request=1', {
-                'message': 'This is a test message',
-                'areas': [],
-            },
-            format='json')
+        response = self.client.post('/requests/?only_request=1', {
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
 
         self.assertEquals(201, response.status_code)
         self.assertIsNone(response.data['payment_id'])
@@ -165,8 +152,9 @@ class RequestViewSetTest(TestCase):
         self.assertRequestDetail(request2, data['results'][0])
 
     def create_some_request(self, user=None):
-        request = Request.objects.create(
-            name='John', email='john@doe.com', user=user)
+        request = Request.objects.create(name='John',
+                                         email='john@doe.com',
+                                         user=user)
         request.save()
         return request
 

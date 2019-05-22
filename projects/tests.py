@@ -4,19 +4,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from projects.models import Project, ProjectInvitationToken
+from terra.tests import loginWithAPI
 
-
-def loginWithAPI(client, username, password):
-    response = client.post('/auth/login/',
-                           dict(username=username, password=password))
-    if response.status_code != 200 or 'key' not in response.data:
-        raise RuntimeError('Login failed in test. Status code {}'.format(
-            response.status_code))
-    token = response.data['key']
-    # Set Authorization header with Token
-    client.credentials(HTTP_AUTHORIZATION=token)
-    return token
+from .models import Project, ProjectInvitationToken
 
 
 class LoginViewTest(TestCase):
@@ -27,22 +17,20 @@ class LoginViewTest(TestCase):
         self.client = APIClient()
 
     def test_login_ok(self):
-        response = self.client.post(
-            '/auth/login/', {
-                'username': 'test',
-                'password': 'secret'
-            },
-            format='json')
+        response = self.client.post('/auth/login/', {
+            'username': 'test',
+            'password': 'secret'
+        },
+                                    format='json')
         self.assertEquals(200, response.status_code)
         self.assertTrue('key' in response.data)
 
     def test_login_fail(self):
-        response = self.client.post(
-            '/auth/login/', {
-                'username': 'test',
-                'password': 'bad_password'
-            },
-            format='json')
+        response = self.client.post('/auth/login/', {
+            'username': 'test',
+            'password': 'bad_password'
+        },
+                                    format='json')
         self.assertEquals(400, response.status_code)
         self.assertEquals(["Unable to log in with provided credentials."],
                           response.data['non_field_errors'])
@@ -74,8 +62,9 @@ class UserViewSetTest(APITestCase):
         self.user.set_password('secret')
         self.user.save()
 
-        self.admin_user = User(
-            email='admin@test.com', username='admin', is_staff=True)
+        self.admin_user = User(email='admin@test.com',
+                               username='admin',
+                               is_staff=True)
         self.admin_user.set_password('secret')
         self.admin_user.save()
 
@@ -149,12 +138,11 @@ class TestAuthViewTest(TestCase):
 
 class ContactViewTest(TestCase):
     def test_create_ok(self):
-        response = self.client.post(
-            '/contact/', {
-                'email': 'john@doe.com',
-                'message': 'This is a test message',
-            },
-            format='json')
+        response = self.client.post('/contact/', {
+            'email': 'john@doe.com',
+            'message': 'This is a test message',
+        },
+                                    format='json')
 
         self.assertEquals(200, response.status_code)
         self.assertEquals('Contact message has been sent',
@@ -194,14 +182,12 @@ class ConfirmProjectInvitationViewTest(TestCase):
         invite_token = ProjectInvitationToken.objects.create(project=project)
 
         # Register a new user with API
-        response = self.client.post(
-            '/auth/registration/',
-            dict(
-                username='test2',
-                email='test@example.com',
-                password1='secret0345',
-                password2='secret0345'),
-            format='json')
+        response = self.client.post('/auth/registration/',
+                                    dict(username='test2',
+                                         email='test@example.com',
+                                         password1='secret0345',
+                                         password2='secret0345'),
+                                    format='json')
         self.assertEquals(201, response.status_code)
         user_token = response.data['key']
 
