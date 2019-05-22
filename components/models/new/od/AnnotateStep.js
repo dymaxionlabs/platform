@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import cookie from "js-cookie";
 import React from "react";
-import AnnotatedImage from "../../../../components/models/annotate/AnnotatedImage";
+import AnnotatedImageTile from "../../../../components/models/annotate/AnnotatedImageTile";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import StepContentContainer from "../StepContentContainer";
@@ -39,13 +39,14 @@ const styles = theme => ({
 });
 
 class ImageTileList extends React.Component {
-  getAnnotations(tile) {
-    // TODO Build rectangles object from tile.annotations
-    return {};
-  }
-
   render() {
-    const { classes, labels, imageTiles, onChange } = this.props;
+    const {
+      classes,
+      labels,
+      imageTiles,
+      annotationsByTile,
+      onChange
+    } = this.props;
 
     return (
       <GridList
@@ -56,12 +57,13 @@ class ImageTileList extends React.Component {
       >
         {imageTiles.map(tile => (
           <GridListTile key={tile.tile_file}>
-            <AnnotatedImage
-              key={tile.tile_file}
+            <AnnotatedImageTile
+              key={tile.id}
+              id={tile.id}
               src={tile.tile_file}
               width={IMAGE_SIZE}
               height={IMAGE_SIZE}
-              rectangles={this.getAnnotations(tile)}
+              rectangles={annotationsByTile[tile.id] || {}}
               labels={labels || []}
               onChange={onChange}
               style={{ margin: 5 }}
@@ -79,7 +81,9 @@ class AnnotateStep extends React.Component {
   state = {
     offset: 0,
     imageTiles: [],
-    estimator: null
+    estimator: null,
+    imageTiles: [],
+    annotationsByTile: {}
   };
 
   async componentDidMount() {
@@ -88,6 +92,8 @@ class AnnotateStep extends React.Component {
 
     // TODO Check if there are enough image tiles for annotation
     // if (this.state.imag)
+
+    await this.fetchAnnotations();
   }
 
   async fetchEstimator() {
@@ -107,8 +113,8 @@ class AnnotateStep extends React.Component {
   }
 
   async fetchImageTiles() {
-    const { estimator, offset } = this.state;
     const { token } = this.props;
+    const { estimator, offset } = this.state;
 
     const response = await axios.get(buildApiUrl(`/image_tiles/`), {
       params: {
@@ -125,13 +131,46 @@ class AnnotateStep extends React.Component {
     this.setState({ imageTiles: response.data.results });
   }
 
+  async fetchAnnotations() {
+    const { token } = this.props;
+    const { estimator, imageTiles } = this.state;
+    const imageTileIds = imageTiles.map(imageTile => imageTile.id);
+
+    const response = await axios.get(buildApiUrl(`/annotations/`), {
+      params: {
+        estimator: estimator.uuid,
+        image_tile: imageTileIds.join(",")
+      },
+      headers: {
+        Authorization: token,
+        "Accept-Language": i18n.language
+      }
+    });
+
+    const annotationsByTile = response.data.results.reduce((obj, annot) => {
+      const segments = annot.segments
+        .map((segment, i) => [i, segment])
+        .reduce((obj, [i, segment]) => ({ ...obj, [i]: segment }), {});
+      return { ...obj, [annot.image_tile]: segments };
+    }, {});
+
+    this.setState({ annotationsByTile });
+  }
+
+  handleChange = (imageTileId, rectangles) => {
+    const { annotationsByTile } = this.state;
+    this.setState({
+      annotationsByTile: { ...annotationsByTile, [imageTileId]: rectangles }
+    });
+  };
+
   handleSubmit = () => {
     const project = cookie.get("project");
   };
 
   render() {
     const { classes, t } = this.props;
-    const { imageTiles, estimator } = this.state;
+    const { imageTiles, estimator, annotationsByTile } = this.state;
 
     // FIXME
     const labels = estimator && estimator.classes;
@@ -147,7 +186,8 @@ class AnnotateStep extends React.Component {
               <ImageTileList
                 labels={labels}
                 imageTiles={imageTiles}
-                onChange={e => console.log(e)}
+                annotationsByTile={annotationsByTile}
+                onChange={this.handleChange}
               />
             </div>
           </Grid>

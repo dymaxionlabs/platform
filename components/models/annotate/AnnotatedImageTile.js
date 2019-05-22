@@ -35,7 +35,7 @@ const LABEL_COLORS = [
   "#000000"
 ];
 
-class AnnotatedImage extends React.Component {
+class AnnotatedImageTile extends React.Component {
   state = {
     mouseDraw: false,
     rectCount: 0,
@@ -141,8 +141,8 @@ class AnnotatedImage extends React.Component {
   };
 
   triggerOnChange(rectangles) {
-    const { src, onChange } = this.props;
-    onChange(src, rectangles);
+    const { id, onChange } = this.props;
+    onChange(id, rectangles);
   }
 
   handleDeleteRectangle = e => {
@@ -294,7 +294,8 @@ class AnnotatedImage extends React.Component {
   }
 }
 
-AnnotatedImage.propTypes = {
+AnnotatedImageTile.propTypes = {
+  id: PropTypes.number.isRequired,
   src: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
@@ -303,4 +304,4 @@ AnnotatedImage.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-export default AnnotatedImage;
+export default AnnotatedImageTile;
