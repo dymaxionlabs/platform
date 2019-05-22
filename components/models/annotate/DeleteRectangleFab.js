@@ -4,7 +4,7 @@ import React from "react";
 
 class DeleteRectangleFab extends React.Component {
   render() {
-    const { shape, onClick } = this.props;
+    const { shape, stroke, onClick } = this.props;
 
     const shapeWidth = shape.widthAfterResize || shape.width;
     const shapeHeight = shape.heightAfterResize || shape.height;
@@ -22,7 +22,7 @@ class DeleteRectangleFab extends React.Component {
         onClick={onClick}
         style={{
           position: "absolute",
-          backgroundColor: `${shape.stroke}80`,
+          backgroundColor: `${stroke}80`,
           top: center.y,
           left: center.x
         }}

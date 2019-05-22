@@ -55,9 +55,7 @@ class AnnotatedImageTile extends React.Component {
         x: mousePos.x,
         y: mousePos.y,
         width: 0,
-        height: 0,
-        stroke: RECT_STROKE,
-        fill: RECT_FILL
+        height: 0
       };
       this.setState({
         mouseDown: true,
@@ -107,6 +105,7 @@ class AnnotatedImageTile extends React.Component {
 
   isNewRectValid() {
     const { newRect } = this.state;
+
     return (
       newRect &&
       Math.abs(newRect.width) >= MIN_RECT_SIZE &&
@@ -142,6 +141,7 @@ class AnnotatedImageTile extends React.Component {
 
   triggerOnChange(rectangles) {
     const { id, onChange } = this.props;
+
     onChange(id, rectangles);
   }
 
@@ -182,24 +182,20 @@ class AnnotatedImageTile extends React.Component {
 
   handleLabelMenuItemClick = label => {
     const { newRect } = this.state;
+
     this.addNewRectangle(newRect, label);
   };
 
   addNewRectangle(rect, label) {
-    const { labels, rectangles } = this.props;
+    const { rectangles } = this.props;
 
-    const labelIndex = labels.indexOf(label);
-    const labelColor = LABEL_COLORS[labelIndex % LABEL_COLORS.length];
-
-    const newRectName = String(Object.keys(rectangles).length + 42);
+    const newRectName = String(Object.keys(rectangles).length);
     const newRectangles = {
       ...rectangles,
       [newRectName]: {
         ...rect,
         name: newRectName,
-        label: label,
-        fill: `${labelColor}30`,
-        stroke: labelColor
+        label: label
       }
     };
 
@@ -215,9 +211,26 @@ class AnnotatedImageTile extends React.Component {
   updateSelectedRectangle(cb) {
     const { rectangles } = this.props;
     const { selectedShapeName } = this.state;
+
     const selectedShape = rectangles[selectedShapeName];
     if (selectedShape) cb(selectedShape);
+
     this.triggerOnChange(rectangles);
+  }
+
+  getRectangleColors(rectangle) {
+    if (!rectangle) return {};
+
+    const { label } = rectangle;
+    const { labels } = this.props;
+
+    const labelIndex = labels.indexOf(label);
+    const labelColor = LABEL_COLORS[labelIndex % LABEL_COLORS.length];
+
+    return {
+      fill: `${labelColor}30`,
+      stroke: labelColor
+    };
   }
 
   render() {
@@ -262,9 +275,12 @@ class AnnotatedImageTile extends React.Component {
                 onDragMove={this.handleRectangleDragMove}
                 selected={name === selectedShapeName}
                 {...rect}
+                {...this.getRectangleColors(rect)}
               />
             ))}
-            {mouseDraw && <Rectangle {...newRect} />}
+            {mouseDraw && (
+              <Rectangle {...newRect} fill={RECT_FILL} stroke={RECT_STROKE} />
+            )}
             <RectangleTransformer
               selectedShapeName={selectedShapeName}
               selectedShape={selectedShape}
@@ -272,6 +288,7 @@ class AnnotatedImageTile extends React.Component {
               imageWidth={width}
               imageHeight={height}
               minRectSize={MIN_RECT_SIZE}
+              {...this.getRectangleColors(selectedShape)}
             />
           </Layer>
         </Stage>
@@ -279,6 +296,7 @@ class AnnotatedImageTile extends React.Component {
           <DeleteRectangleFab
             shape={selectedShape}
             onClick={this.handleDeleteRectangle}
+            {...this.getRectangleColors(selectedShape)}
           />
         )}
         <LabelMenu

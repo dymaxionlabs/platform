@@ -55,7 +55,7 @@ class RectangleTransformer extends React.Component {
   };
 
   render() {
-    const { selectedShape, onTransform } = this.props;
+    const { selectedShape, fill, stroke, onTransform } = this.props;
 
     return (
       <Transformer
@@ -65,9 +65,9 @@ class RectangleTransformer extends React.Component {
         ignoreStroke={true}
         anchorCornerRadius={3}
         anchorStrokeWidth={2}
-        anchorStroke={selectedShape && selectedShape.stroke}
-        anchorFill={selectedShape && selectedShape.fill}
-        borderStroke={selectedShape && selectedShape.stroke}
+        anchorStroke={selectedShape && stroke}
+        anchorFill={selectedShape && fill}
+        borderStroke={selectedShape && stroke}
         borderStrokeWidth={2}
         onTransform={onTransform}
         boundBoxFunc={this.boundBoxFunc}

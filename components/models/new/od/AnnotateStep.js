@@ -149,7 +149,7 @@ class AnnotateStep extends React.Component {
 
     const annotationsByTile = response.data.results.reduce((obj, annot) => {
       const segments = annot.segments
-        .map((segment, i) => [i, segment])
+        .map((segment, i) => [i, Object.assign(segment, { name: String(i) })])
         .reduce((obj, [i, segment]) => ({ ...obj, [i]: segment }), {});
       return { ...obj, [annot.image_tile]: segments };
     }, {});
