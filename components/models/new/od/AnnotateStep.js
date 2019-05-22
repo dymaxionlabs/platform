@@ -164,8 +164,35 @@ class AnnotateStep extends React.Component {
     });
   };
 
-  handleSubmit = () => {
-    const project = cookie.get("project");
+  handleSubmit = async () => {
+    const { token } = this.props;
+    const { estimator, imageTiles, annotationsByTile } = this.state;
+
+    for (const imageTile of imageTiles) {
+      const annotations = annotationsByTile[imageTile.id] || {};
+      const segments = Object.values(annotations).map(segment => ({
+        x: segment.x,
+        y: segment.y,
+        width: segment.width,
+        height: segment.height,
+        label: segment.label
+      }));
+
+      const data = {
+        estimator: estimator.uuid,
+        image_tile: imageTile.id,
+        segments: segments
+      };
+
+      const response = await axios.post(buildApiUrl(`/annotations/`), data, {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+      });
+
+      console.log(response);
+    }
   };
 
   render() {
