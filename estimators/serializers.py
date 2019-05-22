@@ -20,8 +20,14 @@ class ProjectSlugField(serializers.SlugRelatedField):
 class FileSlugField(serializers.SlugRelatedField):
     def get_queryset(self):
         user = self.context['request'].user
-        queryset = File.objects.filter(owner=user)
-        return queryset
+        return File.objects.filter(owner=user)
+
+
+class EstimatorSlugField(serializers.SlugRelatedField):
+    def get_queryset(self):
+        user = self.context['request'].user
+        projects = allowed_projects_for(Project.objects, user)
+        return Estimator.objects.filter(project__in=projects)
 
 
 class EstimatorSerializer(serializers.ModelSerializer):
@@ -34,15 +40,19 @@ class EstimatorSerializer(serializers.ModelSerializer):
         exclude = ('id', )
 
 
-class AnnotationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Annotation
-        fields = '__all__'
-
-
 class ImageTileSerializer(serializers.ModelSerializer):
     file = serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = ImageTile
         fields = '__all__'
+
+
+class AnnotationSerializer(serializers.ModelSerializer):
+    estimator = EstimatorSlugField(slug_field='uuid')
+
+    # TODO Validate segments field
+
+    class Meta:
+        model = Annotation
+        exclude = ('id', )

@@ -1,4 +1,6 @@
-from rest_framework import permissions, viewsets
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import generics, mixins, permissions, status, viewsets
+from rest_framework.response import Response
 
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission
@@ -33,8 +35,44 @@ class ImageTileViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class AnnotationViewSet(viewsets.ModelViewSet):
-    queryset = Annotation.objects.all().order_by('-created_at')
+class AnnotationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
     permission_classes = (permissions.IsAuthenticated,
                           HasAccessToRelatedProjectPermission)
+
+    def create(self, request):
+        instance = self.get_object_from_request(request)
+        if instance:
+            serializer = self.get_serializer(instance, data=request.data)
+        else:
+            serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if instance:
+            detail = _("Annotations updated")
+        else:
+            detail = _("Annotations created")
+
+        return Response({"detail": detail}, status=status.HTTP_200_OK)
+
+    def get_object_from_request(self, request):
+        estimator_uuid = request.data['estimator']
+        image_tile_id = request.data['image_tile']
+        return self.queryset.filter(estimator__uuid=estimator_uuid,
+                                    image_tile=image_tile_id).first()
+
+    def get_queryset(self):
+        queryset = self.queryset
+        params = self.request.query_params
+
+        estimator = params.get('estimator', '')
+        if estimator:
+            queryset = queryset.filter(estimator__uuid=estimator)
+
+        tiles = [id for id in params.get('image_tile', '').split(',') if id]
+        if tiles:
+            queryset = queryset.filter(image_tile__in=tiles)
+
+        return queryset

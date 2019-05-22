@@ -9,7 +9,7 @@ from projects.tests import create_some_project
 from .models import Estimator
 
 
-class EstimatorTest(TestCase):
+class EstimatorViewSetTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
