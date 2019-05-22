@@ -1,8 +1,7 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from terra.tests import loginWithAPI
+from terra.tests import create_some_admin_user, create_some_user, loginWithAPI
 
 from .models import Request
 
@@ -34,7 +33,7 @@ class RequestViewSetTest(TestCase):
         #self.assertIsNotNone(response.data['payment_id'])
 
     def test_create_with_user(self):
-        user = self.create_some_user()
+        user = create_some_user()
         loginWithAPI(self.client, user.username, 'secret')
 
         response = self.client.post('/requests/', {
@@ -58,7 +57,7 @@ class RequestViewSetTest(TestCase):
         #self.assertIsNotNone(response.data['payment_id'])
 
     def test_create_only_request(self):
-        user = self.create_some_user()
+        user = create_some_user()
         loginWithAPI(self.client, user.username, 'secret')
 
         response = self.client.post('/requests/?only_request=1', {
@@ -72,7 +71,7 @@ class RequestViewSetTest(TestCase):
 
     def test_retrieve_ok_if_admin(self):
         request = self.create_some_request()
-        admin_user = self.create_some_admin_user(password='secret')
+        admin_user = create_some_admin_user(password='secret')
 
         loginWithAPI(self.client, admin_user.username, 'secret')
 
@@ -81,7 +80,7 @@ class RequestViewSetTest(TestCase):
         self.assertRequestDetail(request, response.data)
 
     def test_retrieve_ok_if_owner(self):
-        user = self.create_some_user()
+        user = create_some_user()
         request = self.create_some_request(user=user)
 
         loginWithAPI(self.client, user.username, 'secret')
@@ -92,11 +91,11 @@ class RequestViewSetTest(TestCase):
 
     def test_retrieve_fail_if_not_owner_nor_admin(self):
         # User 1 creates a request
-        user = self.create_some_user()
+        user = create_some_user()
         request = self.create_some_request(user=user)
 
         # User 2 authenticates
-        user2 = self.create_some_user(username='jane')
+        user2 = create_some_user(username='jane')
         loginWithAPI(self.client, user2.username, 'secret')
 
         # User 2 tries to get request from User 1, but fails
@@ -105,15 +104,15 @@ class RequestViewSetTest(TestCase):
 
     def test_list_all_if_admin(self):
         # User 1 creates a request
-        user = self.create_some_user()
+        user = create_some_user()
         request = self.create_some_request(user=user)
 
         # User 2 creates a request
-        user2 = self.create_some_user(username='jane')
+        user2 = create_some_user(username='jane')
         request2 = self.create_some_request(user=user2)
 
         # An admin user authenticates
-        admin_user = self.create_some_admin_user(password='secret')
+        admin_user = create_some_admin_user(password='secret')
         loginWithAPI(self.client, admin_user.username, 'secret')
 
         response = self.client.get('/requests/')
@@ -125,7 +124,7 @@ class RequestViewSetTest(TestCase):
 
     def test_list_none_if_not_authenticated(self):
         # Some user creates a request
-        user = self.create_some_user()
+        user = create_some_user()
         request = self.create_some_request(user=user)
 
         response = self.client.get('/requests/')
@@ -136,11 +135,11 @@ class RequestViewSetTest(TestCase):
 
     def test_list_requests_from_user(self):
         # User 1 creates a request
-        user = self.create_some_user()
+        user = create_some_user()
         request = self.create_some_request(user=user)
 
         # User 2 creates a request
-        user2 = self.create_some_user(username='jane')
+        user2 = create_some_user(username='jane')
         request2 = self.create_some_request(user=user2)
 
         loginWithAPI(self.client, user2.username, 'secret')
@@ -157,18 +156,6 @@ class RequestViewSetTest(TestCase):
                                          user=user)
         request.save()
         return request
-
-    def create_some_user(self, username='john', password='secret'):
-        user = User(email="john@doe.com", username=username)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_some_admin_user(self, password='secret'):
-        user = User(email="admin@example.com", username='admin', is_staff=True)
-        user.set_password(password)
-        user.save()
-        return user
 
     def assertRequestDetail(self, request, response_data):
         self.assertEquals(
