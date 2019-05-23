@@ -168,6 +168,7 @@ class AnnotateStep extends React.Component {
     const { token } = this.props;
     const { estimator, imageTiles, annotationsByTile } = this.state;
 
+    let savedTiles = 0;
     for (const imageTile of imageTiles) {
       const annotations = annotationsByTile[imageTile.id] || {};
       const segments = Object.values(annotations).map(segment => ({
@@ -184,14 +185,19 @@ class AnnotateStep extends React.Component {
         segments: segments
       };
 
-      const response = await axios.post(buildApiUrl(`/annotations/`), data, {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      });
-
-      console.log(response);
+      axios
+        .post(buildApiUrl(`/annotations/`), data, {
+          headers: {
+            Authorization: token,
+            "Accept-Language": i18n.language
+          }
+        })
+        .then(response => {
+          savedTiles += 1;
+          if (savedTiles === imageTiles.length) {
+            console.log("All annotations saved!");
+          }
+        });
     }
   };
 
