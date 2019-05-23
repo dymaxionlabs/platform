@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission
@@ -76,3 +77,18 @@ class AnnotationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             queryset = queryset.filter(image_tile__in=tiles)
 
         return queryset
+
+
+class SegmentsPerLabelView(APIView):
+    def get(self, request, uuid):
+        annotations = Annotation.objects.filter(estimator__uuid=uuid)
+
+        segments_per_label = {}
+        for annot in annotations:
+            for segment in annot.segments:
+                if segment['label'] not in segments_per_label:
+                    segments_per_label[segment['label']] = 0
+                segments_per_label[segment['label']] += 1
+
+        return Response({'detail': segments_per_label},
+                        status=status.HTTP_200_OK)
