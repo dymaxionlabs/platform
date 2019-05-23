@@ -1,5 +1,6 @@
 {
   "annotate_step": {
+    "annotations_per_class": "Anotaciones por clase",
     "submit_btn": "Guardar",
     "title": "Anotar im\u00e1genes"
   },
@@ -7,6 +8,9 @@
   "classification_btn": "Clasificaci\u00f3n (BETA)",
   "create_step": {
     "classes_label": "Clases de objetos",
+    "error_msg_classes": "Deben ingresarse clases.",
+    "error_msg_duplicate": "El nombre ya existe, ingrese otro.",
+    "error_msg_internal": "Ha ocurrido un error. Por favor reintente la operaci\u00f3n.",
     "name_label": "Nombre",
     "submit_btn": "Crear",
     "title": "Crear nuevo modelo"

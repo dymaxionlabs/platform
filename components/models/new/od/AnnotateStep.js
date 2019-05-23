@@ -77,13 +77,32 @@ class ImageTileList extends React.Component {
 
 ImageTileList = withStyles(styles)(ImageTileList);
 
+let LabelCountList = ({ t, classes, labelCount }) => (
+  <Paper className={classes.paper}>
+    <Typography>{t("annotate_step.annotations_per_class")}</Typography>
+    <ul>
+      {Object.entries(labelCount).map(([label, count]) => (
+        <li key={label}>
+          <Typography>
+            {label}: {count}
+          </Typography>
+        </li>
+      ))}
+    </ul>
+  </Paper>
+);
+
+LabelCountList = withNamespaces("models")(LabelCountList);
+LabelCountList = withStyles(styles)(LabelCountList);
+
 class AnnotateStep extends React.Component {
   state = {
     offset: 0,
     imageTiles: [],
     estimator: null,
     imageTiles: [],
-    annotationsByTile: {}
+    annotationsByTile: {},
+    labelCount: {}
   };
 
   async componentDidMount() {
@@ -93,7 +112,8 @@ class AnnotateStep extends React.Component {
     // TODO Check if there are enough image tiles for annotation
     // if (this.state.imag)
 
-    await this.fetchAnnotations();
+    this.fetchAnnotations();
+    this.fetchLabelCount();
   }
 
   async fetchEstimator() {
@@ -157,6 +177,24 @@ class AnnotateStep extends React.Component {
     this.setState({ annotationsByTile });
   }
 
+  async fetchLabelCount() {
+    const { token, estimatorId } = this.props;
+
+    const response = await axios.get(
+      buildApiUrl(`/estimators/${estimatorId}/segments_per_label/`),
+      {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+      }
+    );
+
+    const labelCount = response.data["detail"];
+
+    this.setState({ labelCount });
+  }
+
   handleChange = (imageTileId, rectangles) => {
     const { annotationsByTile } = this.state;
     this.setState({
@@ -203,7 +241,7 @@ class AnnotateStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { imageTiles, estimator, annotationsByTile } = this.state;
+    const { imageTiles, estimator, annotationsByTile, labelCount } = this.state;
 
     // FIXME
     const labels = estimator && estimator.classes;
@@ -225,9 +263,7 @@ class AnnotateStep extends React.Component {
             </div>
           </Grid>
           <Grid item xs={3}>
-            <Paper className={classes.paper}>
-              <Typography>Anotaciones por clase</Typography>
-            </Paper>
+            {labels && labelCount && <LabelCountList labelCount={labelCount} />}
           </Grid>
         </Grid>
         <Button

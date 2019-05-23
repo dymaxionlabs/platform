@@ -214,6 +214,7 @@ models,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic
 models,upload_step.submit_btn,Subir,Upload
 models,annotate_step.title,Anotar imágenes,Annotate images
 models,annotate_step.submit_btn,Guardar,Save
+models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
 models,send_btn,Enviar,Send
 models,cancel_btn,Cancelar,Cancel
 models,object_btn,Detección de Objetos,Object Detection
@@ -226,3 +227,6 @@ models,success_msg,Tu mensaje ha sido enviado. ¡Gracias!,Your message has been 
 models,title_consult,Consultar sobre modelos,Consult about models
 models,label_msg,Mensaje,Message
 models,new_title,Nuevo Modelo,New Model
+models,create_step.error_msg_duplicate,"El nombre ya existe, ingrese otro.","Name already exists, please enter another."
+models,create_step.error_msg_classes,Deben ingresarse clases.,Please input classes.
+models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente la operación.,An error has ocurred. Please retry.
