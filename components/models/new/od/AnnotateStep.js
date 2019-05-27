@@ -6,8 +6,12 @@ import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
-import cookie from "js-cookie";
 import React from "react";
+import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
+import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import IconButton from "@material-ui/core/IconButton";
 import AnnotatedImageTile from "../../../../components/models/annotate/AnnotatedImageTile";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
@@ -33,8 +37,9 @@ const styles = theme => ({
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
-  submitBtn: {
-    marginTop: theme.spacing.unit * 2
+  button: {
+    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit
   }
 });
 
@@ -45,32 +50,52 @@ class ImageTileList extends React.Component {
       labels,
       imageTiles,
       annotationsByTile,
-      onChange
+      onChange,
+      onFirstPageClick,
+      onLastPageClick,
+      onPrevPageClick,
+      onNextPageClick
     } = this.props;
 
     return (
-      <GridList
-        cellHeight="auto"
-        className={classes.imageTileList}
-        cols={1}
-        spacing={1}
-      >
-        {imageTiles.map(tile => (
-          <GridListTile key={tile.tile_file}>
-            <AnnotatedImageTile
-              key={tile.id}
-              id={tile.id}
-              src={tile.tile_file}
-              width={IMAGE_SIZE}
-              height={IMAGE_SIZE}
-              rectangles={annotationsByTile[tile.id] || {}}
-              labels={labels || []}
-              onChange={onChange}
-              style={{ margin: 5 }}
-            />
-          </GridListTile>
-        ))}
-      </GridList>
+      <React.Fragment>
+        <GridList
+          cellHeight="auto"
+          className={classes.imageTileList}
+          cols={1}
+          spacing={1}
+        >
+          {imageTiles.map(tile => (
+            <GridListTile key={tile.tile_file}>
+              <AnnotatedImageTile
+                key={tile.id}
+                id={tile.id}
+                src={tile.tile_file}
+                width={IMAGE_SIZE}
+                height={IMAGE_SIZE}
+                rectangles={annotationsByTile[tile.id] || {}}
+                labels={labels || []}
+                onChange={onChange}
+                style={{ margin: 5 }}
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+        <div>
+          <IconButton className={classes.button} onClick={onFirstPageClick}>
+            <SkipPreviousIcon />
+          </IconButton>
+          <IconButton className={classes.button} onClick={onPrevPageClick}>
+            <NavigateBeforeIcon />
+          </IconButton>
+          <IconButton className={classes.button} onClick={onNextPageClick}>
+            <NavigateNextIcon />
+          </IconButton>
+          <IconButton className={classes.button} onClick={onLastPageClick}>
+            <SkipNextIcon />
+          </IconButton>
+        </div>
+      </React.Fragment>
     );
   }
 }
@@ -202,6 +227,22 @@ class AnnotateStep extends React.Component {
     });
   };
 
+  handleFirstPageClick = () => {
+    console.log("first page");
+  };
+
+  handlePrevPageClick = () => {
+    console.log("prev page");
+  };
+
+  handleNextPageClick = () => {
+    console.log("next page");
+  };
+
+  handleLastPageClick = () => {
+    console.log("last page");
+  };
+
   handleSubmit = async () => {
     const { token } = this.props;
     const { estimator, imageTiles, annotationsByTile } = this.state;
@@ -259,6 +300,10 @@ class AnnotateStep extends React.Component {
                 imageTiles={imageTiles}
                 annotationsByTile={annotationsByTile}
                 onChange={this.handleChange}
+                onFirstPageClick={this.handleFirstPageClick}
+                onPrevPageClick={this.handlePrevPageClick}
+                onNextPageClick={this.handleNextPageClick}
+                onLastPageClick={this.handleLastPageClick}
               />
             </div>
           </Grid>
@@ -267,7 +312,7 @@ class AnnotateStep extends React.Component {
           </Grid>
         </Grid>
         <Button
-          className={classes.submitBtn}
+          className={classes.button}
           color="primary"
           variant="contained"
           onClick={this.handleSubmit}
