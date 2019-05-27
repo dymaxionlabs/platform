@@ -1,7 +1,8 @@
 {
   "annotate_step": {
     "annotations_per_class": "Anotaciones por clase",
-    "submit_btn": "Guardar",
+    "continue_btn": "Guardar y continuar",
+    "save_btn": "Guardar",
     "title": "Anotar im\u00e1genes"
   },
   "cancel_btn": "Cancelar",

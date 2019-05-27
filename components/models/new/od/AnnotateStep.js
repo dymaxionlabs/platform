@@ -19,6 +19,7 @@ import StepContentContainer from "../StepContentContainer";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
+const MIN_COUNT_PER_LABEL = 5;
 
 const styles = theme => ({
   header: {
@@ -238,6 +239,13 @@ class AnnotateStep extends React.Component {
     return offset + PAGE_SIZE < offset;
   }
 
+  _hasEnoughAnnotations() {
+    const { labelCount } = this.state;
+    return Object.values(labelCount).every(
+      count => count >= MIN_COUNT_PER_LABEL
+    );
+  }
+
   handleChange = (imageTileId, rectangles) => {
     this.setState((state, _) => ({
       annotationsByTile: {
@@ -341,6 +349,8 @@ class AnnotateStep extends React.Component {
     // FIXME
     const labels = estimator && estimator.classes;
 
+    const canAdvance = this._hasEnoughAnnotations();
+
     return (
       <StepContentContainer width={1000}>
         <Typography className={classes.header} component="h1" variant="h5">
@@ -373,7 +383,9 @@ class AnnotateStep extends React.Component {
           variant="contained"
           onClick={this.handleSubmit}
         >
-          {t("annotate_step.submit_btn")}
+          {canAdvance
+            ? t("annotate_step.continue_btn")
+            : t("annotate_step.save_btn")}
         </Button>
         <Typography>
           {this.state.offset} / {this.state.count}

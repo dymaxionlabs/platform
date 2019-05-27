@@ -1,7 +1,8 @@
 {
   "annotate_step": {
     "annotations_per_class": "Annotations per class",
-    "submit_btn": "Save",
+    "continue_btn": "Save and continue",
+    "save_btn": "Save",
     "title": "Annotate images"
   },
   "cancel_btn": "Cancel",

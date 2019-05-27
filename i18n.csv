@@ -213,7 +213,8 @@ models,upload_step.title,Subir imágenes,Upload images
 models,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 models,upload_step.submit_btn,Subir,Upload
 models,annotate_step.title,Anotar imágenes,Annotate images
-models,annotate_step.submit_btn,Guardar,Save
+models,annotate_step.save_btn,Guardar,Save
+models,annotate_step.continue_btn,Guardar y continuar,Save and continue
 models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
 models,send_btn,Enviar,Send
 models,cancel_btn,Cancelar,Cancel
