@@ -78,13 +78,14 @@ class UploadStep extends React.Component {
         }
       })
       .then(res => {
-        const { project, name, image_files } = res.data;
+        const { project, name, classes, image_files } = res.data;
         const newFiles = files.map(file => file.name);
         const uniqueImageFiles = [...new Set(image_files.concat(newFiles))];
 
         const dataSend = {
           project: project,
           name: name,
+          classes: classes,
           image_files: uniqueImageFiles
         };
 
