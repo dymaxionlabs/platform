@@ -141,8 +141,17 @@ class AnnotatedImageTile extends React.Component {
 
   triggerOnChange(rectangles) {
     const { id, onChange } = this.props;
-
     onChange(id, rectangles);
+  }
+
+  triggerOnNew(rectangle) {
+    const { id, onNew } = this.props;
+    if (onNew) onNew(id, rectangle);
+  }
+
+  triggerOnDelete(rectangle) {
+    const { id, onDelete } = this.props;
+    if (onDelete) onDelete(id, rectangle);
   }
 
   handleDeleteRectangle = e => {
@@ -154,6 +163,7 @@ class AnnotatedImageTile extends React.Component {
 
     const { [selectedShapeName]: deletedRect, ...newRectangles } = rectangles;
     this.triggerOnChange(newRectangles);
+    this.triggerOnDelete(deletedRect);
   };
 
   handleRectangleDragMove = e => {
@@ -190,13 +200,14 @@ class AnnotatedImageTile extends React.Component {
     const { rectangles } = this.props;
 
     const newRectName = String(Object.keys(rectangles).length);
+    const newRect = {
+      ...rect,
+      name: newRectName,
+      label: label
+    };
     const newRectangles = {
       ...rectangles,
-      [newRectName]: {
-        ...rect,
-        name: newRectName,
-        label: label
-      }
+      [newRectName]: newRect
     };
 
     this.setState({
@@ -206,6 +217,7 @@ class AnnotatedImageTile extends React.Component {
     });
 
     this.triggerOnChange(newRectangles);
+    this.triggerOnNew(newRect);
   }
 
   updateSelectedRectangle(cb) {
@@ -319,7 +331,9 @@ AnnotatedImageTile.propTypes = {
   height: PropTypes.number.isRequired,
   rectangles: PropTypes.object.isRequired,
   labels: PropTypes.array.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onNew: PropTypes.func,
+  onDelete: PropTypes.func
 };
 
 export default AnnotatedImageTile;

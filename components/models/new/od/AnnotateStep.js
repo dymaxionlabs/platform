@@ -52,6 +52,8 @@ class ImageTileList extends React.Component {
       imageTiles,
       annotationsByTile,
       onChange,
+      onNew,
+      onDelete,
       onFirstPageClick,
       onLastPageClick,
       onPrevPageClick,
@@ -77,6 +79,8 @@ class ImageTileList extends React.Component {
                 rectangles={annotationsByTile[tile.id] || {}}
                 labels={labels || []}
                 onChange={onChange}
+                onNew={onNew}
+                onDelete={onDelete}
                 style={{ margin: 5 }}
               />
             </GridListTile>
@@ -235,9 +239,29 @@ class AnnotateStep extends React.Component {
   }
 
   handleChange = (imageTileId, rectangles) => {
-    const { annotationsByTile } = this.state;
-    this.setState({
-      annotationsByTile: { ...annotationsByTile, [imageTileId]: rectangles }
+    this.setState((state, _) => ({
+      annotationsByTile: {
+        ...state.annotationsByTile,
+        [imageTileId]: rectangles
+      }
+    }));
+  };
+
+  handleNew = (_, rectangle) => {
+    console.log("new rect");
+    this.setState((state, _) => {
+      const { label } = rectangle;
+      const newCount = state.labelCount[label] + 1;
+      return { labelCount: { ...state.labelCount, [label]: newCount } };
+    });
+  };
+
+  handleDelete = (_, rectangle) => {
+    console.log("delete rect");
+    this.setState((state, _) => {
+      const { label } = rectangle;
+      const newCount = Math.max(state.labelCount[label] - 1, 0);
+      return { labelCount: { ...state.labelCount, [label]: newCount } };
     });
   };
 
@@ -330,6 +354,8 @@ class AnnotateStep extends React.Component {
                 imageTiles={imageTiles}
                 annotationsByTile={annotationsByTile}
                 onChange={this.handleChange}
+                onNew={this.handleNew}
+                onDelete={this.handleDelete}
                 onFirstPageClick={this.handleFirstPageClick}
                 onPrevPageClick={this.handlePrevPageClick}
                 onNextPageClick={this.handleNextPageClick}
