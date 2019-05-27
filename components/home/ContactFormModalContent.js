@@ -37,7 +37,7 @@ class ContactFormModalContent extends React.Component {
 
   constructor(props) {
     super(props);
-    this.setState({ open: this.props.open });
+    this.state.open = props.open;
   }
 
   handleMessageChange = event => {
