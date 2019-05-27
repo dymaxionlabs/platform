@@ -17,6 +17,7 @@ import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import StepContentContainer from "../StepContentContainer";
 
+const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
 
 const styles = theme => ({
@@ -123,6 +124,7 @@ LabelCountList = withStyles(styles)(LabelCountList);
 class AnnotateStep extends React.Component {
   state = {
     offset: 0,
+    count: 0,
     imageTiles: [],
     estimator: null,
     imageTiles: [],
@@ -163,7 +165,7 @@ class AnnotateStep extends React.Component {
 
     const response = await axios.get(buildApiUrl(`/image_tiles/`), {
       params: {
-        limit: 10,
+        limit: PAGE_SIZE,
         offset: offset,
         files: estimator.image_files
       },
@@ -173,7 +175,9 @@ class AnnotateStep extends React.Component {
       }
     });
 
-    this.setState({ imageTiles: response.data.results });
+    const { count } = response.data;
+
+    this.setState({ imageTiles: response.data.results, count: count });
   }
 
   async fetchAnnotations() {
@@ -220,6 +224,16 @@ class AnnotateStep extends React.Component {
     this.setState({ labelCount });
   }
 
+  _hasPrevPage() {
+    const { offset } = this.state;
+    return offset >= PAGE_SIZE;
+  }
+
+  _hasNextPage() {
+    const { offset } = this.state;
+    return offset + PAGE_SIZE < offset;
+  }
+
   handleChange = (imageTileId, rectangles) => {
     const { annotationsByTile } = this.state;
     this.setState({
@@ -227,20 +241,36 @@ class AnnotateStep extends React.Component {
     });
   };
 
+  _updateStateAndRefetch(newState) {
+    this.setState(newState, async () => {
+      await this.fetchImageTiles();
+      this.fetchAnnotations();
+    });
+  }
+
   handleFirstPageClick = () => {
-    console.log("first page");
+    this._updateStateAndRefetch({ offset: 0 });
   };
 
   handlePrevPageClick = () => {
-    console.log("prev page");
+    this._updateStateAndRefetch((state, _) => ({
+      offset: Math.max(state.offset - PAGE_SIZE, 0)
+    }));
   };
 
   handleNextPageClick = () => {
-    console.log("next page");
+    const { offset, count } = this.state;
+    if (offset + PAGE_SIZE < count) {
+      this._updateStateAndRefetch((state, _) => ({
+        offset: Math.min(state.offset + PAGE_SIZE, state.count)
+      }));
+    }
   };
 
   handleLastPageClick = () => {
-    console.log("last page");
+    this._updateStateAndRefetch((state, _) => ({
+      offset: Math.floor(state.count / PAGE_SIZE) * PAGE_SIZE
+    }));
   };
 
   handleSubmit = async () => {
@@ -319,6 +349,9 @@ class AnnotateStep extends React.Component {
         >
           {t("annotate_step.submit_btn")}
         </Button>
+        <Typography>
+          {this.state.offset} / {this.state.count}
+        </Typography>
       </StepContentContainer>
     );
   }
