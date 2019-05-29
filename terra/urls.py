@@ -23,13 +23,13 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from estimators.views import (SegmentsPerLabelView, AnnotationViewSet,
-                              EstimatorViewSet, ImageTileViewSet)
+from estimators.views import (AnnotationViewSet, EstimatorViewSet,
+                              ImageTileViewSet, SegmentsPerLabelView)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileViewSet, LayerViewSet,
                             MapViewSet, ProjectInvitationTokenViewSet,
-                            ProjectViewSet, TestAuthView, TestErrorView,
-                            UserViewSet)
+                            ProjectViewSet, SubscribeBetaView, TestAuthView,
+                            TestErrorView, UserViewSet)
 from quotations.views import RequestViewSet
 
 router = SimpleRouter()
@@ -82,6 +82,7 @@ urlpatterns = [
     url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?',
         ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
+    url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
         SegmentsPerLabelView.as_view()),

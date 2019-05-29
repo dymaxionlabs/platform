@@ -8,6 +8,7 @@ from mailchimp3 import MailChimp
 from rest_framework import serializers
 
 from terra import settings
+from terra.emails import EarlyAccessBetaEmail
 
 from .models import File, Layer, Map, MapLayer, Project, ProjectInvitationToken
 
@@ -102,6 +103,16 @@ class ContactSerializer(serializers.Serializer):
                 })
         except Exception as e:
             print("Failed to create audience:", str(e))
+
+
+class SubscribeBetaSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def save(self):
+        email = EarlyAccessBetaEmail(
+            recipients=[self.data['email']],
+            language_code=self.context['request'].LANGUAGE_CODE)
+        email.send_mail()
 
 
 class ProjectInvitationTokenSerializer(serializers.ModelSerializer):

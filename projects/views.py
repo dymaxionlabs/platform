@@ -19,7 +19,7 @@ from .permissions import (HasAccessToMapPermission,
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
-                          UserSerializer)
+                          SubscribeBetaSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -89,6 +89,18 @@ class ContactView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": _("Contact message has been sent")},
+                        status=status.HTTP_200_OK)
+
+
+class SubscribeBetaView(generics.GenericAPIView):
+    serializer_class = SubscribeBetaSerializer
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": _("User subscribed")},
                         status=status.HTTP_200_OK)
 
 
