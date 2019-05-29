@@ -2,16 +2,19 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
-import React from "react";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import IconButton from "@material-ui/core/IconButton";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
+import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
+import axios from "axios";
+import React from "react";
 import AnnotatedImageTile from "../../../../components/models/annotate/AnnotatedImageTile";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
@@ -108,18 +111,28 @@ class ImageTileList extends React.Component {
 
 ImageTileList = withStyles(styles)(ImageTileList);
 
+let remainingMessage = (t, count) => {
+  if (count < MIN_COUNT_PER_LABEL) {
+    return (
+      <Typography>
+        ({t("annotate_step.remaining")}:{MIN_COUNT_PER_LABEL - count})
+      </Typography>
+    );
+  }
+};
+
 let LabelCountList = ({ t, classes, labelCount }) => (
   <Paper className={classes.paper}>
     <Typography>{t("annotate_step.annotations_per_class")}</Typography>
-    <ul>
+    <List>
       {Object.entries(labelCount).map(([label, count]) => (
-        <li key={label}>
-          <Typography>
-            {label}: {count}
-          </Typography>
-        </li>
+        <ListItem key={label}>
+          <ListItemText>
+            {label}: {count} {remainingMessage(t, count)}
+          </ListItemText>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   </Paper>
 );
 
@@ -259,7 +272,10 @@ class AnnotateStep extends React.Component {
     console.log("new rect");
     this.setState((state, _) => {
       const { label } = rectangle;
-      const newCount = state.labelCount[label] + 1;
+      const newCount =
+        typeof state.labelCount[label] === "undefined"
+          ? 1
+          : state.labelCount[label] + 1;
       return { labelCount: { ...state.labelCount, [label]: newCount } };
     });
   };
