@@ -123,7 +123,7 @@ ANYMAIL = {
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND',
                           'django.core.mail.backends.console.EmailBackend')
 
-DEFAULT_FROM_EMAIL = 'Terra <{email}>'.format(
+DEFAULT_FROM_EMAIL = 'Dymaxion Analytics <{email}>'.format(
     email=os.getenv('DEFAULT_FROM_EMAIL'))
 
 # Database
@@ -245,8 +245,8 @@ RQ_SHOW_ADMIN_LINK = True
 
 # Configure Sentry
 if os.environ['SENTRY_DNS']:
-    sentry_sdk.init(
-        dsn=os.environ['SENTRY_DNS'], integrations=[DjangoIntegration()])
+    sentry_sdk.init(dsn=os.environ['SENTRY_DNS'],
+                    integrations=[DjangoIntegration()])
 
 CELERY_RESULT_BACKEND = 'tasks.backends.DatabaseBackend'
 
@@ -261,3 +261,5 @@ MAILCHIMP_AUDIENCE_IDS = {
     'urban': '73d5a1e868',
     'agri': '69a9ec43f4',
 }
+
+CONTACT_EMAIL = 'contact@dymaxionlabs.com'
