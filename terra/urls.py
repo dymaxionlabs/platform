@@ -25,11 +25,12 @@ from rest_framework.routers import SimpleRouter
 
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView)
-from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileUploadView, FileViewSet, LayerViewSet,
-                            MapViewSet, ProjectInvitationTokenViewSet,
-                            ProjectViewSet, SubscribeBetaView, TestAuthView,
-                            TestErrorView, UserProfileViewSet, UserViewSet)
+from projects.views import (UserProfileViewSet, ConfirmProjectInvitationView,
+                            ContactView, FileUploadView, FileViewSet,
+                            LayerViewSet, MapViewSet,
+                            ProjectInvitationTokenViewSet, ProjectViewSet,
+                            SubscribeBetaView, TestAuthView, TestErrorView,
+                            UserViewSet)
 from quotations.views import RequestViewSet
 
 router = SimpleRouter()

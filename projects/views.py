@@ -31,6 +31,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         permissions.IsAuthenticated,
         UserPermission,
     )
+    lookup_field = 'username'
 
     def get_queryset(self):
         # If logged-in user is not admin, filter by the current user
@@ -48,6 +49,7 @@ class UserProfileViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
         permissions.IsAuthenticated,
         UserPermission,
     )
+    lookup_field = 'username'
 
 
 # class ProjectInvitationTokenViewSet(viewsets.ModelViewSet):

@@ -21,11 +21,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    username = serializers.SlugRelatedField(read_only=True,
+                                            source='user',
+                                            slug_field='username')
 
     class Meta:
         model = UserProfile
-        exclude = ('id', 'created_at', 'updated_at')
+        exclude = ('id', 'user', 'created_at', 'updated_at')
 
 
 class LoginUserSerializer(serializers.Serializer):
