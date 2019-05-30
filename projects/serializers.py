@@ -10,13 +10,22 @@ from rest_framework import serializers
 from terra import settings
 from terra.emails import EarlyAccessBetaEmail
 
-from .models import File, Layer, Map, MapLayer, Project, ProjectInvitationToken
+from .models import (File, Layer, Map, MapLayer, Project,
+                     ProjectInvitationToken, UserProfile)
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
+
+    class Meta:
+        model = UserProfile
+        exclude = ('id', 'created_at', 'updated_at')
 
 
 class LoginUserSerializer(serializers.Serializer):

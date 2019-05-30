@@ -11,7 +11,8 @@ from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
 from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
-from .models import File, Layer, Map, Project, ProjectInvitationToken
+from .models import (File, Layer, Map, Project, ProjectInvitationToken,
+                     UserProfile)
 from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
@@ -19,7 +20,8 @@ from .permissions import (HasAccessToMapPermission,
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
-                          SubscribeBetaSerializer, UserSerializer)
+                          SubscribeBetaSerializer, UserProfileSerializer,
+                          UserSerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,6 +39,15 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.all()
         else:
             return self.queryset.filter(id=user.id).all()
+
+
+class UserProfileViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (
+        permissions.IsAuthenticated,
+        UserPermission,
+    )
 
 
 # class ProjectInvitationTokenViewSet(viewsets.ModelViewSet):
