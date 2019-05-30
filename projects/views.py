@@ -16,7 +16,8 @@ from .models import (File, Layer, Map, Project, ProjectInvitationToken,
 from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
-                          HasAccessToRelatedProjectPermission, UserPermission)
+                          HasAccessToRelatedProjectPermission, UserPermission,
+                          UserProfilePermission)
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
@@ -47,9 +48,9 @@ class UserProfileViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = (
         permissions.IsAuthenticated,
-        UserPermission,
+        UserProfilePermission,
     )
-    lookup_field = 'username'
+    lookup_field = 'user__username'
 
 
 # class ProjectInvitationTokenViewSet(viewsets.ModelViewSet):
