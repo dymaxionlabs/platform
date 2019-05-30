@@ -72,8 +72,13 @@ class Email:
             '*|MC:SUBJECT|*': self.subject,
             '*|MC_PREVIEW_TEXT|*': self.preview_text,
             '*|CURRENT_YEAR|*': date.today().year,
-            '*|LIST:COMPANY|*': 'Dymaxion Labs',
+            '*|LIST:COMPANY|*': settings.COMPANY_NAME,
+            '*|HTML:LIST_ADDRESS_HTML|*': settings.LIST_ADDRESS_HTML,
             '*|UNSUB|*': '%unsubscribe_url%',
+            # Unused variables (for now):
+            '*|IFNOT:ARCHIVE_PAGE|*': '',
+            '*|LIST:DESCRIPTION|*': '',
+            '*|END:IF|*': '',
         }
 
 

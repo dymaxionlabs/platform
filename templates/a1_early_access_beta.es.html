@@ -948,12 +948,16 @@ El equipo de <strong>Dymaxion Labs.&nbsp;</strong></span></span></div>
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
                         
-                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #666666;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;line-height: 150%;text-align: center;">
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #666666;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size: 10px;line-height: 150%;text-align: center;">
                         
-                            <div style="text-align: center;"><span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif"><span style="color:#696969"><em>Copyright © *|CURRENT_YEAR|* *|LIST:COMPANY|*, All rights reserved.</em></span></span><br>
+                            <div style="text-align: center;"><em>Copyright © *|CURRENT_YEAR|* *|LIST:COMPANY|*, All rights reserved.</em><br>
+*|IFNOT:ARCHIVE_PAGE|* *|LIST:DESCRIPTION|*<br>
 <br>
-<span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif"><span style="color:#696969">Want to change how you receive these emails?<br>
-You can </span><a href="*|UNSUB|*"><span style="color:#2f32b3">unsubscribe from this list</span></a><span style="color:#2f32b3">.</span></span></div>
+<strong>Our mailing address is:</strong><br>
+*|HTML:LIST_ADDRESS_HTML|* *|END:IF|*<br>
+<br>
+Want to change how you receive these emails?<br>
+You can <a href="*|UNSUB|*">unsubscribe from this list</a>.</div>
 
                         </td>
                     </tr>
