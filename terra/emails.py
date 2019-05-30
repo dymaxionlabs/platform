@@ -77,7 +77,7 @@ class Email:
 
 
 class EarlyAccessBetaEmail(Email):
-    template_name = 'early_access_beta'
+    template_name = 'a1_early_access_beta'
     subject = _('Validá tu correo')
 
     signup_url = '{base_url}/signup?beta=1'.format(
