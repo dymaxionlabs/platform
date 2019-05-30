@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-04 09:27-0300\n"
+"POT-Creation-Date: 2019-05-30 14:24-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,75 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: projects/models.py:39
+#: estimators/models.py:17
+msgid "Object detection"
+msgstr "Detección de objetos"
+
+#: estimators/models.py:25
+#, fuzzy
+#| msgid "Project"
+msgid "project"
+msgstr "Proyecto"
+
+#: estimators/models.py:27
+msgid "estimator type"
+msgstr "tipo de estimador"
+
+#: estimators/models.py:31
+msgid "name"
+msgstr "nombre"
+
+#: estimators/models.py:38
+#, fuzzy
+#| msgid "Created at"
+msgid "created at"
+msgstr "Creado en"
+
+#: estimators/models.py:39
+#, fuzzy
+#| msgid "Updated at"
+msgid "updated at"
+msgstr "Actualizado en"
+
+#: estimators/models.py:63
+msgid "file"
+msgstr "archivo"
+
+#: estimators/models.py:69
+#, fuzzy
+#| msgid "No images"
+msgid "image"
+msgstr "No hay imágenes"
+
+#: estimators/models.py:93
+msgid "estimator"
+msgstr "estimador"
+
+#: estimators/models.py:96
+msgid "image tile"
+msgstr "mosaico"
+
+#: estimators/models.py:97
+msgid "segments"
+msgstr "segmentos"
+
+#: estimators/views.py:55
+msgid "Annotations updated"
+msgstr "Anotaciones actualizadas"
+
+#: estimators/views.py:57
+msgid "Annotations created"
+msgstr "Anotaciones creadas"
+
+#: projects/models.py:24
+msgid "In Beta"
+msgstr "En Beta"
+
+#: projects/models.py:38
 msgid "Name"
 msgstr "Nombre"
 
-#: projects/models.py:41
+#: projects/models.py:39
 msgid "Description"
 msgstr "Descripción"
 
@@ -30,15 +94,15 @@ msgstr "Descripción"
 msgid "No images"
 msgstr "No hay imágenes"
 
-#: projects/models.py:44 projects/models.py:64
+#: projects/models.py:44 projects/models.py:68
 msgid "Created at"
 msgstr "Creado en"
 
-#: projects/models.py:45 projects/models.py:65
+#: projects/models.py:45 projects/models.py:69
 msgid "Updated at"
 msgstr "Actualizado en"
 
-#: projects/models.py:48 projects/models.py:59 projects/models.py:99
+#: projects/models.py:48 projects/models.py:60 projects/models.py:102
 msgid "Project"
 msgstr "Proyecto"
 
@@ -54,55 +118,59 @@ msgstr "Clave"
 msgid "Email"
 msgstr "Email"
 
-#: projects/models.py:62
+#: projects/models.py:66
 msgid "Confirmed"
 msgstr "Confirmado"
 
-#: projects/models.py:69
+#: projects/models.py:73
 msgid "Project invitation token"
 msgstr "Token de invitación a proyecto"
 
-#: projects/models.py:70
+#: projects/models.py:74
 msgid "Project invitation tokens"
 msgstr "Tokens de invitación a proyecto"
 
-#: projects/models.py:216
+#: projects/models.py:223
 msgid "Cannot set order to 0"
 msgstr "No es posible establecer orden a 0"
 
-#: projects/views.py:95
+#: projects/views.py:82
 msgid "ok"
 msgstr "ok"
 
-#: projects/views.py:100
+#: projects/views.py:87
 msgid "Nothing"
 msgstr "Nada"
 
-#: projects/views.py:118
+#: projects/views.py:105
 msgid "Contact message has been sent"
 msgstr "Mensaje de contacto fue enviado"
 
-#: quotations/models.py:76
+#: projects/views.py:117
+msgid "User subscribed"
+msgstr "Usuario suscripto"
+
+#: quotations/models.py:80
 msgid "pending"
 msgstr "pendiente"
 
-#: quotations/models.py:77
+#: quotations/models.py:81
 msgid "evaluating"
 msgstr "evaluando"
 
-#: quotations/models.py:78
+#: quotations/models.py:82
 msgid "awaiting payment"
 msgstr "esperando pago"
 
-#: quotations/models.py:79
+#: quotations/models.py:83
 msgid "processing"
 msgstr "procesando"
 
-#: quotations/models.py:80
+#: quotations/models.py:84
 msgid "finished"
 msgstr "terminado"
 
-#: quotations/models.py:81
+#: quotations/models.py:85
 msgid "canceled"
 msgstr "cancelado"
 
@@ -198,3 +266,7 @@ msgid ""
 "Invalid token header. Token string should not contain invalid characters."
 msgstr ""
 "Encabezado de token inválido. El token no debe contener caracteres inválidos."
+
+#: terra/emails.py:81
+msgid "Validá tu correo"
+msgstr "Validate your email"
