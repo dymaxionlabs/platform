@@ -1,9 +1,10 @@
 import os
+from datetime import date
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from datetime import date
-from django.utils.translation import ugettext_lazy as _
+from django.utils import translation
+from django.utils.translation import ugettext as _
 from mailchimp3 import MailChimp
 
 from terra import settings
@@ -78,11 +79,54 @@ class Email:
 
 class EarlyAccessBetaEmail(Email):
     template_name = 'a1_early_access_beta'
-    subject = _('Validá tu correo')
 
     signup_url = '{base_url}/signup?beta=1'.format(
         base_url=settings.WEBCLIENT_URL)
 
     @property
+    def subject(self):
+        with translation.override(self.language_code):
+            return _('validate your email')
+
+    @property
+    def template_params(self):
+        return {**super().template_params, 'signup_url': self.signup_url}
+
+    @property
     def mc_variables(self):
         return {**super().mc_variables, '*|SIGNUP_URL|*': self.signup_url}
+
+
+class WelcomeEmail(Email):
+    template_name = 'a2_welcome'
+
+    link = '{base_url}/'.format(base_url=settings.WEBCLIENT_URL)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    @property
+    def subject(self):
+        with translation.override(self.language_code):
+            return _('your account is ready') % {'name': self.first_name}
+
+    @property
+    def template_params(self):
+        return {
+            **super().template_params,
+            'first_name': self.first_name,
+            'link': self.link,
+        }
+
+    @property
+    def mc_variables(self):
+        return {
+            **super().mc_variables,
+            '*|FNAME|*': self.first_name,
+            '*|TEXT:LINK|*': self.link,
+        }
+
+    @property
+    def first_name(self):
+        return self.user.first_name or self.user.username

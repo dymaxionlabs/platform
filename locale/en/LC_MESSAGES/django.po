@@ -20,161 +20,155 @@ msgstr ""
 
 #: estimators/models.py:17
 msgid "Object detection"
-msgstr "Detección de objetos"
+msgstr ""
 
 #: estimators/models.py:25
-#, fuzzy
-#| msgid "Project"
 msgid "project"
-msgstr "Proyecto"
+msgstr ""
 
 #: estimators/models.py:27
 msgid "estimator type"
-msgstr "tipo de estimador"
+msgstr ""
 
 #: estimators/models.py:31
 msgid "name"
-msgstr "nombre"
+msgstr ""
 
 #: estimators/models.py:38
-#, fuzzy
-#| msgid "Created at"
 msgid "created at"
-msgstr "Creado en"
+msgstr ""
 
 #: estimators/models.py:39
-#, fuzzy
-#| msgid "Updated at"
 msgid "updated at"
-msgstr "Actualizado en"
+msgstr ""
 
 #: estimators/models.py:63
 msgid "file"
-msgstr "archivo"
+msgstr ""
 
 #: estimators/models.py:69
 msgid "image"
-msgstr "image"
+msgstr ""
 
 #: estimators/models.py:93
 msgid "estimator"
-msgstr "estimador"
+msgstr ""
 
 #: estimators/models.py:96
 msgid "image tile"
-msgstr "mosaico"
+msgstr ""
 
 #: estimators/models.py:97
 msgid "segments"
-msgstr "segmentos"
+msgstr ""
 
 #: estimators/views.py:55
 msgid "Annotations updated"
-msgstr "Anotaciones actualizadas"
+msgstr ""
 
 #: estimators/views.py:57
 msgid "Annotations created"
-msgstr "Anotaciones creadas"
+msgstr ""
 
 #: projects/models.py:24
 msgid "In Beta"
-msgstr "En Beta"
+msgstr ""
 
 #: projects/models.py:38
 msgid "Name"
-msgstr "Nombre"
+msgstr ""
 
 #: projects/models.py:39
 msgid "Description"
-msgstr "Descripción"
+msgstr ""
 
 #: projects/models.py:42
 msgid "No images"
-msgstr "No hay imágenes"
+msgstr ""
 
 #: projects/models.py:44 projects/models.py:68
 msgid "Created at"
-msgstr "Creado en"
+msgstr ""
 
 #: projects/models.py:45 projects/models.py:69
 msgid "Updated at"
-msgstr "Actualizado en"
+msgstr ""
 
 #: projects/models.py:48 projects/models.py:60 projects/models.py:102
 msgid "Project"
-msgstr "Proyecto"
+msgstr ""
 
 #: projects/models.py:49
 msgid "Projects"
-msgstr "Proyectos"
+msgstr ""
 
 #: projects/models.py:56
 msgid "Key"
-msgstr "Clave"
+msgstr ""
 
 #: projects/models.py:61
 msgid "Email"
-msgstr "Email"
+msgstr ""
 
 #: projects/models.py:66
 msgid "Confirmed"
-msgstr "Confirmado"
+msgstr ""
 
 #: projects/models.py:73
 msgid "Project invitation token"
-msgstr "Token de invitación a proyecto"
+msgstr ""
 
 #: projects/models.py:74
 msgid "Project invitation tokens"
-msgstr "Tokens de invitación a proyecto"
+msgstr ""
 
 #: projects/models.py:223
 msgid "Cannot set order to 0"
-msgstr "No es posible establecer orden a 0"
+msgstr ""
 
 #: projects/views.py:82
 msgid "ok"
-msgstr "ok"
+msgstr ""
 
 #: projects/views.py:87
 msgid "Nothing"
-msgstr "Nada"
+msgstr ""
 
 #: projects/views.py:105
 msgid "Contact message has been sent"
-msgstr "Mensaje de contacto fue enviado"
+msgstr ""
 
 #: projects/views.py:117
 msgid "User subscribed"
-msgstr "Usuario suscripto"
+msgstr ""
 
 #: quotations/models.py:80
 msgid "pending"
-msgstr "pendiente"
+msgstr ""
 
 #: quotations/models.py:81
 msgid "evaluating"
-msgstr "evaluando"
+msgstr ""
 
 #: quotations/models.py:82
 msgid "awaiting payment"
-msgstr "esperando pago"
+msgstr ""
 
 #: quotations/models.py:83
 msgid "processing"
-msgstr "procesando"
+msgstr ""
 
 #: quotations/models.py:84
 msgid "finished"
-msgstr "terminado"
+msgstr ""
 
 #: quotations/models.py:85
 msgid "canceled"
-msgstr "cancelado"
+msgstr ""
 
 #: quotations/views.py:12
 msgid "Analytics service"
-msgstr "Servicio de Analytics"
+msgstr ""
 
 #: tasks/models.py:18
 msgid "task id"
@@ -222,11 +216,11 @@ msgstr ""
 
 #: templates/admin/base_site.html:4
 msgid "Django site admin"
-msgstr "Admin de Django"
+msgstr ""
 
 #: templates/admin/base_site.html:10
 msgid "Terra Admininistration"
-msgstr "Administración de Terra"
+msgstr ""
 
 #: templates/registration/password_reset_email.html:3
 #, python-format
@@ -234,41 +228,37 @@ msgid ""
 "You're receiving this email because you requested a password reset for your "
 "user account at %(site_name)s."
 msgstr ""
-"Está recibiendo este email porque Ud. pidió reestablecer la contraseña para "
-"la cuenta de usuario en %(site_name)s."
 
 #: templates/registration/password_reset_email.html:5
 msgid "Please go to the following page and choose a new password:"
 msgstr ""
-"Por favor, dirígise a la siguiente página e ingrese una nueva contraseña:"
 
 #: templates/registration/password_reset_email.html:9
 msgid "Your username, in case you've forgotten:"
-msgstr "Su nombre de usuario, en caso de que se haya olvidado es:"
+msgstr ""
 
 #: templates/registration/password_reset_email.html:11
 msgid "Thanks for using our site!"
-msgstr "¡Muchas gracias por usar nuestro sitio!"
+msgstr ""
 
 #: templates/registration/password_reset_email.html:13
 #, python-format
 msgid "The %(site_name)s team"
-msgstr "El equipo de %(site_name)s"
+msgstr ""
 
 #: terra/authentication.py:16
 msgid "Invalid token header. Token string should not contain spaces."
-msgstr "Encabezado de token inválido. El token no debe contener espacios."
+msgstr ""
 
 #: terra/authentication.py:27
 msgid ""
 "Invalid token header. Token string should not contain invalid characters."
 msgstr ""
-"Encabezado de token inválido. El token no debe contener caracteres inválidos."
 
 #: terra/emails.py:89
 msgid "validate your email"
-msgstr "Validá tu correo"
+msgstr "Validate your email"
 
 #: terra/emails.py:112
 msgid "your account is ready"
-msgstr "Tu cuenta está lista, %(name)s 🚀"
+msgstr "Your account is ready, %(name)s 🚀"

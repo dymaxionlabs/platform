@@ -1,0 +1,13 @@
+Hi {{ name }},
+
+Welcome to Dymaxion Analytics (DYMA).
+
+We are so happy that you use our tool. You can access your account at:
+{{ link }}
+
+If you have any doubt about DYMA, feel free to respond to this email.
+
+Let’s begin!
+
+Best,
+Federico & the Dymaxion Labs team.
