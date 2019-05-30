@@ -78,6 +78,7 @@ class Register extends React.Component {
     err_email_msg: "",
     err_password1_msg: "",
     err_password2_msg: "",
+    beta: false,
     isSubmitting: false
   };
 
@@ -86,6 +87,16 @@ class Register extends React.Component {
       namespacesRequired: ["common"],
       query
     };
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { beta } = props.query;
+    if (beta === "1") {
+      this.state.beta = true;
+      console.log("*** BETA ***");
+    }
   }
 
   onUsernameChange = e => {
@@ -104,11 +115,11 @@ class Register extends React.Component {
     this.setState({ password2: e.target.value });
   };
 
-  onSubmit = event => {
+  onSubmit = async event => {
     event.preventDefault();
 
     const { t } = this.props;
-    const { username, email, password1, password2 } = this.state;
+    const { username, email, password1, password2, beta } = this.state;
 
     const dataSend = {
       username: username,
@@ -128,49 +139,64 @@ class Register extends React.Component {
       isSubmitting: true
     });
 
-    axios
-      .post(buildApiUrl("/auth/registration/"), dataSend, {
-        headers: { "Accept-Language": i18n.language }
-      })
-      .then(response => {
-        const token = response.data.key;
-        this.setState({
-          successMsg: t("signup.success_msg")
-        });
-        if (token) {
-          const { redirect } = this.props.query;
-          login({ token, redirectTo: redirect });
+    try {
+      let response = await axios.post(
+        buildApiUrl("/auth/registration/"),
+        dataSend,
+        {
+          headers: { "Accept-Language": i18n.language }
         }
-      })
-      .catch(error => {
-        console.error(error);
+      );
 
-        // Generic error message
-        let errorMsg = t("signup.error_msg");
+      const token = response.data.key;
 
-        // Parse error messages in response
-        if (error.response && error.response.status === 400) {
-          const { data } = error.response;
-          for (let key in data) {
-            this.setState({ [`err_${key}_msg`]: data[key] });
+      // If beta=1, activate beta mode for user
+      if (beta) {
+        axios.patch(
+          buildApiUrl(`/user_profiles/${username}/`),
+          { in_beta: true },
+          {
+            headers: { "Accept-Language": i18n.language, Authorization: token }
           }
-          // Update general error message if available
-          if (error.response.non_field_errors) {
-            errorMsg = error.response.non_field_errors;
-          }
-        }
+        );
+      }
 
-        this.setState({
-          errorMsg: errorMsg,
-          successMsg: "",
-          isSubmitting: false
-        });
-      })
-      .then(() => {
-        this.setState({
-          isSubmitting: false
-        });
+      this.setState({
+        successMsg: t("signup.success_msg")
       });
+
+      if (token) {
+        const { redirect } = this.props.query;
+        login({ token, redirectTo: redirect });
+      }
+    } catch (error) {
+      console.error(error);
+
+      // Generic error message
+      let errorMsg = t("signup.error_msg");
+
+      // Parse error messages in response
+      if (error.response && error.response.status === 400) {
+        const { data } = error.response;
+        for (let key in data) {
+          this.setState({ [`err_${key}_msg`]: data[key] });
+        }
+        // Update general error message if available
+        if (error.response.non_field_errors) {
+          errorMsg = error.response.non_field_errors;
+        }
+      }
+
+      this.setState({
+        errorMsg: errorMsg,
+        successMsg: "",
+        isSubmitting: false
+      });
+    }
+
+    this.setState({
+      isSubmitting: false
+    });
   };
 
   render() {
