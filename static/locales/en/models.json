@@ -2,16 +2,20 @@
   "annotate_step": {
     "annotations_per_class": "Annotations per class",
     "continue_btn": "Save and continue",
+    "remaining": "Remaining",
     "save_btn": "Save",
     "title": "Annotate images"
   },
   "cancel_btn": "Cancel",
   "classification_btn": "Classification (BETA)",
   "create_step": {
+    "classes_helper_1": "Enter the name of a class and press the",
+    "classes_helper_2": "key. You can enter several classes in this way.",
     "classes_label": "Object classes",
     "error_msg_classes": "Please add at least one object class.",
     "error_msg_duplicate": "Model already exists, please enter another name.",
     "error_msg_internal": "An error has ocurred. Please retry.",
+    "name_helper": "Enter a name for your model.",
     "name_label": "Name",
     "submit_btn": "Create",
     "title": "Create new model"

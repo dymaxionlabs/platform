@@ -1,5 +1,6 @@
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import { withStyles } from "@material-ui/core/styles";
@@ -131,12 +132,17 @@ class CreateStep extends React.Component {
               onChange={this.handleNameChange}
               value={this.state.name}
             />
+            <FormHelperText>{t("create_step.name_helper")}</FormHelperText>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <ChipInput
               label={t("create_step.classes_label")}
               onChange={chips => this.handleChangeClasses(chips)}
             />
+            <FormHelperText>
+              {t("create_step.classes_helper_1")} <kbd>Enter</kbd>
+              {t("create_step.classes_helper_2")}
+            </FormHelperText>
           </FormControl>
           <Button
             type="submit"
