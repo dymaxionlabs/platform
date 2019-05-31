@@ -83,7 +83,7 @@ class Email:
 
 
 class EarlyAccessBetaEmail(Email):
-    template_name = 'a1_early_access_beta'
+    template_name = 'early_access_beta'
 
     signup_url = '{base_url}/signup?beta=1'.format(
         base_url=settings.WEBCLIENT_URL)
@@ -103,7 +103,7 @@ class EarlyAccessBetaEmail(Email):
 
 
 class WelcomeEmail(Email):
-    template_name = 'a2_welcome'
+    template_name = 'welcome'
 
     link = '{base_url}/'.format(base_url=settings.WEBCLIENT_URL)
 
