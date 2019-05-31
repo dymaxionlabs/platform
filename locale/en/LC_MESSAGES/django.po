@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-31 08:58-0300\n"
+"POT-Creation-Date: 2019-05-31 09:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,6 +214,38 @@ msgstr ""
 msgid "task results"
 msgstr ""
 
+#: templates/account/email/email_confirmation_message.html:581
+msgid "Hi"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:615
+#, python-format
+msgid ""
+"You're receiving this e-mail because user %(user_display)s&nbsp;has given "
+"yours as an e-mail address to connect their account<br>\n"
+"<br>\n"
+"To confirm this is correct, click the following button."
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:642
+msgid "VERIFY EMAIL"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:668
+#: templates/registration/password_reset_message.html:669
+msgid "Best,"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:669
+#: templates/registration/password_reset_message.html:670
+msgid "The Dymaxion Labs Team."
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:937
+#: templates/registration/password_reset_message.html:937
+msgid "Our mailing address is:"
+msgstr ""
+
 #: templates/account/email/email_confirmation_message.txt:1
 #, python-format
 msgid ""
@@ -242,6 +274,33 @@ msgstr ""
 
 #: templates/admin/base_site.html:10
 msgid "Terra Admininistration"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:581
+msgid "Hi,"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:615
+msgid ""
+"We heard you need a password reset. Click the link below and you’ll be "
+"redirected to a secure site from which you can set a new password."
+msgstr ""
+
+#: templates/registration/password_reset_message.html:640
+msgid "CHANGE PASSWORD"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:666
+msgid "If you didn’t try to reset your password, please forget this email."
+msgstr ""
+
+#: templates/registration/password_reset_message.html:940
+#, python-format
+msgid ""
+"Want to change how you receive these emails?<br>\n"
+"You can </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">unsubscribe from this list</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
 msgstr ""
 
 #: templates/registration/password_reset_message.txt:2

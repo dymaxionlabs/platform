@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-31 08:58-0300\n"
+"POT-Creation-Date: 2019-05-31 09:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,6 +214,42 @@ msgstr ""
 msgid "task results"
 msgstr ""
 
+#: templates/account/email/email_confirmation_message.html:581
+msgid "Hi"
+msgstr "Hola"
+
+#: templates/account/email/email_confirmation_message.html:615
+#, python-format
+msgid ""
+"You're receiving this e-mail because user %(user_display)s&nbsp;has given "
+"yours as an e-mail address to connect their account<br>\n"
+"<br>\n"
+"To confirm this is correct, click the following button."
+msgstr ""
+"Estas recibiendo este e-mail porque el usuario %(user_display)s&nbsp;ha dado "
+"tu dirección de correo para connectar tu cuenta.<br>\n"
+"<br>\n"
+"Para confirmar que esto es correcto, haz clic en el siguiente botón."
+
+#: templates/account/email/email_confirmation_message.html:642
+msgid "VERIFY EMAIL"
+msgstr "VERIFICAR EMAIL"
+
+#: templates/account/email/email_confirmation_message.html:668
+#: templates/registration/password_reset_message.html:669
+msgid "Best,"
+msgstr "Saludos,"
+
+#: templates/account/email/email_confirmation_message.html:669
+#: templates/registration/password_reset_message.html:670
+msgid "The Dymaxion Labs Team."
+msgstr "El Equipo de Dymaxion Labs."
+
+#: templates/account/email/email_confirmation_message.html:937
+#: templates/registration/password_reset_message.html:937
+msgid "Our mailing address is:"
+msgstr "Nuestra dirección de correo es:"
+
 #: templates/account/email/email_confirmation_message.txt:1
 #, python-format
 msgid ""
@@ -224,7 +260,7 @@ msgid ""
 "\n"
 "To confirm this is correct, go to %(activate_url)s\n"
 msgstr ""
-"Hi %(user.get_first_name or user.get_username)s!\n"
+"Hola %(user.get_first_name or user.get_username)s!\n"
 "\n"
 "Estas recibiendo este e-mail porque el usuario %(user_display)s ha dado tu "
 "dirección de correo para connectar tu cuenta.\n"
@@ -251,6 +287,40 @@ msgstr "Admin de Django"
 #: templates/admin/base_site.html:10
 msgid "Terra Admininistration"
 msgstr "Administración de Terra"
+
+#: templates/registration/password_reset_message.html:581
+msgid "Hi,"
+msgstr "Hola,"
+
+#: templates/registration/password_reset_message.html:615
+msgid ""
+"We heard you need a password reset. Click the link below and you’ll be "
+"redirected to a secure site from which you can set a new password."
+msgstr ""
+"Nos llegó una solicitud tuya de cambio de contraseña. Por favor cliqueá en "
+"el botón de abajo para dirigirte a un sitio seguro para poder cambiarla."
+
+#: templates/registration/password_reset_message.html:640
+msgid "CHANGE PASSWORD"
+msgstr "CAMBIAR CONTRASEÑA"
+
+#: templates/registration/password_reset_message.html:666
+msgid "If you didn’t try to reset your password, please forget this email."
+msgstr ""
+"Si no trataste de reestablecer tu contraseña, puedes ignorar este correo."
+
+#: templates/registration/password_reset_message.html:940
+#, python-format
+msgid ""
+"Want to change how you receive these emails?<br>\n"
+"You can </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">unsubscribe from this list</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
+msgstr ""
+"¿Quieres cambiar como recibes estos emails?<br>\n"
+"Puedes </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">desuscribirte de esta lista</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
 
 #: templates/registration/password_reset_message.txt:2
 #, python-format

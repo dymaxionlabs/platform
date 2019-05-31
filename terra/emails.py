@@ -105,7 +105,7 @@ class EarlyAccessBetaEmail(Email):
 class WelcomeEmail(Email):
     template_name = 'welcome'
 
-    link = '{base_url}/'.format(base_url=settings.WEBCLIENT_URL)
+    link = '{base_url}/login'.format(base_url=settings.WEBCLIENT_URL)
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)

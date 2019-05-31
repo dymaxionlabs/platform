@@ -126,6 +126,8 @@ EMAIL_BACKEND = os.getenv('EMAIL_BACKEND',
 DEFAULT_FROM_EMAIL = 'Dymaxion Analytics <{email}>'.format(
     email=os.getenv('DEFAULT_FROM_EMAIL'))
 
+EMAIL_SUBJECT_PREFIX = None
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
