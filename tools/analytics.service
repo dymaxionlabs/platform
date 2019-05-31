@@ -1,0 +1,13 @@
+[Unit]
+Description=Analytics frontend next.js app
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+User=munshkr
+Group=www-data
+WorkingDirectory=/home/munshkr/analytics
+ExecStart=/usr/bin/node server.js
+
+[Install]
+WantedBy=multi-user.target
