@@ -11,7 +11,9 @@
 * Install dependencies
 
 ```
-sudo apt-get install python3 python3-dev python3-pip libgdal-dev libproj-dev postgresql postgis
+sudo apt-get install python3 python3-dev python3-pip \
+  libgdal-dev libproj-dev postgresql postgis \
+  gettext
 ```
 
 * Create a role and database (e.g. `terra`)
