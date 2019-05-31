@@ -1,0 +1,13 @@
+[Unit]
+Description=RQ worker
+After=network.target
+
+[Service]
+Environment=PYTHONUNBUFFERED=true
+User=munshkr
+Group=www-data
+WorkingDirectory=/home/munshkr/terra
+ExecStart=/home/munshkr/.local/share/virtualenvs/terra-XVGhZdP0/bin/python /home/munshkr/terra/manage.py rqworker
+
+[Install]
+WantedBy=multi-user.target
