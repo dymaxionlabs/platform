@@ -117,7 +117,7 @@ class Login extends React.Component {
       const response = await axios.post(buildApiUrl("/auth/login/"), dataSend);
       const token = response.data.key;
 
-      // TODO: If beta=1, activate beta mode for user
+      // If beta=1, activate beta mode for user
       if (beta) {
         axios.patch(
           buildApiUrl(`/user_profiles/${username}/`),

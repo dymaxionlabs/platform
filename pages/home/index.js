@@ -1,9 +1,9 @@
 import AppBar from "@material-ui/core/AppBar";
+import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
-// import NotificationsIcon from "@material-ui/icons/Notifications";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -11,31 +11,29 @@ import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-// import DashboardIcon from "@material-ui/icons/Dashboard";
 import CollectionsIcon from "@material-ui/icons/Collections";
 import LayersIcon from "@material-ui/icons/Layers";
 import MapIcon from "@material-ui/icons/Map";
-import MessageIcon from "@material-ui/icons/Message";
 import MemoryIcon from "@material-ui/icons/Memory";
-// import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
+import MessageIcon from "@material-ui/icons/Message";
+import axios from "axios";
 import classNames from "classnames";
+import cookie from "js-cookie";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
-import FileUploadDialog from "../../components/FileUploadDialog";
-import Button from "@material-ui/core/Button";
-import ModelsContent from "../../components/home/ModelsContent";
+import CliengoLoader from "../../components/CliengoLoader";
 import FilesContent from "../../components/home/FilesContent";
 import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
+import ModelsContent from "../../components/home/ModelsContent";
 import RequestsContent from "../../components/home/RequestsContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
-import CliengoLoader from "../../components/CliengoLoader";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withNamespaces, i18n } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
 import { withAuthSync } from "../../utils/auth";
 import { routerReplace } from "../../utils/router";
-import cookie from "js-cookie";
 
 const drawerWidth = 200;
 
@@ -128,6 +126,7 @@ const styles = theme => ({
 });
 
 const sortedSections = ["files", "layers", "maps"];
+const sortedSectionsBeta = ["files", "layers", "maps", "models"];
 
 const sections = {
   // dashboard: {
@@ -182,7 +181,8 @@ QuoteButton = withNamespaces()(QuoteButton);
 class Home extends React.Component {
   state = {
     open: true,
-    section: null
+    section: null,
+    beta: false
   };
 
   static async getInitialProps({ query }) {
@@ -210,10 +210,34 @@ class Home extends React.Component {
       routerReplace("/select-project");
     }
 
+    this._checkForBeta();
+
     // By default, go to maps
     let { section } = this.props.query;
     if (!section) {
       routerReplace("/home/maps");
+    }
+  }
+
+  async _checkForBeta() {
+    const { token } = this.props;
+
+    try {
+      const response = await axios.get(buildApiUrl(`/auth/user/`), {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: token
+        }
+      });
+
+      const { profile } = response.data;
+      const beta = profile.in_beta;
+      this.setState({ beta });
+      if (beta) {
+        console.log("Beta mode enabled");
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -231,7 +255,9 @@ class Home extends React.Component {
 
   render() {
     const { t, classes, token } = this.props;
-    const { section, open } = this.state;
+    const { section, open, beta } = this.state;
+
+    const sectionList = beta ? sortedSectionsBeta : sortedSections;
 
     const originalContent = section && sections[section].content;
     const content =
@@ -303,7 +329,7 @@ class Home extends React.Component {
           </div>
           <Divider />
           <List>
-            {sortedSections.map(key => (
+            {sectionList.map(key => (
               <Link
                 key={key}
                 href={`/home?section=${key}`}
