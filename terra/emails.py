@@ -1,13 +1,12 @@
 import os
 from datetime import date
 
+from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from mailchimp3 import MailChimp
-
-from terra import settings
 
 
 class Email:

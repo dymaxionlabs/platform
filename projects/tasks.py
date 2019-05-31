@@ -9,13 +9,12 @@ from functools import partial
 import django_rq
 import pyproj
 import rasterio
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from django_rq import job
 from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
-
-from terra import settings
 
 from .models import File, Layer
 

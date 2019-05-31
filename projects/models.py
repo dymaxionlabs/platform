@@ -4,6 +4,7 @@ import time
 import uuid
 
 import django_rq
+from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
@@ -11,8 +12,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
-
-from terra import settings
 
 
 class UserProfile(models.Model):
