@@ -7,7 +7,8 @@ import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing.unit * 3,
+    textAlign: "center"
   }
 });
 
@@ -17,7 +18,9 @@ let InitialStep = ({ classes, t }) => (
       {t("new.od.header")}
     </Typography>
     <Link href="/models/new/od/create">
-      <Button color="primary">{t("new.start_building")}</Button>
+      <Button color="primary" variant="contained">
+        {t("new.start_building")}
+      </Button>
     </Link>
   </StepContentContainer>
 );

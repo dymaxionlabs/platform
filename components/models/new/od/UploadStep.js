@@ -12,7 +12,8 @@ import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing.unit * 3,
+    textAlign: "center"
   },
   classesLabel: {
     paddingBottom: theme.spacing.unit
@@ -134,7 +135,7 @@ class UploadStep extends React.Component {
           onChange={this.handleDropzoneChange}
           showFileNamesInPreview={true}
         />
-        <Button color="primary" onClick={this.handleSubmit}>
+        <Button color="primary" variant="contained" onClick={this.handleSubmit}>
           {t("upload_step.submit_btn")}
         </Button>
         {isUploading && (

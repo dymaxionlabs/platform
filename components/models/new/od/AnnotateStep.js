@@ -26,6 +26,7 @@ const MIN_COUNT_PER_LABEL = 5;
 
 const styles = theme => ({
   header: {
+    textAlign: "center",
     marginBottom: theme.spacing.unit * 3
   },
   imageTileListContainer: {
@@ -45,6 +46,12 @@ const styles = theme => ({
   button: {
     marginTop: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit
+  },
+  text: {
+    marginBottom: theme.spacing.unit
+  },
+  buttons: {
+    textAlign: "center"
   }
 });
 
@@ -372,6 +379,15 @@ class AnnotateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
+        <Typography className={classes.text}>
+          En este paso es necesario que indiques diferentes ejemplos de objetos
+          para cada clase de objeto que quieres detectar.
+        </Typography>
+        <Typography className={classes.text}>
+          Para eso, puedes dibujar rectángulos sobre los objetos de interés en
+          cada mosaico. Cuando llegues al final puedes avanzar a la siguiente
+          página. Al finalizar, haz clic sobre <strong>Entrenar</strong>.
+        </Typography>
         <Grid container spacing={24}>
           <Grid item xs={9}>
             <div className={classes.imageTileListContainer}>
@@ -393,19 +409,21 @@ class AnnotateStep extends React.Component {
             {labels && labelCount && <LabelCountList labelCount={labelCount} />}
           </Grid>
         </Grid>
-        <Button
-          className={classes.button}
-          color="primary"
-          variant="contained"
-          onClick={this.handleSubmit}
-        >
-          {canAdvance
-            ? t("annotate_step.continue_btn")
-            : t("annotate_step.save_btn")}
-        </Button>
-        <Typography>
-          {this.state.offset} / {this.state.count}
-        </Typography>
+        <div className={classes.buttons}>
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="contained"
+            onClick={this.handleSubmit}
+          >
+            {canAdvance
+              ? t("annotate_step.continue_btn")
+              : t("annotate_step.save_btn")}
+          </Button>
+          <Typography>
+            {this.state.offset} / {this.state.count}
+          </Typography>
+        </div>
       </StepContentContainer>
     );
   }

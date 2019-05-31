@@ -16,7 +16,8 @@ import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing.unit * 3,
+    textAlign: "center"
   },
   classesLabel: {
     paddingBottom: theme.spacing.unit
