@@ -1,39 +1,32 @@
 import os
-from datetime import date
 from html import escape
 
 import rest_auth
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from mailchimp3 import MailChimp
 from rest_framework import serializers
 
-from terra import settings
 from terra.emails import EarlyAccessBetaEmail
 
 from .models import (File, Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile)
 
 
-class PasswordResetSerializer(rest_auth.serializers.PasswordResetSerializer):
-    def get_email_options(self):
-        return {
-            'email_template_name': 'registration/password_reset_message.txt',
-            'html_email_template_name':
-            'registration/password_reset_message.html',
-            'extra_email_context': self.extra_email_context,
-        }
+class UserProfileSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        exclude = ('id', 'user', 'created_at', 'updated_at')
 
-    @property
-    def extra_email_context(self):
-        return {
-            'preview_text': '',
-            'current_year': date.today().year,
-            'company_name': settings.COMPANY_NAME,
-            'mailing_address': settings.LIST_ADDRESS_HTML,
-            'contact_email': settings.CONTACT_EMAIL,
-        }
+
+class UserDetailsSerializer(rest_auth.serializers.UserDetailsSerializer):
+    profile = UserProfileSimpleSerializer(source='userprofile')
+
+    class Meta(rest_auth.serializers.UserDetailsSerializer.Meta):
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name',
+                  'profile')
 
 
 class UserSerializer(serializers.ModelSerializer):

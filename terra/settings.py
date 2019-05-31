@@ -269,5 +269,6 @@ COMPANY_NAME = 'Dymaxion Labs'
 LIST_ADDRESS_HTML = 'Maipú 812 10E, Ciudad de Buenos Aires, Argentina (C1006ACL)'
 
 REST_AUTH_SERIALIZERS = {
-    'PASSWORD_RESET_SERIALIZER': 'projects.serializers.PasswordResetSerializer'
+    'PASSWORD_RESET_SERIALIZER': 'terra.serializers.PasswordResetSerializer',
+    'USER_DETAILS_SERIALIZER': 'projects.serializers.UserDetailsSerializer'
 }
