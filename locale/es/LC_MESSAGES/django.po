@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-30 16:39-0300\n"
+"POT-Creation-Date: 2019-05-31 08:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,10 +23,8 @@ msgid "Object detection"
 msgstr "Detección de objetos"
 
 #: estimators/models.py:25
-#, fuzzy
-#| msgid "Project"
 msgid "project"
-msgstr "Proyecto"
+msgstr "proyecto"
 
 #: estimators/models.py:27
 msgid "estimator type"
@@ -37,16 +35,12 @@ msgid "name"
 msgstr "nombre"
 
 #: estimators/models.py:38
-#, fuzzy
-#| msgid "Created at"
 msgid "created at"
-msgstr "Creado en"
+msgstr "creado en"
 
 #: estimators/models.py:39
-#, fuzzy
-#| msgid "Updated at"
 msgid "updated at"
-msgstr "Actualizado en"
+msgstr "actualizado en"
 
 #: estimators/models.py:63
 msgid "file"
@@ -220,6 +214,36 @@ msgstr ""
 msgid "task results"
 msgstr ""
 
+#: templates/account/email/email_confirmation_message.txt:1
+#, python-format
+msgid ""
+"Hi %(user.get_first_name or user.get_username)s!\n"
+"\n"
+"You're receiving this e-mail because user %(user_display)s has given yours "
+"as an e-mail address to connect their account.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s\n"
+msgstr ""
+"Hi %(user.get_first_name or user.get_username)s!\n"
+"\n"
+"Estas recibiendo este e-mail porque el usuario %(user_display)s ha dado tu "
+"dirección de correo para connectar tu cuenta.\n"
+"\n"
+"Para confirmar que esto es correcto, haz clic en %(activate_url)s\n"
+
+#: templates/account/email/email_confirmation_message.txt:8
+#: templates/registration/password_reset_message.txt:12
+msgid ""
+"Best,\n"
+"The Dymaxion Labs Team."
+msgstr ""
+"Saludos,\n"
+"El Equipo de Dymaxion Labs."
+
+#: templates/account/email/email_confirmation_subject.txt:3
+msgid "Confirm your e-mail address"
+msgstr "Confirma tu dirección de correo"
+
 #: templates/admin/base_site.html:4
 msgid "Django site admin"
 msgstr "Admin de Django"
@@ -228,32 +252,31 @@ msgstr "Admin de Django"
 msgid "Terra Admininistration"
 msgstr "Administración de Terra"
 
-#: templates/registration/password_reset_email.html:3
+#: templates/registration/password_reset_message.txt:2
 #, python-format
+msgid "Hi %(user.get_first_name or user.get_username)s!"
+msgstr "Hola %(user.get_first_name or user.get_username)s!"
+
+#: templates/registration/password_reset_message.txt:4
 msgid ""
-"You're receiving this email because you requested a password reset for your "
-"user account at %(site_name)s."
+"We heard you need a password reset.  Click the link below and you’ll be "
+"redirected to a secure site from which you can set a new password."
 msgstr ""
-"Está recibiendo este email porque Ud. pidió reestablecer la contraseña para "
-"la cuenta de usuario en %(site_name)s."
+"Nos llegó una solicitud tuya de cambio de contraseña.  Por favor cliqueá en "
+"el botón de abajo para dirigirte a un sitio seguro para poder cambiarla."
 
-#: templates/registration/password_reset_email.html:5
-msgid "Please go to the following page and choose a new password:"
-msgstr ""
-"Por favor, dirígise a la siguiente página e ingrese una nueva contraseña:"
-
-#: templates/registration/password_reset_email.html:9
-msgid "Your username, in case you've forgotten:"
-msgstr "Su nombre de usuario, en caso de que se haya olvidado es:"
-
-#: templates/registration/password_reset_email.html:11
-msgid "Thanks for using our site!"
-msgstr "¡Muchas gracias por usar nuestro sitio!"
-
-#: templates/registration/password_reset_email.html:13
+#: templates/registration/password_reset_message.txt:8
 #, python-format
-msgid "The %(site_name)s team"
-msgstr "El equipo de %(site_name)s"
+msgid "In case you forgot, your username is %(username)s."
+msgstr "En caso que lo hayas olvidado, tu nombre de usuario es %(username)s."
+
+#: templates/registration/password_reset_message.txt:10
+msgid "It can be safely ignored if you did not request a password reset."
+msgstr "Puedes ignorar este correo si no pediste cambiar la contraseña."
+
+#: templates/registration/password_reset_subject.txt:3
+msgid "Change your password"
+msgstr "Cambia tu contraseña"
 
 #: terra/authentication.py:16
 msgid "Invalid token header. Token string should not contain spaces."
@@ -265,10 +288,10 @@ msgid ""
 msgstr ""
 "Encabezado de token inválido. El token no debe contener caracteres inválidos."
 
-#: terra/emails.py:89
+#: terra/emails.py:94
 msgid "validate your email"
 msgstr "Validá tu correo"
 
-#: terra/emails.py:112
+#: terra/emails.py:117
 msgid "your account is ready"
 msgstr "Tu cuenta está lista, %(name)s 🚀"

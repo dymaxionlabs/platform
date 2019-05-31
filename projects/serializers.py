@@ -1,6 +1,7 @@
 import os
 from html import escape
 
+import rest_auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -12,6 +13,15 @@ from terra.emails import EarlyAccessBetaEmail
 
 from .models import (File, Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile)
+
+
+class PasswordResetSerializer(rest_auth.serializers.PasswordResetSerializer):
+    def get_email_options(self):
+        return {
+            'email_template_name': 'registration/password_reset_message.txt',
+            'html_email_template_name':
+            'registration/password_reset_message.html',
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):

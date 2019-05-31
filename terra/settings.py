@@ -265,3 +265,7 @@ MAILCHIMP_AUDIENCE_IDS = {
 CONTACT_EMAIL = 'contact@dymaxionlabs.com'
 COMPANY_NAME = 'Dymaxion Labs'
 LIST_ADDRESS_HTML = 'Maipú 812 10E, Ciudad de Buenos Aires, Argentina (C1006ACL)'
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'projects.serializers.PasswordResetSerializer'
+}
