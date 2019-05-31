@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-31 09:52-0300\n"
+"POT-Creation-Date: 2019-05-31 17:13-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,59 +70,59 @@ msgstr "Anotaciones actualizadas"
 msgid "Annotations created"
 msgstr "Anotaciones creadas"
 
-#: projects/models.py:24
+#: projects/models.py:23
 msgid "In Beta"
 msgstr "En Beta"
 
-#: projects/models.py:38
+#: projects/models.py:37
 msgid "Name"
 msgstr "Nombre"
 
-#: projects/models.py:39
+#: projects/models.py:38
 msgid "Description"
 msgstr "Descripción"
 
-#: projects/models.py:42
+#: projects/models.py:41
 msgid "No images"
 msgstr "No hay imágenes"
 
-#: projects/models.py:44 projects/models.py:68
+#: projects/models.py:43 projects/models.py:67
 msgid "Created at"
 msgstr "Creado en"
 
-#: projects/models.py:45 projects/models.py:69
+#: projects/models.py:44 projects/models.py:68
 msgid "Updated at"
 msgstr "Actualizado en"
 
-#: projects/models.py:48 projects/models.py:60 projects/models.py:102
+#: projects/models.py:47 projects/models.py:59 projects/models.py:101
 msgid "Project"
 msgstr "Proyecto"
 
-#: projects/models.py:49
+#: projects/models.py:48
 msgid "Projects"
 msgstr "Proyectos"
 
-#: projects/models.py:56
+#: projects/models.py:55
 msgid "Key"
 msgstr "Clave"
 
-#: projects/models.py:61
+#: projects/models.py:60
 msgid "Email"
 msgstr "Email"
 
-#: projects/models.py:66
+#: projects/models.py:65
 msgid "Confirmed"
 msgstr "Confirmado"
 
-#: projects/models.py:73
+#: projects/models.py:72
 msgid "Project invitation token"
 msgstr "Token de invitación a proyecto"
 
-#: projects/models.py:74
+#: projects/models.py:73
 msgid "Project invitation tokens"
 msgstr "Tokens de invitación a proyecto"
 
-#: projects/models.py:223
+#: projects/models.py:222
 msgid "Cannot set order to 0"
 msgstr "No es posible establecer orden a 0"
 
@@ -250,6 +250,20 @@ msgstr "El Equipo de Dymaxion Labs."
 msgid "Our mailing address is:"
 msgstr "Nuestra dirección de correo es:"
 
+#: templates/account/email/email_confirmation_message.html:940
+#: templates/registration/password_reset_message.html:940
+#, python-format
+msgid ""
+"Want to change how you receive these emails?<br>\n"
+"You can </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">unsubscribe from this list</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
+msgstr ""
+"¿Quieres cambiar como recibes estos emails?<br>\n"
+"Puedes </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">desuscribirte de esta lista</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
+
 #: templates/account/email/email_confirmation_message.txt:1
 #, python-format
 msgid ""
@@ -309,19 +323,6 @@ msgid "If you didn’t try to reset your password, please forget this email."
 msgstr ""
 "Si no trataste de reestablecer tu contraseña, puedes ignorar este correo."
 
-#: templates/registration/password_reset_message.html:940
-#, python-format
-msgid ""
-"Want to change how you receive these emails?<br>\n"
-"You can </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
-"#2f32b3\">unsubscribe from this list</span></a><span style=\"color:"
-"#2f32b3\">.</span>"
-msgstr ""
-"¿Quieres cambiar como recibes estos emails?<br>\n"
-"Puedes </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
-"#2f32b3\">desuscribirte de esta lista</span></a><span style=\"color:"
-"#2f32b3\">.</span>"
-
 #: templates/registration/password_reset_message.txt:2
 #, python-format
 msgid "Hi %(user.get_first_name or user.get_username)s!"
@@ -358,10 +359,10 @@ msgid ""
 msgstr ""
 "Encabezado de token inválido. El token no debe contener caracteres inválidos."
 
-#: terra/emails.py:94
+#: terra/emails.py:93
 msgid "validate your email"
 msgstr "Validá tu correo"
 
-#: terra/emails.py:117
+#: terra/emails.py:116
 msgid "your account is ready"
 msgstr "Tu cuenta está lista, %(name)s 🚀"
