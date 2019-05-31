@@ -101,7 +101,7 @@ class ModelsContent extends React.Component {
                 <TableCell>{t("models.estimator_type")}</TableCell>
                 <TableCell>{t("models.classes")}</TableCell>
                 <TableCell>{t("models.created_at")}</TableCell>
-                <TableCell />
+                {/* <TableCell /> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,7 +121,7 @@ class ModelsContent extends React.Component {
                       {model.created_at}
                     </Moment>
                   </TableCell>
-                  <TableCell align="right">
+                  {/* <TableCell align="right">
                     <a href={`/models/upload-images/${model.uuid}`}>
                       <IconButton
                         className={classes.button}
@@ -130,7 +130,7 @@ class ModelsContent extends React.Component {
                         <AddToPhotosIcon />
                       </IconButton>
                     </a>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
