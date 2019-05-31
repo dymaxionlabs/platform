@@ -11,6 +11,10 @@ from .models import (File, Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile)
 
 
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone', 'city', 'country', 'in_beta')
+
+
 class ProjectInvitationTokenAdmin(admin.ModelAdmin):
     list_display = (
         'key',
@@ -144,7 +148,7 @@ class FileAdmin(admin.ModelAdmin):
     list_display_links = ('name', )
 
 
-admin.site.register(UserProfile)
+admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(ProjectInvitationToken, ProjectInvitationTokenAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Layer, LayerAdmin)
