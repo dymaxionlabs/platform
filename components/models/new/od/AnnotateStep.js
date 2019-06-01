@@ -325,9 +325,11 @@ class AnnotateStep extends React.Component {
 
   _hasEnoughAnnotations() {
     const { labelCount } = this.state;
-    return Object.values(labelCount).every(
+    const hasLabels = Object.entries(labelCount).length > 0;
+    const allLabelsHaveEnoughAnnotations = Object.values(labelCount).every(
       count => count >= MIN_COUNT_PER_LABEL
     );
+    return hasLabels && allLabelsHaveEnoughAnnotations;
   }
 
   handleChange = (imageTileId, rectangles) => {
@@ -467,6 +469,7 @@ class AnnotateStep extends React.Component {
         <div className={classes.buttons}>
           <Button
             className={classes.button}
+            disabled={loading}
             color="primary"
             variant="contained"
             onClick={this.handleSubmit}
