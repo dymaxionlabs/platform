@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
@@ -6,7 +7,7 @@ import cookie from "js-cookie";
 import React from "react";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
-import { routerPush, routerReplace } from "../../../../utils/router";
+import { routerPush } from "../../../../utils/router";
 import DropzoneArea from "../../../upload/DropzoneArea";
 import StepContentContainer from "../StepContentContainer";
 
@@ -30,7 +31,8 @@ class UploadStep extends React.Component {
   state = {
     files: [],
     uploading: false,
-    uploadProgress: 0
+    currentProgress: 0,
+    totalProgress: 0
   };
 
   handleSubmit = async () => {
@@ -40,7 +42,7 @@ class UploadStep extends React.Component {
 
     if (files.length == 0) return;
 
-    this.setState({ uploading: true, uploadProgress: 0 });
+    this.setState({ uploading: true, currentProgress: 0, totalProgress: 0 });
 
     let count = 0;
     for (const file of files) {
@@ -57,6 +59,7 @@ class UploadStep extends React.Component {
               const percentCompleted = Math.round(
                 (progressEvent.loaded * 100) / progressEvent.total
               );
+              this.setState({ currentProgress: percentCompleted });
               console.log(percentCompleted);
             }
           }
@@ -66,7 +69,7 @@ class UploadStep extends React.Component {
       }
 
       count += 1;
-      this.setState({ uploadProgress: (count / files.length) * 100 });
+      this.setState({ totalProgress: (count / files.length) * 100 });
       if (count === files.length) {
         this._setFilesOnEstimator(files, estimatorId);
       }
@@ -126,7 +129,7 @@ class UploadStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { isUploading } = this.state;
+    const { uploading, currentProgress, totalProgress } = this.state;
 
     return (
       <StepContentContainer>
@@ -144,8 +147,11 @@ class UploadStep extends React.Component {
         <Button color="primary" variant="contained" onClick={this.handleSubmit}>
           {t("upload_step.submit_btn")}
         </Button>
-        {isUploading && (
-          <LinearProgress variant="determinate" value={progress} />
+        {uploading && (
+          <div>
+            <LinearProgress variant="determinate" value={currentProgress} />
+            <LinearProgress variant="determinate" value={totalProgress} />
+          </div>
         )}
       </StepContentContainer>
     );
