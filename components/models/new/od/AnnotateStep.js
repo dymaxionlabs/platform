@@ -222,6 +222,8 @@ class AnnotateStep extends React.Component {
   async fetchEstimator() {
     const { token, estimatorId } = this.props;
 
+    console.log("fetchEstimator");
+
     const response = await axios.get(
       buildApiUrl(`/estimators/${estimatorId}`),
       {
@@ -232,12 +234,16 @@ class AnnotateStep extends React.Component {
       }
     );
 
+    console.log("done fetchEstimator");
+
     this.setState({ estimator: response.data });
   }
 
   async fetchImageTiles() {
     const { token } = this.props;
     const { estimator, offset } = this.state;
+
+    console.log("fetchImageTiles");
 
     const response = await axios.get(buildApiUrl(`/image_tiles/`), {
       params: {
@@ -255,11 +261,20 @@ class AnnotateStep extends React.Component {
 
     this.setState({ imageTiles: response.data.results, count: count });
 
+    console.log("done fetchImageTiles");
+
     const notEnoughImages = count < MIN_IMAGE_TILES;
     this.setState({ loading: notEnoughImages });
 
     if (notEnoughImages) {
-      setTimeout(1000, () => this.fetchImageTiles());
+      console.log("not enough tiles; set timeout");
+      setTimeout(
+        (() => {
+          console.log("running set timeout");
+          this.fetchImageTiles();
+        }).bind(this),
+        3000
+      );
     }
   }
 
