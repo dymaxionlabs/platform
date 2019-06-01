@@ -2,8 +2,6 @@ import Paper from "@material-ui/core/Paper";
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
-const styledBy = (property, mapping) => props => mapping[props[property]];
-
 const styles = theme => ({
   main: {
     width: "auto",

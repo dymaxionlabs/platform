@@ -1,18 +1,35 @@
+import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import Head from "next/head";
 import React from "react";
 import BasicAppbar from "../../../components/BasicAppbar";
-import StepperContent from "../../../components/home/StepperContent";
 import AnnotateStep from "../../../components/models/new/od/AnnotateStep";
 import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
+import StepperContent from "../../../components/models/new/StepperContent";
+import StepperAppbar from "../../../components/models/new/StepperAppbar";
 import { i18n, withNamespaces } from "../../../i18n";
 import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
 import { routerReplace } from "../../../utils/router";
 
-const steps = ["initial", "create", "upload", "annotate", "test", "improve"];
+const styles = theme => ({
+  stepperContent: {
+    width: "auto",
+    display: "block", // Fix IE 11 issue.
+    marginTop: theme.spacing.unit * 3,
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2,
+    [theme.breakpoints.up(700 + theme.spacing.unit * 2 * 2)]: {
+      width: 700,
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
+  }
+});
+
+const steps = ["initial", "create", "upload", "annotate", "train", "predict"];
 
 class NewODModel extends React.Component {
   state = {
@@ -76,21 +93,29 @@ class NewODModel extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, classes, ...props } = this.props;
+
     return (
-      <>
+      <React.Fragment>
         <Head>
           <title>{t("new.od.header")}</title>
         </Head>
         <BasicAppbar />
+        {/* <StepperAppbar activeStep={this.state.step} steps={steps} /> */}
         {this.stepContent()}
-        <br />
-        <StepperContent activeStep={this.state.step} steps={steps} />
-      </>
+        <div className={classes.stepperContent}>
+          <StepperContent
+            activeStep={this.state.step}
+            steps={steps}
+            {...props}
+          />
+        </div>
+      </React.Fragment>
     );
   }
 }
 
+NewODModel = withStyles(styles)(NewODModel);
 NewODModel = withNamespaces("models")(NewODModel);
 NewODModel = withAuthSync(NewODModel);
 

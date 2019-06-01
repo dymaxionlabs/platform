@@ -1,10 +1,12 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
-import CardMedia from "@material-ui/core/CardMedia";
+// import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
+// import CardActionArea from "@material-ui/core/CardActionArea";
+import Typography from "@material-ui/core/Typography";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
@@ -15,12 +17,27 @@ import { withAuthSync } from "../../../utils/auth";
 import { routerPush } from "../../../utils/router";
 
 const styles = theme => ({
+  main: {
+    width: "auto",
+    display: "block", // Fix IE 11 issue.
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2,
+    [theme.breakpoints.up(800 + theme.spacing.unit * 2 * 2)]: {
+      width: 800,
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
+  },
+  header: {
+    marginBottom: theme.spacing.unit * 3,
+    textAlign: "center"
+  },
   card: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
     alignItems: "center",
-    [theme.breakpoints.up(400 + theme.spacing.unit * 2 * 2)]: {
-      width: 400,
+    [theme.breakpoints.up(220 + theme.spacing.unit * 2 * 2)]: {
+      width: 220,
       marginLeft: 18,
       marginTop: 15
     }
@@ -67,15 +84,20 @@ class NewODModel extends React.Component {
   render() {
     const { t, classes } = this.props;
     return (
-      <div>
+      <React.Fragment>
         <Head>
           <title>{t("new_title")}</title>
         </Head>
         <BasicAppbar />
-        <Grid container spacing={16}>
-          <Grid item xs={12} sm={4}>
-            <Card className={classes.card}>
-              <CardActionArea>
+        <main className={classes.main}>
+          <Paper className={classes.paper}>
+            <Typography className={classes.header} component="h1" variant="h5">
+              {t("create_step.title")}
+            </Typography>
+            <Grid container spacing={16}>
+              <Grid item xs={12} sm={4}>
+                <Card className={classes.card}>
+                  {/* <CardActionArea>
                 <CardMedia
                   onClick={() => this.handleClick("od")}
                   name="od"
@@ -84,21 +106,21 @@ class NewODModel extends React.Component {
                   height="140"
                   image="/static/clasificacion.png"
                 />
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={() => this.handleClick("od")}
-                >
-                  {t("object_btn")}
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Card className={classes.card}>
-              <CardActionArea>
+              </CardActionArea> */}
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => this.handleClick("od")}
+                    >
+                      {t("object_btn")}
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card className={classes.card}>
+                  {/* <CardActionArea>
                 <CardMedia
                   component="img"
                   alt={t("classification_btn")}
@@ -106,26 +128,26 @@ class NewODModel extends React.Component {
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
                 />
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={this.handleClickOpen}
-                >
-                  {t("classification_btn")}
-                </Button>
-                <ContactFormModalContent
-                  open={this.state.open}
-                  datos={this.props}
-                  handleClose={this.handleClose}
-                />
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <Card className={classes.card}>
-              <CardActionArea>
+              </CardActionArea> */}
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={this.handleClickOpen}
+                    >
+                      {t("classification_btn")}
+                    </Button>
+                    <ContactFormModalContent
+                      open={this.state.open}
+                      datos={this.props}
+                      handleClose={this.handleClose}
+                    />
+                  </CardActions>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <Card className={classes.card}>
+                  {/* <CardActionArea>
                 <CardMedia
                   component="img"
                   alt={t("segmentation_btn")}
@@ -133,26 +155,26 @@ class NewODModel extends React.Component {
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
                 />
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={this.handleClickOpen}
-                >
-                  {t("segmentation_btn")}
-                </Button>
-                <ContactFormModalContent
-                  open={this.state.open}
-                  datos={this.props}
-                  handleClose={this.handleClose}
-                />
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={5}>
-            <Card className={classes.card}>
-              <CardActionArea>
+              </CardActionArea> */}
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={this.handleClickOpen}
+                    >
+                      {t("segmentation_btn")}
+                    </Button>
+                    <ContactFormModalContent
+                      open={this.state.open}
+                      datos={this.props}
+                      handleClose={this.handleClose}
+                    />
+                  </CardActions>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={5}>
+                <Card className={classes.card}>
+                  {/* <CardActionArea>
                 <CardMedia
                   component="img"
                   alt={t("others_btn")}
@@ -160,25 +182,27 @@ class NewODModel extends React.Component {
                   image="/static/clasificacion.png"
                   onClick={this.handleClickOpen}
                 />
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={this.handleClickOpen}
-                >
-                  {t("others_btn")}
-                </Button>
-                <ContactFormModalContent
-                  open={this.state.open}
-                  datos={this.props}
-                  handleClose={this.handleClose}
-                />
-              </CardActions>
-            </Card>
-          </Grid>
-        </Grid>
-      </div>
+              </CardActionArea> */}
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={this.handleClickOpen}
+                    >
+                      {t("others_btn")}
+                    </Button>
+                    <ContactFormModalContent
+                      open={this.state.open}
+                      datos={this.props}
+                      handleClose={this.handleClose}
+                    />
+                  </CardActions>
+                </Card>
+              </Grid>
+            </Grid>
+          </Paper>
+        </main>
+      </React.Fragment>
     );
   }
 }
