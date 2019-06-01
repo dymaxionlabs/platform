@@ -144,7 +144,12 @@ class UploadStep extends React.Component {
           onChange={this.handleDropzoneChange}
           showFileNamesInPreview={true}
         />
-        <Button color="primary" variant="contained" onClick={this.handleSubmit}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={this.handleSubmit}
+          disabled={uploading}
+        >
           {t("upload_step.submit_btn")}
         </Button>
         {uploading && (
