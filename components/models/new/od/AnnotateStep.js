@@ -303,7 +303,15 @@ class AnnotateStep extends React.Component {
       }
     );
 
-    const labelCount = response.data["detail"];
+    let labelCount = response.data["detail"];
+
+    // In case object is empty, fill it with all known labels
+    const labels = this.state.estimator.classes;
+    for (const label of labels) {
+      if (!labelCount[label]) {
+        labelCount[label] = 0;
+      }
+    }
 
     this.setState({ labelCount });
   }
