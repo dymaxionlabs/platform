@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import IconButton from "@material-ui/core/IconButton";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -22,6 +23,7 @@ import StepContentContainer from "../StepContentContainer";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
+const MIN_IMAGE_TILES = PAGE_SIZE;
 const MIN_COUNT_PER_LABEL = 5;
 
 const styles = theme => ({
@@ -146,6 +148,58 @@ let LabelCountList = ({ t, classes, labelCount }) => (
 LabelCountList = withNamespaces("models")(LabelCountList);
 LabelCountList = withStyles(styles)(LabelCountList);
 
+let LoadingContent = ({ t }) => (
+  <React.Fragment>
+    <Typography>
+      Procesando imágenes subidas. Por favor aguarde unos minutos...
+    </Typography>
+    <LinearProgress />
+  </React.Fragment>
+);
+
+LoadingContent = withNamespaces("models")(LoadingContent);
+LoadingContent = withStyles(styles)(LoadingContent);
+
+let AnnotateContent = ({ t, classes, ...props }) => (
+  <React.Fragment>
+    <Typography className={classes.text}>
+      En este paso es necesario que indiques diferentes ejemplos de objetos para
+      cada clase de objeto que quieres detectar.
+    </Typography>
+    <Typography className={classes.text}>
+      Para eso, puedes dibujar rectángulos sobre los objetos de interés en cada
+      mosaico. Cuando llegues al final puedes avanzar a la siguiente página. Al
+      finalizar, haz clic sobre <strong>Entrenar</strong>.
+    </Typography>
+    <Grid container spacing={24}>
+      <Grid item xs={9}>
+        <div className={classes.imageTileListContainer}>
+          <ImageTileList
+            labels={props.labels}
+            imageTiles={props.imageTiles}
+            annotationsByTile={props.annotationsByTile}
+            onChange={props.onChange}
+            onNew={props.onNew}
+            onDelete={props.onDelete}
+            onFirstPageClick={props.onFirstPageClick}
+            onPrevPageClick={props.onPrevPageClick}
+            onNextPageClick={props.onNextPageClick}
+            onLastPageClick={props.onLastPageClick}
+          />
+        </div>
+      </Grid>
+      <Grid item xs={3}>
+        {props.labels && props.labelCount && (
+          <LabelCountList labelCount={props.labelCount} />
+        )}
+      </Grid>
+    </Grid>
+  </React.Fragment>
+);
+
+AnnotateContent = withNamespaces("models")(AnnotateContent);
+AnnotateContent = withStyles(styles)(AnnotateContent);
+
 class AnnotateStep extends React.Component {
   state = {
     offset: 0,
@@ -154,15 +208,13 @@ class AnnotateStep extends React.Component {
     estimator: null,
     imageTiles: [],
     annotationsByTile: {},
-    labelCount: {}
+    labelCount: {},
+    loading: true
   };
 
   async componentDidMount() {
     await this.fetchEstimator();
     await this.fetchImageTiles();
-
-    // TODO Check if there are enough image tiles for annotation
-    // if (this.state.imag)
 
     this.fetchAnnotations();
     this.fetchLabelCount();
@@ -203,6 +255,13 @@ class AnnotateStep extends React.Component {
     const { count } = response.data;
 
     this.setState({ imageTiles: response.data.results, count: count });
+
+    const notEnoughImages = count < MIN_IMAGE_TILES;
+    this.setState({ loading: notEnoughImages });
+
+    if (notEnoughImages) {
+      setTimeout(1000, () => this.fetchImageTiles());
+    }
   }
 
   async fetchAnnotations() {
@@ -367,11 +426,15 @@ class AnnotateStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { imageTiles, estimator, annotationsByTile, labelCount } = this.state;
+    const {
+      loading,
+      imageTiles,
+      estimator,
+      annotationsByTile,
+      labelCount
+    } = this.state;
 
-    // FIXME
     const labels = estimator && estimator.classes;
-
     const canAdvance = this._hasEnoughAnnotations();
 
     return (
@@ -379,36 +442,23 @@ class AnnotateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-        <Typography className={classes.text}>
-          En este paso es necesario que indiques diferentes ejemplos de objetos
-          para cada clase de objeto que quieres detectar.
-        </Typography>
-        <Typography className={classes.text}>
-          Para eso, puedes dibujar rectángulos sobre los objetos de interés en
-          cada mosaico. Cuando llegues al final puedes avanzar a la siguiente
-          página. Al finalizar, haz clic sobre <strong>Entrenar</strong>.
-        </Typography>
-        <Grid container spacing={24}>
-          <Grid item xs={9}>
-            <div className={classes.imageTileListContainer}>
-              <ImageTileList
-                labels={labels}
-                imageTiles={imageTiles}
-                annotationsByTile={annotationsByTile}
-                onChange={this.handleChange}
-                onNew={this.handleNew}
-                onDelete={this.handleDelete}
-                onFirstPageClick={this.handleFirstPageClick}
-                onPrevPageClick={this.handlePrevPageClick}
-                onNextPageClick={this.handleNextPageClick}
-                onLastPageClick={this.handleLastPageClick}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={3}>
-            {labels && labelCount && <LabelCountList labelCount={labelCount} />}
-          </Grid>
-        </Grid>
+        {loading ? (
+          <LoadingContent />
+        ) : (
+          <AnnotateContent
+            labels={labels}
+            labelCount={labelCount}
+            imageTiles={imageTiles}
+            annotationsByTile={annotationsByTile}
+            onChange={this.handleChange}
+            onNew={this.handleNew}
+            onDelete={this.handleDelete}
+            onFirstPageClick={this.handleFirstPageClick}
+            onPrevPageClick={this.handlePrevPageClick}
+            onNextPageClick={this.handleNextPageClick}
+            onLastPageClick={this.handleLastPageClick}
+          />
+        )}
         <div className={classes.buttons}>
           <Button
             className={classes.button}
