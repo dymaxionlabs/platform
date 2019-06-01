@@ -243,7 +243,7 @@ class AnnotateStep extends React.Component {
       params: {
         limit: PAGE_SIZE,
         offset: offset,
-        files: estimator.image_files
+        files: estimator.image_files.join(",")
       },
       headers: {
         Authorization: token,
