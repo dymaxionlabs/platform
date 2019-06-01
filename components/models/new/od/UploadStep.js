@@ -66,6 +66,8 @@ class UploadStep extends React.Component {
         );
       } catch (err) {
         console.error(err);
+        this.setState({ uploading: false });
+        return;
       }
 
       count += 1;
