@@ -45,7 +45,18 @@ const styles = theme => ({
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
-  button: {
+  pageButtons: {
+    marginTop: theme.spacing.unit
+  },
+  pageButton: {
+    marginTop: 0,
+    marginRight: theme.spacing.unit
+  },
+  page: {
+    display: "inline",
+    textAlign: "center"
+  },
+  submitButton: {
     marginTop: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit
   },
@@ -59,20 +70,7 @@ const styles = theme => ({
 
 class ImageTileList extends React.Component {
   render() {
-    const {
-      classes,
-      labels,
-      imageTiles,
-      annotationsByTile,
-      onChange,
-      onNew,
-      onDelete,
-      onFirstPageClick,
-      onLastPageClick,
-      onPrevPageClick,
-      onNextPageClick
-    } = this.props;
-
+    const { classes, ...props } = this.props;
     return (
       <React.Fragment>
         <GridList
@@ -81,7 +79,7 @@ class ImageTileList extends React.Component {
           cols={1}
           spacing={1}
         >
-          {imageTiles.map(tile => (
+          {props.imageTiles.map(tile => (
             <GridListTile key={tile.tile_file}>
               <AnnotatedImageTile
                 key={tile.id}
@@ -89,27 +87,42 @@ class ImageTileList extends React.Component {
                 src={tile.tile_file}
                 width={IMAGE_SIZE}
                 height={IMAGE_SIZE}
-                rectangles={annotationsByTile[tile.id] || {}}
-                labels={labels || []}
-                onChange={onChange}
-                onNew={onNew}
-                onDelete={onDelete}
+                rectangles={props.annotationsByTile[tile.id] || {}}
+                labels={props.labels || []}
+                onChange={props.onChange}
+                onNew={props.onNew}
+                onDelete={props.onDelete}
                 style={{ margin: 5 }}
               />
             </GridListTile>
           ))}
         </GridList>
-        <div>
-          <IconButton className={classes.button} onClick={onFirstPageClick}>
+        <div className={classes.pageButtons}>
+          <IconButton
+            className={classes.pageButton}
+            onClick={props.onFirstPageClick}
+          >
             <SkipPreviousIcon />
           </IconButton>
-          <IconButton className={classes.button} onClick={onPrevPageClick}>
+          <IconButton
+            className={classes.pageButton}
+            onClick={props.onPrevPageClick}
+          >
             <NavigateBeforeIcon />
           </IconButton>
-          <IconButton className={classes.button} onClick={onNextPageClick}>
+          <Typography className={classes.page}>
+            {props.offset} / {props.count}
+          </Typography>
+          <IconButton
+            className={classes.pageButton}
+            onClick={props.onNextPageClick}
+          >
             <NavigateNextIcon />
           </IconButton>
-          <IconButton className={classes.button} onClick={onLastPageClick}>
+          <IconButton
+            className={classes.pageButton}
+            onClick={props.onLastPageClick}
+          >
             <SkipNextIcon />
           </IconButton>
         </div>
@@ -171,18 +184,7 @@ let AnnotateContent = ({ t, classes, ...props }) => (
     <Grid container spacing={24}>
       <Grid item xs={9}>
         <div className={classes.imageTileListContainer}>
-          <ImageTileList
-            labels={props.labels}
-            imageTiles={props.imageTiles}
-            annotationsByTile={props.annotationsByTile}
-            onChange={props.onChange}
-            onNew={props.onNew}
-            onDelete={props.onDelete}
-            onFirstPageClick={props.onFirstPageClick}
-            onPrevPageClick={props.onPrevPageClick}
-            onNextPageClick={props.onNextPageClick}
-            onLastPageClick={props.onLastPageClick}
-          />
+          <ImageTileList {...props} />
         </div>
       </Grid>
       <Grid item xs={3}>
@@ -438,7 +440,9 @@ class AnnotateStep extends React.Component {
       imageTiles,
       estimator,
       annotationsByTile,
-      labelCount
+      labelCount,
+      offset,
+      count
     } = this.state;
 
     const labels = estimator && estimator.classes;
@@ -457,6 +461,8 @@ class AnnotateStep extends React.Component {
             labelCount={labelCount}
             imageTiles={imageTiles}
             annotationsByTile={annotationsByTile}
+            offset={offset}
+            count={count}
             onChange={this.handleChange}
             onNew={this.handleNew}
             onDelete={this.handleDelete}
@@ -468,7 +474,7 @@ class AnnotateStep extends React.Component {
         )}
         <div className={classes.buttons}>
           <Button
-            className={classes.button}
+            className={classes.submitButton}
             disabled={loading}
             color="primary"
             variant="contained"
@@ -478,9 +484,6 @@ class AnnotateStep extends React.Component {
               ? t("annotate_step.continue_btn")
               : t("annotate_step.save_btn")}
           </Button>
-          <Typography>
-            {this.state.offset} / {this.state.count}
-          </Typography>
         </div>
       </StepContentContainer>
     );
