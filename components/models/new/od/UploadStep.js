@@ -52,6 +52,12 @@ class UploadStep extends React.Component {
             headers: {
               Authorization: this.props.token,
               "Accept-Language": i18n.language
+            },
+            onUploadProgress: progressEvent => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              console.log(percentCompleted);
             }
           }
         );
