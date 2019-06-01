@@ -31,8 +31,7 @@ class ImageTileViewSet(viewsets.ReadOnlyModelViewSet):
             f for f in self.request.query_params.get('files', '').split(',')
             if f
         ]
-        if files:
-            queryset = queryset.filter(file__name__in=files)
+        queryset = queryset.filter(file__name__in=files)
         return queryset
 
 
