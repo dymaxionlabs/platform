@@ -2,6 +2,8 @@
   "annotate_step": {
     "annotations_per_class": "Annotations per class",
     "continue_btn": "Save and continue",
+    "explanation_1": "In this step you need to indicate different examples of objects for each object class you want to detect.",
+    "explanation_2": "For that, you can draw rectangles on the objects of interest in each image tile. When you reach the end you can advance to the next page. When finished, click on",
     "remaining": "Remaining",
     "save_btn": "Save",
     "title": "Annotate images"
@@ -24,6 +26,7 @@
   "error_sending": "Sending error.",
   "label_msg": "Message",
   "new": {
+    "explanation": "Choose the type of model you want to create.",
     "header": "New Model",
     "od": {
       "header": "Object Detection"

@@ -163,13 +163,10 @@ LoadingContent = withStyles(styles)(LoadingContent);
 let AnnotateContent = ({ t, classes, ...props }) => (
   <React.Fragment>
     <Typography className={classes.text}>
-      En este paso es necesario que indiques diferentes ejemplos de objetos para
-      cada clase de objeto que quieres detectar.
+      {t("annotate_step.explanation_1")}
     </Typography>
     <Typography className={classes.text}>
-      Para eso, puedes dibujar rectángulos sobre los objetos de interés en cada
-      mosaico. Cuando llegues al final puedes avanzar a la siguiente página. Al
-      finalizar, haz clic sobre <strong>Entrenar</strong>.
+      {t("annotate_step.explanation_2")} <strong>Entrenar</strong>.
     </Typography>
     <Grid container spacing={24}>
       <Grid item xs={9}>

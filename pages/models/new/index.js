@@ -92,8 +92,9 @@ class NewODModel extends React.Component {
         <main className={classes.main}>
           <Paper className={classes.paper}>
             <Typography className={classes.header} component="h1" variant="h5">
-              {t("create_step.title")}
+              {t("new.header")}
             </Typography>
+            <Typography>{t("new.explanation")}</Typography>
             <Grid container spacing={16}>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
@@ -109,7 +110,6 @@ class NewODModel extends React.Component {
               </CardActionArea> */}
                   <CardActions>
                     <Button
-                      size="small"
                       color="primary"
                       onClick={() => this.handleClick("od")}
                     >
@@ -130,11 +130,7 @@ class NewODModel extends React.Component {
                 />
               </CardActionArea> */}
                   <CardActions>
-                    <Button
-                      size="small"
-                      color="primary"
-                      onClick={this.handleClickOpen}
-                    >
+                    <Button color="primary" onClick={this.handleClickOpen}>
                       {t("classification_btn")}
                     </Button>
                     <ContactFormModalContent
@@ -157,11 +153,7 @@ class NewODModel extends React.Component {
                 />
               </CardActionArea> */}
                   <CardActions>
-                    <Button
-                      size="small"
-                      color="primary"
-                      onClick={this.handleClickOpen}
-                    >
+                    <Button color="primary" onClick={this.handleClickOpen}>
                       {t("segmentation_btn")}
                     </Button>
                     <ContactFormModalContent
@@ -184,11 +176,7 @@ class NewODModel extends React.Component {
                 />
               </CardActionArea> */}
                   <CardActions>
-                    <Button
-                      size="small"
-                      color="primary"
-                      onClick={this.handleClickOpen}
-                    >
+                    <Button color="primary" onClick={this.handleClickOpen}>
                       {t("others_btn")}
                     </Button>
                     <ContactFormModalContent

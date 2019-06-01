@@ -2,6 +2,8 @@
   "annotate_step": {
     "annotations_per_class": "Anotaciones por clase",
     "continue_btn": "Guardar y continuar",
+    "explanation_1": "En este paso es necesario que indiques diferentes ejemplos de objetos para cada clase de objeto que quieres detectar.",
+    "explanation_2": "Para eso, puedes dibujar rect\u00e1ngulos en los objetos de inter\u00e9s en cada mosaico de imagen. Cuando llegues al final puedes avanzar a la p\u00e1gina siguiente. Cuando hayas terminado, haz clic en",
     "remaining": "Restantes",
     "save_btn": "Guardar",
     "title": "Anotar im\u00e1genes"
@@ -24,6 +26,7 @@
   "error_sending": "Error de Env\u00edo.",
   "label_msg": "Mensaje",
   "new": {
+    "explanation": "Elija el tipo de modelo que quiere crear.",
     "header": "Nuevo Modelo",
     "od": {
       "header": "Detecci\u00f3n de Objetos"
