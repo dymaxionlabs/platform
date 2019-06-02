@@ -91,7 +91,7 @@ class NewODModel extends React.Component {
             <Typography className={classes.header} component="h1" variant="h5">
               {t("new.header")}
             </Typography>
-            <Typography>{t("new.explanation")}</Typography>
+            <Typography variant="subtitle1">{t("new.explanation")}</Typography>
             <Grid container spacing={16}>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
@@ -108,6 +108,7 @@ class NewODModel extends React.Component {
                   <CardActions>
                     <Button
                       color="primary"
+                      fullWidth
                       onClick={() => this.handleClick("od")}
                     >
                       {t("object_btn")}
@@ -127,7 +128,11 @@ class NewODModel extends React.Component {
                 />
               </CardActionArea> */}
                   <CardActions>
-                    <Button color="primary" onClick={this.handleClickOpen}>
+                    <Button
+                      color="primary"
+                      fullWidth
+                      onClick={this.handleClickOpen}
+                    >
                       {t("classification_btn")}
                     </Button>
                     <ContactFormModalContent
@@ -150,7 +155,11 @@ class NewODModel extends React.Component {
                 />
               </CardActionArea> */}
                   <CardActions>
-                    <Button color="primary" onClick={this.handleClickOpen}>
+                    <Button
+                      color="primary"
+                      fullWidth
+                      onClick={this.handleClickOpen}
+                    >
                       {t("change_detection_btn")}
                     </Button>
                     <ContactFormModalContent
