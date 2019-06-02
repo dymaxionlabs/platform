@@ -61,7 +61,7 @@ class NewODModel extends React.Component {
   }
 
   state = {
-    open: false
+    contactModalOpen: false
   };
 
   handleClick = type => {
@@ -69,20 +69,17 @@ class NewODModel extends React.Component {
   };
 
   handleClickOpen = () => {
-    this.setState({ open: true });
+    this.setState({ contactModalOpen: true });
   };
 
-  handleClose = () => {
-    this.setState({
-      open: false,
-      errorMsg: "",
-      successMsg: "",
-      isSubmitting: false
-    });
+  handleContactModalClose = () => {
+    this.setState({ contactModalOpen: false });
   };
 
   render() {
-    const { t, classes } = this.props;
+    const { t, token, classes } = this.props;
+    const { contactModalOpen } = this.state;
+
     return (
       <React.Fragment>
         <Head>
@@ -134,9 +131,9 @@ class NewODModel extends React.Component {
                       {t("classification_btn")}
                     </Button>
                     <ContactFormModalContent
-                      open={this.state.open}
-                      datos={this.props}
-                      handleClose={this.handleClose}
+                      open={contactModalOpen}
+                      onClose={this.handleContactModalClose}
+                      token={token}
                     />
                   </CardActions>
                 </Card>
@@ -157,9 +154,9 @@ class NewODModel extends React.Component {
                       {t("change_detection_btn")}
                     </Button>
                     <ContactFormModalContent
-                      open={this.state.open}
-                      datos={this.props}
-                      handleClose={this.handleClose}
+                      open={contactModalOpen}
+                      onClose={this.handleContactModalClose}
+                      token={token}
                     />
                   </CardActions>
                 </Card>

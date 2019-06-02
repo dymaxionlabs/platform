@@ -231,16 +231,16 @@ models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per
 models,train_step.title,Entrenar modelo,Train model
 models,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
 models,train_step.back,Ir atrás,Go back
-models,send_btn,Enviar,Send
-models,cancel_btn,Cancelar,Cancel
 models,object_btn,Detección de Objetos,Object Detection
 models,classification_btn,Clasificación,Classification
 models,change_detection_btn,Detección de Cambios,Change Detection
-models,error_msg,"Este tipo de modelo está aún en desarrollo y evaluación. Si tiene un caso de uso, por favor escribinos y nos pondremos en contacto.","This type of model is still under development and evaluation. If you have a use case, please write us and we will get in touch."
-models,error_sending,"Ocurrió un error al enviar el mensaje. Por favor, intente de nuevo o contáctese con nosotros a {{contactLink}}.",An error occurred when sending the message. Please try again or contact us at {{contactLink}}.
-models,success_msg,Gracias por enviar su mensaje. Le escribiremos en la brevedad con más información.,Thanks for sending your message. We will write to you shortly with more information.
-models,title_consult,Aún no disponible,Still not available
-models,label_msg,Mensaje,Message
+models,new.consult.title,Aún no disponible,Still not available
+models,new.consult.explanation,"Este tipo de modelo está aún en desarrollo y evaluación. Si tiene un caso de uso, por favor escribinos y nos pondremos en contacto.","This type of model is still under development and evaluation. If you have a use case, please write us and we will get in touch."
+models,new.consult.message_label,Mensaje,Message
+models,new.consult.send_btn,Enviar,Send
+models,new.consult.cancel_btn,Cancelar,Cancel
+models,new.consult.error_msg,"Ocurrió un error al enviar el mensaje. Por favor, intente de nuevo o contáctese con nosotros a {{contactLink}}.",An error occurred when sending the message. Please try again or contact us at {{contactLink}}.
+models,new.consult.success_msg,Gracias por enviar su mensaje. Le escribiremos en la brevedad con más información.,Thanks for sending your message. We will write to you shortly with more information.
 models,new_title,Nuevo Modelo,New Model
 models,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
 models,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.

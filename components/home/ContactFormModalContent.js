@@ -1,8 +1,8 @@
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
@@ -11,140 +11,130 @@ import React from "react";
 import { withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 
-const styles = theme => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
-  },
-  dense: {
-    marginTop: 16
-  },
-  menu: {
-    width: 200
-  }
-});
-
 class ContactFormModalContent extends React.Component {
   state = {
-    open: false,
     message: "",
-    isSubmitting: false
+    errorMsg: "",
+    successMsg: "",
+    submitting: false
   };
-
-  constructor(props) {
-    super(props);
-    this.state.open = props.open;
-  }
 
   handleMessageChange = event => {
     this.setState({ message: event.target.value });
   };
 
-  handleOnEnter = () => {
+  handleEnter = () => {
     this.setState({
       errorMsg: "",
       successMsg: "",
-      isSubmitting: true
+      submitting: false
     });
   };
 
-  handleSubmit = () => {
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleSubmit = async () => {
+    const { t, token, onClose } = this.props;
+    const { message } = this.state;
+
+    const errorMsg = t("new.consult.error_msg", {
+      contactLink: "contact@dymaxionlabs.com"
+    });
+
     this.setState({
       errorMsg: "",
       successMsg: "",
-      isSubmitting: true
+      submitting: true
     });
 
-    if (this.state.message == "") {
+    if (message === "") {
       this.setState({
-        errorMsg: this.props.t("error_msg"),
+        errorMsg: errorMsg,
         successMsg: "",
-        isSubmitting: false
+        submitting: false
       });
       return;
     }
 
-    axios
-      .get(buildApiUrl("/auth/user/"), {
-        headers: { Authorization: this.props.datos.token }
-      })
-      .then(response => {
-        axios
-          .post(buildApiUrl("/contact/"), {
-            email: response.data.email,
-            username: response.data.username,
-            message: "Mensaje desde /models/new: " + this.state.message
-          })
-          .then(() => {
-            this.setState({
-              successMsg: this.props.t("success_msg"),
-              message: ""
-            });
-            setTimeout(() => {
-              this.setState({
-                successMsg: "",
-                errorMsg: "",
-                message: "",
-                open: false
-              });
-              this.props.handleClose();
-            }, 2000);
-          })
-          .catch(err => {
-            const response = err.response;
-            console.error(response);
-            this.setState({
-              errorMsg: this.props.t("error_sending"),
-              isSubmitting: false,
-              successMsg: ""
-            });
-          });
+    try {
+      const response = await axios.get(buildApiUrl("/auth/user/"), {
+        headers: { Authorization: token }
       });
+      const userData = response.data;
+
+      await axios.post(buildApiUrl("/contact/"), {
+        email: userData.email,
+        username: userData.username,
+        message: `Mensaje desde /models/new: ${message}`
+      });
+
+      this.setState({
+        successMsg: t("new.consult.success_msg"),
+        message: ""
+      });
+
+      setTimeout(() => {
+        this.setState({
+          successMsg: "",
+          errorMsg: ""
+        });
+        if (onClose) onClose();
+      }, 3000);
+    } catch (error) {
+      const response = error.response;
+      console.error(response);
+      this.setState({
+        errorMsg: errorMsg,
+        submitting: false,
+        successMsg: ""
+      });
+    }
   };
 
   render() {
-    const { classes, t } = this.props;
+    const { t, open, onClose } = this.props;
+    const { submitting } = this.state;
 
     return (
       <Dialog
-        onEnter={this.handleOnEnter}
-        open={this.props.open}
+        onEnter={this.handleEnter}
+        onClose={onClose}
+        open={open}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">{t("title_consult")}</DialogTitle>
-
-        <Typography style={{ color: "red" }} variant="subtitle1" align="center">
-          {this.state.errorMsg}
-        </Typography>
-        <Typography
-          style={{ color: "green" }}
-          variant="subtitle1"
-          align="center"
-        >
-          {this.state.successMsg}
-        </Typography>
-
-        <TextField
-          align="center"
-          id="filled-multiline-static"
-          label={t("label_msg")}
-          multiline
-          rows="4"
-          className={classes.textField}
-          margin="normal"
-          variant="filled"
-          onChange={this.handleMessageChange}
-        />
+        <DialogTitle>{t("new.consult.title")}</DialogTitle>
+        <DialogContent>
+          <Typography style={{ color: "red" }} variant="body1">
+            {this.state.errorMsg}
+          </Typography>
+          <Typography style={{ color: "green" }} variant="body1">
+            {this.state.successMsg}
+          </Typography>
+          <Typography variant="body1">
+            {t("new.consult.explanation")}
+          </Typography>
+          <TextField
+            label={t("new.consult.message_label")}
+            multiline
+            rows="4"
+            autoFocus
+            fullWidth
+            margin="dense"
+            onChange={this.handleMessageChange}
+          />
+        </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleClose} color="primary">
-            {t("cancel_btn")}
+          <Button onClick={onClose} color="primary">
+            {t("new.consult.cancel_btn")}
           </Button>
-          <Button onClick={this.handleSubmit} color="primary">
-            {t("send_btn")}
+          <Button
+            onClick={this.handleSubmit}
+            color="primary"
+            disabled={submitting}
+          >
+            {t("new.consult.send_btn")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -152,11 +142,6 @@ class ContactFormModalContent extends React.Component {
   }
 }
 
-ContactFormModalContent.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
 ContactFormModalContent = withNamespaces("models")(ContactFormModalContent);
-ContactFormModalContent = withStyles(styles)(ContactFormModalContent);
 
 export default ContactFormModalContent;

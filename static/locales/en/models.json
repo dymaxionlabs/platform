@@ -8,7 +8,6 @@
     "save_btn": "Save",
     "title": "Annotate images"
   },
-  "cancel_btn": "Cancel",
   "change_detection_btn": "Change Detection",
   "classification_btn": "Classification",
   "create_step": {
@@ -23,10 +22,16 @@
     "submit_btn": "Create",
     "title": "Create new model"
   },
-  "error_msg": "This type of model is still under development and evaluation. If you have a use case, please write us and we will get in touch.",
-  "error_sending": "An error occurred when sending the message. Please try again or contact us at {{contactLink}}.",
-  "label_msg": "Message",
   "new": {
+    "consult": {
+      "cancel_btn": "Cancel",
+      "error_msg": "An error occurred when sending the message. Please try again or contact us at {{contactLink}}.",
+      "explanation": "This type of model is still under development and evaluation. If you have a use case, please write us and we will get in touch.",
+      "message_label": "Message",
+      "send_btn": "Send",
+      "success_msg": "Thanks for sending your message. We will write to you shortly with more information.",
+      "title": "Still not available"
+    },
     "explanation": "Choose the type of model you want to create.",
     "header": "New Model",
     "od": {
@@ -44,9 +49,6 @@
   },
   "new_title": "New Model",
   "object_btn": "Object Detection",
-  "send_btn": "Send",
-  "success_msg": "Thanks for sending your message. We will write to you shortly with more information.",
-  "title_consult": "Still not available",
   "train_step": {
     "back": "Go back",
     "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",
