@@ -205,6 +205,12 @@ common,request.state.canceled,Cancelado,Canceled
 models,new.header,Nuevo Modelo,New Model
 models,new.explanation,Elija el tipo de modelo que quiere crear.,Choose the type of model you want to create.
 models,new.od.header,Detección de Objetos,Object Detection
+models,new.od.steps.initial,Inicial,Initial
+models,new.od.steps.create,Crear,Create
+models,new.od.steps.upload,Subir,Upload
+models,new.od.steps.annotate,Anotar,Annotate
+models,new.od.steps.train,Entrenar,Train
+models,new.od.steps.predict,Predecir,Predict
 models,new.start_building,Comenzar,Start Building
 models,create_step.title,Crear nuevo modelo,Create new model
 models,create_step.name_label,Nombre,Name
@@ -222,6 +228,9 @@ models,annotate_step.explanation_2,"Para eso, puedes dibujar rectángulos en los
 models,annotate_step.save_btn,Guardar,Save
 models,annotate_step.continue_btn,Guardar y continuar,Save and continue
 models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
+models,train_step.title,Entrenar modelo,Train model
+models,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
+models,train_step.back,Ir atrás,Go back
 models,send_btn,Enviar,Send
 models,cancel_btn,Cancelar,Cancel
 models,object_btn,Detección de Objetos,Object Detection

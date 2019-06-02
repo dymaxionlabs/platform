@@ -6,9 +6,10 @@ import BasicAppbar from "../../../components/BasicAppbar";
 import AnnotateStep from "../../../components/models/new/od/AnnotateStep";
 import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
+import TrainStep from "../../../components/models/new/od/TrainStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
 import StepperContent from "../../../components/models/new/StepperContent";
-import StepperAppbar from "../../../components/models/new/StepperAppbar";
+// import StepperAppbar from "../../../components/models/new/StepperAppbar";
 import { i18n, withNamespaces } from "../../../i18n";
 import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
@@ -88,6 +89,9 @@ class NewODModel extends React.Component {
       }
       case "annotate": {
         return <AnnotateStep token={token} estimatorId={query.id} />;
+      }
+      case "train": {
+        return <TrainStep token={token} estimatorId={query.id} />;
       }
     }
   }

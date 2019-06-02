@@ -29,7 +29,15 @@
     "explanation": "Elija el tipo de modelo que quiere crear.",
     "header": "Nuevo Modelo",
     "od": {
-      "header": "Detecci\u00f3n de Objetos"
+      "header": "Detecci\u00f3n de Objetos",
+      "steps": {
+        "annotate": "Anotar",
+        "create": "Crear",
+        "initial": "Inicial",
+        "predict": "Predecir",
+        "train": "Entrenar",
+        "upload": "Subir"
+      }
     },
     "start_building": "Comenzar"
   },
@@ -40,6 +48,11 @@
   "send_btn": "Enviar",
   "success_msg": "Tu mensaje ha sido enviado. \u00a1Gracias!",
   "title_consult": "Consultar sobre modelos",
+  "train_step": {
+    "back": "Ir atr\u00e1s",
+    "explanation": "En este momento se est\u00e1 entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",
+    "title": "Entrenar modelo"
+  },
   "upload_step": {
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
     "submit_btn": "Subir",

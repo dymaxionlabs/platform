@@ -2,6 +2,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { withStyles } from "@material-ui/core/styles";
+import { withNamespaces } from "../../../i18n";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -26,7 +27,7 @@ class StepperContent extends React.Component {
   };
 
   render() {
-    const { classes, activeStep } = this.props;
+    const { t, classes, activeStep } = this.props;
 
     const steps = this.steps();
     const activeStepName = this.activeStep(activeStep);
@@ -36,7 +37,7 @@ class StepperContent extends React.Component {
         <Stepper className={classes.stepper} activeStep={activeStepName}>
           {steps.map(label => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel>{t(`new.od.steps.${label}`)}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -49,4 +50,7 @@ StepperContent.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(StepperContent);
+StepperContent = withStyles(styles)(StepperContent);
+StepperContent = withNamespaces("models")(StepperContent);
+
+export default StepperContent;

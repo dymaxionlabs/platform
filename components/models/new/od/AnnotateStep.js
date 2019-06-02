@@ -19,6 +19,7 @@ import React from "react";
 import AnnotatedImageTile from "../../../../components/models/annotate/AnnotatedImageTile";
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
+import { routerPush } from "../../../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
 const PAGE_SIZE = 10;
@@ -443,6 +444,12 @@ class AnnotateStep extends React.Component {
           savedTiles += 1;
           if (savedTiles === imageTiles.length) {
             console.log("All annotations saved!");
+          }
+
+          const canAdvance = this._hasEnoughAnnotations()
+          if (canAdvance) {
+            console.log(estimator)
+            routerPush(`/models/new/od/train?id=${estimator.uuid}`);
           }
         });
     }

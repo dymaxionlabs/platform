@@ -29,7 +29,15 @@
     "explanation": "Choose the type of model you want to create.",
     "header": "New Model",
     "od": {
-      "header": "Object Detection"
+      "header": "Object Detection",
+      "steps": {
+        "annotate": "Annotate",
+        "create": "Create",
+        "initial": "Initial",
+        "predict": "Predict",
+        "train": "Train",
+        "upload": "Upload"
+      }
     },
     "start_building": "Start Building"
   },
@@ -40,6 +48,11 @@
   "send_btn": "Send",
   "success_msg": "Your message has been sent. Thank you!",
   "title_consult": "Consult about models",
+  "train_step": {
+    "back": "Go back",
+    "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",
+    "title": "Train model"
+  },
   "upload_step": {
     "dropzone": "Drag and drop your images here, or click.",
     "submit_btn": "Upload",
