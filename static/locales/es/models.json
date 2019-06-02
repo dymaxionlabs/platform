@@ -9,7 +9,8 @@
     "title": "Anotar im\u00e1genes"
   },
   "cancel_btn": "Cancelar",
-  "classification_btn": "Clasificaci\u00f3n (BETA)",
+  "change_detection_btn": "Detecci\u00f3n de Cambios",
+  "classification_btn": "Clasificaci\u00f3n",
   "create_step": {
     "classes_helper_1": "Ingrese el nombre de una clase y presione la tecla",
     "classes_helper_2": ". Puede ingresar varias clases de esta manera.",
@@ -22,8 +23,8 @@
     "submit_btn": "Crear",
     "title": "Crear nuevo modelo"
   },
-  "error_msg": "Por favor escribe un mensaje.",
-  "error_sending": "Error de Env\u00edo.",
+  "error_msg": "Este tipo de modelo est\u00e1 a\u00fan en desarrollo y evaluaci\u00f3n. Si tiene un caso de uso, por favor escribinos y nos pondremos en contacto.",
+  "error_sending": "Ocurri\u00f3 un error al enviar el mensaje. Por favor, intente de nuevo o cont\u00e1ctese con nosotros a {{contactLink}}.",
   "label_msg": "Mensaje",
   "new": {
     "explanation": "Elija el tipo de modelo que quiere crear.",
@@ -43,11 +44,9 @@
   },
   "new_title": "Nuevo Modelo",
   "object_btn": "Detecci\u00f3n de Objetos",
-  "others_btn": "Otros",
-  "segmentation_btn": "Segmentaci\u00f3n (BETA)",
   "send_btn": "Enviar",
-  "success_msg": "Tu mensaje ha sido enviado. \u00a1Gracias!",
-  "title_consult": "Consultar sobre modelos",
+  "success_msg": "Gracias por enviar su mensaje. Le escribiremos en la brevedad con m\u00e1s informaci\u00f3n.",
+  "title_consult": "A\u00fan no disponible",
   "train_step": {
     "back": "Ir atr\u00e1s",
     "explanation": "En este momento se est\u00e1 entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",

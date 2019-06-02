@@ -154,30 +154,7 @@ class NewODModel extends React.Component {
               </CardActionArea> */}
                   <CardActions>
                     <Button color="primary" onClick={this.handleClickOpen}>
-                      {t("segmentation_btn")}
-                    </Button>
-                    <ContactFormModalContent
-                      open={this.state.open}
-                      datos={this.props}
-                      handleClose={this.handleClose}
-                    />
-                  </CardActions>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={5}>
-                <Card className={classes.card}>
-                  {/* <CardActionArea>
-                <CardMedia
-                  component="img"
-                  alt={t("others_btn")}
-                  height="140"
-                  image="/static/clasificacion.png"
-                  onClick={this.handleClickOpen}
-                />
-              </CardActionArea> */}
-                  <CardActions>
-                    <Button color="primary" onClick={this.handleClickOpen}>
-                      {t("others_btn")}
+                      {t("change_detection_btn")}
                     </Button>
                     <ContactFormModalContent
                       open={this.state.open}
