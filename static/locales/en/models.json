@@ -10,7 +10,7 @@
   "change_detection_btn": "Change Detection",
   "change_detection_desc": "Comparison between images of different dates to highlight and classify changes.",
   "classification_btn": "Classification",
-  "classification_desc": "Land use maps",
+  "classification_desc": "Land use maps.",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
     "classes_helper_2": "key. You can enter several classes in this way.",

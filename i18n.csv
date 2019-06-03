@@ -235,7 +235,7 @@ models,train_step.back,Ir atrás,Go back
 models,object_btn,Detección de Objetos,Object Detection
 models,object_desc,"Detección de animales, techos, árboles, silobolsas, etc.","Detect animals, roofs, trees, grain silos, etc."
 models,classification_btn,Clasificación,Classification
-models,classification_desc,Mapeo de usos del suelo.,Land use maps
+models,classification_desc,Mapeo de usos del suelo.,Land use maps.
 models,change_detection_btn,Detección de Cambios,Change Detection
 models,change_detection_desc,Comparación entre imágenes de diferentes fechas para resaltar y clasificar cambios.,Comparison between images of different dates to highlight and classify changes.
 models,new.consult.title,Aún no disponible,Still not available
