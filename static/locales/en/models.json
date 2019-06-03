@@ -9,7 +9,9 @@
     "title": "Annotate images"
   },
   "change_detection_btn": "Change Detection",
+  "change_detection_desc": "Comparison between images of different dates to highlight and classify changes.",
   "classification_btn": "Classification",
+  "classification_desc": "Land use maps",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
     "classes_helper_2": "key. You can enter several classes in this way.",
@@ -47,8 +49,10 @@
     },
     "start_building": "Start Building"
   },
+  "new_btn": "New",
   "new_title": "New Model",
   "object_btn": "Object Detection",
+  "object_desc": "Detect animals, roofs, trees, grain silos, etc.",
   "train_step": {
     "back": "Go back",
     "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",

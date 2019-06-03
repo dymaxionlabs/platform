@@ -9,7 +9,9 @@
     "title": "Anotar im\u00e1genes"
   },
   "change_detection_btn": "Detecci\u00f3n de Cambios",
+  "change_detection_desc": "Comparaci\u00f3n entre im\u00e1genes de diferentes fechas para resaltar y clasificar cambios.",
   "classification_btn": "Clasificaci\u00f3n",
+  "classification_desc": "Mapeo de usos del suelo.",
   "create_step": {
     "classes_helper_1": "Ingrese el nombre de una clase y presione la tecla",
     "classes_helper_2": ". Puede ingresar varias clases de esta manera.",
@@ -47,8 +49,10 @@
     },
     "start_building": "Comenzar"
   },
+  "new_btn": "Nuevo",
   "new_title": "Nuevo Modelo",
   "object_btn": "Detecci\u00f3n de Objetos",
+  "object_desc": "Detecci\u00f3n de animales, techos, \u00e1rboles, silobolsas, etc.",
   "train_step": {
     "back": "Ir atr\u00e1s",
     "explanation": "En este momento se est\u00e1 entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",

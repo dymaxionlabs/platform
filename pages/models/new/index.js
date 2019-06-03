@@ -1,11 +1,10 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
-// import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-// import CardActionArea from "@material-ui/core/CardActionArea";
 import Typography from "@material-ui/core/Typography";
 import Head from "next/head";
 import PropTypes from "prop-types";
@@ -95,45 +94,45 @@ class NewODModel extends React.Component {
             <Grid container spacing={16}>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
-                  {/* <CardActionArea>
-                <CardMedia
-                  onClick={() => this.handleClick("od")}
-                  name="od"
-                  component="img"
-                  alt={t("object_btn")}
-                  height="140"
-                  image="/static/clasificacion.png"
-                />
-              </CardActionArea> */}
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="h3">
+                      {t("object_btn")}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      {t("object_desc")}
+                    </Typography>
+                  </CardContent>
                   <CardActions>
                     <Button
                       color="primary"
-                      fullWidth
                       onClick={() => this.handleClick("od")}
                     >
-                      {t("object_btn")}
+                      {t("new_btn")}
                     </Button>
                   </CardActions>
                 </Card>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
-                  {/* <CardActionArea>
-                <CardMedia
-                  component="img"
-                  alt={t("classification_btn")}
-                  height="140"
-                  image="/static/clasificacion.png"
-                  onClick={this.handleClickOpen}
-                />
-              </CardActionArea> */}
-                  <CardActions>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      onClick={this.handleClickOpen}
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="h3">
+                      {t("change_detection_btn")}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
                     >
-                      {t("classification_btn")}
+                      {t("change_detection_desc")}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button color="primary" onClick={this.handleClickOpen}>
+                      {t("new_btn")}
                     </Button>
                     <ContactFormModalContent
                       open={contactModalOpen}
@@ -145,22 +144,21 @@ class NewODModel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={2}>
                 <Card className={classes.card}>
-                  {/* <CardActionArea>
-                <CardMedia
-                  component="img"
-                  alt={t("segmentation_btn")}
-                  height="140"
-                  image="/static/clasificacion.png"
-                  onClick={this.handleClickOpen}
-                />
-              </CardActionArea> */}
-                  <CardActions>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      onClick={this.handleClickOpen}
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="h3">
+                      {t("classification_btn")}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
                     >
-                      {t("change_detection_btn")}
+                      {t("classification_desc")}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button color="primary" onClick={this.handleClickOpen}>
+                      {t("new_btn")}
                     </Button>
                     <ContactFormModalContent
                       open={contactModalOpen}
