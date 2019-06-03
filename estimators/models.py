@@ -91,10 +91,13 @@ class Annotation(models.Model):
     estimator = models.ForeignKey(Estimator,
                                   on_delete=models.CASCADE,
                                   verbose_name=_('estimator'))
-    image_tile = models.OneToOneField(ImageTile,
-                                      on_delete=models.CASCADE,
-                                      verbose_name=_('image tile'))
+    image_tile = models.ForeignKey(ImageTile,
+                                   on_delete=models.CASCADE,
+                                   verbose_name=_('image tile'))
     segments = JSONField(null=True, blank=True, verbose_name=_('segments'))
+
+    class Meta:
+        unique_together = (('estimator', 'image_tile'))
 
     def __str__(self):
         return 'Annotation for {image_tile} with {segments} segments'.format(
