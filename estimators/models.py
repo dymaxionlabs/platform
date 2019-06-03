@@ -99,3 +99,13 @@ class Annotation(models.Model):
     def __str__(self):
         return 'Annotation for {image_tile} with {segments} segments'.format(
             image_tile=self.image_tile, segments=len(self.segments))
+
+
+class TrainingJob(models.Model):
+    estimator = models.ForeignKey(Estimator,
+                                  on_delete=models.CASCADE,
+                                  verbose_name=_('estimator'))
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
+    metadata = JSONField(null=True, blank=True)
+    finished = models.BooleanField(default=False)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Estimator, ImageTile, Annotation
+from .models import Annotation, Estimator, ImageTile, TrainingJob
 
 
 class EstimatorAdmin(admin.ModelAdmin):
@@ -10,3 +10,4 @@ class EstimatorAdmin(admin.ModelAdmin):
 admin.site.register(Estimator, EstimatorAdmin)
 admin.site.register(ImageTile)
 admin.site.register(Annotation)
+admin.site.register(TrainingJob)
