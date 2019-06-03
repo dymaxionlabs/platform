@@ -49,11 +49,12 @@ def generate_image_tiles(file_pk):
                     was_image_written = write_image(img, img_path)
 
                     if was_image_written:
-                        tile = ImageTile(file=file,
-                                         col_off=window.col_off,
-                                         row_off=window.row_off,
-                                         width=window.width,
-                                         height=window.height)
+                        tile, _ = ImageTile.objects.get_or_create(
+                            file=file,
+                            col_off=window.col_off,
+                            row_off=window.row_off,
+                            width=window.width,
+                            height=window.height)
                         with open(img_path, 'rb') as f:
                             tile.tile_file = DjangoFile(f, name=img_fname)
                             tile.save()
