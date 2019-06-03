@@ -1,0 +1,8 @@
+Hi,
+
+The training of your custom model {{name}} for {{num_classes}} classes has started.
+
+We will email you when you model it is ready.
+
+Best,
+Federico & the Dymaxion Labs team.

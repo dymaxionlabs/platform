@@ -5,11 +5,12 @@ from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission
+from terra.emails import TrainingStartedEmail
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob
+from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, TrainingJobSerializer)
-from .permissions import HasAccessToRelatedEstimatorPermission
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -104,16 +105,18 @@ class StartTrainingJobView(APIView):
         if not estimator:
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
-        running_job = TrainingJob.objects.filter(estimator=estimator,
-                                                 finished=False).first()
-        if running_job:
-            return Response(
-                {
-                    'non_field_errors':
-                    _('Training job %d is currently running') % running_job.id
-                },
-                status=status.HTTP_400_BAD_REQUEST)
 
-        job = TrainingJob.objects.create(estimator=estimator)
+        job = TrainingJob.objects.filter(estimator=estimator,
+                                         finished=False).first()
+        if not job:
+            job = TrainingJob.objects.create(estimator=estimator)
+
+            # Send email
+            user = request.user
+            email = TrainingStartedEmail(estimator=estimator,
+                                         recipients=[user.email],
+                                         language_code='es')
+            email.send_mail()
+
         serializer = TrainingJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)

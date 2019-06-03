@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-31 17:13-0300\n"
+"POT-Creation-Date: 2019-06-03 08:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,11 +34,11 @@ msgstr "tipo de estimador"
 msgid "name"
 msgstr "nombre"
 
-#: estimators/models.py:38
+#: estimators/models.py:38 estimators/models.py:108
 msgid "created at"
 msgstr "creado en"
 
-#: estimators/models.py:39
+#: estimators/models.py:39 estimators/models.py:109
 msgid "updated at"
 msgstr "actualizado en"
 
@@ -50,7 +50,7 @@ msgstr "archivo"
 msgid "image"
 msgstr "image"
 
-#: estimators/models.py:93
+#: estimators/models.py:93 estimators/models.py:107
 msgid "estimator"
 msgstr "estimador"
 
@@ -62,13 +62,17 @@ msgstr "mosaico"
 msgid "segments"
 msgstr "segmentos"
 
-#: estimators/views.py:55
+#: estimators/views.py:56
 msgid "Annotations updated"
 msgstr "Anotaciones actualizadas"
 
-#: estimators/views.py:57
+#: estimators/views.py:58
 msgid "Annotations created"
 msgstr "Anotaciones creadas"
+
+#: estimators/views.py:106
+msgid "Not found"
+msgstr "No se encontró"
 
 #: projects/models.py:23
 msgid "In Beta"
@@ -366,3 +370,7 @@ msgstr "Validá tu correo"
 #: terra/emails.py:116
 msgid "your account is ready"
 msgstr "Tu cuenta está lista, %(name)s 🚀"
+
+#: terra/emails.py:149
+msgid "training of your model started"
+msgstr "El entrenamiento de tu modelo comenzó"
