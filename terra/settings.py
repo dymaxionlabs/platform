@@ -262,6 +262,7 @@ MAILCHIMP_USER = os.getenv('MAILCHIMP_USER')
 MAILCHIMP_AUDIENCE_IDS = {
     'urban': '73d5a1e868',
     'agri': '69a9ec43f4',
+    'beta': '3555c83b2c'
 }
 
 CONTACT_EMAIL = 'contact@dymaxionlabs.com'
