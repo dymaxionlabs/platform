@@ -5,9 +5,10 @@ import cookie from "js-cookie";
 
 export const login = async ({ token, expires, redirectTo = "/home" }) => {
   cookie.set("token", token, { expires: expires });
-  if (redirectTo) {
-    routerPush(redirectTo);
+  if (!redirectTo) {
+    redirectTo = "/home";
   }
+  routerPush(redirectTo);
 };
 
 export const logout = () => {
