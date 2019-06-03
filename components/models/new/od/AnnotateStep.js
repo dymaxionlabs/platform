@@ -437,12 +437,12 @@ class AnnotateStep extends React.Component {
           savedTiles += 1;
           if (savedTiles === imageTiles.length) {
             console.log("All annotations saved!");
-          }
 
-          const canAdvance = this._hasEnoughAnnotations();
-          if (canAdvance) {
-            console.log(estimator);
-            routerPush(`/models/new/od/train?id=${estimator.uuid}`);
+            const canAdvance = this._hasEnoughAnnotations();
+            if (canAdvance) {
+              console.log("Advance");
+              routerPush(`/models/new/od/train?id=${estimator.uuid}`);
+            }
           }
         });
     }
