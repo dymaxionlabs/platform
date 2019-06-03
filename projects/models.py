@@ -20,7 +20,7 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=40, blank=True)
     city = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=60, blank=True)
-    in_beta = models.BooleanField(_("In Beta"), default=False)
+    in_beta = models.BooleanField(_("In Beta"), default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
