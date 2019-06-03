@@ -1,20 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Checkbox from "@material-ui/core/Checkbox";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Head from "next/head";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { withNamespaces, Link } from "../i18n";
+import Typography from "@material-ui/core/Typography";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import axios from "axios";
+import Head from "next/head";
+import PropTypes from "prop-types";
+import React from "react";
+import { i18n, Link, withNamespaces } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { login } from "../utils/auth";
 
