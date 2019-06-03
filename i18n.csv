@@ -213,6 +213,7 @@ models,new.od.steps.train,Entrenar,Train
 models,new.od.steps.predict,Predecir,Predict
 models,new.start_building,Comenzar,Start Building
 models,create_step.title,Crear nuevo modelo,Create new model
+models,create_step.explanation,Elige un nombre y las clases que van a intervenir en tu modelo.,Choose a name and labels to setup your model.
 models,create_step.name_label,Nombre,Name
 models,create_step.name_helper,Ingrese un nombre para su modelo.,Enter a name for your model.
 models,create_step.classes_label,Clases de objetos,Object classes
@@ -220,11 +221,11 @@ models,create_step.classes_helper_1,Ingrese el nombre de una clase y presione la
 models,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes in this way.
 models,create_step.submit_btn,Crear,Create
 models,upload_step.title,Subir imágenes,Upload images
+models,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
 models,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 models,upload_step.submit_btn,Subir,Upload
 models,annotate_step.title,Anotar imágenes,Annotate images
-models,annotate_step.explanation_1,En este paso es necesario que indiques diferentes ejemplos de objetos para cada clase de objeto que quieres detectar.,In this step you need to indicate different examples of objects for each object class you want to detect.
-models,annotate_step.explanation_2,"Para eso, puedes dibujar rectángulos en los objetos de interés en cada mosaico de imagen. Cuando llegues al final puedes avanzar a la página siguiente. Cuando hayas terminado, haz clic en","For that, you can draw rectangles on the objects of interest in each image tile. When you reach the end you can advance to the next page. When finished, click on"
+models,annotate_step.explanation,Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. ¡Cuantos más marques mejor!,Label some objects to let your model train to find them. More labeled objects give you better accuracy.
 models,annotate_step.save_btn,Guardar,Save
 models,annotate_step.continue_btn,Guardar y continuar,Save and continue
 models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class

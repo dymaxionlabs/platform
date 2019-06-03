@@ -138,6 +138,7 @@ class UploadStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("upload_step.title")}
         </Typography>
+        <Typography variant="body2">{t("upload_step.explanation")}</Typography>
         <DropzoneArea
           dropzoneText={t("upload_step.dropzone")}
           filesLimit={10}

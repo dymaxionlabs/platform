@@ -113,6 +113,7 @@ class CreateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("create_step.title")}
         </Typography>
+        <Typography variant="body2">{t("create_step.explanation")}</Typography>
         {errorMsg && (
           <Typography className={classes.errorMessage}>{errorMsg}</Typography>
         )}

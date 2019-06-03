@@ -2,8 +2,7 @@
   "annotate_step": {
     "annotations_per_class": "Annotations per class",
     "continue_btn": "Save and continue",
-    "explanation_1": "In this step you need to indicate different examples of objects for each object class you want to detect.",
-    "explanation_2": "For that, you can draw rectangles on the objects of interest in each image tile. When you reach the end you can advance to the next page. When finished, click on",
+    "explanation": "Label some objects to let your model train to find them. More labeled objects give you better accuracy.",
     "remaining": "Remaining",
     "save_btn": "Save",
     "title": "Annotate images"
@@ -19,6 +18,7 @@
     "error_msg_classes": "Please add at least one object class.",
     "error_msg_duplicate": "Model already exists, please enter another name.",
     "error_msg_internal": "An error has ocurred. Please retry.",
+    "explanation": "Choose a name and labels to setup your model.",
     "name_helper": "Enter a name for your model.",
     "name_label": "Name",
     "submit_btn": "Create",
@@ -60,6 +60,7 @@
   },
   "upload_step": {
     "dropzone": "Drag and drop your images here, or click.",
+    "explanation": "Select one or more images and then click upload.",
     "submit_btn": "Upload",
     "title": "Upload images"
   }

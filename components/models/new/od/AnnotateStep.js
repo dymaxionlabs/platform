@@ -36,7 +36,8 @@ const styles = theme => ({
     overflow: "hidden",
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    marginTop: theme.spacing.unit
   },
   imageTileList: {
     height: 500,
@@ -60,9 +61,6 @@ const styles = theme => ({
   submitButton: {
     marginTop: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit
-  },
-  text: {
-    marginBottom: theme.spacing.unit
   },
   buttons: {
     textAlign: "center"
@@ -176,12 +174,7 @@ LoadingContent = withStyles(styles)(LoadingContent);
 
 let AnnotateContent = ({ t, classes, ...props }) => (
   <React.Fragment>
-    <Typography className={classes.text}>
-      {t("annotate_step.explanation_1")}
-    </Typography>
-    <Typography className={classes.text}>
-      {t("annotate_step.explanation_2")} <strong>Entrenar</strong>.
-    </Typography>
+    <Typography variant="body2">{t("annotate_step.explanation")}</Typography>
     <Grid container spacing={24}>
       <Grid item xs={9}>
         <div className={classes.imageTileListContainer}>
