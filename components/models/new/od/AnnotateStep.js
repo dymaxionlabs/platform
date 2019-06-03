@@ -25,7 +25,7 @@ import StepContentContainer from "../StepContentContainer";
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
 const MIN_IMAGE_TILES = PAGE_SIZE;
-const MIN_COUNT_PER_LABEL = 5;
+const MIN_COUNT_PER_LABEL = 50;
 
 const styles = theme => ({
   header: {
@@ -446,9 +446,9 @@ class AnnotateStep extends React.Component {
             console.log("All annotations saved!");
           }
 
-          const canAdvance = this._hasEnoughAnnotations()
+          const canAdvance = this._hasEnoughAnnotations();
           if (canAdvance) {
-            console.log(estimator)
+            console.log(estimator);
             routerPush(`/models/new/od/train?id=${estimator.uuid}`);
           }
         });
