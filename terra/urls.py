@@ -24,7 +24,8 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
-                              ImageTileViewSet, SegmentsPerLabelView)
+                              ImageTileViewSet, SegmentsPerLabelView,
+                              StartTrainingJobView)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileViewSet, LayerViewSet,
                             MapViewSet, ProjectInvitationTokenViewSet,
@@ -87,6 +88,8 @@ urlpatterns = [
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
         SegmentsPerLabelView.as_view()),
+    url(r'^estimators/(?P<uuid>[^/]+)/train/?',
+        StartTrainingJobView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),

@@ -6,9 +6,10 @@ from rest_framework.views import APIView
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission
 
-from .models import Annotation, Estimator, ImageTile
+from .models import Annotation, Estimator, ImageTile, TrainingJob
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
-                          ImageTileSerializer)
+                          ImageTileSerializer, TrainingJobSerializer)
+from .permissions import HasAccessToRelatedEstimatorPermission
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -78,6 +79,7 @@ class AnnotationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return queryset
 
 
+# FIXME project permission missing!
 class SegmentsPerLabelView(APIView):
     def get(self, request, uuid):
         annotations = Annotation.objects.filter(estimator__uuid=uuid)
@@ -91,3 +93,27 @@ class SegmentsPerLabelView(APIView):
 
         return Response({'detail': segments_per_label},
                         status=status.HTTP_200_OK)
+
+
+class StartTrainingJobView(APIView):
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToRelatedEstimatorPermission)
+
+    def post(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        running_job = TrainingJob.objects.filter(estimator=estimator,
+                                                 finished=False).first()
+        if running_job:
+            return Response(
+                {
+                    'non_field_errors':
+                    _('Training job %d is currently running') % running_job.id
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+        job = TrainingJob.objects.create(estimator=estimator)
+        serializer = TrainingJobSerializer(job)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
