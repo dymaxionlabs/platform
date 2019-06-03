@@ -1,8 +1,10 @@
 import os
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from mailchimp3 import MailChimp
 from rest_auth.registration.views import RegisterView
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.parsers import FileUploadParser
@@ -114,8 +116,23 @@ class SubscribeBetaView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": _("User subscribed")},
-                        status=status.HTTP_200_OK)
+
+        email = request.data['email']
+        list_id = settings.MAILCHIMP_AUDIENCE_IDS['beta']
+        client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
+                           mc_user=settings.MAILCHIMP_USER)
+        try:
+            client.lists.members.create(
+                list_id, {
+                    'email_address': email,
+                    'status': 'subscribed',
+                    'tags': ['newsletter-landing']
+                })
+            return Response({"detail": _("User subscribed")},
+                            status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": _("Error subscribing user")},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
