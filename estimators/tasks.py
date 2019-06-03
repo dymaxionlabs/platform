@@ -15,7 +15,7 @@ from projects.models import File
 from .models import ImageTile
 
 
-@job
+@job("default", timeout=3600)
 def generate_image_tiles(file_pk):
     file = File.objects.get(pk=file_pk)
 

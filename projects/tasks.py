@@ -77,7 +77,7 @@ def test_fail():
     raise RuntimeError("oops")
 
 
-@job
+@job("default", timeout=3600)
 def generate_raster_tiles(file_pk):
     update_progress(1, 3, file_pk=file_pk)
 
