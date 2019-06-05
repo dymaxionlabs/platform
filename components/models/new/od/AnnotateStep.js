@@ -469,22 +469,22 @@ class AnnotateStep extends React.Component {
         {loading ? (
           <LoadingContent />
         ) : (
-          <AnnotateContent
-            labels={labels}
-            labelCount={labelCount}
-            imageTiles={imageTiles}
-            annotationsByTile={annotationsByTile}
-            offset={offset}
-            count={count}
-            onChange={this.handleChange}
-            onNew={this.handleNew}
-            onDelete={this.handleDelete}
-            onFirstPageClick={this.handleFirstPageClick}
-            onPrevPageClick={this.handlePrevPageClick}
-            onNextPageClick={this.handleNextPageClick}
-            onLastPageClick={this.handleLastPageClick}
-          />
-        )}
+            <AnnotateContent
+              labels={labels}
+              labelCount={labelCount}
+              imageTiles={imageTiles}
+              annotationsByTile={annotationsByTile}
+              offset={offset}
+              count={count}
+              onChange={this.handleChange}
+              onNew={this.handleNew}
+              onDelete={this.handleDelete}
+              onFirstPageClick={this.handleFirstPageClick}
+              onPrevPageClick={this.handlePrevPageClick}
+              onNextPageClick={this.handleNextPageClick}
+              onLastPageClick={this.handleLastPageClick}
+            />
+          )}
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}

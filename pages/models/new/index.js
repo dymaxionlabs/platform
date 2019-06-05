@@ -32,14 +32,26 @@ const styles = theme => ({
     textAlign: "center"
   },
   card: {
-    width: "auto",
-    display: "block", // Fix IE 11 issue.
-    alignItems: "center",
+    display: "flex", // Fix IE 11 issue.
+    flexDirection: "column",
+    height: "100%",
     [theme.breakpoints.up(220 + theme.spacing.unit * 2 * 2)]: {
       width: 220,
+      height: 220,
       marginLeft: 18,
       marginTop: 15
     }
+  },
+  cardcontent: {
+    display: "flex",
+    flex: "1 0 auto",
+    alignItems: "flex-start",
+    flexDirection: "column",
+    height: "75%"
+  },
+  cardactions: {
+    display: "flex",
+    justifyContent: "flex-start"
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
@@ -94,7 +106,7 @@ class NewODModel extends React.Component {
             <Grid container spacing={16}>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
-                  <CardContent>
+                  <CardContent className={classes.cardcontent}>
                     <Typography gutterBottom variant="h6" component="h3">
                       {t("object_btn")}
                     </Typography>
@@ -106,7 +118,7 @@ class NewODModel extends React.Component {
                       {t("object_desc")}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions className={classes.cardactions}>
                     <Button
                       color="primary"
                       onClick={() => this.handleClick("od")}
@@ -118,7 +130,7 @@ class NewODModel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
-                  <CardContent>
+                  <CardContent className={classes.cardcontent}>
                     <Typography gutterBottom variant="h6" component="h3">
                       {t("change_detection_btn")}
                     </Typography>
@@ -130,7 +142,7 @@ class NewODModel extends React.Component {
                       {t("change_detection_desc")}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions className={classes.cardactions}>
                     <Button color="primary" onClick={this.handleClickOpen}>
                       {t("new_btn")}
                     </Button>
@@ -142,9 +154,9 @@ class NewODModel extends React.Component {
                   </CardActions>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={4}>
                 <Card className={classes.card}>
-                  <CardContent>
+                  <CardContent className={classes.cardcontent}>
                     <Typography gutterBottom variant="h6" component="h3">
                       {t("classification_btn")}
                     </Typography>
@@ -156,7 +168,7 @@ class NewODModel extends React.Component {
                       {t("classification_desc")}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions className={classes.cardactions}>
                     <Button color="primary" onClick={this.handleClickOpen}>
                       {t("new_btn")}
                     </Button>
