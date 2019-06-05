@@ -162,9 +162,7 @@ LabelCountList = withStyles(styles)(LabelCountList);
 
 let LoadingContent = ({ t }) => (
   <React.Fragment>
-    <Typography>
-      Procesando imágenes subidas. Por favor aguarde unos minutos...
-    </Typography>
+    <Typography>{t("annotate_step.loading")}</Typography>
     <LinearProgress />
   </React.Fragment>
 );

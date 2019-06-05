@@ -3,6 +3,7 @@
     "annotations_per_class": "Annotations per class",
     "continue_btn": "Save and continue",
     "explanation": "Label some objects to let your model train to find them. More labeled objects give you better accuracy.",
+    "loading": "Processing uploaded images. Please wait a few minutes...",
     "remaining": "Remaining",
     "save_btn": "Save",
     "title": "Annotate images"

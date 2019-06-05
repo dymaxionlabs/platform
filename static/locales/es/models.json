@@ -3,6 +3,7 @@
     "annotations_per_class": "Anotaciones por clase",
     "continue_btn": "Guardar y continuar",
     "explanation": "Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. \u00a1Cuantos m\u00e1s marques mejor!",
+    "loading": "Procesando im\u00e1genes subidas. Por favor aguarde unos minutos...",
     "remaining": "Restantes",
     "save_btn": "Guardar",
     "title": "Anotar im\u00e1genes"
