@@ -3,6 +3,7 @@ import random
 import uuid
 
 import rasterio
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -112,3 +113,10 @@ class TrainingJob(models.Model):
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     metadata = JSONField(null=True, blank=True)
     finished = models.BooleanField(default=False)
+
+    @property
+    def artifacts_url(self):
+        return 'gs://{bucket}/{estimator_uuid}/jobs/train/{pk}/artifacts/'.format(
+            bucket=settings.ESTIMATORS_BUCKET,
+            estimator_uuid=self.estimator.uuid,
+            pk=self.pk)

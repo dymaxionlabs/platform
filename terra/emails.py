@@ -171,3 +171,8 @@ class TrainingStartedEmail(Email):
     @property
     def num_classes(self):
         return len(self.estimator.classes)
+
+
+def notify(subject, body='.'):
+    send_mail(subject, body, 'damian@dymaxionlabs.com',
+              ['monitor@dymaxionlabs.com'])
