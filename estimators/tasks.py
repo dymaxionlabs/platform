@@ -21,6 +21,9 @@ from terra.emails import notify
 from .models import Annotation, Estimator, ImageTile, TrainingJob
 
 
+BACKBONE_WEIGHTS_PATH = 'gs://dym-estimators/_assets/resnet50_coco_best_v2.1.0.h5'
+
+
 @job("default", timeout=3600)
 def generate_image_tiles(file_pk):
     file = File.objects.get(pk=file_pk)
@@ -87,13 +90,18 @@ def write_image(img, path):
 @job("default")
 def start_training_job(training_job_pk):
     notify('[{}] Training job started'.format(training_job_pk))
-    training_job = TrainingJob.objects.get(pk=training_job_pk)
+    job = TrainingJob.objects.get(pk=training_job_pk)
 
-    csvs = generate_annotation_csv(training_job)
-    notify('[{}] Annotations generated'.format(training_job_pk), csvs)
+    annotation_csvs = generate_annotations_csv(job)
+    classes_csv = generate_classes_csv(job)
+    notify('[{}] Annotations generated'.format(training_job_pk),
+            annotation_csvs + [classes_csv])
 
-    upload_image_tiles_artifacts(training_job)
+    upload_image_tiles(job)
     notify('[{}] Image tiles generated'.format(training_job_pk))
+
+    upload_backbone_weights(job)
+    notify('[{}] Backbone weights uploaded'.format(training_job_pk))
 
 
 def train_val_split_rows(rows, val_size=0.2):
@@ -104,7 +112,14 @@ def train_val_split_rows(rows, val_size=0.2):
     return rows[n_val_size:], rows[:n_val_size]
 
 
-def generate_annotation_csv(job):
+def constrain_and_scale(coord, max_value):
+    # FIXME !! When Analytics starts saving annotations with scaled coordinates
+    # (from 0 to 1), replace with:
+    # return round(min(max(coord, 0), 1) * max_value)
+    return round((min(max(coord, 0), 600) / 600) * max_value)
+
+
+def generate_annotations_csv(job):
     annotations = Annotation.objects.filter(estimator=job.estimator)
 
     rows = []
@@ -115,10 +130,11 @@ def generate_annotation_csv(job):
             row = {}
             x1, x2 = sorted([s['x'], s['x'] + s['width']])
             y1, y2 = sorted([s['y'], s['y'] + s['height']])
-            row['x1'] = min(max(x1, 0), w)
-            row['x2'] = min(max(x2, 0), w)
-            row['y1'] = min(max(y1, 0), h)
-            row['y2'] = min(max(y2, 0), h)
+            analytics_tile_size = 600
+            row['x1'] = constrain_and_scale(x1, w)
+            row['x2'] = constrain_and_scale(x2, w)
+            row['y1'] = constrain_and_scale(y1, h)
+            row['y2'] = constrain_and_scale(y2, h)
             row['tile_path'] = 'img/{basename}'.format(
                 basename=os.path.basename(tile.tile_file.name))
             row['label'] = s['label']
@@ -129,17 +145,22 @@ def generate_annotation_csv(job):
     urls = []
     for name, rows in zip(['train', 'val'], [rows_train, rows_val]):
         url = os.path.join(job.artifacts_url, '{}.csv'.format(name))
-        upload_csv(url, rows)
+        upload_csv(url, rows, ('tile_path', 'x1', 'y1', 'x2', 'y2', 'label'))
         urls.append(url)
 
     return urls
 
 
-def upload_csv(url, rows):
+def generate_classes_csv(job):
+    estimator = job.estimator
+    rows = [dict(label=label, class_id=i) for i, label in enumerate(estimator.classes)]
+    url = os.path.join(job.artifacts_url, 'classes.csv')
+    upload_csv(url, rows, ('label', 'class_id'))
+
+
+def upload_csv(url, rows, fieldnames):
     with tempfile.NamedTemporaryFile() as tmpfile:
         with open(tmpfile.name, 'w') as csvfile:
-            # format: path/to/image.jpg,x1,y1,x2,y2,class_name
-            fieldnames = ['tile_path', 'x1', 'y1', 'x2', 'y2', 'label']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             for row in rows:
                 writer.writerow(row)
@@ -152,7 +173,7 @@ def run_subprocess(cmd):
     subprocess.run(cmd, shell=True, check=True)
 
 
-def upload_image_tiles_artifacts(job):
+def upload_image_tiles(job):
     annotations = Annotation.objects.filter(estimator=job.estimator).all()
     image_tiles = [a.image_tile for a in annotations]
 
@@ -165,3 +186,9 @@ def upload_image_tiles_artifacts(job):
     url = os.path.join(job.artifacts_url, 'img/')
     run_subprocess('gsutil -m cp -r {src} {dst}'.format(
         src=' '.join(image_tile_urls), dst=url))
+
+
+def upload_backbone_weights(job):
+    url = os.path.join(job.artifacts_url)
+    run_subprocess('gsutil -m cp -r {src} {dst}'.format(
+        src=BACKBONE_WEIGHTS_PATH, dst=url))
