@@ -1,6 +1,6 @@
 Hola,
 
-El entrenamiento de tu modelo a medida {{name}} para detectar las clases {{num_classes}} ha comenzado.
+El entrenamiento de tu modelo a medida {{name}} para detectar {{num_classes}} clases ha comenzado.
 
 Te enviaremos un correo cuando el modelo esté listo.
 
