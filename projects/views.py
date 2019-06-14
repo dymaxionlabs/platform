@@ -104,8 +104,29 @@ class ContactView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": _("Contact message has been sent")},
-                        status=status.HTTP_200_OK)
+        email = request.data['email']
+        landing = request.data['landing']
+        list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
+        
+        if settings.MAILCHIMP_APIKEY is not None:
+            client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
+                            mc_user=settings.MAILCHIMP_USER)        
+            try:
+                client.lists.members.create(
+                    list_id, {
+                        'email_address': email,
+                        'status': 'subscribed',
+                        'tags':[landing]
+                    })
+                return Response({"detail": _("User subscribed")},
+                                status=status.HTTP_200_OK)
+            except Exception as e:
+                print(str(e))
+                return Response({"detail": _("Error subscribing user")},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"detail": _("User subscribed")},
+                            status=status.HTTP_200_OK)
 
 
 class SubscribeBetaView(generics.GenericAPIView):
@@ -118,22 +139,26 @@ class SubscribeBetaView(generics.GenericAPIView):
         serializer.save()
 
         email = request.data['email']
-        list_id = settings.MAILCHIMP_AUDIENCE_IDS['beta']
-        client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
-                           mc_user=settings.MAILCHIMP_USER)
-        try:
-            client.lists.members.create(
-                list_id, {
-                    'email_address': email,
-                    'status': 'subscribed',
-                    'tags': ['newsletter-landing']
-                })
-            return Response({"detail": _("User subscribed")},
-                            status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"detail": _("Error subscribing user")},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
 
+        if settings.MAILCHIMP_APIKEY is not None:
+            client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
+                            mc_user=settings.MAILCHIMP_USER)
+            try:
+                client.lists.members.create(
+                    list_id, {
+                        'email_address': email,
+                        'status': 'subscribed',
+                        'tags': ['newsletter-landing']
+                    })
+                return Response({"detail": _("User subscribed")},
+                                status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"detail": _("Error subscribing user")},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"detail": _("User subscribed")},
+                status=status.HTTP_200_OK)
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all().order_by('-updated_at')
