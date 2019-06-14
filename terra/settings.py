@@ -272,3 +272,6 @@ REST_AUTH_SERIALIZERS = {
     'PASSWORD_RESET_SERIALIZER': 'terra.serializers.PasswordResetSerializer',
     'USER_DETAILS_SERIALIZER': 'projects.serializers.UserDetailsSerializer'
 }
+
+
+GOOGLE_CREDENTIALS = os.getenv('GOOGLE_CREDENTIALS')
