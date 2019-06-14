@@ -147,11 +147,12 @@ class ContactViewTest(TestCase):
         response = self.client.post('/contact/', {
             'email': 'john@doe.com',
             'message': 'This is a test message',
+            'landing': 'newsletter-landing'
         },
                                     format='json')
 
         self.assertEquals(200, response.status_code)
-        self.assertEquals('Contact message has been sent',
+        self.assertEquals('User subscribed',
                           response.data['detail'])
 
 

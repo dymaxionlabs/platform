@@ -261,9 +261,7 @@ SCRIPT_DIR = os.path.join(BASE_DIR, 'script')
 MAILCHIMP_APIKEY = os.getenv('MAILCHIMP_APIKEY')
 MAILCHIMP_USER = os.getenv('MAILCHIMP_USER')
 MAILCHIMP_AUDIENCE_IDS = {
-    'urban': '73d5a1e868',
-    'agri': '69a9ec43f4',
-    'beta': '3555c83b2c'
+    'default': '3555c83b2c'
 }
 
 CONTACT_EMAIL = 'contact@dymaxionlabs.com'
