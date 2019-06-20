@@ -146,7 +146,7 @@ class Login extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { redirect, beta } = this.props.query;
+    const { redirect, beta, email } = this.props.query;
     const { isSubmitting } = this.state;
 
     return (
@@ -216,7 +216,7 @@ class Login extends React.Component {
             <Link
               href={{
                 pathname: "signup",
-                query: { redirect: redirect, beta: beta }
+                query: { redirect: redirect, beta: beta, email: email }
               }}
             >
               <a>{t("login.signup")}</a>

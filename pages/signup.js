@@ -97,6 +97,9 @@ class Register extends React.Component {
       this.state.beta = true;
       console.log("*** BETA ***");
     }
+
+    const { email } = props.query;
+    this.state.email = email;
   }
 
   onUsernameChange = e => {
