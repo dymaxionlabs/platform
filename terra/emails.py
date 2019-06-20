@@ -84,8 +84,10 @@ class Email:
 class EarlyAccessBetaEmail(Email):
     template_name = 'early_access_beta'
 
-    signup_url = '{base_url}/signup?beta=1'.format(
-        base_url=settings.WEBCLIENT_URL)
+    @property
+    def signup_url(self):
+        return '{base_url}/signup?beta=1&email={email}'.format(
+            base_url=settings.WEBCLIENT_URL, email= self.recipients[0])
 
     @property
     def subject(self):
