@@ -124,3 +124,5 @@ dmypy.json
 /tiles/
 
 .mercadopago.json
+
+google_auth_token.pkl
