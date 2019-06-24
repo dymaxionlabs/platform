@@ -71,6 +71,7 @@ class Rectangle extends React.Component {
         <Text
           x={textPadding + textX}
           y={textPadding + textY}
+          name={name}
           text={label}
           fill="#ffffff"
           fontVariant="small-caps"

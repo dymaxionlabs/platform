@@ -252,3 +252,5 @@ models,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.
 models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.
 models,annotate_step.remaining,Restantes,Remaining
 models,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
+models,annotate_step.cancel,Cancelar,Cancel
+models,annotate_step.delete,Borrar,Delete

@@ -2,12 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Layer, Stage } from "react-konva";
 import AnnotationImage from "./AnnotationImage";
-import DeleteRectangleFab from "./DeleteRectangleFab";
 import LabelMenu from "./LabelMenu";
 import Rectangle from "./Rectangle";
 import RectangleTransformer from "./RectangleTransformer";
 
-const MIN_RECT_SIZE = 50;
+const MIN_RECT_SIZE = 10;
 const RECT_FILL = "#0080ff40";
 const RECT_STROKE = "#0080ff";
 const LABEL_COLORS = [
@@ -48,7 +47,7 @@ class AnnotatedImageTile extends React.Component {
 
   handleStageMouseDown = e => {
     // Clicked on stage - clear selection
-    if (e.target.className === "Image") {
+    if (e.evt.button === 0 && e.target.className === "Image") {
       const stage = e.target.getStage();
       const mousePos = stage.getPointerPosition();
       const newRect = {
@@ -72,17 +71,29 @@ class AnnotatedImageTile extends React.Component {
       return;
     }
 
-    // Find clicked rect by its name
-    const name = e.target.name();
-    const rect = this.props.rectangles[name];
-    if (rect) {
-      this.setState({
-        selectedShapeName: name
-      });
-    } else {
-      this.setState({
-        selectedShapeName: ""
-      });
+    const targetisRectangle =
+      e.target.className === "Rect" || e.target.className === "Text";
+
+    if (targetisRectangle) {
+      // Find clicked rect by its name
+      const name = e.target.name();
+      const rect = this.props.rectangles[name];
+      if (rect) {
+        this.setState({
+          selectedShapeName: name
+        });
+      } else {
+        this.setState({
+          selectedShapeName: ""
+        });
+      }
+
+      if (e.evt.button === 2) {
+        // Show label menu (context menu)
+        const mouseX = e.evt.clientX;
+        const mouseY = e.evt.clientY;
+        this.setState({ mouseX, mouseY, showLabelMenu: true });
+      }
     }
   };
 
@@ -154,7 +165,7 @@ class AnnotatedImageTile extends React.Component {
     if (onDelete) onDelete(id, rectangle);
   }
 
-  handleDeleteRectangle = e => {
+  handleDelete = e => {
     const { rectangles } = this.props;
     const { selectedShapeName } = this.state;
 
@@ -162,6 +173,9 @@ class AnnotatedImageTile extends React.Component {
     if (!selectedShapeName) return;
 
     const { [selectedShapeName]: deletedRect, ...newRectangles } = rectangles;
+
+    this.setState({ showLabelMenu: false });
+
     this.triggerOnChange(newRectangles);
     this.triggerOnDelete(deletedRect);
   };
@@ -191,9 +205,23 @@ class AnnotatedImageTile extends React.Component {
   };
 
   handleLabelMenuItemClick = label => {
-    const { newRect } = this.state;
+    const { mouseDraw } = this.state;
 
-    this.addNewRectangle(newRect, label);
+    if (mouseDraw) {
+      const { newRect } = this.state;
+      this.addNewRectangle(newRect, label);
+    } else {
+      this.setState({
+        mouseDraw: false,
+        showLabelMenu: false
+      });
+
+      const { rectangles } = this.props;
+      const { selectedShapeName } = this.state;
+
+      rectangles[selectedShapeName].label = label;
+      this.triggerOnChange(rectangles);
+    }
   };
 
   addNewRectangle(rect, label) {
@@ -269,7 +297,11 @@ class AnnotatedImageTile extends React.Component {
     const selectedShape = rectangles && rectangles[selectedShapeName];
 
     return (
-      <div style={{ position: "relative", ...style }} className={className}>
+      <div
+        style={{ position: "relative", ...style }}
+        className={className}
+        onContextMenu={e => e.preventDefault()}
+      >
         <Stage
           width={width}
           height={height}
@@ -304,20 +336,15 @@ class AnnotatedImageTile extends React.Component {
             />
           </Layer>
         </Stage>
-        {selectedShape && (
-          <DeleteRectangleFab
-            shape={selectedShape}
-            onClick={this.handleDeleteRectangle}
-            {...this.getRectangleColors(selectedShape)}
-          />
-        )}
         <LabelMenu
           open={showLabelMenu}
           onClose={this.handleLabelMenuClose}
           onItemClick={this.handleLabelMenuItemClick}
+          onDelete={this.handleDelete}
           items={labels}
           left={showLabelMenu ? mouseX : 0}
           top={showLabelMenu ? mouseY : 0}
+          editing={!newRect}
         />
       </div>
     );

@@ -1,7 +1,9 @@
 {
   "annotate_step": {
     "annotations_per_class": "Annotations per class",
+    "cancel": "Cancel",
     "continue_btn": "Save and continue",
+    "delete": "Delete",
     "explanation": "Label some objects to let your model train to find them. More labeled objects give you better accuracy.",
     "loading": "Processing uploaded images. Please wait a few minutes...",
     "remaining": "Remaining",
