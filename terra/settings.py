@@ -260,9 +260,7 @@ SCRIPT_DIR = os.path.join(BASE_DIR, 'script')
 
 MAILCHIMP_APIKEY = os.getenv('MAILCHIMP_APIKEY')
 MAILCHIMP_USER = os.getenv('MAILCHIMP_USER')
-MAILCHIMP_AUDIENCE_IDS = {
-    'default': '3555c83b2c'
-}
+MAILCHIMP_AUDIENCE_IDS = {'default': '3555c83b2c'}
 
 CONTACT_EMAIL = 'contact@dymaxionlabs.com'
 COMPANY_NAME = 'Dymaxion Labs'
@@ -273,5 +271,6 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'projects.serializers.UserDetailsSerializer'
 }
 
-
-GOOGLE_CREDENTIALS = os.getenv('GOOGLE_CREDENTIALS')
+GOOGLE_CREDENTIALS = os.getenv(
+    'GOOGLE_CREDENTIALS', os.path.join(BASE_DIR, '.google_client_secret.json'))
+GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')

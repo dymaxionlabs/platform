@@ -125,4 +125,5 @@ dmypy.json
 
 .mercadopago.json
 
-google_auth_token.pkl
+.google_auth_token.pkl
+.google_client_secret.json
