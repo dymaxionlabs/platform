@@ -27,6 +27,9 @@ pyproj = "*"
 mercadopago = "*"
 mailchimp3 = "*"
 scikit-image = "*"
+google-api-python-client = "*"
+google-auth-oauthlib = "*"
+google-auth-httplib2 = "*"
 
 [dev-packages]
 yapf = "*"
