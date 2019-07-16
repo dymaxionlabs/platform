@@ -64,15 +64,13 @@ class Command(BaseCommand):
         print('{0} cells updated.'.format(result.get('updatedCells')))
 
     def handle(self, *args, **options):
-
         profiles = UserProfile.objects.all()
         projects = Project.objects.all()
         estimators = Estimator.objects.all()
         annotations = Annotation.objects.all()
         trainingJobs = TrainingJob.objects.all()
 
-        i = 1
-        for profile in profiles:
+        for i, profile in enumerate(profiles):
             if profile.in_beta == True:
                 has_projects = "No"
                 has_models = "No"
@@ -96,5 +94,3 @@ class Command(BaseCommand):
                 self._add_to_sheet(i, str(profile.user), profile.user.email,
                                    has_projects, has_models, has_annotations,
                                    annotations_count, has_trainingJobs)
-                # i indicates row number
-                i += 1
