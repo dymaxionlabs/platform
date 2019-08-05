@@ -60,7 +60,7 @@ class NewODModel extends React.Component {
 
     if (query.id) {
       axios
-        .head(buildApiUrl(`/estimators/${query.id}`), {
+        .head(buildApiUrl(`/estimators/${query.id}/`), {
           headers: {
             Authorization: token,
             "Accept-Language": i18n.language
