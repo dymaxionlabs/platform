@@ -1,0 +1,6 @@
+Hi,
+
+The training of your custom model {{name}} for {{num_classes}} classes has finished.
+
+Best,
+Federico & the Dymaxion Labs team.
