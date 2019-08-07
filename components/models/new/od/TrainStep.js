@@ -21,6 +21,31 @@ const styles = theme => ({
 });
 
 class TrainStep extends React.Component {
+  state = {
+    finished: false
+  };
+
+  async checkFinishedTrainingJob(){
+    const { token, estimatorId } = this.props;
+    const response = await axios.get(
+      buildApiUrl(`/estimators/${estimatorId}/finished/`),
+      {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+    });
+    if(response.data.detail){
+      this.setState({finished: true});
+      clearInterval(this.interval);
+    }
+  }
+
+  handleClickContinue(){
+    const { estimatorId } = this.props;
+    //routerPush(`/models/new/od/select?id=${estimatorId}`);
+  }
+
   async componentDidMount() {
     const { token, estimatorId } = this.props;
 
@@ -36,10 +61,12 @@ class TrainStep extends React.Component {
     );
 
     console.log(response);
+    this.interval = setInterval(() => this.checkFinishedTrainingJob(), 1000);
   }
 
   render() {
     const { classes, t } = this.props;
+    const { finished } = this.state;
 
     return (
       <StepContentContainer>
@@ -47,14 +74,25 @@ class TrainStep extends React.Component {
           {t("train_step.title")}
         </Typography>
         <Typography>{t("train_step.explanation")}</Typography>
-        <div className={classes.progress}>
-          <LinearProgress />
-        </div>
-        <Link href="/home/models">
-          <Button color="primary" variant="contained">
-            {t("train_step.back")}
-          </Button>
-        </Link>
+        { finished 
+          ? 
+          <Link>
+            <Button color="primary" variant="contained" onClick={this.handleClickContinue}>
+              {t("train_step.continue")}
+            </Button>
+          </Link>
+          :
+          <div>
+          <div className={classes.progress}>
+            <LinearProgress />
+          </div>
+          <Link href="/home/models">
+            <Button color="primary" variant="contained" fullWidth='true'>
+              {t("train_step.back")}
+            </Button>
+          </Link>
+          </div>
+        }
       </StepContentContainer>
     );
   }

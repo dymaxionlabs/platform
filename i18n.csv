@@ -210,6 +210,7 @@ models,new.od.steps.create,Crear,Create
 models,new.od.steps.upload,Subir,Upload
 models,new.od.steps.annotate,Anotar,Annotate
 models,new.od.steps.train,Entrenar,Train
+models,new.od.steps.select,Seleccionar,Select
 models,new.od.steps.predict,Predecir,Predict
 models,new.start_building,Comenzar,Start Building
 models,create_step.title,Crear nuevo modelo,Create new model
@@ -231,6 +232,7 @@ models,annotate_step.continue_btn,Guardar y continuar,Save and continue
 models,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
 models,train_step.title,Entrenar modelo,Train model
 models,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
+models,train_step.continue,Continuar,Continue
 models,train_step.back,Ir atrás,Go back
 models,object_btn,Detección de Objetos,Object Detection
 models,object_desc,"Detección de animales, techos, árboles, silobolsas, etc.","Detect animals, roofs, trees, grain silos, etc."

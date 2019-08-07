@@ -46,6 +46,7 @@
         "create": "Create",
         "initial": "Initial",
         "predict": "Predict",
+        "select": "Select",
         "train": "Train",
         "upload": "Upload"
       }
@@ -58,6 +59,7 @@
   "object_desc": "Detect animals, roofs, trees, grain silos, etc.",
   "train_step": {
     "back": "Go back",
+    "continue": "Continue",
     "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",
     "title": "Train model"
   },

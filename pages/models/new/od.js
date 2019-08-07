@@ -30,7 +30,7 @@ const styles = theme => ({
   }
 });
 
-const steps = ["initial", "create", "upload", "annotate", "train", "predict"];
+const steps = ["initial", "create", "upload", "annotate", "train", "select", "predict"];
 
 class NewODModel extends React.Component {
   state = {
