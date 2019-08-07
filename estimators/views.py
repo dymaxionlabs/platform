@@ -120,3 +120,19 @@ class StartTrainingJobView(APIView):
 
         serializer = TrainingJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
+
+
+class FinishedTraininJobView(APIView):
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToRelatedEstimatorPermission)
+    
+    def get(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        
+        pending_job = TrainingJob.objects.filter(estimator=estimator,
+                                                finished=False)
+        data = len(pending_job) == 0
+        return Response({'detail': data}, status=status.HTTP_200_OK)
