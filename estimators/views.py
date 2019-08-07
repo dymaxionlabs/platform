@@ -133,6 +133,5 @@ class FinishedTraininJobView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         
         pending_job = TrainingJob.objects.filter(estimator=estimator,
-                                                finished=False)
-        data = len(pending_job) == 0
-        return Response({'detail': data}, status=status.HTTP_200_OK)
+                                                finished=False).exists()
+        return Response({'detail': not pending_job}, status=status.HTTP_200_OK)
