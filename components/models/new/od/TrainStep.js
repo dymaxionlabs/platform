@@ -43,7 +43,7 @@ class TrainStep extends React.Component {
 
   handleClickContinue(){
     const { estimatorId } = this.props;
-    //routerPush(`/models/new/od/select?id=${estimatorId}`);
+    routerPush(`/models/new/od/select?id=${estimatorId}`);
   }
 
   async componentDidMount() {

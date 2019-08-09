@@ -8,6 +8,7 @@ import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import TrainStep from "../../../components/models/new/od/TrainStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
+import SelectStep from "../../../components/models/new/od/SelectStep";
 import StepperContent from "../../../components/models/new/StepperContent";
 // import StepperAppbar from "../../../components/models/new/StepperAppbar";
 import { i18n, withNamespaces } from "../../../i18n";
@@ -92,6 +93,9 @@ class NewODModel extends React.Component {
       }
       case "train": {
         return <TrainStep token={token} estimatorId={query.id} />;
+      }
+      case "select": {
+        return <SelectStep token={token} estimatorId={query.id} />;
       }
     }
   }

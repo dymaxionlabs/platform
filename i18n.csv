@@ -234,6 +234,10 @@ models,train_step.title,Entrenar modelo,Train model
 models,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
 models,train_step.continue,Continuar,Continue
 models,train_step.back,Ir atrás,Go back
+models,select_step.title,Seleccionar imágenes,Select images
+models,select_step.explanation,Selecciona las imágenes preexistentes o carga nuevas y luego cliquea Predecir,Select pre-existing images or upload new ones and then click Predict
+models,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
+models,select_step.submit_btn,Predecir,Predict
 models,object_btn,Detección de Objetos,Object Detection
 models,object_desc,"Detección de animales, techos, árboles, silobolsas, etc.","Detect animals, roofs, trees, grain silos, etc."
 models,classification_btn,Clasificación,Classification

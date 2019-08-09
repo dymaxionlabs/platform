@@ -57,6 +57,12 @@
   "new_title": "Nuevo Modelo",
   "object_btn": "Detecci\u00f3n de Objetos",
   "object_desc": "Detecci\u00f3n de animales, techos, \u00e1rboles, silobolsas, etc.",
+  "select_step": {
+    "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
+    "explanation": "Selecciona las im\u00e1genes preexistentes o carga nuevas y luego cliquea Predecir",
+    "submit_btn": "Predecir",
+    "title": "Seleccionar im\u00e1genes"
+  },
   "train_step": {
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",

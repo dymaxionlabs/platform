@@ -57,6 +57,12 @@
   "new_title": "New Model",
   "object_btn": "Object Detection",
   "object_desc": "Detect animals, roofs, trees, grain silos, etc.",
+  "select_step": {
+    "dropzone": "Drag and drop your images here, or click.",
+    "explanation": "Select pre-existing images or upload new ones and then click Predict",
+    "submit_btn": "Predict",
+    "title": "Select images"
+  },
   "train_step": {
     "back": "Go back",
     "continue": "Continue",
