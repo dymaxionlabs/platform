@@ -33,12 +33,12 @@ class SelectStep extends React.Component {
     files: [],
     previousFiles: [],
     filesLoaded: false,
-    predicting: false,
+    uploading: false,
     currentProgress: 0,
     totalProgress: 0
   };
 
-  selectedOrUploadFiles(){
+  selectedOrUploadFiles(files){
     if(files.length != 0) return true;
     else{
       this.state.previousFiles.map((item, key) =>{
@@ -50,7 +50,74 @@ class SelectStep extends React.Component {
     }
   }
 
-  handleSubmit = () => {
+  async setPredictingJob(newNameFiles){
+    const { estimatorId, token } = this.props;
+    let selectedFiles = [];
+    this.state.previousFiles.map((item, key) =>{
+      if(item['selected']){
+        selectedFiles.push(item['name']);
+      }
+    });
+
+    const response = await axios.post(
+      buildApiUrl(`/estimators/${estimatorId}/predict/`),
+      { files: selectedFiles.concat(newNameFiles), },
+      {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+      }
+    );
+    console.log(response);
+    routerPush(`/models/new/od/predict?id=${estimatorId}`);
+  }
+
+  handleSubmit = async () => {
+    const project = cookie.get("project");
+    const { token } = this.props;
+    const { files } = this.state;
+    let newNameFiles = [];
+
+    if (!this.selectedOrUploadFiles(files)) return;
+
+    this.setState({ uploading: true, currentProgress: 0, totalProgress: 0 });
+
+    let count = 0;
+    for (const file of files) {
+      try {
+        await axios.post(
+          buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
+          file,
+          {
+            headers: {
+              Authorization: token,
+              "Accept-Language": i18n.language
+            },
+            onUploadProgress: progressEvent => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              this.setState({ currentProgress: percentCompleted });
+              console.log(percentCompleted);
+            }
+          }
+        ).then(res => {
+          newNameFiles.push(res.data.detail['name']);
+        });
+      } catch (err) {
+        console.error(err);
+        this.setState({ uploading: false });
+        return;
+      }
+
+      count += 1;
+      this.setState({ totalProgress: (count / files.length) * 100 });
+      if (count === files.length) {
+        this.setPredictingJob(newNameFiles);
+      }
+      if (!this.state.uploading) return;
+    }
   };
 
   handleDropzoneChange = files => {
@@ -98,7 +165,8 @@ class SelectStep extends React.Component {
 
   render() {
     const { classes, t } = this.props;
-    const { previousFiles, filesLoaded, predicting } = this.state;
+    const { previousFiles, filesLoaded, uploading, 
+            currentProgress, totalProgress } = this.state;
 
     return (
       <StepContentContainer>
@@ -128,7 +196,7 @@ class SelectStep extends React.Component {
         >
           {t("select_step.submit_btn")}
         </Button>
-        {predicting && (
+        {uploading && (
           <div>
             <LinearProgress variant="determinate" value={currentProgress} />
             <LinearProgress variant="determinate" value={totalProgress} />
