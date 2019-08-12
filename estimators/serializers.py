@@ -3,7 +3,8 @@ from rest_framework import serializers
 from projects.mixins import allowed_projects_for
 from projects.models import File, Project
 
-from .models import Annotation, Estimator, ImageTile, TrainingJob
+from .models import (Annotation, Estimator, ImageTile, 
+                    TrainingJob, PredictingJob)
 
 
 def non_empty(value):
@@ -63,4 +64,12 @@ class TrainingJobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrainingJob
+        fields = '__all__'
+
+
+class PredictingJobSerializer(serializers.ModelSerializer):
+    estimator = EstimatorSlugField(slug_field='uuid')
+
+    class Meta:
+        model = PredictingJob
         fields = '__all__'
