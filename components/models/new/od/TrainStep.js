@@ -6,6 +6,7 @@ import axios from "axios";
 import React from "react";
 import { i18n, Link, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
+import { routerPush } from "../../../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
@@ -77,7 +78,7 @@ class TrainStep extends React.Component {
         { finished 
           ? 
           <Link>
-            <Button color="primary" variant="contained" onClick={this.handleClickContinue}>
+            <Button color="primary" variant="contained" onClick={ () => this.handleClickContinue()}>
               {t("train_step.continue")}
             </Button>
           </Link>
