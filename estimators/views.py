@@ -172,3 +172,17 @@ class StartPredictingJobView(APIView):
 
         serializer = PredictingJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
+
+
+class FinishedPredictedJobView(APIView):
+    permission_classes = (permissions.IsAuthenticated, HasAccessToRelatedEstimatorPermission)
+
+    def get(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        
+        pending_predicting_job = PredictingJob.objects.filter(estimator=estimator,
+                                                finished=False).exists()
+        return Response({'detail': not pending_predicting_job}, status=status.HTTP_200_OK)
