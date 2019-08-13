@@ -59,7 +59,7 @@
   "object_desc": "Detecci\u00f3n de animales, techos, \u00e1rboles, silobolsas, etc.",
   "predict_step": {
     "back": "Ir atr\u00e1s",
-    "explanation": "En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",
+    "explanation": "En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ver los resultados.",
     "title": "Predecir modelo",
     "view": "Ver resultados"
   },

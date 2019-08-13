@@ -59,7 +59,7 @@
   "object_desc": "Detect animals, roofs, trees, grain silos, etc.",
   "predict_step": {
     "back": "Go back",
-    "explanation": "At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to be used.",
+    "explanation": "At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.",
     "title": "Predict model",
     "view": "View results"
   },

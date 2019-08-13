@@ -239,7 +239,7 @@ models,select_step.explanation,Selecciona las imágenes preexistentes o carga nu
 models,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 models,select_step.submit_btn,Predecir,Predict
 models,predict_step.title,Predecir modelo,Predict model
-models,predict_step.explanation,En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to be used.
+models,predict_step.explanation,En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ver los resultados.,At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.
 models,predict_step.back,Ir atrás,Go back
 models,predict_step.view,Ver resultados,View results
 models,object_btn,Detección de Objetos,Object Detection
