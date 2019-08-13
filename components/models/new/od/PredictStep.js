@@ -45,7 +45,7 @@ class PredictStep extends React.Component {
   }
 
   async componentDidMount() {
-    this.interval = setInterval(() => this.checkFinishedPredictingJob(), 1000);
+    this.interval = setInterval(() => this.checkFinishedPredictingJob(), 1000*60*5);
   }
 
   render() {

@@ -61,7 +61,7 @@ class TrainStep extends React.Component {
     );
 
     console.log(response);
-    this.interval = setInterval(() => this.checkFinishedTrainingJob(), 1000);
+    this.interval = setInterval(() => this.checkFinishedTrainingJob(), 1000*60*5);
   }
 
   render() {
