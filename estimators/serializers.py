@@ -4,7 +4,7 @@ from projects.mixins import allowed_projects_for
 from projects.models import File, Project
 
 from .models import (Annotation, Estimator, ImageTile, 
-                    TrainingJob, PredictingJob)
+                    TrainingJob, PredictionJob)
 
 
 def non_empty(value):
@@ -67,9 +67,9 @@ class TrainingJobSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PredictingJobSerializer(serializers.ModelSerializer):
+class PredictionJobSerializer(serializers.ModelSerializer):
     estimator = EstimatorSlugField(slug_field='uuid')
 
     class Meta:
-        model = PredictingJob
+        model = PredictionJob
         fields = '__all__'

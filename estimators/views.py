@@ -9,11 +9,11 @@ from projects.permissions import HasAccessToRelatedProjectPermission
 from terra.emails import TrainingStartedEmail
 
 from .models import (Annotation, Estimator, ImageTile, 
-                    TrainingJob, PredictingJob)
+                    TrainingJob, PredictionJob)
 from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, TrainingJobSerializer, 
-                          PredictingJobSerializer)
+                          PredictionJobSerializer)
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -140,7 +140,7 @@ class FinishedTraininJobView(APIView):
         return Response({'detail': not pending_job}, status=status.HTTP_200_OK)
 
 
-class StartPredictingJobView(APIView):
+class StartPredictionJobView(APIView):
     permission_classes = (permissions.IsAuthenticated,
                             HasAccessToRelatedEstimatorPermission)
 
@@ -150,13 +150,13 @@ class StartPredictingJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        job = PredictingJob.objects.filter(estimator=estimator,
+        job = PredictionJob.objects.filter(estimator=estimator,
                                             finished=False).first()
         if not job:
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
-            job = PredictingJob.objects.create(estimator=estimator)
+            job = PredictionJob.objects.create(estimator=estimator)
             job.image_files.add(files)
             job.save()
 
@@ -170,11 +170,11 @@ class StartPredictingJobView(APIView):
             email.send_mail()
             """
 
-        serializer = PredictingJobSerializer(job)
+        serializer = PredictionJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
 
-class FinishedPredictedJobView(APIView):
+class FinishedPredictionJobView(APIView):
     permission_classes = (permissions.IsAuthenticated, HasAccessToRelatedEstimatorPermission)
 
     def get(self, request, uuid):
@@ -183,6 +183,6 @@ class FinishedPredictedJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
         
-        pending_predicting_job = PredictingJob.objects.filter(estimator=estimator,
+        pending_prediction_job = PredictionJob.objects.filter(estimator=estimator,
                                                 finished=False).exists()
-        return Response({'detail': not pending_predicting_job}, status=status.HTTP_200_OK)
+        return Response({'detail': not pending_prediction_job}, status=status.HTTP_200_OK)

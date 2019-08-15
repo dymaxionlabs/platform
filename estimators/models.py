@@ -122,7 +122,7 @@ class TrainingJob(models.Model):
             pk=self.pk)
 
 
-class PredictingJob(models.Model):
+class PredictionJob(models.Model):
     estimator = models.ForeignKey(Estimator,
                                     on_delete=models.CASCADE,
                                     verbose_name=_('estimator'))
