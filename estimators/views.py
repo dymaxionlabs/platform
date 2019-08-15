@@ -4,13 +4,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
+from projects.models import File
 from projects.permissions import HasAccessToRelatedProjectPermission
 from terra.emails import TrainingStartedEmail
 
-from .models import Annotation, Estimator, ImageTile, TrainingJob
+from .models import (Annotation, Estimator, ImageTile, 
+                    TrainingJob, PredictionJob)
 from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
-                          ImageTileSerializer, TrainingJobSerializer)
+                          ImageTileSerializer, TrainingJobSerializer, 
+                          PredictionJobSerializer)
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -135,3 +138,51 @@ class FinishedTraininJobView(APIView):
         pending_job = TrainingJob.objects.filter(estimator=estimator,
                                                 finished=False).exists()
         return Response({'detail': not pending_job}, status=status.HTTP_200_OK)
+
+
+class StartPredictionJobView(APIView):
+    permission_classes = (permissions.IsAuthenticated,
+                            HasAccessToRelatedEstimatorPermission)
+
+    def post(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        job = PredictionJob.objects.filter(estimator=estimator,
+                                            finished=False).first()
+        if not job:
+            files = File.objects.filter(name__in=request.data.get('files'),
+                                        project=estimator.project,
+                                        owner=request.user)
+            job = PredictionJob.objects.create(estimator=estimator)
+            job.image_files.add(files)
+            job.save()
+
+            # Send email
+            user = request.user
+            print("Sending mails - Predicting Job Started...")
+            """
+            email = TrainingStartedEmail(estimator=estimator,
+                                            recipients=[user.email],
+                                            language_code='es')
+            email.send_mail()
+            """
+
+        serializer = PredictionJobSerializer(job)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
+
+
+class FinishedPredictionJobView(APIView):
+    permission_classes = (permissions.IsAuthenticated, HasAccessToRelatedEstimatorPermission)
+
+    def get(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        
+        pending_prediction_job = PredictionJob.objects.filter(estimator=estimator,
+                                                finished=False).exists()
+        return Response({'detail': not pending_prediction_job}, status=status.HTTP_200_OK)

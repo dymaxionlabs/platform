@@ -25,7 +25,8 @@ from rest_framework.routers import SimpleRouter
 
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
-                              StartTrainingJobView, FinishedTraininJobView)
+                              StartTrainingJobView, FinishedTraininJobView,
+                              StartPredictionJobView, FinishedPredictionJobView)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileViewSet, LayerViewSet,
                             MapViewSet, ProjectInvitationTokenViewSet,
@@ -92,6 +93,10 @@ urlpatterns = [
         StartTrainingJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/finished/?',
         FinishedTraininJobView.as_view()),
+    url(r'^estimators/(?P<uuid>[^/]+)/predicted/?',
+        FinishedPredictionJobView.as_view()),
+    url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
+        StartPredictionJobView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),
