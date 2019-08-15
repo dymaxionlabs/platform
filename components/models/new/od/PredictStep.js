@@ -6,7 +6,6 @@ import axios from "axios";
 import React from "react";
 import { i18n, Link, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
@@ -21,15 +20,15 @@ const styles = theme => ({
   }
 });
 
-class TrainStep extends React.Component {
+class PredictStep extends React.Component {
   state = {
     finished: false
   };
 
-  async checkFinishedTrainingJob(){
+  async checkFinishedPredictingJob(){
     const { token, estimatorId } = this.props;
     const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/finished/`),
+      buildApiUrl(`/estimators/${estimatorId}/predicted/`),
       {
         headers: {
           Authorization: token,
@@ -42,27 +41,11 @@ class TrainStep extends React.Component {
     }
   }
 
-  handleClickContinue(){
-    const { estimatorId } = this.props;
-    routerPush(`/models/new/od/select?id=${estimatorId}`);
+  handleClickView(){  
   }
 
   async componentDidMount() {
-    const { token, estimatorId } = this.props;
-
-    const response = await axios.post(
-      buildApiUrl(`/estimators/${estimatorId}/train/`),
-      {},
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-
-    console.log(response);
-    this.interval = setInterval(() => this.checkFinishedTrainingJob(), 1000*60*5);
+    this.interval = setInterval(() => this.checkFinishedPredictingJob(), 1000*60*5);
   }
 
   render() {
@@ -72,14 +55,14 @@ class TrainStep extends React.Component {
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("train_step.title")}
+          {t("predict_step.title")}
         </Typography>
-        <Typography>{t("train_step.explanation")}</Typography>
+        <Typography>{t("predict_step.explanation")}</Typography>
         { finished 
           ? 
           <Link>
-            <Button color="primary" variant="contained" onClick={ () => this.handleClickContinue()}>
-              {t("train_step.continue")}
+            <Button color="primary" variant="contained" onClick={this.handleClickView}>
+              {t("predict_step.view")}
             </Button>
           </Link>
           :
@@ -88,8 +71,8 @@ class TrainStep extends React.Component {
             <LinearProgress />
           </div>
           <Link href="/home/models">
-            <Button color="primary" variant="contained" fullWidth='true'>
-              {t("train_step.back")}
+            <Button color="primary" fullWidth="true" variant="contained" >
+              {t("predict_step.back")}
             </Button>
           </Link>
           </div>
@@ -99,7 +82,7 @@ class TrainStep extends React.Component {
   }
 }
 
-TrainStep = withStyles(styles)(TrainStep);
-TrainStep = withNamespaces("models")(TrainStep);
+PredictStep = withStyles(styles)(PredictStep);
+PredictStep = withNamespaces("models")(PredictStep);
 
-export default TrainStep;
+export default PredictStep;

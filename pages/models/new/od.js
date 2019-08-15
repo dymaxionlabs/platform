@@ -8,6 +8,8 @@ import CreateStep from "../../../components/models/new/od/CreateStep";
 import InitialStep from "../../../components/models/new/od/InitialStep";
 import TrainStep from "../../../components/models/new/od/TrainStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
+import SelectStep from "../../../components/models/new/od/SelectStep";
+import PredictStep from "../../../components/models/new/od/PredictStep";
 import StepperContent from "../../../components/models/new/StepperContent";
 // import StepperAppbar from "../../../components/models/new/StepperAppbar";
 import { i18n, withNamespaces } from "../../../i18n";
@@ -30,7 +32,7 @@ const styles = theme => ({
   }
 });
 
-const steps = ["initial", "create", "upload", "annotate", "train", "predict"];
+const steps = ["initial", "create", "upload", "annotate", "train", "select", "predict"];
 
 class NewODModel extends React.Component {
   state = {
@@ -92,6 +94,12 @@ class NewODModel extends React.Component {
       }
       case "train": {
         return <TrainStep token={token} estimatorId={query.id} />;
+      }
+      case "select": {
+        return <SelectStep token={token} estimatorId={query.id} />;
+      }
+      case "predict": {
+        return <PredictStep token={token} estimatorId={query.id} />
       }
     }
   }
