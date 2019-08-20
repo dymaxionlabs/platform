@@ -7,6 +7,7 @@ import React from "react";
 import { i18n, Link, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import StepContentContainer from "../StepContentContainer";
+import { routerPush } from "../../../../utils/router";
 
 const styles = theme => ({
   header: {
@@ -41,7 +42,8 @@ class PredictStep extends React.Component {
     }
   }
 
-  handleClickView(){  
+  handleClickView(){
+    routerPush('/home/layers');
   }
 
   async componentDidMount() {
