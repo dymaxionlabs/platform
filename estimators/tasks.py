@@ -21,9 +21,6 @@ from terra.emails import notify
 from .models import Annotation, Estimator, ImageTile, TrainingJob
 
 
-BACKBONE_WEIGHTS_PATH = 'gs://dym-estimators/_assets/resnet50_coco_best_v2.1.0.h5'
-
-
 @job("default", timeout=3600)
 def generate_image_tiles(file_pk):
     file = File.objects.get(pk=file_pk)
@@ -99,9 +96,6 @@ def start_training_job(training_job_pk):
 
     upload_image_tiles(job)
     notify('[{}] Image tiles generated'.format(training_job_pk))
-
-    upload_backbone_weights(job)
-    notify('[{}] Backbone weights uploaded'.format(training_job_pk))
 
 
 def train_val_split_rows(rows, val_size=0.2):
@@ -187,8 +181,3 @@ def upload_image_tiles(job):
     run_subprocess('gsutil -m cp -r {src} {dst}'.format(
         src=' '.join(image_tile_urls), dst=url))
 
-
-def upload_backbone_weights(job):
-    url = os.path.join(job.artifacts_url)
-    run_subprocess('gsutil -m cp -r {src} {dst}'.format(
-        src=BACKBONE_WEIGHTS_PATH, dst=url))
