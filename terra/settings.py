@@ -276,5 +276,5 @@ GOOGLE_CREDENTIALS = os.getenv(
 GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
 
 #PUB/SUB GCLOUD
-PUBSUB_PROJECT_ID = "snappy-mission-248317"
-SUBSCRIPTION_NAME = "sub_one"
+PUBSUB_PROJECT_ID = "dyma-staging"
+SUBSCRIPTION_NAME = "dyma-staging-terra-sub"
