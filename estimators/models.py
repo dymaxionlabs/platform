@@ -132,3 +132,10 @@ class PredictionJob(models.Model):
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     metadata = JSONField(null=True, blank=True)
     finished = models.BooleanField(default=False)
+
+    @property
+    def artifacts_url(self):
+        return 'gs://{bucket}/{estimator_uuid}/jobs/predict/{pk}/artifacts/'.format(
+            bucket=settings.ESTIMATORS_BUCKET,
+            estimator_uuid=self.estimator.uuid,
+            pk=self.pk)
