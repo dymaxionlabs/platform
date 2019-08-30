@@ -18,7 +18,7 @@ from skimage.io import imsave
 from projects.models import File
 from terra.emails import notify
 
-from .models import Annotation, Estimator, ImageTile, TrainingJob
+from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
 
 
 @job("default", timeout=3600)
@@ -97,6 +97,7 @@ def start_training_job(training_job_pk):
     upload_image_tiles(job)
     notify('[{}] Image tiles generated'.format(training_job_pk))
 
+    run_cloudml(job,'./submit_job.sh')
 
 def train_val_split_rows(rows, val_size=0.2):
     # FIXME Consider splitting in a stratified manner...
@@ -166,7 +167,6 @@ def run_subprocess(cmd):
     print(cmd)
     subprocess.run(cmd, shell=True, check=True)
 
-
 def upload_image_tiles(job):
     annotations = Annotation.objects.filter(estimator=job.estimator).all()
     image_tiles = [a.image_tile for a in annotations]
@@ -181,3 +181,56 @@ def upload_image_tiles(job):
     run_subprocess('gsutil -m cp -r {src} {dst}'.format(
         src=' '.join(image_tile_urls), dst=url))
 
+def upload_prediction_image_tiles(job):
+    for file in job.image_files.all():
+        image_tiles = ImageTile.objects.filter(file=file)
+
+        image_tile_urls = [
+            'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
+                                        name=t.tile_file.name)
+            for t in image_tiles
+        ]
+
+        url = os.path.join(
+            job.artifacts_url,
+            'img/{file_name}/'.format(file_name=file.name)
+        )
+        run_subprocess('gsutil -m cp -r {src} {dst}'.format(
+            src=' '.join(image_tile_urls), dst=url))
+
+def run_cloudml(job, script_name):
+    p = subprocess.Popen(
+        [script_name, 
+            str(job.estimator.uuid), 
+            str(job.pk), 
+            'gs://{}'.format(settings.ESTIMATORS_BUCKET),
+            settings.CLOUDML_REGION
+        ], 
+        cwd=settings.CLOUDML_DIRECTORY,
+        shell=True
+    )
+
+
+def prepare_artifacts(job):
+    training_job = TrainingJob.objects.filter(estimator=job.estimator).first()
+    csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
+    run_subprocess('gsutil -m cp {src} {dst}'.format(
+        src=csv_url, dst=job.artifacts_url))
+
+    snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
+    run_subprocess('gsutil -m cp -r {src} {dst}'.format(
+        src=snapshots_path, dst=job.artifacts_url))
+
+
+@job("default")
+def start_prediction_job(prediction_job_pk):
+    notify('[{}] Prediction job started'.format(prediction_job_pk))
+    job = PredictionJob.objects.get(pk=prediction_job_pk)
+
+    prepare_artifacts(job)
+    notify('[{}] Artifacts prepared'.format(prediction_job_pk))
+
+    upload_image_tiles(job)
+    notify('[{}] Image tiles generated'.format(prediction_job_pk))
+
+    run_cloudml(job, './submit_prediction_job.sh')

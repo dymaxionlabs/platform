@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from projects.models import File
-from .models import TrainingJob
+from .models import TrainingJob, PredictionJob
 
 
 @receiver(post_save, sender=File)
@@ -16,3 +16,9 @@ def generate_image_tiles_from_file(sender, instance, created, **kwargs):
 def start_training_job(sender, instance, created, **kwargs):
     if created:
         django_rq.enqueue('estimators.tasks.start_training_job', instance.pk)
+
+
+@receiver(post_save, sender=PredictionJob)
+def start_prediction_job(sender, instance, created, **kwargs):
+    if created:
+        django_rq.enqueue('estimators.tasks.start_prediction_job', instance.pk)
