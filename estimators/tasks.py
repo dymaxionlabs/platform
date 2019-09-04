@@ -185,11 +185,17 @@ def upload_prediction_image_tiles(job):
     for file in job.image_files.all():
         image_tiles = ImageTile.objects.filter(file=file)
 
-        image_tile_urls = [
-            'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
-                                        name=t.tile_file.name)
-            for t in image_tiles
-        ]
+        image_tile_urls = []
+        meta_data = {}
+        for t in image_tiles:
+            image_tile_urls.append('gs://{bucket}/{name}'.format(
+                bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
+            meta_data[os.path.basename(t.tile_file.name)] = {
+                'col_off': t.col_off,
+                'row_off': t.row_off,
+                'width': t.width,
+                'height': t.height,
+            }
 
         url = os.path.join(
             job.artifacts_url,
@@ -197,6 +203,13 @@ def upload_prediction_image_tiles(job):
         )
         run_subprocess('gsutil -m cp -r {src} {dst}'.format(
             src=' '.join(image_tile_urls), dst=url))
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            tmpfile.name = '{}_tiles_meta.json'.format(file.name)
+            with open(tmpfile.name, 'w') as json_file:
+                json.dump(meta_data, json_file, ident=4)
+            run_subprocess('hsutil -m cp -r {src} {dst}'.format(
+                src=tmpfile.name, dsr=url))
 
 def run_cloudml(job, script_name):
     p = subprocess.Popen(
