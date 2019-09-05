@@ -1,4 +1,5 @@
 import json
+import filetype
 import os
 import shutil
 import subprocess
@@ -63,6 +64,18 @@ def upload_directory_to_gs_bucket(src, dst):
             src=src, dst=dst))
 
 
+def save_tiff_metadata(src, file):
+    with rasterio.open(src) as dataset:
+        if dataset.driver == 'GTiff':
+            tiff_data = {
+                'width': dataset.width,
+                'heigth': dataset.height,
+                'transform': dataset.transform
+            }
+            file.metadata = json.dumps(tiff_data, indent=4)
+            file.save()
+
+
 @job
 def test_sleep(foo=1, bar=2):
     n = 60
@@ -87,6 +100,9 @@ def generate_raster_tiles(file_pk):
     with tempfile.NamedTemporaryFile() as tmpfile:
         shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
+
+        if filetype.guess(src).mime == 'image/tiff':
+            save_tiff_metadata(src,file)
 
         area_geom = mapping(get_raster_extent_polygon(src))
 
