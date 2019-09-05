@@ -217,7 +217,7 @@ class AnnotateStep extends React.Component {
     console.log("fetchEstimator");
 
     const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}`),
+      buildApiUrl(`/estimators/${estimatorId}/`),
       {
         headers: {
           Authorization: token,
