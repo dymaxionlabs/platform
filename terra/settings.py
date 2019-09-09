@@ -282,4 +282,3 @@ SUBSCRIPTION_NAME = "dyma-staging-terra-sub"
 #CLOUD ML
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY','.')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
->>>>>>> master
