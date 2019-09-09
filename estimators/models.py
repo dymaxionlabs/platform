@@ -139,3 +139,11 @@ class PredictionJob(models.Model):
             bucket=settings.ESTIMATORS_BUCKET,
             estimator_uuid=self.estimator.uuid,
             pk=self.pk)
+
+
+    @property
+    def predictions_url(self):
+        return 'gs://{bucket}/{estimator_uuid}/jobs/predict/{pk}/predictions/'.format(
+            bucket=settings.ESTIMATORS_BUCKET,
+            estimator_uuid=self.estimator.uuid,
+            pk=self.pk)
