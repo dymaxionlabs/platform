@@ -278,3 +278,8 @@ GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
 #PUB/SUB GCLOUD
 PUBSUB_PROJECT_ID = "dyma-staging"
 SUBSCRIPTION_NAME = "dyma-staging-terra-sub"
+
+#CLOUD ML
+CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY','.')
+CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
+>>>>>>> master

@@ -254,7 +254,8 @@ class FileUploadView(APIView):
         file = File(name=filename, owner=request.user, project=project)
         file.file = request.data['file']
         file.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = FileSerializer(file)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
     def _prepare_filename(self, filename):
         if self._does_already_exists(filename):
