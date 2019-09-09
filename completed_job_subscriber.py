@@ -2,7 +2,6 @@ import django
 import json
 import os
 import time
-#from google.cloud import pubsub_v1
 import subprocess
 import tempfile
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
@@ -10,6 +9,7 @@ django.setup()
 from django.conf import settings
 from django.core.files import File as DjangoFile
 from estimators.models import TrainingJob, PredictionJob
+from google.cloud import pubsub_v1
 from projects.models import File
 from terra.emails import TrainingCompletedEmail
 
