@@ -70,7 +70,8 @@ def save_tiff_metadata(src, file):
             tiff_data = {
                 'width': dataset.width,
                 'heigth': dataset.height,
-                'transform': dataset.transform
+                'transform': dataset.transform,
+                'crs': dataset.crs
             }
             file.metadata = json.dumps(tiff_data, indent=4)
             file.save()
