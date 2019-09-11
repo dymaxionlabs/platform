@@ -126,8 +126,8 @@ class PredictionJob(models.Model):
     estimator = models.ForeignKey(Estimator,
                                     on_delete=models.CASCADE,
                                     verbose_name=_('estimator'))
-    image_files = models.ManyToManyField(File,
-                                        blank=True)
+    image_files = models.ManyToManyField(File, blank=True)
+    result_files = models.ManyToManyField(File, blank=True, related_name='prediction_job')
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     metadata = JSONField(null=True, blank=True)

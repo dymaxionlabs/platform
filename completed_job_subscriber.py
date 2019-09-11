@@ -11,7 +11,7 @@ from django.core.files import File as DjangoFile
 from estimators.models import TrainingJob, PredictionJob
 from google.cloud import pubsub_v1
 from projects.models import File
-from terra.emails import TrainingCompletedEmail
+#from terra.emails import TrainingCompletedEmail
 
 
 def run_subprocess(cmd):
@@ -55,6 +55,7 @@ def predictionJobFinished(job_id):
                 )
                 csv_file.file = django_file
                 csv_file.save()
+                job.result_files.add(csv_file)
 
             geojson_prediction = "{}.json".format(image.name)
             if geojson_prediction in files:
@@ -66,6 +67,7 @@ def predictionJobFinished(job_id):
                 )
                 geojson_file.file = django_file
                 geojson_file.save()
+                job.result_files.add(geojson_file)
 
 
 def subscriber():
