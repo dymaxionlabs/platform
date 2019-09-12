@@ -146,3 +146,58 @@ def create_raster_layer(file_pk, tiles_dir, area_geom):
 #    from projects import tasks
 #    file = File.objects.last()
 #    tasks.generate_raster_tiles.delay(file.pk)
+
+
+@job("default", timeout=3600)
+def generate_vector_tiles(file_pk):
+    file = File.objects.get(pk=file_pk)
+
+    with tempfile.NamedTemporaryFile() as tmpfile:
+        shutil.copyfileobj(file.file, tmpfile)
+        src = tmpfile.name
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Convert to standar prediction
+            output_file = "{dir}{sep}output.json".format(dir=tmpdir, sep=os.path.sep)
+            run_subprocess('ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'.format(
+                            output_file=output_file, input_file=src))
+            
+            # Generate vector tiles
+            tiles_output_dir = "{}".format(os.path.sep.join([tmpdir,'tiles',file.name]))
+            os.makedirs(tiles_output_dir)
+            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='foo' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+                output_dir=tiles_output_dir, input_file=output_file)
+            run_subprocess(cmd)
+
+            
+            related_file_name = ".".join(file.name.split(".")[:-1])
+            print(related_file_name)
+            related_file = File.objects.get(owner=file.owner, project=file.project, name=related_file_name)
+            with tempfile.NamedTemporaryFile() as related_tmpfile:
+                shutil.copyfileobj(related_file.file, related_tmpfile)
+                related_src = related_tmpfile.name
+                #TODO: Verify if we can obtain the area_geom from geojson
+                area_geom = mapping(get_raster_extent_polygon(related_src))
+            
+            #django_rq.enqueue(create_vector_layer, file_pk, tiles_output_dir, area_geom)
+
+            #CREATE VECTOR LAYER
+            area_geos_geometry = GEOSGeometry(json.dumps(area_geom))
+
+            try:
+                layer = Layer.objects.get(name=file.name, project=file.project)
+            except Layer.DoesNotExist:
+                layer = Layer(name=file.name, project=file.project)
+            layer.layer_type = Layer.VECTOR
+            layer.area_geom = area_geos_geometry
+            layer.file = file
+            layer.save()
+
+            # Upload tiles to corresponding Tiles bucket
+            #upload_directory_to_gs_bucket(tiles_dir, layer.tiles_bucket_url())
+            dst = layer.tiles_bucket_url()
+            #TODO: Subfolders does not save well
+            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/* {dst}'.format(
+                src=tiles_output_dir, dst=dst))
+            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read -r {src}/metadata.json {dst}'.format(
+                src=tiles_output_dir, dst=dst))

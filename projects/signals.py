@@ -30,3 +30,5 @@ def generate_raster_tiles_from_file(sender, instance, created, **kwargs):
     if created:
         if ext in ['.jpg','.tif','.jpeg','.png']:
             django_rq.enqueue('projects.tasks.generate_raster_tiles', instance.pk)
+        if ext in ['.json', '.geojson']:
+            django_rq.enqueue('projects.tasks.generate_vector_tiles', instance.pk)
