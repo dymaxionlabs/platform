@@ -253,10 +253,19 @@ def generate_vector_tiles(file_pk):
             # Generate vector tiles
             tiles_output_dir = "{}".format(os.path.sep.join([tmpdir,'tiles',file.name]))
             os.makedirs(tiles_output_dir)
-            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='foo' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(output_dir=tiles_output_dir, input_file=output_file)
+            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='foo' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+                output_dir=tiles_output_dir, input_file=output_file)
             run_subprocess(cmd)
 
             # Upload to corresponding bucket folder
+            """
+            gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r $LAYER_TILES_DIR/* $GS_URL
+            gsutil -m -h "Content-Type: application/json" cp -a public-read -r $LAYER_TILES_DIR/metadata.json $GS_URL
+            """
             dst = 'gs://{bucket}/user_{user_id}/tiles/{name}'.format(
                 bucket=settings.GS_BUCKET_NAME, user_id=file.owner.pk, name=file.name)
-            run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=tiles_output_dir, dst=dst))
+            #run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=tiles_output_dir, dst=dst))
+            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src} {dst}'.format(
+                src=tiles_output_dir, dst=dst))
+            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read -r {src}/metadata.json {dst}'.format(
+                src=tiles_output_dir, dst=dst))
