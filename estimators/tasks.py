@@ -234,3 +234,29 @@ def start_prediction_job(prediction_job_pk):
     notify('[{}] Image tiles generated'.format(prediction_job_pk))
 
     run_cloudml(job, './submit_prediction_job.sh')
+
+
+@job("default", timeout=3600)
+def generate_vector_tiles(file_pk):
+    file = File.objects.get(pk=file_pk)
+
+    with tempfile.NamedTemporaryFile() as tmpfile:
+        shutil.copyfileobj(file.file, tmpfile)
+        src = tmpfile.name
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Convert to standar prediction
+            output_file = "{dir}{sep}output.json".format(dir=tmpdir, sep=os.path.sep)
+            run_subprocess('ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'.format(
+                            output_file=output_file, input_file=src))
+            
+            # Generate vector tiles
+            tiles_output_dir = "{}".format(os.path.sep.join([tmpdir,'tiles',file.name]))
+            os.makedirs(tiles_output_dir)
+            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='foo' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(output_dir=tiles_output_dir, input_file=output_file)
+            run_subprocess(cmd)
+
+            # Upload to corresponding bucket folder
+            dst = 'gs://{bucket}/user_{user_id}/tiles/{name}'.format(
+                bucket=settings.GS_BUCKET_NAME, user_id=file.owner.pk, name=file.name)
+            run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=tiles_output_dir, dst=dst))
