@@ -194,10 +194,9 @@ def generate_vector_tiles(file_pk):
             layer.save()
 
             # Upload tiles to corresponding Tiles bucket
-            #upload_directory_to_gs_bucket(tiles_dir, layer.tiles_bucket_url())
             dst = layer.tiles_bucket_url()
-            #TODO: Subfolders does not save well
-            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/* {dst}'.format(
+            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'.format(
                 src=tiles_output_dir, dst=dst))
-            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read -r {src}/metadata.json {dst}'.format(
+
+            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'.format(
                 src=tiles_output_dir, dst=dst))
