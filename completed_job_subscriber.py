@@ -47,26 +47,26 @@ def predictionJobFinished(job_id):
         for image in job.image_files.all():
             csv_prediction = "{}.csv".format(image.name)
             if csv_prediction in files:
-                django_file = DjangoFile(open(os.path.join(tmpdirname, csv_prediction), "rb"))        
                 csv_file = File.objects.create(
                     owner=image.owner,
                     project=image.project,
                     name=csv_prediction
                 )
-                csv_file.file = django_file
-                csv_file.save()
+                with open(os.path.join(tmpdirname, csv_prediction), "rb") as f:
+                    csv_file.file = DjangoFile(f, name=csv_prediction)
+                    csv_file.save()
                 job.result_files.add(csv_file)
 
             geojson_prediction = "{}.json".format(image.name)
             if geojson_prediction in files:
-                django_file = DjangoFile(open(os.path.join(tmpdirname, geojson_prediction), "rb"))
                 geojson_file = File.objects.create(
                     owner=image.owner,
                     project=image.project,
                     name=geojson_prediction,
                 )
-                geojson_file.file = django_file
-                geojson_file.save()
+                with open(os.path.join(tmpdirname, geojson_prediction), "rb") as f:
+                    geojson_file.file = DjangoFile(f, name=geojson_prediction)
+                    geojson_file.save()
                 job.result_files.add(geojson_file)
 
 
@@ -91,4 +91,4 @@ def subscriber():
 
 
 if __name__ == '__main__':
-    subscriber()
+    predictionJobFinished(1)
