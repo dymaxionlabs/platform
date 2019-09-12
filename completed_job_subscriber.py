@@ -35,6 +35,19 @@ def trainingJobFinished(job_id):
     pass
 
 
+def createFileIfExists(name, image, files, job, tmpdirname):
+    if name in files:
+        resut_file = File.objects.create(
+            owner=image.owner,
+            project=image.project,
+            name=name
+        )
+        with open(os.path.join(tmpdirname, name), "rb") as f:
+            resut_file.file = DjangoFile(f, name=name)
+            resut_file.save()
+        job.result_files.add(resut_file)
+
+
 def predictionJobFinished(job_id):
     print("Prediction job finished {}".format(job_id))
     job = PredictionJob.objects.get(pk=job_id)
@@ -45,29 +58,10 @@ def predictionJobFinished(job_id):
         files = os.listdir(tmpdirname)
 
         for image in job.image_files.all():
-            csv_prediction = "{}.csv".format(image.name)
-            if csv_prediction in files:
-                csv_file = File.objects.create(
-                    owner=image.owner,
-                    project=image.project,
-                    name=csv_prediction
-                )
-                with open(os.path.join(tmpdirname, csv_prediction), "rb") as f:
-                    csv_file.file = DjangoFile(f, name=csv_prediction)
-                    csv_file.save()
-                job.result_files.add(csv_file)
-
-            geojson_prediction = "{}.json".format(image.name)
-            if geojson_prediction in files:
-                geojson_file = File.objects.create(
-                    owner=image.owner,
-                    project=image.project,
-                    name=geojson_prediction,
-                )
-                with open(os.path.join(tmpdirname, geojson_prediction), "rb") as f:
-                    geojson_file.file = DjangoFile(f, name=geojson_prediction)
-                    geojson_file.save()
-                job.result_files.add(geojson_file)
+            createFileIfExists("{}.csv".format(image.name), image, files, job, tmpdirname)
+            createFileIfExists("{}.json".format(image.name), image, files, job, tmpdirname)
+    
+    #TODO: Send emails
 
 
 def subscriber():
