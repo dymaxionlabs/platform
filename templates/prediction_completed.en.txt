@@ -1,0 +1,7 @@
+Hi,
+
+The prediction of your images with your custom model {{name}} for {{num_classes}} classes has finished.
+Enter to the following link {{link}} to view the results.
+
+Best,
+Federico & the Dymaxion Labs team.

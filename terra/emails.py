@@ -181,6 +181,9 @@ class TrainingCompletedEmail(Email):
     def __init__(self, estimator, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.estimator = estimator
+        self.link = '{web_client_url}/models/new/od/select?id={uuid}'.format(
+            web_client_url = settings.WEBCLIENT_URL, uuid = estimator.uuid
+        )
 
     @property
     def subject(self):
@@ -193,6 +196,7 @@ class TrainingCompletedEmail(Email):
             **super().template_params,
             'name': self.estimator_name,
             'num_classes': self.num_classes,
+            'link': self.link,
         }
 
     @property
@@ -201,6 +205,50 @@ class TrainingCompletedEmail(Email):
             **super().mc_variables,
             '*|NAME|*': self.estimator_name,
             '*|NUM_CLASSES|*': self.num_classes,
+            '*|LINK|*': self.link,
+        }
+
+    @property
+    def estimator_name(self):
+        return self.estimator.name
+
+    @property
+    def num_classes(self):
+        return len(self.estimator.classes)
+
+
+class PredictionCompletedEmail(Email):
+    template_name = 'prediction_completed'
+
+    def __init__(self, estimator, map, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.estimator = estimator
+        self.link = '{web_client_url}/maps/{uuid}'.format(
+            web_client_url = settings.WEBCLIENT_URL,
+            uuid = str(map.uuid)
+        )
+
+    @property
+    def subject(self):
+        with translation.override(self.language_code):
+            return _('prediction of your model completed')
+
+    @property
+    def template_params(self):
+        return {
+            **super().template_params,
+            'name': self.estimator_name,
+            'num_classes': self.num_classes,
+            'link': self.link,
+        }
+
+    @property
+    def mc_variables(self):
+        return {
+            **super().mc_variables,
+            '*|NAME|*': self.estimator_name,
+            '*|NUM_CLASSES|*': self.num_classes,
+            '*|LINK|*': self.link,
         }
 
     @property

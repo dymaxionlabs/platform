@@ -20,9 +20,17 @@ def run_subprocess(cmd):
     subprocess.run(cmd, shell=True, check=True)
 
 
-def sendJobCompletedEmail(job, email):
+def sendPredictionJobCompletedEmail(job, map):
     users = job.estimator.project.owners.all()
-    email = email(estimator=job.estimator,
+    email = PredictionCompletedEmail(estimator=job.estimator,
+                    map=map,
+                    recipients=[user.email for user in users],
+                    language_code='es')
+    email.send_mail()
+
+def sendTrainingJobCompletedEmail(job):
+    users = job.estimator.project.owners.all()
+    email = TrainingCompletedEmail(estimator=job.estimator,
                     recipients=[user.email for user in users],
                     language_code='es')
     email.send_mail()
@@ -33,7 +41,7 @@ def trainingJobFinished(job_id):
     training_job.save()
     print("Training job finished {}".format(job_id))
     print("TODO: Send emails")
-    #sendJobCompletedEmail(training_job, TrainingCompletedEmail)
+    #sendTrainingJobCompletedEmail(training_job)
     pass
 
 
@@ -90,7 +98,7 @@ def predictionJobFinished(job_id):
                 order += 1
                 job.result_files.add(createFile(f, img, results_path, meta))
 
-    #sendJobCompletedEmail(training_job, PredictionCompletedEmail)
+    #sendPredictionJobCompletedEmail(training_job, PredictionCompletedEmail)
 
 
 def subscriber():
