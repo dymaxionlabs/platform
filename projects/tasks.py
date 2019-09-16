@@ -16,7 +16,7 @@ from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
 
-from .models import File, Layer
+from .models import File, Layer, Map, MapLayer
 
 GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
                                'gdal2tilesp.py')
@@ -165,14 +165,13 @@ def generate_vector_tiles(file_pk):
             # Generate vector tiles
             tiles_output_dir = "{}".format(os.path.sep.join([tmpdir,'tiles',file.name]))
             os.makedirs(tiles_output_dir)
-            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='foo' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
-                output_dir=tiles_output_dir, input_file=output_file)
+            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+                class_name= file.metadata['class'], output_dir=tiles_output_dir, input_file=output_file)
             run_subprocess(cmd)
 
             
-            related_file_name = ".".join(file.name.split(".")[:-1])
-            print(related_file_name)
-            related_file = File.objects.get(owner=file.owner, project=file.project, name=related_file_name)
+            related_file_pk = int(file.metadata['source_img']['pk'])
+            related_file = File.objects.get(pk=related_file_pk)
             with tempfile.NamedTemporaryFile() as related_tmpfile:
                 shutil.copyfileobj(related_file.file, related_tmpfile)
                 related_src = related_tmpfile.name
@@ -191,7 +190,26 @@ def generate_vector_tiles(file_pk):
             layer.layer_type = Layer.VECTOR
             layer.area_geom = area_geos_geometry
             layer.file = file
+            layer.extra_fields = {
+                "styles": {
+                    file.metadata['class']: {
+                        "fill": True,
+                        "color": file.metadata['map']['layer_order'] % len(settings.LAYERS_COLOR),
+                        "stroke": True,
+                        "weight": 0.5,
+                        "fillColor": file.metadata['map']['layer_order'] % len(settings.LAYERS_FILL_COLOR),
+                        "fillOpacity": 0.5
+                    }
+                }
+            }
             layer.save()
+
+            related_map = Map.objects.get(uuid=file.metadata['map']['uuid'])
+            MapLayer.objects.create(
+                map = related_map,
+                layer = layer,
+                order = file.metadata['map']['layer_order']
+            )
 
             # Upload tiles to corresponding Tiles bucket
             dst = layer.tiles_bucket_url()
@@ -200,3 +218,7 @@ def generate_vector_tiles(file_pk):
 
             run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'.format(
                 src=tiles_output_dir, dst=dst))
+
+            
+
+            

@@ -282,3 +282,6 @@ SUBSCRIPTION_NAME = "dyma-staging-terra-sub"
 #CLOUD ML
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY','.')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
+
+LAYERS_FILL_COLOR = ['#f0251c','#f5f518','#4af31c','#1fe7c5','#1f54d6','#9319bd','#9c8686']
+LAYERS_COLOR = ['#951a15','#b9b916','#35a517','#1e937f','#133076','#5f1578','#716a6a']

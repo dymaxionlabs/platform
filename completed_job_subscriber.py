@@ -10,8 +10,9 @@ from django.conf import settings
 from django.core.files import File as DjangoFile
 from estimators.models import TrainingJob, PredictionJob
 from google.cloud import pubsub_v1
-from projects.models import File
+from projects.models import File, Map, Layer, MapLayer
 #from terra.emails import TrainingCompletedEmail
+#from terra.emails import PredictionCompletedEmail
 
 
 def run_subprocess(cmd):
@@ -19,33 +20,37 @@ def run_subprocess(cmd):
     subprocess.run(cmd, shell=True, check=True)
 
 
+def sendJobCompletedEmail(job, email):
+    users = job.estimator.project.owners.all()
+    email = email(estimator=job.estimator,
+                    recipients=[user.email for user in users],
+                    language_code='es')
+    email.send_mail()
+
 def trainingJobFinished(job_id):
     training_job = TrainingJob.objects.get(pk=job_id)
     training_job.finished = True
     training_job.save()
     print("Training job finished {}".format(job_id))
     print("TODO: Send emails")
-    """
-    users = training_job.estimator.project.owners.all()
-    email = TrainingCompletedEmail(estimator=training_job.estimator,
-                                recipients=[user.email for user in users],
-                                language_code='es')
-    email.send_mail()
-    """
+    #sendJobCompletedEmail(training_job, TrainingCompletedEmail)
     pass
 
 
-def createFileIfExists(name, image, files, job, tmpdirname):
-    if name in files:
-        resut_file = File.objects.create(
-            owner=image.owner,
-            project=image.project,
-            name=name
-        )
-        with open(os.path.join(tmpdirname, name), "rb") as f:
-            resut_file.file = DjangoFile(f, name=name)
-            resut_file.save()
-        job.result_files.add(resut_file)
+def createFile(name, image, tmpdirname, metadata):
+    ext = name.split(".")[-1]
+    if ext == 'json':
+        metadata['class'] = name.split("_")[0]
+    resut_file = File.objects.create(
+        owner=image.owner,
+        project=image.project,
+        name=name,
+        metadata=metadata
+    )
+    with open(os.path.join(tmpdirname, name), "rb") as f:
+        resut_file.file = DjangoFile(f, name=name)
+        resut_file.save()
+    return resut_file
 
 
 def predictionJobFinished(job_id):
@@ -55,13 +60,37 @@ def predictionJobFinished(job_id):
     with tempfile.TemporaryDirectory() as tmpdirname:
         run_subprocess('gsutil -m cp -r {predictions_url}* {dst}'.format(
             predictions_url=job.predictions_url, dst=tmpdirname))
-        files = os.listdir(tmpdirname)
 
-        for image in job.image_files.all():
-            createFileIfExists("{}.csv".format(image.name), image, files, job, tmpdirname)
-            createFileIfExists("{}.json".format(image.name), image, files, job, tmpdirname)
-    
-    #TODO: Send emails
+        for img in job.image_files.all():
+            result_map = Map.objects.create(
+                project = img.project,
+                name = img.name,
+            )
+            img_layer = Layer.objects.first(file=img)
+            if img_layer is not None:
+                MapLayer.objects.create(
+                    map = result_map,
+                    layer = img_layer,
+                    order = 1
+                )
+            meta = { 
+                'source_img': {
+                    'pk': img.pk,
+                    'name': img.name
+                },
+                'map': {
+                    'uuid': str(result_map.uuid)
+                }
+            }
+            results_path = os.path.sep.join([tmpdirname,img.name])
+            files = os.listdir(results_path)
+            order = 2
+            for f in files:
+                meta['map']['layer_order'] = order
+                order += 1
+                job.result_files.add(createFile(f, img, results_path, meta))
+
+    #sendJobCompletedEmail(training_job, PredictionCompletedEmail)
 
 
 def subscriber():
