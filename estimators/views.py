@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.models import File
 from projects.permissions import HasAccessToRelatedProjectPermission
-from terra.emails import TrainingStartedEmail
+from terra.emails import TrainingStartedEmail, PredictionStartedEmail
 
 from .models import (Annotation, Estimator, ImageTile, 
                     TrainingJob, PredictionJob)
@@ -162,13 +162,11 @@ class StartPredictionJobView(APIView):
 
             # Send email
             user = request.user
-            print("Sending mails - Predicting Job Started...")
-            """
-            email = TrainingStartedEmail(estimator=estimator,
+            email = PredictionStartedEmail(estimator=estimator,
                                             recipients=[user.email],
                                             language_code='es')
             email.send_mail()
-            """
+
 
         serializer = PredictionJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
