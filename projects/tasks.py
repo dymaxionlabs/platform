@@ -192,10 +192,7 @@ def generate_vector_tiles(file_pk):
             with tempfile.NamedTemporaryFile() as related_tmpfile:
                 shutil.copyfileobj(related_file.file, related_tmpfile)
                 related_src = related_tmpfile.name
-                #TODO: Verify if we can obtain the area_geom from geojson
                 area_geom = mapping(get_raster_extent_polygon(related_src))
-            
-            #django_rq.enqueue(create_vector_layer, file_pk, tiles_output_dir, area_geom)
 
             #CREATE VECTOR LAYER
             area_geos_geometry = GEOSGeometry(json.dumps(area_geom))
