@@ -71,7 +71,7 @@ def predictionJobFinished(job_id):
                 project = img.project,
                 name = img.name,
             )
-            img_layer = Layer.objects.first(file=img)
+            img_layer = Layer.objects.filter(file=img).first()
             if img_layer is not None:
                 MapLayer.objects.create(
                     map = result_map,
@@ -95,7 +95,7 @@ def predictionJobFinished(job_id):
                 order += 1
                 job.result_files.add(createFile(f, img, results_path, meta))
 
-    sendPredictionJobCompletedEmail(training_job, PredictionCompletedEmail)
+    sendPredictionJobCompletedEmail(job, result_map)
 
 
 def subscriber():
@@ -119,4 +119,4 @@ def subscriber():
 
 
 if __name__ == '__main__':
-    subscriber()
+    predictionJobFinished(1)
