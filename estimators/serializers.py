@@ -79,6 +79,11 @@ class PredictionJobSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='name'
     )
+    result_files = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name'
+    )
 
     class Meta:
         model = PredictionJob
