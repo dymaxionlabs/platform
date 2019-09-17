@@ -175,18 +175,17 @@ def generate_vector_tiles(file_pk):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Convert to standar prediction
-            output_file = "{dir}{sep}output.json".format(dir=tmpdir, sep=os.path.sep)
+            output_file = os.path.sep.join([tmpdir,'output.json'])
             run_subprocess('ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'.format(
                             output_file=output_file, input_file=src))
             
             # Generate vector tiles
-            tiles_output_dir = "{}".format(os.path.sep.join([tmpdir,'tiles',file.name]))
+            tiles_output_dir = os.path.sep.join([tmpdir,'tiles',file.name])
             os.makedirs(tiles_output_dir)
             cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
                 class_name= file.metadata['class'], output_dir=tiles_output_dir, input_file=output_file)
             run_subprocess(cmd)
 
-            
             related_file_pk = int(file.metadata['source_img']['pk'])
             related_file = File.objects.get(pk=related_file_pk)
             with tempfile.NamedTemporaryFile() as related_tmpfile:
@@ -204,18 +203,8 @@ def generate_vector_tiles(file_pk):
             layer.layer_type = Layer.VECTOR
             layer.area_geom = area_geos_geometry
             layer.file = file
-            layer.extra_fields = {
-                "styles": {
-                    file.metadata['class']: {
-                        "fill": True,
-                        "color": file.metadata['map']['layer_order'] % len(settings.LAYERS_COLOR),
-                        "stroke": True,
-                        "weight": 0.5,
-                        "fillColor": file.metadata['map']['layer_order'] % len(settings.LAYERS_FILL_COLOR),
-                        "fillOpacity": 0.5
-                    }
-                }
-            }
+            layer.extra_fields = Layer.styleByOrder(
+                file.metadata['map']['layer_order'], file.metadata['class'])
             layer.save()
 
             related_map = Map.objects.get(uuid=file.metadata['map']['uuid'])

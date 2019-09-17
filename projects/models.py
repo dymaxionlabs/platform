@@ -171,6 +171,20 @@ class Layer(models.Model):
     def extent(self):
         """ Get area extent """
         return self.area_geom and self.area_geom.extent
+    
+    @classmethod
+    def styleByOrder(cls, order, class_name):
+        style = { "styles": { 
+                    class_name: {
+                        "fill": True,
+                        "color": order % len(settings.LAYERS_COLOR),
+                        "stroke": True,
+                        "weight": 0.5,
+                        "fillColor": order % len(settings.LAYERS_FILL_COLOR),
+                        "fillOpacity": 0.5
+                    }
+                }}
+        return style
 
 
 class Map(models.Model):
