@@ -11,8 +11,8 @@ from django.core.files import File as DjangoFile
 from estimators.models import TrainingJob, PredictionJob
 from google.cloud import pubsub_v1
 from projects.models import File, Map, Layer, MapLayer
-#from terra.emails import TrainingCompletedEmail
-#from terra.emails import PredictionCompletedEmail
+from terra.emails import TrainingCompletedEmail
+from terra.emails import PredictionCompletedEmail
 
 
 def run_subprocess(cmd):
@@ -39,10 +39,7 @@ def trainingJobFinished(job_id):
     training_job = TrainingJob.objects.get(pk=job_id)
     training_job.finished = True
     training_job.save()
-    print("Training job finished {}".format(job_id))
-    print("TODO: Send emails")
-    #sendTrainingJobCompletedEmail(training_job)
-    pass
+    sendTrainingJobCompletedEmail(training_job)
 
 
 def createFile(name, image, tmpdirname, metadata):
@@ -98,7 +95,7 @@ def predictionJobFinished(job_id):
                 order += 1
                 job.result_files.add(createFile(f, img, results_path, meta))
 
-    #sendPredictionJobCompletedEmail(training_job, PredictionCompletedEmail)
+    sendPredictionJobCompletedEmail(training_job, PredictionCompletedEmail)
 
 
 def subscriber():
