@@ -119,4 +119,4 @@ def subscriber():
 
 
 if __name__ == '__main__':
-    predictionJobFinished(1)
+    subscriber()
