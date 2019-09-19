@@ -1,0 +1,8 @@
+Hola,
+
+La predicción de sus imagenes con su modelo a medida {{name}} para detectar {{num_classes}} clases ha comenzado.
+
+Te enviaremos un correo cuando los resultados estén listos.
+
+Saludos,
+Federico y el equipo de Dymaxion Labs.

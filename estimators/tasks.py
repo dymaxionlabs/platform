@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import random
 import shutil
@@ -185,18 +186,36 @@ def upload_prediction_image_tiles(job):
     for file in job.image_files.all():
         image_tiles = ImageTile.objects.filter(file=file)
 
-        image_tile_urls = [
-            'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
-                                        name=t.tile_file.name)
-            for t in image_tiles
-        ]
-
+        image_tile_urls = []
+        meta_data = {}
+        if file.metadata:
+            meta_data['tiff_data'] = json.loads(file.metadata)
+        for t in image_tiles:
+            image_tile_urls.append('gs://{bucket}/{name}'.format(
+                bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
+            meta_data[os.path.basename(t.tile_file.name)] = {
+                'col_off': t.col_off,
+                'row_off': t.row_off,
+                'width': t.width,
+                'height': t.height,
+            }
+        
         url = os.path.join(
             job.artifacts_url,
             'img/{file_name}/'.format(file_name=file.name)
         )
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            tmpfile.name = '{}_tiles_meta.json'.format(file.name)
+            with open(tmpfile.name, 'w') as json_file:
+                json.dump(meta_data, json_file, indent=4)
+            run_subprocess('gsutil -m cp -r {src} {dst}'.format(
+                src=tmpfile.name, dst=url))
+
         run_subprocess('gsutil -m cp -r {src} {dst}'.format(
             src=' '.join(image_tile_urls), dst=url))
+
+
 
 def run_cloudml(job, script_name):
     p = subprocess.Popen(
@@ -230,7 +249,8 @@ def start_prediction_job(prediction_job_pk):
     prepare_artifacts(job)
     notify('[{}] Artifacts prepared'.format(prediction_job_pk))
 
-    upload_image_tiles(job)
+    upload_prediction_image_tiles(job)
     notify('[{}] Image tiles generated'.format(prediction_job_pk))
 
     run_cloudml(job, './submit_prediction_job.sh')
+

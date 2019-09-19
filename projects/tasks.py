@@ -1,4 +1,5 @@
 import json
+import filetype
 import os
 import shutil
 import subprocess
@@ -16,7 +17,7 @@ from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
 
-from .models import File, Layer
+from .models import File, Layer, Map, MapLayer
 
 GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
                                'gdal2tilesp.py')
@@ -63,6 +64,19 @@ def upload_directory_to_gs_bucket(src, dst):
             src=src, dst=dst))
 
 
+def save_tiff_metadata(src, file):
+    with rasterio.open(src) as dataset:
+        if dataset.driver == 'GTiff':
+            tiff_data = {
+                'width': dataset.width,
+                'heigth': dataset.height,
+                'transform': dataset.transform,
+                'crs': dataset.crs
+            }
+            file.metadata = json.dumps(tiff_data, indent=4)
+            file.save()
+
+
 @job
 def test_sleep(foo=1, bar=2):
     n = 60
@@ -87,6 +101,9 @@ def generate_raster_tiles(file_pk):
     with tempfile.NamedTemporaryFile() as tmpfile:
         shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
+
+        if filetype.guess(src).mime == 'image/tiff':
+            save_tiff_metadata(src,file)
 
         area_geom = mapping(get_raster_extent_polygon(src))
 
@@ -146,3 +163,65 @@ def create_raster_layer(file_pk, tiles_dir, area_geom):
 #    from projects import tasks
 #    file = File.objects.last()
 #    tasks.generate_raster_tiles.delay(file.pk)
+
+
+@job("default", timeout=3600)
+def generate_vector_tiles(file_pk):
+    file = File.objects.get(pk=file_pk)
+
+    with tempfile.NamedTemporaryFile() as tmpfile:
+        shutil.copyfileobj(file.file, tmpfile)
+        src = tmpfile.name
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Convert to standar prediction
+            output_file = os.path.sep.join([tmpdir,'output.json'])
+            run_subprocess('ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'.format(
+                            output_file=output_file, input_file=src))
+            
+            # Generate vector tiles
+            tiles_output_dir = os.path.sep.join([tmpdir,'tiles',file.name])
+            os.makedirs(tiles_output_dir)
+            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+                class_name= file.metadata['class'], output_dir=tiles_output_dir, input_file=output_file)
+            run_subprocess(cmd)
+
+            related_file_pk = int(file.metadata['source_img']['pk'])
+            related_file = File.objects.get(pk=related_file_pk)
+            with tempfile.NamedTemporaryFile() as related_tmpfile:
+                shutil.copyfileobj(related_file.file, related_tmpfile)
+                related_src = related_tmpfile.name
+                area_geom = mapping(get_raster_extent_polygon(related_src))
+
+            #CREATE VECTOR LAYER
+            area_geos_geometry = GEOSGeometry(json.dumps(area_geom))
+
+            try:
+                layer = Layer.objects.get(name=file.name, project=file.project)
+            except Layer.DoesNotExist:
+                layer = Layer(name=file.name, project=file.project)
+            layer.layer_type = Layer.VECTOR
+            layer.area_geom = area_geos_geometry
+            layer.file = file
+            layer.extra_fields = Layer.styleByOrder(
+                file.metadata['map']['layer_order'], file.metadata['class'])
+            layer.save()
+
+            related_map = Map.objects.get(uuid=file.metadata['map']['uuid'])
+            MapLayer.objects.create(
+                map = related_map,
+                layer = layer,
+                order = file.metadata['map']['layer_order']
+            )
+
+            # Upload tiles to corresponding Tiles bucket
+            dst = layer.tiles_bucket_url()
+            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'.format(
+                src=tiles_output_dir, dst=dst))
+
+            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'.format(
+                src=tiles_output_dir, dst=dst))
+
+            
+
+            
