@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
 import django
 import json
 import os
 import time
 import subprocess
 import tempfile
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
 django.setup()
+
 from django.conf import settings
 from django.core.files import File as DjangoFile
 from estimators.models import TrainingJob, PredictionJob
@@ -23,17 +26,19 @@ def run_subprocess(cmd):
 def sendPredictionJobCompletedEmail(job, map):
     users = job.estimator.project.owners.all()
     email = PredictionCompletedEmail(estimator=job.estimator,
-                    map=map,
-                    recipients=[user.email for user in users],
-                    language_code='es')
+                                     map=map,
+                                     recipients=[user.email for user in users],
+                                     language_code='es')
     email.send_mail()
+
 
 def sendTrainingJobCompletedEmail(job):
     users = job.estimator.project.owners.all()
     email = TrainingCompletedEmail(estimator=job.estimator,
-                    recipients=[user.email for user in users],
-                    language_code='es')
+                                   recipients=[user.email for user in users],
+                                   language_code='es')
     email.send_mail()
+
 
 def trainingJobFinished(job_id):
     training_job = TrainingJob.objects.get(pk=job_id)
@@ -46,12 +51,10 @@ def createFile(name, image, tmpdirname, metadata):
     ext = name.split(".")[-1]
     if ext == 'json':
         metadata['class'] = name.split("_")[0]
-    resut_file = File.objects.create(
-        owner=image.owner,
-        project=image.project,
-        name=name,
-        metadata=metadata
-    )
+    resut_file = File.objects.create(owner=image.owner,
+                                     project=image.project,
+                                     name=name,
+                                     metadata=metadata)
     with open(os.path.join(tmpdirname, name), "rb") as f:
         resut_file.file = DjangoFile(f, name=name)
         resut_file.save()
@@ -68,17 +71,15 @@ def predictionJobFinished(job_id):
 
         for img in job.image_files.all():
             result_map = Map.objects.create(
-                project = img.project,
-                name = img.name,
+                project=img.project,
+                name=img.name,
             )
             img_layer = Layer.objects.filter(file=img).first()
             if img_layer is not None:
-                MapLayer.objects.create(
-                    map = result_map,
-                    layer = img_layer,
-                    order = 1
-                )
-            meta = { 
+                MapLayer.objects.create(map=result_map,
+                                        layer=img_layer,
+                                        order=1)
+            meta = {
                 'source_img': {
                     'pk': img.pk,
                     'name': img.name
@@ -87,7 +88,7 @@ def predictionJobFinished(job_id):
                     'uuid': str(result_map.uuid)
                 }
             }
-            results_path = os.path.sep.join([tmpdirname,img.name])
+            results_path = os.path.sep.join([tmpdirname, img.name])
             files = os.listdir(results_path)
             order = 2
             for f in files:
@@ -100,16 +101,16 @@ def predictionJobFinished(job_id):
 
 def subscriber():
     client = pubsub_v1.SubscriberClient()
-    subscription_path = client.subscription_path(
-        settings.PUBSUB_PROJECT_ID, settings.SUBSCRIPTION_NAME)
-    
+    subscription_path = client.subscription_path(settings.PUBSUB_PROJECT_ID,
+                                                 settings.PUBSUB_JOB_TOPIC_ID)
+
     def callback(message):
         print('[Subscriptor] Job completed: {}'.format(message.data))
         message.ack()
         data = json.loads(message.data.decode('utf8'))
-        if data['type']=='training-job':
+        if data['type'] == 'training-job':
             trainingJobFinished(data['job_id'])
-        elif data['type']=='prediction-job':
+        elif data['type'] == 'prediction-job':
             predictionJobFinished(data['job_id'])
 
     client.subscribe(subscription_path, callback=callback)

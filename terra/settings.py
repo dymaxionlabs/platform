@@ -275,13 +275,17 @@ GOOGLE_CREDENTIALS = os.getenv(
     'GOOGLE_CREDENTIALS', os.path.join(BASE_DIR, '.google_client_secret.json'))
 GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
 
-#PUB/SUB GCLOUD
-PUBSUB_PROJECT_ID = "dyma-staging"
-SUBSCRIPTION_NAME = "dyma-staging-terra-sub"
+# Google Cloud Pub/Sub settings
+PUBSUB_PROJECT_ID = os.getenv('PUBSUB_PROJECT_ID', 'dyma-staging')
+PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs')
 
-#CLOUD ML
-CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY','.')
+# Google CloudML settings
+CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY', '.')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
 
-LAYERS_FILL_COLOR = ['#f0251c','#f5f518','#4af31c','#1fe7c5','#1f54d6','#9319bd','#9c8686']
-LAYERS_COLOR = ['#951a15','#b9b916','#35a517','#1e937f','#133076','#5f1578','#716a6a']
+LAYERS_FILL_COLOR = [
+    '#f0251c', '#f5f518', '#4af31c', '#1fe7c5', '#1f54d6', '#9319bd', '#9c8686'
+]
+LAYERS_COLOR = [
+    '#951a15', '#b9b916', '#35a517', '#1e937f', '#133076', '#5f1578', '#716a6a'
+]
