@@ -69,6 +69,16 @@ class TrainingJobSerializer(serializers.ModelSerializer):
 
 class PredictionJobSerializer(serializers.ModelSerializer):
     estimator = EstimatorSlugField(slug_field='uuid')
+    image_files = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name'
+    )
+    result_files = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name'
+    )
 
     class Meta:
         model = PredictionJob

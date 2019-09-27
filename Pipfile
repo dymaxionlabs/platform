@@ -31,6 +31,7 @@ google-api-python-client = "*"
 google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 google-cloud-pubsub = "*"
+djangorestframework-api-key = "*"
 
 [dev-packages]
 yapf = "*"

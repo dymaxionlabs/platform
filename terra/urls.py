@@ -26,13 +26,15 @@ from rest_framework.routers import SimpleRouter
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
                               StartTrainingJobView, FinishedTraininJobView,
-                              StartPredictionJobView, FinishedPredictionJobView)
+                              StartPredictionJobView, FinishedPredictionJobView,
+                              PredictionJobView)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileUploadView, FileViewSet, LayerViewSet,
+                            FileUploadView, FileDownloadView, FileViewSet, LayerViewSet,
                             MapViewSet, ProjectInvitationTokenViewSet,
                             ProjectViewSet, SubscribeBetaView, TestAuthView,
                             TestErrorView, UserProfileViewSet, UserViewSet)
 from quotations.views import RequestViewSet
+from stac.views import SearchView
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
@@ -87,6 +89,7 @@ urlpatterns = [
     url(r'^contact/?', ContactView.as_view()),
     url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
+    url(r'^files/download/(?P<filename>[^/]+)$', FileDownloadView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
         SegmentsPerLabelView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/train/?',
@@ -97,6 +100,12 @@ urlpatterns = [
         FinishedPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
         StartPredictionJobView.as_view()),
+    url(r'^predictionjob/(?P<estimator__uuid>[^/]+)$', 
+        PredictionJobView.as_view()),
+
+    #STAC urls
+    url(r'^stac/search/?',
+        SearchView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),
