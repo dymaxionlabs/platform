@@ -32,7 +32,7 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileDownloadView, FileViewSet, LayerViewSet,
                             MapViewSet, ProjectInvitationTokenViewSet,
                             ProjectViewSet, SubscribeBetaView, TestAuthView,
-                            TestErrorView, UserProfileViewSet, UserViewSet)
+                            TestErrorView, UserProfileViewSet, UserViewSet, UserAPIKeyList)
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -102,6 +102,9 @@ urlpatterns = [
         StartPredictionJobView.as_view()),
     url(r'^predictionjob/(?P<estimator__uuid>[^/]+)$', 
         PredictionJobView.as_view()),
+    url(r'^api_keys/(?P<pk>[^/]+)$',  UserAPIKeyList.as_view(),),
+    url(r'^api_keys/', UserAPIKeyList.as_view(),),
+
 
     #STAC urls
     url(r'^stac/search/?',

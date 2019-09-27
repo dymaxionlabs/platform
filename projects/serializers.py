@@ -12,7 +12,7 @@ from rest_framework import serializers
 from terra.emails import EarlyAccessBetaEmail
 
 from .models import (File, Layer, Map, MapLayer, Project,
-                     ProjectInvitationToken, UserProfile)
+                     ProjectInvitationToken, UserProfile, UserAPIKey)
 
 
 class UserProfileSimpleSerializer(serializers.ModelSerializer):
@@ -198,3 +198,12 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = ('project', 'name', 'metadata', 'file', 'created_at')
+
+
+class UserAPIKeySerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        model = UserAPIKey
+        fields = ('id', 'prefix', 'created', 'name', 'revoked', 'user')
+        lookup_field = 'id'

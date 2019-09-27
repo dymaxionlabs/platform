@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 
 from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
 from .models import (File, Layer, Map, Project, ProjectInvitationToken,
-                     UserProfile)
+                     UserProfile, UserAPIKey)
 from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
@@ -28,7 +28,7 @@ from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
                           SubscribeBetaSerializer, UserProfileSerializer,
-                          UserSerializer)
+                          UserSerializer, UserAPIKeySerializer)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -318,3 +318,22 @@ class FileDownloadView(APIView):
                     headers={'Content-Disposition': content_disp},
                     content_type=mimetypes.MimeTypes().guess_type(src)[0]
                 )
+
+
+class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+    queryset = UserAPIKey.objects.get_usable_keys()
+    serializer_class = UserAPIKeySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        queryset = self.get_queryset().filter(user=request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        api_key, key = UserAPIKey.objects.create_key(name=request.data['name'],user=request.user)
+        serializer = self.serializer_class(api_key)
+        return Response({'data':serializer.data,'key':key})
+    
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
