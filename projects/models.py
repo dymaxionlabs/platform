@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
+from rest_framework_api_key.models import AbstractAPIKey
 
 
 class UserProfile(models.Model):
@@ -247,3 +248,11 @@ class MapLayer(models.Model):
     @classmethod
     def max_order(cls):
         return cls.objects.order_by('-order')[0].order
+
+
+class UserAPIKey(AbstractAPIKey):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta(AbstractAPIKey.Meta):
+        verbose_name = "User API key"
+        verbose_name_plural = "User API keys"

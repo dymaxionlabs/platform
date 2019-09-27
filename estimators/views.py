@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.models import File
-from projects.permissions import HasAccessToRelatedProjectPermission
+from projects.permissions import HasAccessToRelatedProjectPermission, HasUserAPIKey
 from terra.emails import TrainingStartedEmail, PredictionStartedEmail
 
 from .models import (Annotation, Estimator, ImageTile, 
@@ -141,7 +141,7 @@ class FinishedTraininJobView(APIView):
 
 
 class StartPredictionJobView(APIView):
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                             HasAccessToRelatedEstimatorPermission)
 
     def post(self, request, uuid):
@@ -157,7 +157,7 @@ class StartPredictionJobView(APIView):
                                         project=estimator.project,
                                         owner=request.user)
             job = PredictionJob.objects.create(estimator=estimator)
-            job.image_files.add(files)
+            job.image_files.set(files)
             job.save()
 
             # Send email
@@ -173,7 +173,7 @@ class StartPredictionJobView(APIView):
 
 
 class FinishedPredictionJobView(APIView):
-    permission_classes = (permissions.IsAuthenticated, HasAccessToRelatedEstimatorPermission)
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, HasAccessToRelatedEstimatorPermission)
 
     def get(self, request, uuid):
         estimator = Estimator.objects.get(uuid=uuid)
@@ -184,3 +184,11 @@ class FinishedPredictionJobView(APIView):
         pending_prediction_job = PredictionJob.objects.filter(estimator=estimator,
                                                 finished=False).exists()
         return Response({'detail': not pending_prediction_job}, status=status.HTTP_200_OK)
+
+
+class PredictionJobView(generics.RetrieveAPIView):
+    model = PredictionJob
+    serializer_class = PredictionJobSerializer
+    queryset = PredictionJob.objects.all()
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,)
+    lookup_field = 'estimator__uuid'

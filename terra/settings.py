@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
+    "rest_framework_api_key",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -289,3 +290,7 @@ LAYERS_FILL_COLOR = [
 LAYERS_COLOR = [
     '#951a15', '#b9b916', '#35a517', '#1e937f', '#133076', '#5f1578', '#716a6a'
 ]
+
+# STAC API CONST
+STAC_SERVER_URL = 'https://sat-api.developmentseed.org'
+STAC_SEARCH_PATH = '/stac/search'

@@ -1,4 +1,7 @@
+import mimetypes
 import os
+import shutil
+import tempfile
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -19,7 +22,8 @@ from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
                           HasAccessToRelatedProjectPermission, UserPermission,
-                          UserProfilePermission)
+                          UserProfilePermission, HasUserAPIKey)
+from .renderers import BinaryFileRenderer
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
@@ -282,3 +286,35 @@ class FileUploadView(APIView):
             sep=self.suffix_sep, name=name)).filter(name__endswith=ext)
         last_file = files.last()
         return last_file and last_file.name
+
+
+class FileDownloadView(APIView):
+
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
+    renderer_classes = (BinaryFileRenderer, )
+
+    def get(self, request, filename):
+        user = self.request.user
+        uuid = self.request.query_params.get('project_uuid', None)
+        if not uuid:
+            raise ValidationError({'project_uuid': 'Field not present'})
+        project = Project.objects.filter(uuid=uuid).first()
+        if not project:
+            raise ValidationError({'project_uuid': 'Invalid project uuid'})
+        
+        file = File.objects.filter(name=filename, owner=user, project=project).first()
+        if not file:
+            return rest_framework.exceptions.NotFound(detail=None, code=None)
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            shutil.copyfileobj(file.file, tmpfile)
+            src = tmpfile.name
+
+            content_disp = 'attachment; filename="{file_name}"'.format(file_name=filename)
+
+            with open(src, 'rb') as fileresponse:
+                return Response(
+                    fileresponse.read(),
+                    headers={'Content-Disposition': content_disp},
+                    content_type=mimetypes.MimeTypes().guess_type(src)[0]
+                )
