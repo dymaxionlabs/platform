@@ -23,7 +23,8 @@ class Estimator(models.Model):
     project = models.ForeignKey(Project,
                                 null=True,
                                 on_delete=models.CASCADE,
-                                verbose_name=_('project'))
+                                verbose_name=_('project'),
+                                related_name=_('estimators'))
 
     estimator_type = models.CharField(_('estimator type'),
                                       max_length=2,

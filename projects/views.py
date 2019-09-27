@@ -167,7 +167,7 @@ class SubscribeBetaView(generics.GenericAPIView):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all().order_by('-updated_at')
     serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToProjectPermission)
     lookup_field = 'uuid'
 
