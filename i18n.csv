@@ -145,6 +145,7 @@ me,sidebar.maps,Mapas,Maps
 me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
+me,sidebar.keys,API Keys,API Keys
 me,download,Descargar,Download
 me,view,Ver,View
 me,models.title,Tus Modelos,Your Models
@@ -175,6 +176,13 @@ me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
 me,requests.area_km2,Área (km²),Area (km²)
 me,requests.state,Estado actual,Current state
+me,keys.title,Tus API Keys,Your API Keys
+me,keys.name,Nombre,Name
+me,keys.prefix,Prefijo,Prefix
+me,keys.state,Estado,State
+me,keys.active,Activa,Active
+me,keys.revoked,Revocada,Revoked
+me,keys.revoke,Revocar,Revoke
 image_upload_dialog,upload_progress.title,Subiendo...,Uploading...
 image_upload_dialog,upload_btn,Subir imágenes,Upload images
 image_upload_dialog,cancel_btn,Cancelar,Cancel
