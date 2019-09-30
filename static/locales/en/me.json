@@ -7,6 +7,8 @@
   },
   "keys": {
     "active": "Active",
+    "confirmContent": "This action cannot be undone. Are you sure you want to revoke this API Key?",
+    "confirmTitle": "Revoke API Key",
     "name": "Name",
     "prefix": "Prefix",
     "revoke": "Revoke",

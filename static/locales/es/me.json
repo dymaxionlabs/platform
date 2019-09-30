@@ -7,6 +7,8 @@
   },
   "keys": {
     "active": "Activa",
+    "confirmContent": "Esta acci\u00f3n no se puede deshacer \u00bfEsta seguro que desea revocar esta API Key?",
+    "confirmTitle": "Revocar API Key",
     "name": "Nombre",
     "prefix": "Prefijo",
     "revoke": "Revocar",

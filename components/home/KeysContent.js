@@ -17,6 +17,7 @@ import BlockIcon from "@material-ui/icons/Block";
 import CloseIcon from "@material-ui/icons/Close";
 
 import NewKeyDialogForm from "../NewKeyDialog";
+import ConfirmationDialog from "../ConfirmationDialog";
 import { i18n, withNamespaces } from "../../i18n";
 import axios from "axios";
 import { buildApiUrl } from "../../utils/api";
@@ -74,7 +75,9 @@ NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 
 class KeysContent extends React.Component {
   state = {
-    keys : []
+    keys : [],
+    openConfirmationDialog : false,
+    keyToRevoke : null
   };
 
   componentDidMount(){
@@ -90,19 +93,33 @@ class KeysContent extends React.Component {
   }
 
   revoke = async (id) => {
-    await axios.patch(
-        buildApiUrl(`/api_keys/${id}`), 
-        { "pk": id, revoked : true },
-        { headers: { Authorization: this.props.token } }
-    ).then(() => {
-        this.getApiKeys();
+    this.setState({
+      keyToRevoke: id,
+      openConfirmationDialog: true,
     });
   }
 
+  onDialogResult = async (action) => {
+    console.log(action);
+    if (action) {
+      const { keyToRevoke } = this.state
+      await axios.patch(
+        buildApiUrl(`/api_keys/${keyToRevoke}`), 
+        { "pk": keyToRevoke, revoked : true },
+        { headers: { Authorization: this.props.token } }
+      ).then(() => {
+          this.getApiKeys();
+      });
+    }
+    this.setState({
+      keyToRevoke: null,
+      openConfirmationDialog: false,
+    })
+  }
 
   render() {
     const { t, classes, token } = this.props;
-    const { keys } = this.state;
+    const { keys, openConfirmationDialog } = this.state;
 
     return (
       <div>
@@ -153,6 +170,12 @@ class KeysContent extends React.Component {
             </TableBody>
           </Table>
         </Paper>
+        <ConfirmationDialog 
+          onClose={this.onDialogResult} 
+          open={openConfirmationDialog}
+          title={t("keys.confirmTitle")}
+          content={t("keys.confirmContent")}
+        />
 
       </div>
     );
