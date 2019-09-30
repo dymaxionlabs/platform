@@ -17,6 +17,7 @@ import MapIcon from "@material-ui/icons/Map";
 import MemoryIcon from "@material-ui/icons/Memory";
 import MenuIcon from "@material-ui/icons/Menu";
 import MessageIcon from "@material-ui/icons/Message";
+import VpnKey from "@material-ui/icons/VpnKey";
 import axios from "axios";
 import classNames from "classnames";
 import cookie from "js-cookie";
@@ -29,6 +30,7 @@ import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
 import ModelsContent from "../../components/home/ModelsContent";
 import RequestsContent from "../../components/home/RequestsContent";
+import KeysContent from "../../components/home/KeysContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withNamespaces, i18n } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
@@ -125,8 +127,8 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["files", "layers", "maps"];
-const sortedSectionsBeta = ["files", "layers", "maps", "models"];
+const sortedSections = ["files", "layers", "maps", "keys"];
+const sortedSectionsBeta = ["files", "layers", "maps", "models", "keys"];
 
 const sections = {
   // dashboard: {
@@ -163,6 +165,12 @@ const sections = {
     path: "/files",
     icon: <CollectionsIcon />,
     content: <FilesContent />
+  },
+  keys: {
+    key: "keys",
+    path: "/keys",
+    icon: <VpnKey />,
+    content: <KeysContent />
   }
 };
 

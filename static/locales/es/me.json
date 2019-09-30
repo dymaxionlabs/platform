@@ -5,6 +5,15 @@
     "name": "Nombre del archivo",
     "title": "Tus archivos"
   },
+  "keys": {
+    "active": "Activa",
+    "name": "Nombre",
+    "prefix": "Prefijo",
+    "revoke": "Revocar",
+    "revoked": "Revocada",
+    "state": "Estado",
+    "title": "Tus API Keys"
+  },
   "layers": {
     "created_at": "Fecha de creaci\u00f3n",
     "date": "Fecha de adquisici\u00f3n",
@@ -42,6 +51,7 @@
   "sidebar": {
     "dashboard": "Dashboard",
     "files": "Archivos",
+    "keys": "API Keys",
     "layers": "Capas",
     "maps": "Mapas",
     "models": "Modelos",
