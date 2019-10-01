@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.response import Response
@@ -135,9 +137,15 @@ class FinishedTraininJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        pending_job = TrainingJob.objects.filter(estimator=estimator,
-                                                 finished=False).exists()
-        return Response({'detail': not pending_job}, status=status.HTTP_200_OK)
+        pending_job = TrainingJob.objects.filter(estimator=estimator, 
+                                                    finished=False).first()
+        data = { 'detail': pending_job is None }
+        if pending_job is not None:
+            now = datetime.now(timezone.utc)
+            dif_minutes = (now - pending_job.created_at).total_seconds()/60
+            data['percentage'] = round(dif_minutes * 100 / settings.APROX_JOBS_TIME)
+        
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class StartPredictionJobView(APIView):
@@ -181,10 +189,16 @@ class FinishedPredictionJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        pending_prediction_job = PredictionJob.objects.filter(
-            estimator=estimator, finished=False).exists()
-        return Response({'detail': not pending_prediction_job},
-                        status=status.HTTP_200_OK)
+        pending_job = PredictionJob.objects.filter(estimator=estimator, 
+                                                    finished=False).first()
+        data = { 'detail': pending_job is None }
+        if pending_job is not None:
+            now = datetime.now(timezone.utc)
+            dif_minutes = (now - pending_job.created_at).total_seconds()/60
+            data['percentage'] = round(dif_minutes * 100 / settings.APROX_JOBS_TIME)
+        
+        return Response(data, status=status.HTTP_200_OK)
+
 
 
 class PredictionJobView(generics.RetrieveAPIView):
