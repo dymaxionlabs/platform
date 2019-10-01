@@ -294,3 +294,6 @@ LAYERS_COLOR = [
 # STAC API CONST
 STAC_SERVER_URL = 'https://sat-api.developmentseed.org'
 STAC_SEARCH_PATH = '/stac/search'
+
+#Estimated time for finish of a TrainingJob / PredictionJob
+APROX_JOBS_TIME = 120
