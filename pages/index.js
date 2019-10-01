@@ -43,14 +43,7 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    const { token } = this.props;
-
-    // for some reason, Router does not work
-    if (token) {
-      window.location.href = "/home";
-    } else {
-      window.location.href = "/quote";
-    }
+    window.location.href = "/home";
   }
 
   render() {
