@@ -3,6 +3,9 @@
     "error_msg": "An error has occurred. Please try again later.",
     "success_msg": "Your email address has been verified successfully."
   },
+  "confirmation": {
+    "cancel": "Cancel"
+  },
   "crop_lots_desc": "Categorized lots by crop type",
   "crop_lots_title": "Crop lots",
   "dashboard_btn": "Dashboard",
