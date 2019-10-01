@@ -153,8 +153,7 @@ me,models.title,Tus Modelos,Your Models
 me,models.name,Nombre,Name
 me,models.estimator_type,Tipo,Type
 me,models.classes,Clases,Classes
-me,models.created_at,"Fecha de creación
-",Creation date
+me,models.created_at,"Fecha de creación",Creation date
 me,models.new_btn,Nuevo Modelo,New Model
 me,models.types.OD,Detección de Objetos,Object Detection
 me,layers.title,Tus capas,Your layers
@@ -245,6 +244,7 @@ models,train_step.title,Entrenar modelo,Train model
 models,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
 models,train_step.continue,Continuar,Continue
 models,train_step.back,Ir atrás,Go back
+models,train_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
 models,select_step.title,Seleccionar imágenes,Select images
 models,select_step.explanation,Selecciona las imágenes preexistentes o carga nuevas y luego cliquea Predecir,Select pre-existing images or upload new ones and then click Predict
 models,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
@@ -253,6 +253,7 @@ models,predict_step.title,Predecir modelo,Predict model
 models,predict_step.explanation,En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ver los resultados.,At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.
 models,predict_step.back,Ir atrás,Go back
 models,predict_step.view,Ver resultados,View results
+models,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
 models,object_btn,Detección de Objetos,Object Detection
 models,object_desc,"Detección de animales, techos, árboles, silobolsas, etc.","Detect animals, roofs, trees, grain silos, etc."
 models,classification_btn,Clasificación,Classification

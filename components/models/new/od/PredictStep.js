@@ -21,9 +21,21 @@ const styles = theme => ({
   }
 });
 
+const BorderLinearProgress = withStyles({
+  root: {
+    height: 10,
+    backgroundColor: 'rgb(255, 181, 173)',
+  },
+  bar: {
+    borderRadius: 20,
+    backgroundColor: '#ff6c5c',
+  },
+})(LinearProgress);
+
 class PredictStep extends React.Component {
   state = {
-    finished: false
+    finished: false,
+    percentage : 0,
   };
 
   async checkFinishedPredictingJob(){
@@ -40,6 +52,16 @@ class PredictStep extends React.Component {
       this.setState({finished: true});
       clearInterval(this.interval);
     }
+    else{
+      if (this.state.percentage < 100){
+        if (!typeof this.offInterval === 'undefined')
+          clearInterval(this.offInterval);
+        this.setState({percentage: response.data.percentage});
+        this.offInterval = setInterval(() => {
+          this.setState({percentage: this.state.percentage + 1});console.log(this.state.percentage);
+        }, 1000*60);
+      }
+    }
   }
 
   handleClickView(){
@@ -47,12 +69,15 @@ class PredictStep extends React.Component {
   }
 
   async componentDidMount() {
+    if (this.state.percentage == 0){
+      this.checkFinishedPredictingJob();
+    }
     this.interval = setInterval(() => this.checkFinishedPredictingJob(), 1000*60*5);
   }
 
   render() {
     const { classes, t } = this.props;
-    const { finished } = this.state;
+    const { finished, percentage } = this.state;
 
     return (
       <StepContentContainer>
@@ -70,7 +95,16 @@ class PredictStep extends React.Component {
           :
           <div>
           <div className={classes.progress}>
-            <LinearProgress />
+          { percentage <= 100 ? (
+            <BorderLinearProgress
+              className={classes.margin}
+              variant="determinate"
+              color="secondary"
+              value={percentage}
+            />
+            ) : (
+              <Typography>{t("predict_step.undefined_explanation")}</Typography>
+            ) }
           </div>
           <Link href="/home/models">
             <Button color="primary" fullWidth="true" variant="contained" >

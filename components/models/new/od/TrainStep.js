@@ -21,9 +21,21 @@ const styles = theme => ({
   }
 });
 
+const BorderLinearProgress = withStyles({
+  root: {
+    height: 10,
+    backgroundColor: 'rgb(255, 181, 173)',
+  },
+  bar: {
+    borderRadius: 20,
+    backgroundColor: '#ff6c5c',
+  },
+})(LinearProgress);
+
 class TrainStep extends React.Component {
   state = {
-    finished: false
+    finished: false,
+    percentage : 0,
   };
 
   async checkFinishedTrainingJob(){
@@ -40,8 +52,18 @@ class TrainStep extends React.Component {
       this.setState({finished: true});
       clearInterval(this.interval);
     }
+    else{
+      if (this.state.percentage < 100){
+        if (!typeof this.offInterval === 'undefined')
+          clearInterval(this.offInterval);
+        this.setState({percentage: response.data.percentage});
+        this.offInterval = setInterval(() => {
+          this.setState({percentage: this.state.percentage + 1});
+        }, 1000*60);
+      }
+    }
   }
-
+  
   handleClickContinue(){
     const { estimatorId } = this.props;
     routerPush(`/models/new/od/select?id=${estimatorId}`);
@@ -50,7 +72,7 @@ class TrainStep extends React.Component {
   async componentDidMount() {
     const { token, estimatorId } = this.props;
 
-    const response = await axios.post(
+    await axios.post(
       buildApiUrl(`/estimators/${estimatorId}/train/`),
       {},
       {
@@ -60,14 +82,15 @@ class TrainStep extends React.Component {
         }
       }
     );
-
-    console.log(response);
+    if (this.state.percentage == 0){
+      this.checkFinishedTrainingJob();
+    }
     this.interval = setInterval(() => this.checkFinishedTrainingJob(), 1000*60*5);
   }
 
   render() {
     const { classes, t } = this.props;
-    const { finished } = this.state;
+    const { finished, percentage } = this.state;
 
     return (
       <StepContentContainer>
@@ -85,7 +108,17 @@ class TrainStep extends React.Component {
           :
           <div>
           <div className={classes.progress}>
-            <LinearProgress />
+          { percentage <= 100 ? (
+            
+              <BorderLinearProgress
+                className={classes.margin}
+                variant="determinate"
+                color="secondary"
+                value={percentage}
+              />
+          ) : (
+            <Typography>{t("train_step.undefined_explanation")}</Typography>
+          ) }
           </div>
           <Link href="/home/models">
             <Button color="primary" variant="contained" fullWidth='true'>
