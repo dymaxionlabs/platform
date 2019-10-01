@@ -209,7 +209,7 @@ class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
                   mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = File.objects.all().order_by('-created_at')
     serializer_class = FileSerializer
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedProjectFilesPermission)
 
     lookup_field = 'name'
