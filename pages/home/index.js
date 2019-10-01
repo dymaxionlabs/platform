@@ -14,10 +14,9 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
 import LayersIcon from "@material-ui/icons/Layers";
 import MapIcon from "@material-ui/icons/Map";
-import MemoryIcon from "@material-ui/icons/Memory";
 import MenuIcon from "@material-ui/icons/Menu";
-import MessageIcon from "@material-ui/icons/Message";
-import VpnKey from "@material-ui/icons/VpnKey";
+import MemoryIcon from "@material-ui/icons/Memory";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import axios from "axios";
 import classNames from "classnames";
 import cookie from "js-cookie";
@@ -26,10 +25,10 @@ import PropTypes from "prop-types";
 import React from "react";
 import CliengoLoader from "../../components/CliengoLoader";
 import FilesContent from "../../components/home/FilesContent";
-import LayersContent from "../../components/home/LayersContent";
+// import LayersContent from "../../components/home/LayersContent";
 import MapsContent from "../../components/home/MapsContent";
 import ModelsContent from "../../components/home/ModelsContent";
-import RequestsContent from "../../components/home/RequestsContent";
+// import RequestsContent from "../../components/home/RequestsContent";
 import KeysContent from "../../components/home/KeysContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withNamespaces, i18n } from "../../i18n";
@@ -127,8 +126,8 @@ const styles = theme => ({
   }
 });
 
-const sortedSections = ["files", "layers", "maps", "keys"];
-const sortedSectionsBeta = ["files", "layers", "maps", "models", "keys"];
+const sortedSections = ["files", "models", "viewer", "keys"];
+const sortedSectionsBeta = ["files", "models", "viewer", "keys"];
 
 const sections = {
   // dashboard: {
@@ -136,29 +135,17 @@ const sections = {
   //   icon: <DashboardIcon />,
   //   content: null
   // },
-  requests: {
-    key: "requests",
-    path: "/requests",
-    icon: <MessageIcon />,
-    content: <RequestsContent />
+  viewer: {
+    key: "viewer",
+    path: "/maps",
+    icon: <MapIcon />,
+    content: <MapsContent />
   },
   models: {
     key: "models",
     path: "/models",
     icon: <MemoryIcon />,
     content: <ModelsContent />
-  },
-  maps: {
-    key: "maps",
-    path: "/maps",
-    icon: <MapIcon />,
-    content: <MapsContent />
-  },
-  layers: {
-    key: "layers",
-    path: "/layers",
-    icon: <LayersIcon />,
-    content: <LayersContent />
   },
   files: {
     key: "files",
@@ -169,7 +156,7 @@ const sections = {
   keys: {
     key: "keys",
     path: "/keys",
-    icon: <VpnKey />,
+    icon: <VpnKeyIcon />,
     content: <KeysContent />
   }
 };
@@ -355,7 +342,7 @@ class Home extends React.Component {
             ))}
           </List>
           <Divider />
-          <List>
+          {/* <List>
             <Link
               href={`/home?section=requests`}
               as={`/home${sections["requests"].path}`}
@@ -369,7 +356,7 @@ class Home extends React.Component {
                 <ListItemText primary={t(`sidebar.requests`)} />
               </ListItem>
             </Link>
-          </List>
+          </List> */}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />

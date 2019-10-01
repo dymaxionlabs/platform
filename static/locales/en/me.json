@@ -55,9 +55,9 @@
     "files": "Files",
     "keys": "API Keys",
     "layers": "Layers",
-    "maps": "Maps",
     "models": "Models",
-    "requests": "Requests"
+    "requests": "Requests",
+    "viewer": "Viewer"
   },
   "view": "View"
 }

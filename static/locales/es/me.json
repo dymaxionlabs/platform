@@ -55,9 +55,9 @@
     "files": "Archivos",
     "keys": "API Keys",
     "layers": "Capas",
-    "maps": "Mapas",
     "models": "Modelos",
-    "requests": "Pedidos"
+    "requests": "Pedidos",
+    "viewer": "Visor"
   },
   "view": "Ver"
 }
