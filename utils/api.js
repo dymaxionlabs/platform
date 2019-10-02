@@ -1,6 +1,6 @@
 const KNOWN_HOST_PAIRS = [
   ["localhost", "localhost:8000"],
-  ["staging.analytics.dymaxionlabs.com", "staging.api.dymaxionlabs.com"],
+  ["staging.app.dymaxionlabs.com", "staging.api.dymaxionlabs.com"],
   ["app.dymaxionlabs.com", "api.dymaxionlabs.com"]
 ];
 
