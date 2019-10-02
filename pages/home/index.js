@@ -30,6 +30,7 @@ import MapsContent from "../../components/home/MapsContent";
 import ModelsContent from "../../components/home/ModelsContent";
 // import RequestsContent from "../../components/home/RequestsContent";
 import KeysContent from "../../components/home/KeysContent";
+import HomeContent from "../../components/home/HomeContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withNamespaces, i18n } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
@@ -206,12 +207,6 @@ class Home extends React.Component {
     }
 
     this._checkForBeta();
-
-    // By default, go to maps
-    let { section } = this.props.query;
-    if (!section) {
-      routerReplace("/home/maps");
-    }
   }
 
   async _checkForBeta() {
@@ -360,7 +355,12 @@ class Home extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {content}
+          {
+            section == null ? 
+            (<HomeContent token={token}/>) 
+            : 
+            (content)
+          }
         </main>
       </div>
     );
