@@ -88,7 +88,7 @@ def test_sleep(foo=1, bar=2):
 
 @job
 def test_fail():
-    raise RuntimeError("oops")
+    raise RuntimeError("Oops, failed job")
 
 
 @job("default", timeout=3600)

@@ -26,13 +26,15 @@ from rest_framework.routers import SimpleRouter
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
                               StartTrainingJobView, FinishedTraininJobView,
-                              StartPredictionJobView, FinishedPredictionJobView,
-                              PredictionJobView)
+                              StartPredictionJobView,
+                              FinishedPredictionJobView, PredictionJobView)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileUploadView, FileDownloadView, FileViewSet, LayerViewSet,
-                            MapViewSet, ProjectInvitationTokenViewSet,
-                            ProjectViewSet, SubscribeBetaView, TestAuthView,
-                            TestErrorView, UserProfileViewSet, UserViewSet, UserAPIKeyList)
+                            FileUploadView, FileDownloadView, FileViewSet,
+                            LayerViewSet, MapViewSet,
+                            ProjectInvitationTokenViewSet, ProjectViewSet,
+                            SubscribeBetaView, TestAuthView, TestErrorView,
+                            TestTaskErrorView, UserProfileViewSet, UserViewSet,
+                            UserAPIKeyList)
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -113,6 +115,7 @@ urlpatterns = [
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),
     url(r'^test/error/?', TestErrorView.as_view()),
+    url(r'^test/taskerror/?', TestTaskErrorView.as_view()),
 
     # ...
     url(r'^', include(router.urls)),

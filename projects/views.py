@@ -2,6 +2,7 @@ import mimetypes
 import os
 import shutil
 import tempfile
+import django_rq
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -98,6 +99,14 @@ class TestErrorView(APIView):
 
     def get(self, request):
         raise RuntimeError('Oops')
+
+
+class TestTaskErrorView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        django_rq.enqueue('projects.tasks.test_fail')
+        return Response({"detail": _("Nothing")}, status=status.HTTP_200_OK)
 
 
 class ContactView(generics.GenericAPIView):
