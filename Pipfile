@@ -17,7 +17,7 @@ djangorestframework-gis = "*"
 django-jsoneditor = "*"
 django-guardian = "*"
 django-storages = {extras = ["google"],version = "*"}
-sentry-sdk = "==0.7.6"
+sentry-sdk = "==0.12.3"
 honcho = "*"
 rasterio = "*"
 shapely = "*"
