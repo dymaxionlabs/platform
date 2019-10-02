@@ -1,5 +1,5 @@
 [Unit]
-Description=Analytics frontend next.js app
+Description=Platform frontend next.js app
 After=network.target
 
 [Service]

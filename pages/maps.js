@@ -208,7 +208,7 @@ class Maps extends React.Component {
     return (
       <div className="index">
         <Head>
-          <title>Analytics | Dymaxion Labs</title>
+          <title>Dymaxion Labs Platform</title>
           <link
             rel="shortcut icon"
             type="image/x-icon"

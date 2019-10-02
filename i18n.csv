@@ -1,5 +1,5 @@
 namespace,key,es,en
-common,title,Analytics | Dymaxion Labs,Analytics | Dymaxion Labs
+common,title,Dymaxion Labs Platform,Dymaxion Labs Platform
 common,loading,Cargando...,Loading...
 common,username,Usuario,Username
 common,password,Contraseña,Password
@@ -153,7 +153,7 @@ me,models.title,Tus Modelos,Your Models
 me,models.name,Nombre,Name
 me,models.estimator_type,Tipo,Type
 me,models.classes,Clases,Classes
-me,models.created_at,"Fecha de creación",Creation date
+me,models.created_at,Fecha de creación,Creation date
 me,models.new_btn,Nuevo Modelo,New Model
 me,models.types.OD,Detección de Objetos,Object Detection
 me,models.more_info,Más información,More information

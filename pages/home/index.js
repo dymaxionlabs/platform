@@ -290,7 +290,7 @@ class Home extends React.Component {
                 src="/static/logo.png"
                 height="24"
               />
-              Analytics Dashboard
+              Dymaxion Labs Platform
             </Typography>
             <SelectProjectButton token={token} />
             <QuoteButton />

@@ -33,7 +33,7 @@ const BasicAppbar = withStyles(styles)(({ classes }) => (
           noWrap
           className={classes.title}
         >
-          Analytics
+          Dymaxion Labs Platform
         </Typography>
       </Link>
     </Toolbar>
