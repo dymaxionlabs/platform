@@ -25,6 +25,7 @@
     "next-nprogress": "^1.4.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.3",
     "react-dropzone": "7.0.1",
     "react-ga": "^2.5.6",

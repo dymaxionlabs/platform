@@ -185,6 +185,13 @@ me,keys.revoked,Revocada,Revoked
 me,keys.revoke,Revocar,Revoke
 me,keys.confirmTitle,Revocar API Key,Revoke API Key
 me,keys.confirmContent,Esta acción no se puede deshacer ¿Esta seguro que desea revocar esta API Key?,This action cannot be undone. Are you sure you want to revoke this API Key?
+me,home.models_title,Modelos,Models
+me,home.models_descrip,Puedes generar tu modelo para detectar objectos de tus imagenes desde este,You can generate your model to detect objects from your images from this
+me,home.api_title,Dymaxion Labs API,Dymaxion Labs API
+me,home.api_descrip1,Genera tu API Key desde este,Generate your API Key from this
+me,home.api_descrip2,y podras integrar nuestra api a tu código python. Para mas información puedes acceder a la Documentación,and you can integrate our api to your python code. For more information you can access the Documentation
+me,home.project_title,Proyectos,Project
+me,home.project_descrip,El identificador del proyecto te será de utilidad para utilizar nuestra API ,The project identifier will be useful to use our API
 image_upload_dialog,upload_progress.title,Subiendo...,Uploading...
 image_upload_dialog,upload_btn,Subir imágenes,Upload images
 image_upload_dialog,cancel_btn,Cancelar,Cancel
