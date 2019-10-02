@@ -42,9 +42,12 @@
     "title": "Your maps"
   },
   "models": {
+    "add_annot": "Add annotations",
+    "add_imgs": "Add images",
     "classes": "Classes",
     "created_at": "Creation date",
     "estimator_type": "Type",
+    "more_info": "More information",
     "name": "Name",
     "new_btn": "New Model",
     "title": "Your Models",

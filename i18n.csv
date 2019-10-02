@@ -156,6 +156,9 @@ me,models.classes,Clases,Classes
 me,models.created_at,"Fecha de creación",Creation date
 me,models.new_btn,Nuevo Modelo,New Model
 me,models.types.OD,Detección de Objetos,Object Detection
+me,models.more_info,Más información,More information
+me,models.add_imgs,Agregar imágenes,Add images
+me,models.add_annot,Agregar anotaciones,Add annotations
 me,layers.title,Tus capas,Your layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name

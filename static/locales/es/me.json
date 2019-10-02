@@ -42,9 +42,12 @@
     "title": "Tus mapas"
   },
   "models": {
+    "add_annot": "Agregar anotaciones",
+    "add_imgs": "Agregar im\u00e1genes",
     "classes": "Clases",
     "created_at": "Fecha de creaci\u00f3n",
     "estimator_type": "Tipo",
+    "more_info": "M\u00e1s informaci\u00f3n",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
     "title": "Tus Modelos",
