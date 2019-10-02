@@ -4,8 +4,10 @@ import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
+import EditIcon from '@material-ui/icons/Edit';
 import Chip from "@material-ui/core/Chip";
-import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -15,6 +17,7 @@ import cookie from "js-cookie";
 import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
+import { routerPush } from "../../utils/router";
 import { i18n, Link, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
@@ -48,7 +51,8 @@ NewModelButton = withNamespaces("me")(NewModelButton);
 
 class ModelsContent extends React.Component {
   state = {
-    models: []
+    models: [],
+    contextualMenuOpen: null,
   };
 
   componentDidMount() {
@@ -77,9 +81,27 @@ class ModelsContent extends React.Component {
     return t(`models.types.${model.estimator_type}`);
   }
 
+  handleContextualMenuClick = event => {
+    this.setState({contextualMenuOpen: event.currentTarget});
+  }
+
+  handleContextualMenuClose = () => {
+    this.setState({contextualMenuOpen: null});
+  }
+
+  estimatorMoreInfo = model => {
+    routerPush(`/models/${model.uuid}`);
+  }
+  estimatorAddImages = model => {
+    routerPush(`/models/new/od/upload?id=${model.uuid}`);
+  }
+  estimatorAddAnnotations = model => {
+    routerPush(`/models/new/od/annotate?id=${model.uuid}`);
+  }
+
   render() {
     const { t, classes } = this.props;
-    const { models: models } = this.state;
+    const { models: models, contextualMenuOpen } = this.state;
     const locale = i18n.language;
 
     return (
@@ -101,7 +123,7 @@ class ModelsContent extends React.Component {
                 <TableCell>{t("models.estimator_type")}</TableCell>
                 <TableCell>{t("models.classes")}</TableCell>
                 <TableCell>{t("models.created_at")}</TableCell>
-                {/* <TableCell /> */}
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,16 +143,28 @@ class ModelsContent extends React.Component {
                       {model.created_at}
                     </Moment>
                   </TableCell>
-                  {/* <TableCell align="right">
-                    <a href={`/models/upload-images/${model.uuid}`}>
-                      <IconButton
-                        className={classes.button}
-                        aria-label="Upload images"
-                      >
-                        <AddToPhotosIcon />
-                      </IconButton>
-                    </a>
-                  </TableCell> */}
+                  <TableCell align="right">
+                    <IconButton
+                      className={classes.button}
+                      aria-label="Edit"
+                      aria-controls="simple-menu" 
+                      aria-haspopup="true" 
+                      onClick={this.handleContextualMenuClick}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <Menu
+                      id="edit-estimator-menu"
+                      anchorEl={contextualMenuOpen}
+                      keepMounted
+                      open={Boolean(contextualMenuOpen)}
+                      onClose={this.handleContextualMenuClose}
+                    >
+                      <MenuItem onClick={ () => this.estimatorMoreInfo(model)}>{t("models.more_info")}</MenuItem>
+                      <MenuItem onClick={ () => this.estimatorAddImages(model)}>{t("models.add_imgs")}</MenuItem>
+                      <MenuItem onClick={ () => this.estimatorAddAnnotations(model)}>{t("models.add_annot")}</MenuItem>
+                    </Menu>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
