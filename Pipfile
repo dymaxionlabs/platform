@@ -32,6 +32,7 @@ google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 google-cloud-pubsub = "*"
 djangorestframework-api-key = "*"
+filetype = "*"
 
 [dev-packages]
 yapf = "*"
