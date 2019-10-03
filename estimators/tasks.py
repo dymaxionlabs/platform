@@ -164,8 +164,10 @@ def upload_csv(url, rows, fieldnames):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             for row in rows:
                 writer.writerow(row)
-        run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=tmpfile.name,
-                                                            dst=url))
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+            src=tmpfile.name,
+            dst=url))
 
 
 def run_subprocess(cmd):
@@ -184,8 +186,10 @@ def upload_image_tiles(job):
     ]
 
     url = os.path.join(job.artifacts_url, 'img/')
-    run_subprocess('gsutil -m cp -r {src} {dst}'.format(
-        src=' '.join(image_tile_urls), dst=url))
+    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+        src=' '.join(image_tile_urls),
+        dst=url))
 
 
 def upload_prediction_image_tiles(job):
@@ -213,33 +217,53 @@ def upload_prediction_image_tiles(job):
             tmpfile.name = '{}_tiles_meta.json'.format(file.name)
             with open(tmpfile.name, 'w') as json_file:
                 json.dump(meta_data, json_file, indent=4)
-            run_subprocess('gsutil -m cp -r {src} {dst}'.format(
-                src=tmpfile.name, dst=url))
+            run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                src=tmpfile.name,
+                dst=url))
 
-        run_subprocess('gsutil -m cp -r {src} {dst}'.format(
-            src=' '.join(image_tile_urls), dst=url))
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+            src=' '.join(image_tile_urls),
+            dst=url))
 
 
 def run_cloudml(job, script_name):
-    p = subprocess.Popen([
-        script_name,
-        str(job.estimator.uuid),
-        str(job.pk), 'gs://{}'.format(settings.ESTIMATORS_BUCKET),
-        settings.CLOUDML_REGION
-    ],
-                         cwd=settings.CLOUDML_DIRECTORY,
-                         shell=True)
+    p = subprocess.Popen(
+        [script_name],
+        env={
+            'CLOUDSDK_PYTHON':
+            '/usr/bin/python3',
+            'PATH':
+            '{sdk_bin_path}/:{path}'.format(
+                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                path=os.getenv('PATH')),
+            'TERRA_ESTIMATOR_UUID':
+            str(job.estimator.uuid),
+            'TERRA_JOB_ID':
+            str(job.pk),
+            'ESTIMATORS_BUCKET':
+            'gs://{}'.format(settings.ESTIMATORS_BUCKET),
+            'REGION':
+            settings.CLOUDML_REGION,
+        },
+        cwd=settings.CLOUDML_DIRECTORY,
+        shell=True)
 
 
 def prepare_artifacts(job):
     training_job = TrainingJob.objects.filter(estimator=job.estimator).first()
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
-    run_subprocess('gsutil -m cp {src} {dst}'.format(src=csv_url,
-                                                     dst=job.artifacts_url))
+    run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}'.format(
+        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+        src=csv_url,
+        dst=job.artifacts_url))
 
     snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
-    run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=snapshots_path,
-                                                        dst=job.artifacts_url))
+    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+        src=snapshots_path,
+        dst=job.artifacts_url))
 
 
 @job("default")

@@ -69,8 +69,11 @@ def predictionJobFinished(job_id):
     job = PredictionJob.objects.get(pk=job_id)
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        run_subprocess('gsutil -m cp -r {predictions_url}* {dst}'.format(
-            predictions_url=job.predictions_url, dst=tmpdirname))
+        run_subprocess(
+            '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.format(
+                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                predictions_url=job.predictions_url,
+                dst=tmpdirname))
 
         for img in job.image_files.all():
             result_map = Map.objects.create(

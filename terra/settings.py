@@ -272,6 +272,7 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'projects.serializers.UserDetailsSerializer'
 }
 
+GOOGLE_SDK_BIN_PATH = os.getenv('GOOGLE_SDK_BIN_PATH')
 GOOGLE_CREDENTIALS = os.getenv(
     'GOOGLE_CREDENTIALS', os.path.join(BASE_DIR, '.google_client_secret.json'))
 GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
