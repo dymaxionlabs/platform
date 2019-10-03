@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 08:58-0300\n"
+"POT-Creation-Date: 2019-10-03 17:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,132 +18,138 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: estimators/models.py:17
+#: estimators/models.py:18
 msgid "Object detection"
 msgstr ""
 
-#: estimators/models.py:25
+#: estimators/models.py:26
 msgid "project"
 msgstr ""
 
 #: estimators/models.py:27
+msgid "estimators"
+msgstr ""
+
+#: estimators/models.py:29
 msgid "estimator type"
 msgstr ""
 
-#: estimators/models.py:31
+#: estimators/models.py:33
 msgid "name"
 msgstr ""
 
-#: estimators/models.py:38 estimators/models.py:108
+#: estimators/models.py:40 estimators/models.py:113 estimators/models.py:132
 msgid "created at"
 msgstr ""
 
-#: estimators/models.py:39 estimators/models.py:109
+#: estimators/models.py:41 estimators/models.py:114 estimators/models.py:133
 msgid "updated at"
 msgstr ""
 
-#: estimators/models.py:63
+#: estimators/models.py:65
 msgid "file"
 msgstr ""
 
-#: estimators/models.py:69
+#: estimators/models.py:71
 msgid "image"
 msgstr ""
 
-#: estimators/models.py:93 estimators/models.py:107
+#: estimators/models.py:95 estimators/models.py:112 estimators/models.py:129
 msgid "estimator"
 msgstr ""
 
-#: estimators/models.py:96
+#: estimators/models.py:98
 msgid "image tile"
 msgstr ""
 
-#: estimators/models.py:97
+#: estimators/models.py:99
 msgid "segments"
 msgstr ""
 
-#: estimators/views.py:56
+#: estimators/views.py:61
 msgid "Annotations updated"
 msgstr ""
 
-#: estimators/views.py:58
+#: estimators/views.py:63
 msgid "Annotations created"
 msgstr ""
 
-#: estimators/views.py:106
+#: estimators/views.py:111 estimators/views.py:137 estimators/views.py:158
+#: estimators/views.py:189
 msgid "Not found"
 msgstr ""
 
-#: projects/models.py:23
+#: projects/models.py:24
 msgid "In Beta"
 msgstr ""
 
-#: projects/models.py:37
+#: projects/models.py:38
 msgid "Name"
 msgstr ""
 
-#: projects/models.py:38
+#: projects/models.py:39
 msgid "Description"
 msgstr ""
 
-#: projects/models.py:41
+#: projects/models.py:42
 msgid "No images"
 msgstr ""
 
-#: projects/models.py:43 projects/models.py:67
+#: projects/models.py:44 projects/models.py:68
 msgid "Created at"
 msgstr ""
 
-#: projects/models.py:44 projects/models.py:68
+#: projects/models.py:45 projects/models.py:69
 msgid "Updated at"
 msgstr ""
 
-#: projects/models.py:47 projects/models.py:59 projects/models.py:101
+#: projects/models.py:48 projects/models.py:60 projects/models.py:102
 msgid "Project"
 msgstr ""
 
-#: projects/models.py:48
+#: projects/models.py:49
 msgid "Projects"
 msgstr ""
 
-#: projects/models.py:55
+#: projects/models.py:56
 msgid "Key"
 msgstr ""
 
-#: projects/models.py:60
+#: projects/models.py:61
 msgid "Email"
 msgstr ""
 
-#: projects/models.py:65
+#: projects/models.py:66
 msgid "Confirmed"
 msgstr ""
 
-#: projects/models.py:72
+#: projects/models.py:73
 msgid "Project invitation token"
 msgstr ""
 
-#: projects/models.py:73
+#: projects/models.py:74
 msgid "Project invitation tokens"
 msgstr ""
 
-#: projects/models.py:222
+#: projects/models.py:237
 msgid "Cannot set order to 0"
 msgstr ""
 
-#: projects/views.py:82
+#: projects/views.py:89
 msgid "ok"
 msgstr ""
 
-#: projects/views.py:87
+#: projects/views.py:94 projects/views.py:109
 msgid "Nothing"
 msgstr ""
 
-#: projects/views.py:105
-msgid "Contact message has been sent"
+#: projects/views.py:134 projects/views.py:141 projects/views.py:167
+#: projects/views.py:173
+msgid "User subscribed"
 msgstr ""
 
-#: projects/views.py:117
-msgid "User subscribed"
+#: projects/views.py:138 projects/views.py:170
+msgid "Error subscribing user"
 msgstr ""
 
 #: quotations/models.py:80
@@ -341,14 +347,32 @@ msgid ""
 "Invalid token header. Token string should not contain invalid characters."
 msgstr ""
 
-#: terra/emails.py:93
+#: terra/emails.py:95
 msgid "validate your email"
 msgstr "Validate your email"
 
-#: terra/emails.py:116
+#: terra/emails.py:118
 msgid "your account is ready"
 msgstr "Your account is ready, %(name)s 🚀"
 
-#: terra/emails.py:149
+#: terra/emails.py:151
 msgid "training of your model started"
 msgstr "The training of your model started"
+
+#: terra/emails.py:188
+#, fuzzy
+#| msgid "training of your model started"
+msgid "prediction of your model started"
+msgstr "The prediction of your model started"
+
+#: terra/emails.py:227
+#, fuzzy
+#| msgid "training of your model started"
+msgid "training of your model completed"
+msgstr "The training of your model ended"
+
+#: terra/emails.py:270
+#, fuzzy
+#| msgid "training of your model started"
+msgid "prediction of your model completed"
+msgstr "The prediction of your model ended"
