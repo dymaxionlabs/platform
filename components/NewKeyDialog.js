@@ -10,6 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import { withNamespaces } from "../i18n";
 import { buildApiUrl } from "../utils/api";
@@ -111,9 +112,12 @@ class NewKeyDialogForm extends React.Component {
                         Crear
                     </Button>
                 ) : (
-                    <Button onClick={this.copy} color="primary">
-                        Copiar
-                    </Button>
+                    <CopyToClipboard text={generated_apikey}>
+                        <Button onClick={this.copy} color="primary">
+                            Copiar
+                        </Button>
+                    </CopyToClipboard>
+
                 )}
                 </DialogActions>
             </Dialog>
