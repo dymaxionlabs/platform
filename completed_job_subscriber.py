@@ -5,6 +5,9 @@ import os
 import time
 import subprocess
 import tempfile
+from dotenv import load_dotenv
+
+load_dotenv()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
 django.setup()
