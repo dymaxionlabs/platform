@@ -1,0 +1,16 @@
+[Unit]
+Description=Jobs subscriber
+After=network.target
+
+[Service]
+Environment=SENTRY_DNS=https://2dd8f13e32504a0ca9ac927ec6adbcba@sentry.io/1412965
+User=ubuntu
+Group=www-data
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=jobs_subscriber
+WorkingDirectory=/home/ubuntu/terra
+ExecStart=/bin/bash -c '/home/ubuntu/.local/share/virtualenvs/terra-O5su8kSy/bin/python /home/ubuntu/terra/completed_job_subscriber.py'
+
+[Install]
+WantedBy=multi-user.target

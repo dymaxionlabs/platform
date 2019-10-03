@@ -3,10 +3,10 @@ Description=gunicorn daemon
 After=network.target
 
 [Service]
-User=munshkr
+User=ubuntu
 Group=www-data
-WorkingDirectory=/home/munshkr/terra
-ExecStart=/home/munshkr/.local/share/virtualenvs/terra-XVGhZdP0/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/munshkr/terra/terra.sock terra.wsgi:application
+WorkingDirectory=/home/ubuntu/terra
+ExecStart=/home/ubuntu/.local/share/virtualenvs/terra-XVGhZdP0/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/terra/terra.sock terra.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
