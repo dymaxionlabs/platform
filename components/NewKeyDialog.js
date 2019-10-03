@@ -61,24 +61,24 @@ class NewKeyDialogForm extends React.Component {
 
     render() {
         const { open, created, generated_apikey } = this.state;
-        const { classes } = this.props;
+        const { t, classes } = this.props;
         return (
         <div className={classes.btnRight}>
             <Button  onClick={this.handleClickOpen}>
-                Nueva
+                {t(`keys_new.button`)}
             </Button>
             <Dialog open={open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Nueva API Key</DialogTitle>
+                <DialogTitle id="form-dialog-title">{t(`keys_new.title`)}</DialogTitle>
                 { !created ? (
                     <DialogContent>
                         <DialogContentText>
-                            Ingrese un nombre para la nueva API Key.
+                            {t(`keys_new.content`)}
                         </DialogContentText>
                         <TextField
                             autoFocus
                             margin="dense"
                             id="name"
-                            label="Nombre"
+                            label={t(`keys_new.label`)}
                             type="text"
                             fullWidth
                             value={this.state.keyname}
@@ -88,8 +88,7 @@ class NewKeyDialogForm extends React.Component {
                 ) : (
                     <DialogContent>
                         <DialogContentText>
-                            Copie y guarde su clave, si la pierde debera crear una nuvea. 
-                            No la comparta con nadie
+                            {t(`keys_new.content_result`)}
                         </DialogContentText>
                         <TextField
                             InputProps={{
@@ -105,16 +104,16 @@ class NewKeyDialogForm extends React.Component {
                 )}
                 <DialogActions>
                 <Button onClick={this.handleClose} color="primary">
-                    { !created ? "Cancel"  : "Cerrar" }
+                    { !created ? t(`keys_new.cancel`)  : t(`keys_new.close`) }
                 </Button>
                 { !created ? (
                     <Button onClick={this.submit} color="primary">
-                        Crear
+                        {t(`keys_new.create`)}
                     </Button>
                 ) : (
                     <CopyToClipboard text={generated_apikey}>
                         <Button onClick={this.copy} color="primary">
-                            Copiar
+                            {t(`keys_new.copy`)}
                         </Button>
                     </CopyToClipboard>
 

@@ -25,6 +25,17 @@
     "state": "State",
     "title": "Your API Keys"
   },
+  "keys_new": {
+    "button": "New",
+    "cancel": "Cancel",
+    "close": "Close",
+    "content": "Enter a name for the new API Key.",
+    "content_result": "Copy and save your password, if you lose it you must create a new one. Do not share it with anyone.",
+    "copy": "Copy",
+    "create": "Create",
+    "label": "Name",
+    "title": "New API Key"
+  },
   "layers": {
     "created_at": "Creation date",
     "date": "Acquisition date",

@@ -188,6 +188,15 @@ me,keys.revoked,Revocada,Revoked
 me,keys.revoke,Revocar,Revoke
 me,keys.confirmTitle,Revocar API Key,Revoke API Key
 me,keys.confirmContent,Esta acción no se puede deshacer ¿Esta seguro que desea revocar esta API Key?,This action cannot be undone. Are you sure you want to revoke this API Key?
+me,keys_new.button,Nueva,New
+me,keys_new.title,Nueva API Key,New API Key
+me,keys_new.content,Ingrese un nombre para la nueva API Key.,Enter a name for the new API Key.
+me,keys_new.label,Nombre,Name
+me,keys_new.content_result,"Copie y guarde su clave, si la pierde debera crear una nuvea. No la comparta con nadie.","Copy and save your password, if you lose it you must create a new one. Do not share it with anyone."
+me,keys_new.cancel,Cancelar,Cancel
+me,keys_new.close,Cerrar,Close
+me,keys_new.create,Crear,Create
+me,keys_new.copy,Copiar,Copy
 me,home.models_title,Modelos,Models
 me,home.models_descrip,Puedes generar tu modelo para detectar objectos de tus imagenes desde este,You can generate your model to detect objects from your images from this
 me,home.api_title,Dymaxion Labs API,Dymaxion Labs API
