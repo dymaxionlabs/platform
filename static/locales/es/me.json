@@ -25,6 +25,17 @@
     "state": "Estado",
     "title": "Tus API Keys"
   },
+  "keys_new": {
+    "button": "Nueva",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "content": "Ingrese un nombre para la nueva API Key.",
+    "content_result": "Copie y guarde su clave, si la pierde debera crear una nuvea. No la comparta con nadie.",
+    "copy": "Copiar",
+    "create": "Crear",
+    "label": "Nombre",
+    "title": "Nueva API Key"
+  },
   "layers": {
     "created_at": "Fecha de creaci\u00f3n",
     "date": "Fecha de adquisici\u00f3n",

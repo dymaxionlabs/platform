@@ -100,12 +100,11 @@ class KeysContent extends React.Component {
   }
 
   onDialogResult = async (action) => {
-    console.log(action);
     if (action) {
-      const { keyToRevoke } = this.state
+      const prefix = this.state.keyToRevoke.split(".")[0]
       await axios.patch(
-        buildApiUrl(`/api_keys/${keyToRevoke}`), 
-        { "pk": keyToRevoke, revoked : true },
+        buildApiUrl(`/api_keys/${prefix}`), 
+        { "prefix": prefix, revoked : true },
         { headers: { Authorization: this.props.token } }
       ).then(() => {
           this.getApiKeys();
