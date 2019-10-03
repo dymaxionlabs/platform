@@ -23,7 +23,7 @@ from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
                           HasAccessToRelatedProjectPermission, UserPermission,
-                          UserProfilePermission, HasUserAPIKey)
+                          UserProfilePermission, HasUserAPIKey, HasAccessToAPIKeyPermission)
 from .renderers import BinaryFileRenderer
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
@@ -332,7 +332,8 @@ class FileDownloadView(APIView):
 class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = UserAPIKey.objects.get_usable_keys()
     serializer_class = UserAPIKeySerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, HasAccessToAPIKeyPermission)
+    lookup_field = 'prefix'
 
     def list(self, request):
         queryset = self.get_queryset().filter(user=request.user)

@@ -93,3 +93,10 @@ class HasUserAPIKey(BaseHasAPIKey):
             instance = self.model.objects.get(prefix = prefix)
             request.user = instance.user
         return is_valid
+
+
+class HasAccessToAPIKeyPermission(permissions.BasePermission):
+    model = UserAPIKey
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user
