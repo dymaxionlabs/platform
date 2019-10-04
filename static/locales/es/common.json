@@ -4,7 +4,8 @@
     "success_msg": "Su direcci\u00f3n de correo fue verificada con \u00e9xito."
   },
   "confirmation": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "copy": "Copiar"
   },
   "crop_lots_desc": "Lotes categorizados por tipo de cultivo",
   "crop_lots_title": "Lotes de cultivo",
