@@ -21,6 +21,7 @@ import { routerPush } from "../../utils/router";
 import { i18n, Link, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
+import ShowUuidDialog from "../ShowUuidDialog";
 
 const styles = theme => ({
   root: {
@@ -53,6 +54,8 @@ class ModelsContent extends React.Component {
   state = {
     models: [],
     contextualMenuOpen: null,
+    showUuidDialogOpen : false,
+    currentUUID: ""
   };
 
   componentDidMount() {
@@ -89,9 +92,20 @@ class ModelsContent extends React.Component {
     this.setState({contextualMenuOpen: null});
   }
 
-  estimatorMoreInfo = model => {
-    routerPush(`/models/${model.uuid}`);
+  onDialogResult = async (action) => {
+    this.setState({
+      showUuidDialogOpen: false,
+      currentUUID: ""
+    })
   }
+
+  estimatorViewUUID = model => {
+    this.setState({
+      currentUUID: model.uuid,
+      showUuidDialogOpen: true
+    })
+  }
+
   estimatorAddImages = model => {
     routerPush(`/models/new/od/upload?id=${model.uuid}`);
   }
@@ -101,7 +115,7 @@ class ModelsContent extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { models: models, contextualMenuOpen } = this.state;
+    const { models: models, contextualMenuOpen, showUuidDialogOpen, currentUUID } = this.state;
     const locale = i18n.language;
 
     return (
@@ -160,7 +174,7 @@ class ModelsContent extends React.Component {
                       open={Boolean(contextualMenuOpen)}
                       onClose={this.handleContextualMenuClose}
                     >
-                      <MenuItem onClick={ () => this.estimatorMoreInfo(model)}>{t("models.more_info")}</MenuItem>
+                      <MenuItem onClick={ () => this.estimatorViewUUID(model)}>{t("models.uuid")}</MenuItem>
                       <MenuItem onClick={ () => this.estimatorAddImages(model)}>{t("models.add_imgs")}</MenuItem>
                       <MenuItem onClick={ () => this.estimatorAddAnnotations(model)}>{t("models.add_annot")}</MenuItem>
                     </Menu>
@@ -170,6 +184,12 @@ class ModelsContent extends React.Component {
             </TableBody>
           </Table>
         </Paper>
+        <ShowUuidDialog
+          onClose={this.onDialogResult} 
+          open={showUuidDialogOpen}
+          title={"UUID"}
+          content={currentUUID}
+        />
       </div>
     );
   }

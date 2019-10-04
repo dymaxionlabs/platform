@@ -58,7 +58,7 @@
     "classes": "Clases",
     "created_at": "Fecha de creaci\u00f3n",
     "estimator_type": "Tipo",
-    "more_info": "M\u00e1s informaci\u00f3n",
+    "uuid": "Mostar UUID",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
     "title": "Tus Modelos",
