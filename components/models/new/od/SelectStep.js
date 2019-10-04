@@ -148,9 +148,28 @@ class SelectStep extends React.Component {
     });
   };
 
+  async checkPendingJob(){
+    const { token, estimatorId } = this.props;
+    const response = await axios.get(
+      buildApiUrl(`/estimators/${estimatorId}/predicted/`),
+      {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+    });
+    /* detail will be true is doesn't exist any predictionjob with finished = False */
+    let detail = response.data.detail;
+    if (!detail){
+      routerPush(`/models/new/od/predict?id=${estimatorId}`);
+    }
+  }
+
   async componentDidMount(){
     const project = cookie.get("project");
     const { token } = this.props;
+
+    this.checkPendingJob();
 
     const response = await axios.get(
       buildApiUrl(`/files/?project_uuid=${project}`),
