@@ -102,7 +102,7 @@ urlpatterns = [
         FinishedPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
         StartPredictionJobView.as_view()),
-    url(r'^predictionjob/(?P<estimator__uuid>[^/]+)$', 
+    url(r'^predictionjob/(?P<pk>[^/]+)$', 
         PredictionJobView.as_view()),
     url(r'^api_keys/(?P<prefix>[^/]+)$',  UserAPIKeyList.as_view(),),
     url(r'^api_keys/', UserAPIKeyList.as_view(),),
