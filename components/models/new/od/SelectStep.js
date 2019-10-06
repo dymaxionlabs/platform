@@ -35,22 +35,24 @@ class SelectStep extends React.Component {
     filesLoaded: false,
     uploading: false,
     currentProgress: 0,
-    totalProgress: 0
+    totalProgress: 0,
+    disabledSubmitBtn: true,
   };
 
   selectedOrUploadFiles(files){
-    if(files.length != 0) return true;
+    if(files.length != 0) return true; 
     else{
+      let selected = false
       this.state.previousFiles.map((item, key) =>{
         if(item['selected']){
-          return true
+          selected = true;
         }
       });
-      return false;
+      return selected;
     }
   }
 
-  async setPredictingJob(newNameFiles){
+  async setPredictingJob(newNameFiles = []){
     const { estimatorId, token } = this.props;
     let selectedFiles = [];
     this.state.previousFiles.map((item, key) =>{
@@ -84,44 +86,52 @@ class SelectStep extends React.Component {
     this.setState({ uploading: true, currentProgress: 0, totalProgress: 0 });
 
     let count = 0;
-    for (const file of files) {
-      try {
-        await axios.post(
-          buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
-          file,
-          {
-            headers: {
-              Authorization: token,
-              "Accept-Language": i18n.language
-            },
-            onUploadProgress: progressEvent => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              this.setState({ currentProgress: percentCompleted });
-              console.log(percentCompleted);
+    if (files.length > 0){
+      for (const file of files) {
+        try {
+          await axios.post(
+            buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
+            file,
+            {
+              headers: {
+                Authorization: token,
+                "Accept-Language": i18n.language
+              },
+              onUploadProgress: progressEvent => {
+                const percentCompleted = Math.round(
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+                this.setState({ currentProgress: percentCompleted });
+                console.log(percentCompleted);
+              }
             }
-          }
-        ).then(res => {
-          newNameFiles.push(res.data.detail['name']);
-        });
-      } catch (err) {
-        console.error(err);
-        this.setState({ uploading: false });
-        return;
-      }
+          ).then(res => {
+            newNameFiles.push(res.data.detail['name']);
+          });
+        } catch (err) {
+          console.error(err);
+          this.setState({ uploading: false });
+          return;
+        }
 
-      count += 1;
-      this.setState({ totalProgress: (count / files.length) * 100 });
-      if (count === files.length) {
-        this.setPredictingJob(newNameFiles);
-      }
-      if (!this.state.uploading) return;
+        count += 1;
+        this.setState({ totalProgress: (count / files.length) * 100 });
+        if (count === files.length) {
+          this.setPredictingJob(newNameFiles);
+        }
+        if (!this.state.uploading) return;
+      } 
+    }
+    else{
+      this.setPredictingJob();
     }
   };
 
   handleDropzoneChange = files => {
-    this.setState({ files: files });
+    this.setState({ 
+      files: files,
+      disabledSubmitBtn: !this.selectedOrUploadFiles(files)
+    });
   };
 
   handleFileClick = file => {
@@ -133,20 +143,43 @@ class SelectStep extends React.Component {
     this.setState(
       this.state
     );
+    this.setState({
+      disabledSubmitBtn: !this.selectedOrUploadFiles(this.state.files)
+    });
   };
+
+  async checkPendingJob(){
+    const { token, estimatorId } = this.props;
+    const response = await axios.get(
+      buildApiUrl(`/estimators/${estimatorId}/predicted/`),
+      {
+        headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+        }
+    });
+    /* detail will be true is doesn't exist any predictionjob with finished = False */
+    let detail = response.data.detail;
+    if (!detail){
+      routerPush(`/models/new/od/predict?id=${estimatorId}`);
+    }
+  }
 
   async componentDidMount(){
     const project = cookie.get("project");
-    const { token, estimatorId } = this.props;
+    const { token } = this.props;
+
+    this.checkPendingJob();
 
     const response = await axios.get(
-        buildApiUrl(`/files/?project_uuid=${project}`),
-        {
-            headers: {
-            Authorization: token,
-            "Accept-Language": i18n.language
-            }
-        });
+      buildApiUrl(`/files/?project_uuid=${project}`),
+      {
+          headers: {
+          Authorization: token,
+          "Accept-Language": i18n.language
+          }
+      }
+    );
     let files = response.data.results;
     for(let i=0; i<files.length; i++){
       this.state.previousFiles.push({
@@ -160,13 +193,16 @@ class SelectStep extends React.Component {
         this.state
       );
     }
-    this.setState({filesLoaded:true});
+    this.setState({
+      filesLoaded:true,
+      disabledSubmitBtn: !this.selectedOrUploadFiles(this.state.files)
+    });
   }
 
   render() {
     const { classes, t } = this.props;
     const { previousFiles, filesLoaded, uploading, 
-            currentProgress, totalProgress } = this.state;
+            currentProgress, totalProgress, disabledSubmitBtn } = this.state;
 
     return (
       <StepContentContainer>
@@ -193,6 +229,7 @@ class SelectStep extends React.Component {
           color="primary"
           variant="contained"
           onClick={this.handleSubmit}
+          disabled={disabledSubmitBtn}
         >
           {t("select_step.submit_btn")}
         </Button>

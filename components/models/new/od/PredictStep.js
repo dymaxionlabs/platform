@@ -58,7 +58,7 @@ class PredictStep extends React.Component {
           clearInterval(this.offInterval);
         this.setState({percentage: response.data.percentage});
         this.offInterval = setInterval(() => {
-          this.setState({percentage: this.state.percentage + 1});console.log(this.state.percentage);
+          this.setState({percentage: this.state.percentage + 1});;
         }, 1000*60);
       }
     }
