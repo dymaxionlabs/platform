@@ -74,6 +74,7 @@
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",
     "explanation": "En este momento se est\u00e1 entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",
+    "finished_explanation": "El proceso de entrenamiento termin\u00f3. Haga clic en continuar para realizar una predicci\u00f3n",
     "title": "Entrenar modelo",
     "undefined_explanation": "El tiempo restante es indefinido"
   },
