@@ -265,6 +265,7 @@ models,train_step.explanation,En este momento se está entrenando tu modelo. Est
 models,train_step.continue,Continuar,Continue
 models,train_step.back,Ir atrás,Go back
 models,train_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
+models,train_step.finished_explanation,El proceso de entrenamiento terminó. Haga clic en continuar para realizar una predicción,The training process is over. Click continue to make a prediction
 models,select_step.title,Seleccionar imágenes,Select images
 models,select_step.explanation,Selecciona las imágenes preexistentes o carga nuevas y luego cliquea Predecir,Select pre-existing images or upload new ones and then click Predict
 models,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."

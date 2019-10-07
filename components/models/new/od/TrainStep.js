@@ -97,7 +97,9 @@ class TrainStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("train_step.title")}
         </Typography>
-        <Typography>{t("train_step.explanation")}</Typography>
+        <Typography>{ 
+          finished ? t("train_step.finished_explanation") : t("train_step.explanation")}
+        </Typography>
         { finished 
           ? 
           <Link>
