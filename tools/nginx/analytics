@@ -1,12 +1,16 @@
 server {
-    server_name staging.analytics.dymaxionlabs.com;
+    server_name app.dymaxionlabs.com analytics.dymaxionlabs.com;
+
+    if ($host = analytics.dymaxionlabs.com) {
+        return 301 https://app.dymaxionlabs.com$request_uri;
+    }
 
     location /static/ {
-        root /home/munshkr/analytics;
+        root /home/ubuntu/analytics;
     }
 
     location /_next/static/ {
-        alias /home/munshkr/analytics/.next/static/;
+        alias /home/ubuntu/analytics/.next/static/;
     }
 
     location / {
@@ -23,4 +27,24 @@ server {
       # otherwise next app will not work properly
       # try_files $uri $uri/ =404;
     }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/analytics.dymaxionlabs.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/analytics.dymaxionlabs.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    if ($host = app.dymaxionlabs.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    if ($host = analytics.dymaxionlabs.com) {
+        return 301 https://app.dymaxionlabs.com$request_uri;
+    }
+
+    server_name app.dymaxionlabs.com analytics.dymaxionlabs.com;
+    listen 80;
+    return 404; # managed by Certbot
 }
