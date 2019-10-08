@@ -96,6 +96,7 @@ common,roads_desc_long,El servicio de mapeo de rutas pavimentadas de alta precis
 common,soil_desc_long,El servicio de mapeo de área sembrada consiste en un archivo vectorial con la ubicación de los polígonos con áreas sembradas  y las imagenes utilizadas para el área solicitada.,The sown area map service consists of a vector file containing the polygon of each sowned area and the images used for calculations within the requested territory.
 common,floods_desc_long,El servicio de mapeo de áreas inundadas consiste en un archivo vectorial con la ubicación de los polígonos con áreas inundadas y las imagenes utilizadas para el área solicitada.,The flooded areas map service consists of a vector file containing the polygon of each flooded area and the images used for calculations within the requested territory.
 common,ndvi_desc_long,El servicio de mapeo de índice verde consiste en un archivo ráster con el índice NDVI y las imagenes utilizadas para el área solicitada,The green index map service consists of a raster file containing the NDVI index and the images used for calculations within the requested area.
+common,logout_title,Cerrar sesión,Logout
 confirmation_portal,surface_area,tamaño de superficie,surface area
 confirmation_portal,selected_layers,capas seleccionadas,selected layers
 confirmation_portal,price,costo del servicio,service cost
