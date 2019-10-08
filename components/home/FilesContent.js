@@ -23,6 +23,7 @@ import axios from "axios";
 import { buildApiUrl } from "../../utils/api";
 import Moment from "react-moment";
 import cookie from "js-cookie";
+import FileDownload from '../../utils/file-download';
 
 const styles = theme => ({
   root: {
@@ -103,6 +104,19 @@ class FilesContent extends React.Component {
     this.setState({ notImplementedOpen: false });
   };
 
+  handleFileURL = (file) => {
+    const projectId = cookie.get("project");
+    axios
+    .get(buildApiUrl(`/files/download/${file.name}`),{ 
+      params: { project_uuid: projectId },
+      headers: { Authorization: this.props.token }
+    })
+   .then((response) => {
+    FileDownload(response.data, file.name);
+   });
+  
+  }
+
   render() {
     const { t, classes } = this.props;
     const { files: files, notImplementedOpen } = this.state;
@@ -140,14 +154,13 @@ class FilesContent extends React.Component {
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title={t("download")}>
-                      <a href={file.file} download>
                         <IconButton
+                          onClick={() => this.handleFileURL(file)}
                           className={classes.button}
                           aria-label={t("download")}
                         >
                           <CloudDownloadIcon />
                         </IconButton>
-                      </a>
                     </Tooltip>
                     {/* <Tooltip title={t("delete")}>
                       <IconButton
