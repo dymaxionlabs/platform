@@ -242,10 +242,12 @@ def run_cloudml(job, script_name):
             str(job.estimator.uuid),
             'TERRA_JOB_ID':
             str(job.pk),
-            'ESTIMATORS_BUCKET':
-            'gs://{}'.format(settings.ESTIMATORS_BUCKET),
             'REGION':
             settings.CLOUDML_REGION,
+            'PROJECT':
+            settings.CLOUDML_PROJECT,
+            'ESTIMATORS_BUCKET':
+            'gs://{}'.format(settings.ESTIMATORS_BUCKET),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)

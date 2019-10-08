@@ -283,6 +283,7 @@ PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs')
 
 # Google CloudML settings
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY', '.')
+CLOUDML_PROJECT = os.getenv('CLOUDML_PROJECT', 'dyma-staging')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
 
 LAYERS_FILL_COLOR = [
