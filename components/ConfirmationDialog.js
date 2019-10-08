@@ -6,6 +6,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
+import Typography from "@material-ui/core/Typography";
+
 
 import { withNamespaces } from "../i18n";
 
@@ -29,7 +31,7 @@ class ConfirmationDialog extends React.Component{
           open={open}
         >
           <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
-          <DialogContent dividers>{content}</DialogContent>
+          <DialogContent dividers><Typography variant="body1">{content}</Typography></DialogContent>
           <DialogActions>
             <Button onClick={this.handleCancel} color="primary">
               {t("confirmation.cancel")}
