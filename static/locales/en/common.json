@@ -114,5 +114,6 @@
   "title": "Dymaxion Labs Platform",
   "true_color_desc": "True color satellite image",
   "true_color_title": "True color",
-  "username": "Username"
+  "username": "Username",
+  "logout_title":"Logout"
 }
