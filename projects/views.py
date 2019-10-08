@@ -245,7 +245,7 @@ class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
 # FIXME Use CreateAPIView and a serializer for consistent validation
 class FileUploadView(APIView):
     parser_classes = (FileUploadParser, )
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
 
     suffix_sep = '__'
 
