@@ -260,7 +260,7 @@ def run_cloudml(job, script_name):
 
 
 def prepare_artifacts(job):
-    training_job = TrainingJob.objects.filter(estimator=job.estimator).first()
+    training_job = TrainingJob.objects.get(pk=job.metadata['training_job'])
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
     run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}classes.csv'.format(
         sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,

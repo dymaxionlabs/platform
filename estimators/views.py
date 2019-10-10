@@ -158,13 +158,21 @@ class StartPredictionJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
+        last_training_job = TrainingJob.objects.filter(estimator=estimator,
+                                                        finished=True).last()
+        if not last_training_job:
+            return Response({'training_job': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
         job = PredictionJob.objects.filter(estimator=estimator,
                                            finished=False).first()
+
         if not job:
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
-            job = PredictionJob.objects.create(estimator=estimator)
+            job = PredictionJob.objects.create(estimator=estimator,
+                                                metadata={'training_job':last_training_job.pk})
             job.image_files.set(files)
             job.save()
 
