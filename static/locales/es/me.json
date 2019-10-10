@@ -62,6 +62,10 @@
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
     "title": "Tus Modelos",
+    "delete_models": "Eliminar",
+    "title_delete": "Eliminar Modelo",
+    "text_delete_warning": "Esta acción es IRREVERSIBLE",
+    "text_delete": "¿Está seguro que desea eliminar este modelo y sus anotaciones?",
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     }

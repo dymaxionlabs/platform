@@ -22,6 +22,7 @@ import { i18n, Link, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import ShowUuidDialog from "../ShowUuidDialog";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 const styles = theme => ({
   root: {
@@ -55,19 +56,20 @@ class ModelsContent extends React.Component {
     models: [],
     contextualMenuOpen: null,
     showUuidDialogOpen : false,
+    deleteDialogOpen: false,
     currentUUID: ""
   };
 
-  componentDidMount() {
+  getModels = async () => {
     const projectId = cookie.get("project");
-
     axios
       .get(buildApiUrl("/estimators/"), {
         params: { project_uuid: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {
-        this.setState({ models: response.data.results });
+        this.setState({ models: response.data.results,
+                        deleteDialogOpen: false });
       })
       .catch(err => {
         const response = err.response;
@@ -77,6 +79,10 @@ class ModelsContent extends React.Component {
           console.error(response);
         }
       });
+  }
+  
+  componentDidMount() {
+    this.getModels();
   }
 
   estimatorTypeName(model) {
@@ -95,6 +101,7 @@ class ModelsContent extends React.Component {
   onDialogResult = async (action) => {
     this.setState({
       showUuidDialogOpen: false,
+      deleteDialogOpen: false,
       currentUUID: ""
     })
   }
@@ -103,6 +110,30 @@ class ModelsContent extends React.Component {
     this.setState({
       currentUUID: model.uuid,
       showUuidDialogOpen: true
+    })
+  }
+
+  estimatorDelete = model => {
+    this.setState({
+      currentUUID: model.uuid,
+      deleteDialogOpen: true
+    })
+  }
+
+  onDeleteDialogResult = async (action) => {
+    if (action) {
+      const currentUUID = this.state.currentUUID;
+      await axios.delete(
+        buildApiUrl(`/estimators/${currentUUID}`), 
+        {
+          headers: { Authorization: this.props.token } 
+        }
+      ).then(() => {
+        this.getModels();
+      });
+    }
+    this.setState({
+      deleteDialogOpen: false
     })
   }
 
@@ -115,7 +146,7 @@ class ModelsContent extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { models: models, contextualMenuOpen, showUuidDialogOpen, currentUUID } = this.state;
+    const { models: models, contextualMenuOpen, showUuidDialogOpen, currentUUID,deleteDialogOpen } = this.state;
     const locale = i18n.language;
 
     return (
@@ -177,6 +208,7 @@ class ModelsContent extends React.Component {
                       <MenuItem onClick={ () => this.estimatorViewUUID(model)}>{t("models.uuid")}</MenuItem>
                       <MenuItem onClick={ () => this.estimatorAddImages(model)}>{t("models.add_imgs")}</MenuItem>
                       <MenuItem onClick={ () => this.estimatorAddAnnotations(model)}>{t("models.add_annot")}</MenuItem>
+                      <MenuItem onClick={ () => this.estimatorDelete(model)}>{t("models.delete_models")}</MenuItem>
                     </Menu>
                   </TableCell>
                 </TableRow>
@@ -189,6 +221,17 @@ class ModelsContent extends React.Component {
           open={showUuidDialogOpen}
           title={"UUID"}
           content={currentUUID}
+        />
+        <ConfirmationDialog
+          onClose={this.onDeleteDialogResult} 
+          open={deleteDialogOpen}
+          title={t("models.title_delete")}
+          content={
+            <div>
+              <p>{t("models.text_delete")}</p>
+              <p><strong>{t("models.text_delete_warning")}</strong></p>
+            </div>
+           }
         />
       </div>
     );

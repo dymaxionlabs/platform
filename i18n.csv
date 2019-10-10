@@ -201,6 +201,10 @@ me,keys_new.create,Crear,Create
 me,keys_new.copy,Copiar,Copy
 me,home.models_title,Modelos,Models
 me,home.models_descrip,Puedes generar tu modelo para detectar objectos de tus imagenes desde este,You can generate your model to detect objects from your images from this
+me,home.delete_models,Eliminar,Remove
+me,home.title_delete,Eliminar Modelo,Remove Model
+me,home.text_delete_warning,Esta acción es IRREVERSIBLE,This action is IRREVERSIBLE
+me,home.text_delete,¿Está seguro que desea eliminar este modelo y sus anotaciones?,Are you sure you want to delete this model and its annotations?
 me,home.api_title,Dymaxion Labs API,Dymaxion Labs API
 me,home.api_descrip1,Genera tu API Key desde este,Generate your API Key from this
 me,home.api_descrip2,y podras integrar nuestra api a tu código python. Para mas información puedes acceder a la Documentación,and you can integrate our api to your python code. For more information you can access the Documentation
