@@ -15,6 +15,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
+from rest_framework.exceptions import NotFound
 
 from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
 from .models import (File, Layer, Map, Project, ProjectInvitationToken,
@@ -23,7 +24,8 @@ from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
                           HasAccessToRelatedProjectPermission, UserPermission,
-                          UserProfilePermission, HasUserAPIKey, HasAccessToAPIKeyPermission)
+                          UserProfilePermission, HasUserAPIKey,
+                          HasAccessToAPIKeyPermission)
 from .renderers import BinaryFileRenderer
 from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
@@ -120,16 +122,16 @@ class ContactView(generics.GenericAPIView):
         email = request.data['email']
         landing = request.data['landing']
         list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
-        
+
         if settings.MAILCHIMP_APIKEY is not None:
             client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
-                            mc_user=settings.MAILCHIMP_USER)        
+                               mc_user=settings.MAILCHIMP_USER)
             try:
                 client.lists.members.create(
                     list_id, {
                         'email_address': email,
                         'status': 'subscribed',
-                        'tags':[landing]
+                        'tags': [landing]
                     })
                 return Response({"detail": _("User subscribed")},
                                 status=status.HTTP_200_OK)
@@ -156,7 +158,7 @@ class SubscribeBetaView(generics.GenericAPIView):
 
         if settings.MAILCHIMP_APIKEY is not None:
             client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
-                            mc_user=settings.MAILCHIMP_USER)
+                               mc_user=settings.MAILCHIMP_USER)
             try:
                 client.lists.members.create(
                     list_id, {
@@ -171,7 +173,8 @@ class SubscribeBetaView(generics.GenericAPIView):
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"detail": _("User subscribed")},
-                status=status.HTTP_200_OK)
+                            status=status.HTTP_200_OK)
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all().order_by('-updated_at')
@@ -310,29 +313,31 @@ class FileDownloadView(APIView):
         project = Project.objects.filter(uuid=uuid).first()
         if not project:
             raise ValidationError({'project_uuid': 'Invalid project uuid'})
-        
-        file = File.objects.filter(name=filename, owner=user, project=project).first()
+
+        file = File.objects.filter(name=filename, owner=user,
+                                   project=project).first()
         if not file:
-            return rest_framework.exceptions.NotFound(detail=None, code=None)
+            raise NotFound(detail=None, code=None)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             shutil.copyfileobj(file.file, tmpfile)
             src = tmpfile.name
 
-            content_disp = 'attachment; filename="{file_name}"'.format(file_name=filename)
+            content_disp = 'attachment; filename="{file_name}"'.format(
+                file_name=filename)
 
             with open(src, 'rb') as fileresponse:
                 return Response(
                     fileresponse.read(),
                     headers={'Content-Disposition': content_disp},
-                    content_type=mimetypes.MimeTypes().guess_type(src)[0]
-                )
+                    content_type=mimetypes.MimeTypes().guess_type(src)[0])
 
 
 class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = UserAPIKey.objects.get_usable_keys()
     serializer_class = UserAPIKeySerializer
-    permission_classes = (permissions.IsAuthenticated, HasAccessToAPIKeyPermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          HasAccessToAPIKeyPermission)
     lookup_field = 'prefix'
 
     def list(self, request):
@@ -341,9 +346,10 @@ class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
         return Response(serializer.data)
 
     def create(self, request):
-        api_key, key = UserAPIKey.objects.create_key(name=request.data['name'],user=request.user)
+        api_key, key = UserAPIKey.objects.create_key(name=request.data['name'],
+                                                     user=request.user)
         serializer = self.serializer_class(api_key)
-        return Response({'data':serializer.data,'key':key})
-    
+        return Response({'data': serializer.data, 'key': key})
+
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
