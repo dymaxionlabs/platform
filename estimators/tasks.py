@@ -248,6 +248,8 @@ def run_cloudml(job, script_name):
             settings.CLOUDML_PROJECT,
             'ESTIMATORS_BUCKET':
             'gs://{}'.format(settings.ESTIMATORS_BUCKET),
+            'PUBSUB_TOPIC':
+            settings.PUBSUB_JOB_TOPIC_ID,
             'SENTRY_SDK':
             os.environ['SENTRY_DNS'],
             'SENTRY_ENVIRONMENT':
