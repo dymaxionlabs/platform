@@ -3,7 +3,7 @@ Description=Jobs subscriber
 After=network.target
 
 [Service]
-Environment=PYTHONBUFFERED=true
+Environment=PYTHONUNBUFFERED=true
 Environment=SENTRY_DNS=https://2dd8f13e32504a0ca9ac927ec6adbcba@sentry.io/1412965
 User=ubuntu
 Group=www-data
