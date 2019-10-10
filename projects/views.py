@@ -314,8 +314,11 @@ class FileDownloadView(APIView):
         if not project:
             raise ValidationError({'project_uuid': 'Invalid project uuid'})
 
-        file = File.objects.filter(name=filename, owner=user,
-                                   project=project).first()
+        filters = dict(name=filename, project=project)
+        if not user.is_staff:
+            filters.update(owner=user)
+        file = File.objects.filter(**filters).first()
+
         if not file:
             raise NotFound(detail=None, code=None)
 
