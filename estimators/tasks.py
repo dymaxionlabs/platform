@@ -220,7 +220,7 @@ def upload_prediction_image_tiles(job):
             run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                 src=tmpfile.name,
-                dst=url))
+                dst="{url}{file}".format(url=url,file=tmpfile.name)))
 
         run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
