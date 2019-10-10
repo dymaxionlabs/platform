@@ -119,7 +119,9 @@ def subscriber():
         elif data['type'] == 'prediction-job':
             predictionJobFinished(data['job_id'])
 
+    print("Subscribe to:", subscription_path)
     client.subscribe(subscription_path, callback=callback)
+
     print("Waiting for completed jobs...")
     while True:
         time.sleep(30)
