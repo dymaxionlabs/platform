@@ -67,6 +67,8 @@ def createFile(name, image, tmpdirname, metadata):
 def predictionJobFinished(job_id):
     print("Prediction job finished {}".format(job_id))
     job = PredictionJob.objects.get(pk=job_id)
+    job.finished = True
+    job.save()
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         run_subprocess(
