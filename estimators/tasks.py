@@ -17,7 +17,6 @@ from skimage import exposure
 from skimage.io import imsave
 
 from projects.models import File
-from terra.emails import notify
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
 
@@ -87,17 +86,10 @@ def write_image(img, path):
 
 @job("default")
 def start_training_job(training_job_pk):
-    notify('[{}] Training job started'.format(training_job_pk))
     job = TrainingJob.objects.get(pk=training_job_pk)
-
     annotation_csvs = generate_annotations_csv(job)
     classes_csv = generate_classes_csv(job)
-    notify('[{}] Annotations generated'.format(training_job_pk),
-           annotation_csvs + [classes_csv])
-
     upload_image_tiles(job)
-    notify('[{}] Image tiles generated'.format(training_job_pk))
-
     run_cloudml(job, './submit_job.sh')
 
 
@@ -220,7 +212,7 @@ def upload_prediction_image_tiles(job):
             run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                 src=tmpfile.name,
-                dst="{url}{file}".format(url=url,file=tmpfile.name)))
+                dst="{url}{file}".format(url=url, file=tmpfile.name)))
 
         run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
@@ -276,13 +268,10 @@ def prepare_artifacts(job):
 
 @job("default")
 def start_prediction_job(prediction_job_pk):
-    notify('[{}] Prediction job started'.format(prediction_job_pk))
     job = PredictionJob.objects.get(pk=prediction_job_pk)
 
     prepare_artifacts(job)
-    notify('[{}] Artifacts prepared'.format(prediction_job_pk))
 
     upload_prediction_image_tiles(job)
-    notify('[{}] Image tiles generated'.format(prediction_job_pk))
 
     run_cloudml(job, './submit_prediction_job.sh')
