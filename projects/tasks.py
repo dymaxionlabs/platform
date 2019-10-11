@@ -71,7 +71,7 @@ def save_tiff_metadata(src, file):
                 'width': dataset.width,
                 'heigth': dataset.height,
                 'transform': dataset.transform,
-                'crs': dataset.crs
+                'crs': str(dataset.crs)
             }
             file.metadata = json.dumps(tiff_data, indent=4)
             file.save()
@@ -103,7 +103,7 @@ def generate_raster_tiles(file_pk):
         src = tmpfile.name
 
         if filetype.guess(src).mime == 'image/tiff':
-            save_tiff_metadata(src,file)
+            save_tiff_metadata(src, file)
 
         area_geom = mapping(get_raster_extent_polygon(src))
 
@@ -175,15 +175,18 @@ def generate_vector_tiles(file_pk):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Convert to standar prediction
-            output_file = os.path.sep.join([tmpdir,'output.json'])
-            run_subprocess('ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'.format(
-                            output_file=output_file, input_file=src))
-            
+            output_file = os.path.sep.join([tmpdir, 'output.json'])
+            run_subprocess(
+                'ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'
+                .format(output_file=output_file, input_file=src))
+
             # Generate vector tiles
-            tiles_output_dir = os.path.sep.join([tmpdir,'tiles',file.name])
+            tiles_output_dir = os.path.sep.join([tmpdir, 'tiles', file.name])
             os.makedirs(tiles_output_dir)
             cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
-                class_name= file.metadata['class'], output_dir=tiles_output_dir, input_file=output_file)
+                class_name=file.metadata['class'],
+                output_dir=tiles_output_dir,
+                input_file=output_file)
             run_subprocess(cmd)
 
             related_file_pk = int(file.metadata['source_img']['pk'])
@@ -208,20 +211,16 @@ def generate_vector_tiles(file_pk):
             layer.save()
 
             related_map = Map.objects.get(uuid=file.metadata['map']['uuid'])
-            MapLayer.objects.create(
-                map = related_map,
-                layer = layer,
-                order = file.metadata['map']['layer_order']
-            )
+            MapLayer.objects.create(map=related_map,
+                                    layer=layer,
+                                    order=file.metadata['map']['layer_order'])
 
             # Upload tiles to corresponding Tiles bucket
             dst = layer.tiles_bucket_url()
-            run_subprocess('gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'.format(
-                src=tiles_output_dir, dst=dst))
+            run_subprocess(
+                'gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'
+                .format(src=tiles_output_dir, dst=dst))
 
-            run_subprocess('gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'.format(
-                src=tiles_output_dir, dst=dst))
-
-            
-
-            
+            run_subprocess(
+                'gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'
+                .format(src=tiles_output_dir, dst=dst))
