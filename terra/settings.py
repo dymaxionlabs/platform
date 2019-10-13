@@ -299,3 +299,7 @@ STAC_SEARCH_PATH = '/stac/search'
 
 #Estimated time for finish of a TrainingJob / PredictionJob
 APROX_JOBS_TIME = 120
+
+TIPPECANOE_BIN_PATH = os.getenv('TIPPECANOE_BIN_PATH',
+                                '/usr/local/bin/tippecanoe')
+OGR2OGR_BIN_PATH = os.getenv('OGR2OGR_BIN_PATH', '/usr/bin/ogr2ogr')

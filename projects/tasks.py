@@ -59,9 +59,12 @@ def upload_directory_to_gs_bucket(src, dst):
     if settings.DEBUG:
         print("Fake upload directory to GS bucket")
     else:
-        run_subprocess('gsutil -m cp -r {src} {dst}'.format(src=src, dst=dst))
-        run_subprocess('gsutil -m cp -a public-read -r {src}/* {dst}'.format(
-            src=src, dst=dst))
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src, dst=dst))
+        run_subprocess(
+            '{sdk_bin_path}/gsutil -m cp -a public-read -r {src}/* {dst}'.
+            format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src,
+                   dst=dst))
 
 
 def save_tiff_metadata(src, file):
@@ -177,13 +180,16 @@ def generate_vector_tiles(file_pk):
             # Convert to standar prediction
             output_file = os.path.sep.join([tmpdir, 'output.json'])
             run_subprocess(
-                'ogr2ogr -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'
-                .format(output_file=output_file, input_file=src))
+                '{ogr2ogr} -f "GeoJSON" -t_srs epsg:4326 {output_file} {input_file}'
+                .format(ogr2ogr=settings.OGR2OGR_BIN_PATH,
+                        output_file=output_file,
+                        input_file=src))
 
             # Generate vector tiles
             tiles_output_dir = os.path.sep.join([tmpdir, 'tiles', file.name])
             os.makedirs(tiles_output_dir)
-            cmd = "tippecanoe --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+            cmd = "{tippecanoe} --no-feature-limit --no-tile-size-limit --name='{class_name}' --minimum-zoom=4 --maximum-zoom=18 --output-to-directory {output_dir} {input_file}".format(
+                tippecanoe=settings.TIPPECANOE_BIN_PATH,
                 class_name=file.metadata['class'],
                 output_dir=tiles_output_dir,
                 input_file=output_file)
@@ -218,9 +224,13 @@ def generate_vector_tiles(file_pk):
             # Upload tiles to corresponding Tiles bucket
             dst = layer.tiles_bucket_url()
             run_subprocess(
-                'gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'
-                .format(src=tiles_output_dir, dst=dst))
+                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'
+                .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                        src=tiles_output_dir,
+                        dst=dst))
 
             run_subprocess(
-                'gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'
-                .format(src=tiles_output_dir, dst=dst))
+                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'
+                .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                        src=tiles_output_dir,
+                        dst=dst))
