@@ -1,3 +1,4 @@
+import django_rq
 from datetime import datetime, timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -137,14 +138,15 @@ class FinishedTraininJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        pending_job = TrainingJob.objects.filter(estimator=estimator, 
-                                                    finished=False).first()
-        data = { 'detail': pending_job is None }
+        pending_job = TrainingJob.objects.filter(estimator=estimator,
+                                                 finished=False).first()
+        data = {'detail': pending_job is None}
         if pending_job is not None:
             now = datetime.now(timezone.utc)
-            dif_minutes = (now - pending_job.created_at).total_seconds()/60
-            data['percentage'] = round(dif_minutes * 100 / settings.APROX_JOBS_TIME)
-        
+            dif_minutes = (now - pending_job.created_at).total_seconds() / 60
+            data['percentage'] = round(dif_minutes * 100 /
+                                       settings.APROX_JOBS_TIME)
+
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -159,10 +161,10 @@ class StartPredictionJobView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         last_training_job = TrainingJob.objects.filter(estimator=estimator,
-                                                        finished=True).last()
+                                                       finished=True).last()
         if not last_training_job:
             return Response({'training_job': _('Not found')},
-                            status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_400_BAD_REQUEST)
 
         job = PredictionJob.objects.filter(estimator=estimator,
                                            finished=False).first()
@@ -171,10 +173,12 @@ class StartPredictionJobView(APIView):
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
-            job = PredictionJob.objects.create(estimator=estimator,
-                                                metadata={'training_job':last_training_job.pk})
+            job = PredictionJob.objects.create(
+                estimator=estimator,
+                metadata={'training_job': last_training_job.pk})
             job.image_files.set(files)
             job.save()
+            django_rq.enqueue('estimators.tasks.start_prediction_job', job.pk)
 
             # Send email
             user = request.user
@@ -197,16 +201,16 @@ class FinishedPredictionJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        pending_job = PredictionJob.objects.filter(estimator=estimator, 
-                                                    finished=False).first()
-        data = { 'detail': pending_job is None }
+        pending_job = PredictionJob.objects.filter(estimator=estimator,
+                                                   finished=False).first()
+        data = {'detail': pending_job is None}
         if pending_job is not None:
             now = datetime.now(timezone.utc)
-            dif_minutes = (now - pending_job.created_at).total_seconds()/60
-            data['percentage'] = round(dif_minutes * 100 / settings.APROX_JOBS_TIME)
-        
-        return Response(data, status=status.HTTP_200_OK)
+            dif_minutes = (now - pending_job.created_at).total_seconds() / 60
+            data['percentage'] = round(dif_minutes * 100 /
+                                       settings.APROX_JOBS_TIME)
 
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class PredictionJobView(generics.RetrieveAPIView):
