@@ -3,7 +3,9 @@
   "files": {
     "created_at": "Fecha de subida",
     "name": "Nombre del archivo",
-    "title": "Tus archivos"
+    "title": "Tus archivos",
+    "upload_image": "Subir imagen"
+
   },
   "home": {
     "api_descrip1": "Genera tu API Key desde este",
@@ -51,6 +53,7 @@
     "description": "Descripci\u00f3n",
     "name": "Nombre",
     "title": "Tus mapas"
+
   },
   "models": {
     "add_annot": "Agregar anotaciones",
