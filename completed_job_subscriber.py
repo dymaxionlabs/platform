@@ -51,8 +51,8 @@ def trainingJobFinished(job_id):
 
 
 def createFile(name, image, tmpdirname, metadata):
-    ext = name.split(".")[-1]
-    if ext == 'json':
+    ext = os.path.splitext(name)[1]
+    if ext in ['.json', '.geojson']:
         metadata['class'] = name.split("_")[0]
     resut_file = File.objects.create(owner=image.owner,
                                      project=image.project,
