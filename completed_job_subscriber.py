@@ -54,12 +54,13 @@ def createFile(name, image, tmpdirname, metadata):
     ext = os.path.splitext(name)[1]
     if ext in ['.json', '.geojson']:
         metadata['class'] = name.split("_")[0]
+    filename = File.prepare_filename(name)
     resut_file = File.objects.create(owner=image.owner,
                                      project=image.project,
-                                     name=name,
+                                     name=filename,
                                      metadata=metadata)
     with open(os.path.join(tmpdirname, name), "rb") as f:
-        resut_file.file = DjangoFile(f, name=name)
+        resut_file.file = DjangoFile(f, name=filename)
         resut_file.save()
     return resut_file
 

@@ -96,6 +96,8 @@ def user_images_path(instance, filename):
 
 
 class File(models.Model):
+    suffix_sep = '__'
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
@@ -116,6 +118,35 @@ class File(models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def prepare_filename(cls, filename):
+        if cls._does_already_exists(filename):
+            last_fname = cls._last_filename_with_suffix(filename)
+            if last_fname:
+                suff_name, _ = os.path.splitext(last_fname)
+                suffix = int(suff_name.split(cls.suffix_sep)[-1]) + 1
+            else:
+                suffix = 1
+            name, ext = os.path.splitext(filename)
+            filename = '{name}{sep}{suffix}{ext}'.format(name=name,
+                                                         sep=cls.suffix_sep,
+                                                         suffix=suffix,
+                                                         ext=ext)
+
+        return filename
+
+    @classmethod
+    def _does_already_exists(cls, filename):
+        return cls.objects.filter(name=filename).exists()
+
+    @classmethod
+    def _last_filename_with_suffix(cls, filename):
+        name, ext = os.path.splitext(filename)
+        files = cls.objects.filter(name__startswith='{name}{sep}'.format(
+            sep=cls.suffix_sep, name=name)).filter(name__endswith=ext)
+        last_file = files.last()
+        return last_file and last_file.name
 
 
 class Layer(models.Model):
@@ -172,19 +203,21 @@ class Layer(models.Model):
     def extent(self):
         """ Get area extent """
         return self.area_geom and self.area_geom.extent
-    
+
     @classmethod
     def styleByOrder(cls, order, class_name):
-        style = { "styles": { 
-                    class_name: {
-                        "fill": True,
-                        "color": order % len(settings.LAYERS_COLOR),
-                        "stroke": True,
-                        "weight": 0.5,
-                        "fillColor": order % len(settings.LAYERS_FILL_COLOR),
-                        "fillOpacity": 0.5
-                    }
-                }}
+        style = {
+            "styles": {
+                class_name: {
+                    "fill": True,
+                    "color": order % len(settings.LAYERS_COLOR),
+                    "stroke": True,
+                    "weight": 0.5,
+                    "fillColor": order % len(settings.LAYERS_FILL_COLOR),
+                    "fillOpacity": 0.5
+                }
+            }
+        }
         return style
 
 
