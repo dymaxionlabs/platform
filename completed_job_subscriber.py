@@ -81,8 +81,8 @@ def predictionJobFinished(job_id):
         for img in job.image_files.all():
             result_map = Map.objects.create(
                 project=img.project,
-                name=img.name,
-            )
+                name='{prediction_pk}_{img_name}'.format(prediction_pk=job.pk,
+                                                         img_name=img.name))
             img_layer = Layer.objects.filter(file=img).first()
             if img_layer is not None:
                 MapLayer.objects.create(map=result_map,
