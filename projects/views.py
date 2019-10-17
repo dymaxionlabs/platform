@@ -250,8 +250,6 @@ class FileUploadView(APIView):
     parser_classes = (FileUploadParser, )
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
 
-    suffix_sep = '__'
-
     def post(self, request, filename, format=None):
         user = self.request.user
 
@@ -265,39 +263,13 @@ class FileUploadView(APIView):
         if not project:
             raise ValidationError({'project_uuid': 'Invalid project uuid'})
 
-        filename = self._prepare_filename(filename)
+        filename = File._prepare_filename(filename)
 
         file = File(name=filename, owner=request.user, project=project)
         file.file = request.data['file']
         file.save()
         serializer = FileSerializer(file)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
-
-    def _prepare_filename(self, filename):
-        if self._does_already_exists(filename):
-            last_fname = self._last_filename_with_suffix(filename)
-            if last_fname:
-                suff_name, _ = os.path.splitext(last_fname)
-                suffix = int(suff_name.split(self.suffix_sep)[-1]) + 1
-            else:
-                suffix = 1
-            name, ext = os.path.splitext(filename)
-            filename = '{name}{sep}{suffix}{ext}'.format(name=name,
-                                                         sep=self.suffix_sep,
-                                                         suffix=suffix,
-                                                         ext=ext)
-
-        return filename
-
-    def _does_already_exists(self, filename):
-        return File.objects.filter(name=filename).exists()
-
-    def _last_filename_with_suffix(self, filename):
-        name, ext = os.path.splitext(filename)
-        files = File.objects.filter(name__startswith='{name}{sep}'.format(
-            sep=self.suffix_sep, name=name)).filter(name__endswith=ext)
-        last_file = files.last()
-        return last_file and last_file.name
 
 
 class FileDownloadView(APIView):
