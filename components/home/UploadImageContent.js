@@ -8,6 +8,9 @@ import React from "react";
 import { i18n, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import DropzoneArea from "../upload/DropzoneArea";
+import DialogContent from '@material-ui/core/DialogContent';
+import { DialogActions } from "@material-ui/core";
+
 
 
 const styles = theme => ({
@@ -90,8 +93,8 @@ class UploadImagenContent extends React.Component {
     const { uploading, currentProgress, totalProgress } = this.state;
 
     return (
-   
       <div>
+       <DialogContent>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("upload_step.title")}
         </Typography>
@@ -104,31 +107,30 @@ class UploadImagenContent extends React.Component {
           onChange={this.handleDropzoneChange}
           showFileNamesInPreview={true}
         />
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.handleSubmit}
-          disabled={uploading}
-          style={{ left: 80}}
-        >
-          {t("upload_step.submit_btn")}
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.props.handleCancel}
-          disabled={uploading}
-          style={{ left: 105}}
-        >
-          Cancel
-        </Button>        
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            onClick={this.handleSubmit}
+            disabled={uploading}
+          >
+            {t("upload_step.submit_btn")}
+          </Button>
+          <Button
+            color="primary"
+            onClick={this.props.handleCancel}
+            disabled={uploading}
+          >
+            Cancel
+          </Button>        
+        </DialogActions>
         {uploading && (
           <div>
             <LinearProgress variant="determinate" value={currentProgress} />
             <LinearProgress variant="determinate" value={totalProgress} />
           </div>
         )}
-      </div>
+        </div>
     );
   }
 }
