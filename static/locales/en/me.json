@@ -3,7 +3,8 @@
   "files": {
     "created_at": "Upload date",
     "name": "File name",
-    "title": "Your files"
+    "title": "Your files",
+    "upload_image": "Upload image"
   },
   "home": {
     "api_descrip1": "Generate your API Key from this",

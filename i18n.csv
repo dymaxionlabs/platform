@@ -176,6 +176,7 @@ me,maps.created_at,Fecha de creación,Creation date
 me,files.title,Tus archivos,Your files
 me,files.name,Nombre del archivo,File name
 me,files.created_at,Fecha de subida,Upload date
+me,files.upload_image, Subir imagen,Upload image
 me,requests.title,Tus pedidos,Your requests
 me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers

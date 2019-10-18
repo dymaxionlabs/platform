@@ -14,8 +14,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
+import Button from "@material-ui/core/Button";
 
 import { i18n, withNamespaces } from "../../i18n";
 import { logout } from "../../utils/auth";
@@ -24,6 +24,7 @@ import { buildApiUrl } from "../../utils/api";
 import Moment from "react-moment";
 import cookie from "js-cookie";
 import FileDownload from '../../utils/file-download';
+import UploadDialog from "../UploadDialog";
 
 const styles = theme => ({
   root: {
@@ -76,7 +77,8 @@ NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 class FilesContent extends React.Component {
   state = {
     files: [],
-    notImplementedOpen: false
+    notImplementedOpen: false,
+    showFileDialogOpen : false,
   };
 
   componentDidMount() {
@@ -116,10 +118,20 @@ class FilesContent extends React.Component {
    });
   
   }
-
+  onDialogResult = async (action) => {
+    this.setState({
+      showFileDialogOpen: false,
+    })
+    this.componentDidMount()
+  }
+  UploadImages = () => {
+    this.setState({
+      showFileDialogOpen: true
+    })
+  }
   render() {
-    const { t, classes } = this.props;
-    const { files: files, notImplementedOpen } = this.state;
+    const { t, classes, token } = this.props;
+    const { files: files, notImplementedOpen, showFileDialogOpen } = this.state;
     const locale = i18n.language;
 
     return (
@@ -131,6 +143,9 @@ class FilesContent extends React.Component {
           component="h2"
         >
           {t("files.title")}
+          <Button  onClick={ () => this.UploadImages()} className={classes.modelBtn} style={{ left: 750}}>
+            {t("files.upload_image")}
+          </Button>
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -180,6 +195,12 @@ class FilesContent extends React.Component {
         <NotImplementedSnackbar
           open={notImplementedOpen}
           onClose={this.handleNotImplementedClose}
+        />
+        <UploadDialog
+          onClose={this.onDialogResult} 
+          open={showFileDialogOpen}
+          token={token}
+          handleComplete={this.onDialogResult}
         />
       </div>
     );
