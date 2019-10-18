@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-03 17:26-0300\n"
+"POT-Creation-Date: 2019-10-18 11:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +74,7 @@ msgid "Annotations created"
 msgstr ""
 
 #: estimators/views.py:111 estimators/views.py:137 estimators/views.py:158
-#: estimators/views.py:189
+#: estimators/views.py:164 estimators/views.py:197
 msgid "Not found"
 msgstr ""
 
@@ -135,20 +134,20 @@ msgstr ""
 msgid "Cannot set order to 0"
 msgstr ""
 
-#: projects/views.py:89
+#: projects/views.py:91
 msgid "ok"
 msgstr ""
 
-#: projects/views.py:94 projects/views.py:109
+#: projects/views.py:96 projects/views.py:111
 msgid "Nothing"
 msgstr ""
 
-#: projects/views.py:134 projects/views.py:141 projects/views.py:167
-#: projects/views.py:173
+#: projects/views.py:136 projects/views.py:143 projects/views.py:169
+#: projects/views.py:175
 msgid "User subscribed"
 msgstr ""
 
-#: projects/views.py:138 projects/views.py:170
+#: projects/views.py:140 projects/views.py:172
 msgid "Error subscribing user"
 msgstr ""
 
@@ -360,19 +359,13 @@ msgid "training of your model started"
 msgstr "The training of your model started"
 
 #: terra/emails.py:188
-#, fuzzy
-#| msgid "training of your model started"
 msgid "prediction of your model started"
 msgstr "The prediction of your model started"
 
 #: terra/emails.py:227
-#, fuzzy
-#| msgid "training of your model started"
 msgid "training of your model completed"
 msgstr "The training of your model ended"
 
 #: terra/emails.py:270
-#, fuzzy
-#| msgid "training of your model started"
 msgid "prediction of your model completed"
 msgstr "The prediction of your model ended"
