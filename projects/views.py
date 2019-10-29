@@ -263,7 +263,7 @@ class FileUploadView(APIView):
         if not project:
             raise ValidationError({'project_uuid': 'Invalid project uuid'})
 
-        filename = File._prepare_filename(filename)
+        filename = File.prepare_filename(filename)
 
         file = File(name=filename, owner=request.user, project=project)
         file.file = request.data['file']
