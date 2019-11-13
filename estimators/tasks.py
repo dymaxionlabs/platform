@@ -41,7 +41,7 @@ def generate_image_tiles(file_pk):
                 print("WARNING: Raster has {} bands. " \
                     "Going to assume first 3 bands are RGB...".format(ds.count))
 
-            size = (1000, 1000)
+            size = (500, 500)
             windows = list(sliding_windows(size, size, ds.width, ds.height))
 
             with tempfile.TemporaryDirectory() as tmpdir:
