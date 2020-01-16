@@ -1,7 +1,7 @@
-# Dymaxion Labs platform frontend
+# dymax-front: Dymaxion Labs platform frontend
 
-This is our main platform of image provisioning and analytics for users.
-It uses the Terra API for fetching user data and raster/vector layers.
+This is our main platform of image provisioning and analytics for users.  It
+uses the DYMAX internal API for fetching user data and raster/vector layers.
 
 ## Development
 
