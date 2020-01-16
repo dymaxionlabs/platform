@@ -1,4 +1,6 @@
-# Terra
+# dymax-back: Dymaxion Labs platform backend
+
+Django app that provisions DYMAX internal API and background tasks.
 
 ## Requirements
 
