@@ -12,8 +12,8 @@ from .models import File, UserProfile, Project
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        user = UserProfile.objects.create(user=instance)
-        user.free = True
+        user_profile = UserProfile.objects.create(user=instance)
+        user_profile.free = True
         project = Project.objects.create(name='Demo')
         project.owners.set([instance])
 
