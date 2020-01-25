@@ -35,7 +35,7 @@ class Project(models.Model):
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
 
-    name = models.CharField(_("Name"), max_length=80, unique=True)
+    name = models.CharField(_("Name"), max_length=80)
     description = models.CharField(_("Description"),
                                    max_length=255,
                                    blank=True)
