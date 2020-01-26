@@ -329,7 +329,7 @@ class Home extends React.Component {
               Dymaxion Labs Platform
             </Typography>
             <SelectProjectButton token={token} />
-            <QuoteButton />
+            { /* <QuoteButton /> */ }
             {/* <FileUploadDialog token={token} /> */}
             {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
