@@ -177,6 +177,9 @@ class OpenProjectList extends React.Component {
       .then(response => {
         const { count, results } = response.data;
         this.setState({ count, results });
+        if((count == 1) && (document.cookie.indexOf("project") == -1)){
+          this.handleSelectProject(results[0].uuid);
+        }
       })
       .catch(err => {
         const response = err.response;
