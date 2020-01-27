@@ -41,6 +41,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import SimpleModalContactForm from "../../components/quote/SimpleModalContactForm";
+
+import "../../static/index.css"; // FIXME Convert to JSX styles
+import "../../static/App.css"; // FIXME Convert to JSX styles
+import "semantic-ui-css/semantic.css"; // FIXME Move this Layout
 
 const drawerWidth = 200;
 
@@ -329,6 +334,16 @@ class Home extends React.Component {
               Dymaxion Labs Platform
             </Typography>
             <SelectProjectButton token={token} />
+            <SimpleModalContactForm
+              trigger={
+                <div>
+                  <Button
+                    className={classes.button}>
+                    {t("simple_modal_contact_form:header")}
+                  </Button>
+                </div>
+              }
+            />
             { /* <QuoteButton /> */ }
             {/* <FileUploadDialog token={token} /> */}
             {/* <IconButton color="inherit">
