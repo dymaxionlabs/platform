@@ -26,6 +26,8 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    free = models.BooleanField(_("Free"), default=True)
+
 
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
