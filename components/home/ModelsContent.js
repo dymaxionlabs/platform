@@ -57,7 +57,8 @@ class ModelsContent extends React.Component {
     contextualMenuOpen: null,
     showUuidDialogOpen : false,
     deleteDialogOpen: false,
-    currentUUID: ""
+    currentUUID: "",
+    free: true
   };
 
   getModels = async () => {
@@ -80,9 +81,26 @@ class ModelsContent extends React.Component {
         }
       });
   }
+
+  async getFree() {
+    const { token } = this.props;
+    try {
+        const response = await axios.get(buildApiUrl("/auth/user/"), {
+            headers: {
+                "Accept-Language": i18n.language,
+                Authorization: token
+            }
+        });
+        const userData = response.data;
+        this.setState({ free: userData.profile.free});
+      } catch (error) {
+        console.error(error);
+    }
+  }
   
   componentDidMount() {
     this.getModels();
+    this.getFree();
   }
 
   estimatorTypeName(model) {
@@ -144,6 +162,15 @@ class ModelsContent extends React.Component {
     routerPush(`/models/new/od/annotate?id=${model.uuid}`);
   }
 
+  showNewModelButton = () => {
+    const {classes} = this.props;
+    if (!this.state.free) {
+      return (
+        <NewModelButton className={classes.modelBtn} />
+      );
+    }
+  }
+
   render() {
     const { t, classes } = this.props;
     const { models: models, contextualMenuOpen, showUuidDialogOpen, currentUUID,deleteDialogOpen } = this.state;
@@ -157,7 +184,7 @@ class ModelsContent extends React.Component {
           gutterBottom
           component="h2"
         >
-          <NewModelButton className={classes.modelBtn} />
+          {this.showNewModelButton()} 
           {t("models.title")}
         </Typography>
         <Paper className={classes.root}>
