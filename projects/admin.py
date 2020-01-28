@@ -13,7 +13,7 @@ from .models import (File, Layer, Map, MapLayer, Project,
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone', 'city', 'country', 'in_beta')
+    list_display = ('user', 'phone', 'city', 'country', 'in_beta', 'free')
 
 
 class ProjectInvitationTokenAdmin(admin.ModelAdmin):
