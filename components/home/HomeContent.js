@@ -2,13 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import FileCopyIcon from "@material-ui/icons/FileCopy";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { withNamespaces } from "../../i18n";
 import cookie from "js-cookie";
@@ -17,7 +18,7 @@ const styles = theme => ({
   root: {
     width: "100%",
     overflowX: "auto",
-    padding: "20px",
+    padding: "20px"
   },
   table: {
     minWidth: 700
@@ -28,57 +29,72 @@ const styles = theme => ({
   paragraph: {
     marginBottom: "20px"
   },
+  anchorButton: {
+    textDecoration: "none"
+  }
 });
 
-
 class HomeContent extends React.Component {
-
   render() {
-    const { t, classes } = this.props;
+    const { t, free, classes } = this.props;
     const projectId = cookie.get("project");
 
     return (
       <div>
         <Paper className={classes.root}>
-            <Typography variant="h5" component="h3" className={classes.title}>
-                {t(`home.models_title`)}
-            </Typography>
+          <Typography variant="h4" component="h3" className={classes.title}>
+            Welcome to Dymaxion Labs Platform
+          </Typography>
+
+          <Typography variant="h5" component="h3" className={classes.title}>
+            {t(`home.models_title`)}
+          </Typography>
+          <Typography component="p" className={classes.paragraph}>
+            If this is your first time here, just go to the{" "}
+            <a href="/quote" className={classes.anchorButton}>
+              <Button className={classes.button}>Test Drive</Button>
+            </a>
+            to see what you can achieve with the Models application.
+          </Typography>
+          {!free && (
             <Typography component="p" className={classes.paragraph}>
-                {t(`home.models_descrip`)} <a href="/models">link</a>.
+              {t(`home.models_descrip`)} <a href="/models">link</a>.
             </Typography>
-            <Typography variant="h5" component="h3" className={classes.title}>
-                {t(`home.api_title`)}
-            </Typography>
+          )}
+          <Typography variant="h5" component="h3" className={classes.title}>
+            {t(`home.api_title`)}
+          </Typography>
+          <Typography component="p" className={classes.paragraph}>
+            {t(`home.api_descrip1`)} <a href="/home/keys">link</a>{" "}
+            {t(`home.api_descrip2`)}
+          </Typography>
+          <Typography variant="h5" component="h3" className={classes.title}>
+            {t(`home.project_title`)}
+          </Typography>
+          <div>
             <Typography component="p" className={classes.paragraph}>
-                {t(`home.api_descrip1`)} <a href="/home/keys">link</a> {t(`home.api_descrip2`)}
+              {t(`home.project_descrip`)} <br />
             </Typography>
-            <Typography variant="h5" component="h3" className={classes.title}>
-                {t(`home.project_title`)}
-            </Typography>
-            <Typography component="p" className={classes.paragraph}>
-            {t(`home.project_descrip`)} <br/>
-                <TextField
-                    id="projectId"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    defaultValue={projectId}
-                    InputProps={{
-                        readOnly: true,
-                        endAdornment: (
-                            <InputAdornment position="end">
-                            <IconButton
-                                edge="end"
-                            >
-                                <CopyToClipboard text={projectId}>
-                                    <FileCopyIcon />
-                                </CopyToClipboard>
-                            </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </Typography>
+            <TextField
+              id="projectId"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              defaultValue={projectId}
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <CopyToClipboard text={projectId}>
+                        <FileCopyIcon />
+                      </CopyToClipboard>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
         </Paper>
       </div>
     );
@@ -86,7 +102,12 @@ class HomeContent extends React.Component {
 }
 
 HomeContent.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  free: PropTypes.bool
+};
+
+HomeContent.defaultProps = {
+  free: true
 };
 
 HomeContent = withStyles(styles)(HomeContent);
