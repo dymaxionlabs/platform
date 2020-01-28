@@ -52,7 +52,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(id=user.id).all()
 
 
-class UserProfileViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+class UserProfileViewSet(mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
+                         viewsets.GenericViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = (
