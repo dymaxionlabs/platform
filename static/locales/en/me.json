@@ -3,8 +3,7 @@
   "files": {
     "created_at": "Upload date",
     "name": "File name",
-    "title": "Your files",
-    "upload_image": "Upload image"
+    "title": "Your files"
   },
   "home": {
     "api_descrip1": "Generate your API Key from this",
@@ -59,14 +58,10 @@
     "classes": "Classes",
     "created_at": "Creation date",
     "estimator_type": "Type",
-    "uuid": "Show UUID",
+    "more_info": "More information",
     "name": "Name",
     "new_btn": "New Model",
     "title": "Your Models",
-    "delete_models": "Remove",
-    "title_delete": "Remove Model",
-    "text_delete_warning": "This action is IRREVERSIBLE",
-    "text_delete": "Are you sure you want to delete this model and its annotations?",
     "types": {
       "OD": "Object Detection"
     }

@@ -4,8 +4,7 @@
     "success_msg": "Your email address has been verified successfully."
   },
   "confirmation": {
-    "cancel": "Cancel",
-    "copy": "Copy"
+    "cancel": "Cancel"
   },
   "crop_lots_desc": "Categorized lots by crop type",
   "crop_lots_title": "Crop lots",
@@ -114,6 +113,5 @@
   "title": "Dymaxion Labs Platform",
   "true_color_desc": "True color satellite image",
   "true_color_title": "True color",
-  "username": "Username",
-  "logout_title":"Logout"
+  "username": "Username"
 }

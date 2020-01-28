@@ -3,9 +3,7 @@
   "files": {
     "created_at": "Fecha de subida",
     "name": "Nombre del archivo",
-    "title": "Tus archivos",
-    "upload_image": "Subir imagen"
-
+    "title": "Tus archivos"
   },
   "home": {
     "api_descrip1": "Genera tu API Key desde este",
@@ -53,7 +51,6 @@
     "description": "Descripci\u00f3n",
     "name": "Nombre",
     "title": "Tus mapas"
-
   },
   "models": {
     "add_annot": "Agregar anotaciones",
@@ -61,14 +58,10 @@
     "classes": "Clases",
     "created_at": "Fecha de creaci\u00f3n",
     "estimator_type": "Tipo",
-    "uuid": "Mostar UUID",
+    "more_info": "M\u00e1s informaci\u00f3n",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
     "title": "Tus Modelos",
-    "delete_models": "Eliminar",
-    "title_delete": "Eliminar Modelo",
-    "text_delete_warning": "Esta acción es IRREVERSIBLE",
-    "text_delete": "¿Está seguro que desea eliminar este modelo y sus anotaciones?",
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     }

@@ -4,8 +4,7 @@
     "success_msg": "Su direcci\u00f3n de correo fue verificada con \u00e9xito."
   },
   "confirmation": {
-    "cancel": "Cancelar",
-    "copy": "Copiar"
+    "cancel": "Cancelar"
   },
   "crop_lots_desc": "Lotes categorizados por tipo de cultivo",
   "crop_lots_title": "Lotes de cultivo",
@@ -114,6 +113,5 @@
   "title": "Dymaxion Labs Platform",
   "true_color_desc": "Imagen satelital de color verdadero",
   "true_color_title": "Color verdadero",
-  "username": "Usuario",
-  "logout_title":"Cerrar sesión"
+  "username": "Usuario"
 }
