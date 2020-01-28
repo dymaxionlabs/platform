@@ -6,16 +6,20 @@ import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
-import LayersIcon from "@material-ui/icons/Layers";
 import MapIcon from "@material-ui/icons/Map";
-import MenuIcon from "@material-ui/icons/Menu";
 import MemoryIcon from "@material-ui/icons/Memory";
+import MenuIcon from "@material-ui/icons/Menu";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import axios from "axios";
 import classNames from "classnames";
@@ -25,24 +29,16 @@ import PropTypes from "prop-types";
 import React from "react";
 import CliengoLoader from "../../components/CliengoLoader";
 import FilesContent from "../../components/home/FilesContent";
-// import LayersContent from "../../components/home/LayersContent";
-import MapsContent from "../../components/home/MapsContent";
-import ModelsContent from "../../components/home/ModelsContent";
-// import RequestsContent from "../../components/home/RequestsContent";
-import KeysContent from "../../components/home/KeysContent";
 import HomeContent from "../../components/home/HomeContent";
-import SelectProjectButton from "../../components/SelectProjectButton";
-import { Link, withNamespaces, i18n } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { withAuthSync, logout } from "../../utils/auth";
-import { routerReplace } from "../../utils/router";
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import KeysContent from "../../components/home/KeysContent";
+import MapsContent from "../../components/home/MapsContent";
 import ModalContactContent from "../../components/home/ModalContactContent";
-
+import ModelsContent from "../../components/home/ModelsContent";
+import SelectProjectButton from "../../components/SelectProjectButton";
+import { i18n, Link, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { logout, withAuthSync } from "../../utils/auth";
+import { routerReplace } from "../../utils/router";
 
 const drawerWidth = 200;
 
@@ -138,11 +134,6 @@ const sortedSections = ["files", "models", "viewer", "keys"];
 const sortedSectionsBeta = ["files", "models", "viewer", "keys"];
 
 const sections = {
-  // dashboard: {
-  //   path: "/",
-  //   icon: <DashboardIcon />,
-  //   content: null
-  // },
   viewer: {
     key: "viewer",
     path: "/maps",
@@ -186,8 +177,9 @@ class Home extends React.Component {
     open: true,
     section: null,
     beta: false,
+    free: true,
     contextualMenuOpen: null,
-    userEmail: '',
+    userEmail: "",
     contactModalOpen: false
   };
 
@@ -232,9 +224,13 @@ class Home extends React.Component {
       });
       const { profile } = response.data;
       const beta = profile.in_beta;
-      this.setState({ beta });
+      const free = profile.free;
+      this.setState({ beta, free });
       if (beta) {
-        console.log("Beta mode enabled");
+        console.debug("Beta mode enabled");
+      }
+      if (free) {
+        console.debug("Free mode enabled");
       }
     } catch (error) {
       console.error(error);
@@ -245,13 +241,13 @@ class Home extends React.Component {
     const { token } = this.props;
     try {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
-        headers: { 
+        headers: {
           "Accept-Language": i18n.language,
-          Authorization: token 
+          Authorization: token
         }
       });
       const userData = response.data;
-      this.setState({ userEmail: userData.email});
+      this.setState({ userEmail: userData.email });
     } catch (error) {
       console.error(error);
     }
@@ -270,12 +266,12 @@ class Home extends React.Component {
   };
 
   handleContextualMenuClick = event => {
-    this.setState({contextualMenuOpen: event.currentTarget});
-  }
+    this.setState({ contextualMenuOpen: event.currentTarget });
+  };
 
   handleContextualMenuClose = () => {
-    this.setState({contextualMenuOpen: null});
-  }
+    this.setState({ contextualMenuOpen: null });
+  };
 
   handleClickOpen = () => {
     this.setState({ contactModalOpen: true });
@@ -285,25 +281,30 @@ class Home extends React.Component {
     this.setState({ contactModalOpen: false });
   };
 
-  
   profileLogout = () => {
     logout();
-  }
-  
+  };
 
-  render() {    
+  render() {
     const { t, classes, token } = this.props;
-    const { section, open, beta, contextualMenuOpen, userEmail } = this.state;
+    const {
+      section,
+      open,
+      beta,
+      free,
+      contextualMenuOpen,
+      userEmail
+    } = this.state;
 
     const sectionList = beta ? sortedSectionsBeta : sortedSections;
     const { contactModalOpen } = this.state;
-
 
     const originalContent = section && sections[section].content;
     const content =
       originalContent &&
       React.cloneElement(originalContent, {
-        token: token
+        token,
+        free
       });
 
     return (
@@ -343,32 +344,22 @@ class Home extends React.Component {
               Dymaxion Labs Platform
             </Typography>
             <SelectProjectButton token={token} />
-            <Button
-              className={classes.button} onClick={this.handleClickOpen}>
-                {t("simple_modal_contact_form:header")}
+            <Button className={classes.button} onClick={this.handleClickOpen}>
+              {t("simple_modal_contact_form:header")}
             </Button>
             <ModalContactContent
-                      open={contactModalOpen}
-                      onClose={this.handleContactModalClose}
-                      token={token}
-                  
+              open={contactModalOpen}
+              onClose={this.handleContactModalClose}
+              token={token}
             />
-            { /* <QuoteButton /> */ }
-            {/* <FileUploadDialog token={token} /> */}
-            {/* <FileUploadDialog token={token} /> */}
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
             <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                color="inherit"
-                onClick={this.handleContextualMenuClick}
-              >
-                <AccountCircle />
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+              onClick={this.handleContextualMenuClick}
+            >
+              <AccountCircle />
             </IconButton>
             <Menu
               anchorEl={contextualMenuOpen}
@@ -376,9 +367,9 @@ class Home extends React.Component {
               open={Boolean(contextualMenuOpen)}
               onClose={this.handleContextualMenuClose}
             >
-              <MenuItem >{userEmail}</MenuItem>
+              <MenuItem>{userEmail}</MenuItem>
               <MenuItem onClick={this.profileLogout}>
-                {t('common:logout_title')}
+                {t("common:logout_title")}
                 <ListItemSecondaryAction>
                   <ListItemIcon edge="end" aria-label="logout">
                     <PowerSettingsNewIcon />
@@ -423,30 +414,14 @@ class Home extends React.Component {
             ))}
           </List>
           <Divider />
-          {/* <List>
-            <Link
-              href={`/home?section=requests`}
-              as={`/home${sections["requests"].path}`}
-            >
-              <ListItem
-                button
-                onClick={() => this.handleSectionChange("requests")}
-                selected={section === "requests"}
-              >
-                <ListItemIcon>{sections["requests"].icon}</ListItemIcon>
-                <ListItemText primary={t(`sidebar.requests`)} />
-              </ListItem>
-            </Link>
-          </List> */}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {
-            section == null ? 
-            (<HomeContent token={token}/>) 
-            : 
-            (content)
-          }
+          {section == null ? (
+            <HomeContent token={token} free={free} />
+          ) : (
+            content
+          )}
         </main>
       </div>
     );
@@ -458,7 +433,7 @@ Home.propTypes = {
 };
 
 Home = withStyles(styles)(Home);
-Home = withNamespaces(["me", "common","simple_modal_contact_form"])(Home);
+Home = withNamespaces(["me", "common", "simple_modal_contact_form"])(Home);
 Home = withAuthSync(Home);
 
 export default Home;
