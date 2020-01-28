@@ -41,6 +41,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ModalContactContent from "../../components/home/ModalContactContent";
+
 
 const drawerWidth = 200;
 
@@ -185,7 +187,8 @@ class Home extends React.Component {
     section: null,
     beta: false,
     contextualMenuOpen: null,
-    userEmail: ''
+    userEmail: '',
+    contactModalOpen: false
   };
 
   static async getInitialProps({ query }) {
@@ -274,16 +277,27 @@ class Home extends React.Component {
     this.setState({contextualMenuOpen: null});
   }
 
+  handleClickOpen = () => {
+    this.setState({ contactModalOpen: true });
+  };
+
+  handleContactModalClose = () => {
+    this.setState({ contactModalOpen: false });
+  };
+
   
   profileLogout = () => {
     logout();
   }
+  
 
   render() {    
     const { t, classes, token } = this.props;
     const { section, open, beta, contextualMenuOpen, userEmail } = this.state;
 
     const sectionList = beta ? sortedSectionsBeta : sortedSections;
+    const { contactModalOpen } = this.state;
+
 
     const originalContent = section && sections[section].content;
     const content =
@@ -329,7 +343,18 @@ class Home extends React.Component {
               Dymaxion Labs Platform
             </Typography>
             <SelectProjectButton token={token} />
-            <QuoteButton />
+            <Button
+              className={classes.button} onClick={this.handleClickOpen}>
+                {t("simple_modal_contact_form:header")}
+            </Button>
+            <ModalContactContent
+                      open={contactModalOpen}
+                      onClose={this.handleContactModalClose}
+                      token={token}
+                  
+            />
+            { /* <QuoteButton /> */ }
+            {/* <FileUploadDialog token={token} /> */}
             {/* <FileUploadDialog token={token} /> */}
             {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -433,7 +458,7 @@ Home.propTypes = {
 };
 
 Home = withStyles(styles)(Home);
-Home = withNamespaces(["me", "common"])(Home);
+Home = withNamespaces(["me", "common","simple_modal_contact_form"])(Home);
 Home = withAuthSync(Home);
 
 export default Home;
