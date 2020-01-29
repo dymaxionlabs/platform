@@ -176,6 +176,8 @@ class ModelsContent extends React.Component {
 
     const locale = i18n.language;
     const showNewModelButton = !free;
+    const showAddImagesButton = !free;
+    const showAddAnnotationsButton = !free;
 
     return (
       <div>
@@ -238,14 +240,13 @@ class ModelsContent extends React.Component {
                       <MenuItem onClick={() => this.estimatorViewUUID(model)}>
                         {t("models.uuid")}
                       </MenuItem>
-                      <MenuItem onClick={() => this.estimatorAddImages(model)}>
+                      {showAddImagesButton && (<MenuItem onClick={() => this.estimatorAddImages(model)}>
                         {t("models.add_imgs")}
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => this.estimatorAddAnnotations(model)}
-                      >
+                      </MenuItem>)}
+                      {showAddAnnotationsButton && (<MenuItem
+                        onClick={() => this.estimatorAddAnnotations(model)}>
                         {t("models.add_annot")}
-                      </MenuItem>
+                      </MenuItem>)}
                       <MenuItem onClick={() => this.estimatorDelete(model)}>
                         {t("models.delete_models")}
                       </MenuItem>
