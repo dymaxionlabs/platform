@@ -4,10 +4,10 @@ import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from "@material-ui/icons/Edit";
 import Chip from "@material-ui/core/Chip";
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -55,7 +55,7 @@ class ModelsContent extends React.Component {
   state = {
     models: [],
     contextualMenuOpen: null,
-    showUuidDialogOpen : false,
+    showUuidDialogOpen: false,
     deleteDialogOpen: false,
     currentUUID: "",
     free: true
@@ -69,8 +69,10 @@ class ModelsContent extends React.Component {
         headers: { Authorization: this.props.token }
       })
       .then(response => {
-        this.setState({ models: response.data.results,
-                        deleteDialogOpen: false });
+        this.setState({
+          models: response.data.results,
+          deleteDialogOpen: false
+        });
       })
       .catch(err => {
         const response = err.response;
@@ -80,24 +82,24 @@ class ModelsContent extends React.Component {
           console.error(response);
         }
       });
-  }
+  };
 
   async getFreeFlag() {
     const { token } = this.props;
     try {
-        const response = await axios.get(buildApiUrl("/auth/user/"), {
-            headers: {
-                "Accept-Language": i18n.language,
-                Authorization: token
-            }
-        });
-        const userData = response.data;
-        this.setState({ free: userData.profile.free});
-      } catch (error) {
-        console.error(error);
+      const response = await axios.get(buildApiUrl("/auth/user/"), {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: token
+        }
+      });
+      const userData = response.data;
+      this.setState({ free: userData.profile.free });
+    } catch (error) {
+      console.error(error);
     }
   }
-  
+
   componentDidMount() {
     this.getModels();
     this.getFreeFlag();
@@ -109,64 +111,70 @@ class ModelsContent extends React.Component {
   }
 
   handleContextualMenuClick = event => {
-    this.setState({contextualMenuOpen: event.currentTarget});
-  }
+    this.setState({ contextualMenuOpen: event.currentTarget });
+  };
 
   handleContextualMenuClose = () => {
-    this.setState({contextualMenuOpen: null});
-  }
+    this.setState({ contextualMenuOpen: null });
+  };
 
-  onDialogResult = async (action) => {
+  onDialogResult = async action => {
     this.setState({
       showUuidDialogOpen: false,
       deleteDialogOpen: false,
       currentUUID: ""
-    })
-  }
+    });
+  };
 
   estimatorViewUUID = model => {
     this.setState({
       currentUUID: model.uuid,
       showUuidDialogOpen: true
-    })
-  }
+    });
+  };
 
   estimatorDelete = model => {
     this.setState({
       currentUUID: model.uuid,
       deleteDialogOpen: true
-    })
-  }
+    });
+  };
 
-  onDeleteDialogResult = async (action) => {
+  onDeleteDialogResult = async action => {
     if (action) {
       const currentUUID = this.state.currentUUID;
-      await axios.delete(
-        buildApiUrl(`/estimators/${currentUUID}`), 
-        {
-          headers: { Authorization: this.props.token } 
-        }
-      ).then(() => {
-        this.getModels();
-      });
+      await axios
+        .delete(buildApiUrl(`/estimators/${currentUUID}`), {
+          headers: { Authorization: this.props.token }
+        })
+        .then(() => {
+          this.getModels();
+        });
     }
     this.setState({
       deleteDialogOpen: false
-    })
-  }
+    });
+  };
 
   estimatorAddImages = model => {
     routerPush(`/models/new/od/upload?id=${model.uuid}`);
-  }
+  };
   estimatorAddAnnotations = model => {
     routerPush(`/models/new/od/annotate?id=${model.uuid}`);
-  }
+  };
 
   render() {
     const { t, classes } = this.props;
-    const { models: models, contextualMenuOpen, showUuidDialogOpen, currentUUID,deleteDialogOpen } = this.state;
+    const {
+      models: models,
+      contextualMenuOpen,
+      showUuidDialogOpen,
+      currentUUID,
+      deleteDialogOpen,
+      free
+    } = this.state;
+
     const locale = i18n.language;
-    const { free } = this.state;
     const showNewModelButton = !free;
 
     return (
@@ -177,7 +185,9 @@ class ModelsContent extends React.Component {
           gutterBottom
           component="h2"
         >
-          {showNewModelButton && <NewModelButton className={classes.modelBtn} />}
+          {showNewModelButton && (
+            <NewModelButton className={classes.modelBtn} />
+          )}
           {t("models.title")}
         </Typography>
         <Paper className={classes.root}>
@@ -212,8 +222,8 @@ class ModelsContent extends React.Component {
                     <IconButton
                       className={classes.button}
                       aria-label="Edit"
-                      aria-controls="simple-menu" 
-                      aria-haspopup="true" 
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
                       onClick={this.handleContextualMenuClick}
                     >
                       <EditIcon />
@@ -225,10 +235,20 @@ class ModelsContent extends React.Component {
                       open={Boolean(contextualMenuOpen)}
                       onClose={this.handleContextualMenuClose}
                     >
-                      <MenuItem onClick={ () => this.estimatorViewUUID(model)}>{t("models.uuid")}</MenuItem>
-                      <MenuItem onClick={ () => this.estimatorAddImages(model)}>{t("models.add_imgs")}</MenuItem>
-                      <MenuItem onClick={ () => this.estimatorAddAnnotations(model)}>{t("models.add_annot")}</MenuItem>
-                      <MenuItem onClick={ () => this.estimatorDelete(model)}>{t("models.delete_models")}</MenuItem>
+                      <MenuItem onClick={() => this.estimatorViewUUID(model)}>
+                        {t("models.uuid")}
+                      </MenuItem>
+                      <MenuItem onClick={() => this.estimatorAddImages(model)}>
+                        {t("models.add_imgs")}
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => this.estimatorAddAnnotations(model)}
+                      >
+                        {t("models.add_annot")}
+                      </MenuItem>
+                      <MenuItem onClick={() => this.estimatorDelete(model)}>
+                        {t("models.delete_models")}
+                      </MenuItem>
                     </Menu>
                   </TableCell>
                 </TableRow>
@@ -237,21 +257,23 @@ class ModelsContent extends React.Component {
           </Table>
         </Paper>
         <ShowUuidDialog
-          onClose={this.onDialogResult} 
+          onClose={this.onDialogResult}
           open={showUuidDialogOpen}
           title={"UUID"}
           content={currentUUID}
         />
         <ConfirmationDialog
-          onClose={this.onDeleteDialogResult} 
+          onClose={this.onDeleteDialogResult}
           open={deleteDialogOpen}
           title={t("models.title_delete")}
           content={
             <div>
               <p>{t("models.text_delete")}</p>
-              <p><strong>{t("models.text_delete_warning")}</strong></p>
+              <p>
+                <strong>{t("models.text_delete_warning")}</strong>
+              </p>
             </div>
-           }
+          }
         />
       </div>
     );

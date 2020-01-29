@@ -23,7 +23,7 @@ import axios from "axios";
 import { buildApiUrl } from "../../utils/api";
 import Moment from "react-moment";
 import cookie from "js-cookie";
-import FileDownload from '../../utils/file-download';
+import FileDownload from "../../utils/file-download";
 import UploadDialog from "../UploadDialog";
 
 const styles = theme => ({
@@ -78,7 +78,8 @@ class FilesContent extends React.Component {
   state = {
     files: [],
     notImplementedOpen: false,
-    showFileDialogOpen : false,
+    showFileDialogOpen: false,
+    free: true
   };
 
   componentDidMount() {
@@ -100,39 +101,66 @@ class FilesContent extends React.Component {
           console.error(response);
         }
       });
+
+    this.getFreeFlag();
+  }
+
+  async getFreeFlag() {
+    const { token } = this.props;
+    try {
+      const response = await axios.get(buildApiUrl("/auth/user/"), {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: token
+        }
+      });
+      const userData = response.data;
+      this.setState({ free: userData.profile.free });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   handleNotImplementedClose = () => {
     this.setState({ notImplementedOpen: false });
   };
 
-  handleFileURL = (file) => {
+  handleFileURL = file => {
     const projectId = cookie.get("project");
     axios
-    .get(buildApiUrl(`/files/download/${file.name}`),{ 
-      params: { project_uuid: projectId },
-      headers: { Authorization: this.props.token }
-    })
-   .then((response) => {
-    FileDownload(response.data, file.name);
-   });
-  
-  }
-  onDialogResult = async (action) => {
+      .get(buildApiUrl(`/files/download/${file.name}`), {
+        params: { project_uuid: projectId },
+        headers: { Authorization: this.props.token }
+      })
+      .then(response => {
+        FileDownload(response.data, file.name);
+      });
+  };
+
+  onDialogResult = async action => {
     this.setState({
-      showFileDialogOpen: false,
-    })
-    this.componentDidMount()
-  }
+      showFileDialogOpen: false
+    });
+    this.componentDidMount();
+  };
+
   UploadImages = () => {
     this.setState({
       showFileDialogOpen: true
-    })
-  }
+    });
+  };
+
   render() {
     const { t, classes, token } = this.props;
-    const { files: files, notImplementedOpen, showFileDialogOpen } = this.state;
+    const {
+      files: files,
+      notImplementedOpen,
+      showFileDialogOpen,
+      free
+    } = this.state;
+
     const locale = i18n.language;
+    const showUploadFileButton = !free;
 
     return (
       <div>
@@ -143,9 +171,15 @@ class FilesContent extends React.Component {
           component="h2"
         >
           {t("files.title")}
-          <Button  onClick={ () => this.UploadImages()} className={classes.modelBtn} style={{ left: 750}}>
-            {t("files.upload_image")}
-          </Button>
+          {showUploadFileButton && (
+            <Button
+              onClick={() => this.UploadImages()}
+              className={classes.modelBtn}
+              style={{ left: 750 }}
+            >
+              {t("files.upload_image")}
+            </Button>
+          )}
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -169,13 +203,13 @@ class FilesContent extends React.Component {
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title={t("download")}>
-                        <IconButton
-                          onClick={() => this.handleFileURL(file)}
-                          className={classes.button}
-                          aria-label={t("download")}
-                        >
-                          <CloudDownloadIcon />
-                        </IconButton>
+                      <IconButton
+                        onClick={() => this.handleFileURL(file)}
+                        className={classes.button}
+                        aria-label={t("download")}
+                      >
+                        <CloudDownloadIcon />
+                      </IconButton>
                     </Tooltip>
                     {/* <Tooltip title={t("delete")}>
                       <IconButton
@@ -197,7 +231,7 @@ class FilesContent extends React.Component {
           onClose={this.handleNotImplementedClose}
         />
         <UploadDialog
-          onClose={this.onDialogResult} 
+          onClose={this.onDialogResult}
           open={showFileDialogOpen}
           token={token}
           handleComplete={this.onDialogResult}
