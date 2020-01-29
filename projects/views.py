@@ -138,8 +138,13 @@ class ContactView(generics.GenericAPIView):
                                 status=status.HTTP_200_OK)
             except Exception as e:
                 print(str(e))
-                return Response({"detail": _("Error subscribing user")},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                if '\'title\': \'Member Exists\'' in str(e):
+                    return Response({"detail": _("User already subscribed")},
+                                    status=status.HTTP_200_OK)
+                else:
+                    return Response(
+                        {"detail": _("Error subscribing user")},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"detail": _("User subscribed")},
                             status=status.HTTP_200_OK)
