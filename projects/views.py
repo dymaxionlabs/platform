@@ -137,7 +137,6 @@ class ContactView(generics.GenericAPIView):
                 return Response({"detail": _("User subscribed")},
                                 status=status.HTTP_200_OK)
             except Exception as e:
-                print(str(e))
                 if '\'title\': \'Member Exists\'' in str(e):
                     return Response({"detail": _("User already subscribed")},
                                     status=status.HTTP_200_OK)
