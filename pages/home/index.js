@@ -208,11 +208,10 @@ class Home extends React.Component {
       routerReplace("/select-project");
     }
 
-    this._checkForBeta();
-    this.getEmail();
+    this.getUserData();
   }
 
-  async _checkForBeta() {
+  async getUserData() {
     const { token } = this.props;
 
     try {
@@ -222,32 +221,16 @@ class Home extends React.Component {
           Authorization: token
         }
       });
-      const { profile } = response.data;
-      const beta = profile.in_beta;
-      const free = profile.free;
-      this.setState({ beta, free });
-      if (beta) {
-        console.debug("Beta mode enabled");
-      }
-      if (free) {
-        console.debug("Free mode enabled");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
-  async getEmail() {
-    const { token } = this.props;
-    try {
-      const response = await axios.get(buildApiUrl("/auth/user/"), {
-        headers: {
-          "Accept-Language": i18n.language,
-          Authorization: token
-        }
-      });
-      const userData = response.data;
-      this.setState({ userEmail: userData.email });
+      const {
+        email,
+        profile: { in_beta, free }
+      } = response.data;
+
+      this.setState({ userEmail: email, beta: in_beta, free });
+
+      if (in_beta) console.debug("Beta mode enabled");
+      if (free) console.debug("Free mode enabled");
     } catch (error) {
       console.error(error);
     }
