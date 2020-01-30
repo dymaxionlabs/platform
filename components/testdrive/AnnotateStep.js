@@ -16,11 +16,11 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import axios from "axios";
 import React from "react";
-import AnnotatedImageTile from "../../../../components/models/annotate/AnnotatedImageTile";
-import { i18n, withNamespaces } from "../../../../i18n";
-import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
-import StepContentContainer from "../../../StepContentContainer";
+import AnnotatedImageTile from "../models/annotate/AnnotatedImageTile";
+import { i18n, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { routerPush } from "../../utils/router";
+import StepContentContainer from "../StepContentContainer";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;

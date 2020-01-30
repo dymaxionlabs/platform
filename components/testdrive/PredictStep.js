@@ -4,10 +4,10 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import React from "react";
-import { i18n, Link, withNamespaces } from "../../../../i18n";
-import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
-import StepContentContainer from "../../../StepContentContainer";
+import StepContentContainer from "../StepContentContainer";
+import { i18n, Link, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { routerPush } from "../../utils/router";
 
 const styles = theme => ({
   header: {
@@ -32,16 +32,16 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
-class TrainStep extends React.Component {
+class PredictStep extends React.Component {
   state = {
     finished: false,
     percentage: 0
   };
 
-  async checkFinishedTrainingJob() {
+  async checkFinishedPredictingJob() {
     const { token, estimatorId } = this.props;
     const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/finished/`),
+      buildApiUrl(`/estimators/${estimatorId}/predicted/`),
       {
         headers: {
           Authorization: token,
@@ -64,29 +64,16 @@ class TrainStep extends React.Component {
     }
   }
 
-  handleClickContinue() {
-    const { estimatorId } = this.props;
-    routerPush(`/models/new/od/select?id=${estimatorId}`);
+  handleClickView() {
+    routerPush("/home/layers");
   }
 
   async componentDidMount() {
-    const { token, estimatorId } = this.props;
-
-    await axios.post(
-      buildApiUrl(`/estimators/${estimatorId}/train/`),
-      {},
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
     if (this.state.percentage == 0) {
-      this.checkFinishedTrainingJob();
+      this.checkFinishedPredictingJob();
     }
     this.interval = setInterval(
-      () => this.checkFinishedTrainingJob(),
+      () => this.checkFinishedPredictingJob(),
       1000 * 60 * 5
     );
   }
@@ -98,21 +85,17 @@ class TrainStep extends React.Component {
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("train_step.title")}
+          {t("predict_step.title")}
         </Typography>
-        <Typography>
-          {finished
-            ? t("train_step.finished_explanation")
-            : t("train_step.explanation")}
-        </Typography>
+        <Typography>{t("predict_step.explanation")}</Typography>
         {finished ? (
           <Link>
             <Button
               color="primary"
               variant="contained"
-              onClick={() => this.handleClickContinue()}
+              onClick={this.handleClickView}
             >
-              {t("train_step.continue")}
+              {t("predict_step.view")}
             </Button>
           </Link>
         ) : (
@@ -126,12 +109,14 @@ class TrainStep extends React.Component {
                   value={percentage}
                 />
               ) : (
-                <Typography>{t("train_step.undefined_explanation")}</Typography>
+                <Typography>
+                  {t("predict_step.undefined_explanation")}
+                </Typography>
               )}
             </div>
             <Link href="/home/models">
-              <Button color="primary" variant="contained" fullWidth="true">
-                {t("train_step.back")}
+              <Button color="primary" fullWidth="true" variant="contained">
+                {t("predict_step.back")}
               </Button>
             </Link>
           </div>
@@ -141,7 +126,7 @@ class TrainStep extends React.Component {
   }
 }
 
-TrainStep = withStyles(styles)(TrainStep);
-TrainStep = withNamespaces("models")(TrainStep);
+PredictStep = withStyles(styles)(PredictStep);
+PredictStep = withNamespaces("models")(PredictStep);
 
-export default TrainStep;
+export default PredictStep;

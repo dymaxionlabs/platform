@@ -4,10 +4,10 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import React from "react";
-import { i18n, Link, withNamespaces } from "../../../../i18n";
-import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
-import StepContentContainer from "../../../StepContentContainer";
+import { i18n, Link, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { routerPush } from "../../utils/router";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {

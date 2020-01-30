@@ -5,11 +5,11 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import cookie from "js-cookie";
 import React from "react";
-import { i18n, withNamespaces } from "../../../../i18n";
-import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
-import DropzoneArea from "../../../upload/DropzoneArea";
-import StepContentContainer from "../../../StepContentContainer";
+import { i18n, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { routerPush } from "../../utils/router";
+import DropzoneArea from "../upload/DropzoneArea";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {

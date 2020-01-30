@@ -9,10 +9,10 @@ import axios from "axios";
 import cookie from "js-cookie";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
-import { i18n, withNamespaces } from "../../../../i18n";
-import { buildApiUrl } from "../../../../utils/api";
-import { routerPush } from "../../../../utils/router";
-import StepContentContainer from "../../../StepContentContainer";
+import { i18n, withNamespaces } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { routerPush } from "../../utils/router";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {

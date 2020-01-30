@@ -50,11 +50,15 @@ const handle = app.getRequestHandler();
     return res.redirect("/home/models");
   });
 
-
   server.get("/models/new/od/:step", (req, res) => {
     const { step } = req.params;
     const { id } = req.query;
     return app.render(req, res, "/models/new/od", { step: step, id: id });
+  });
+
+  server.get("/testdrive/:step", (req, res) => {
+    const { step } = req.params;
+    return app.render(req, res, "/testdrive", { step });
   });
 
   server.get("*", (req, res) => handle(req, res));
