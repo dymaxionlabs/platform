@@ -121,8 +121,12 @@ class ContactView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         email = request.data['email']
-        landing = request.data['landing']
         list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
+
+        if 'landing' in request.data:
+            landing = request.data['landing']
+        else:
+            landing = 'none'
 
         if settings.MAILCHIMP_APIKEY is not None:
             client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
