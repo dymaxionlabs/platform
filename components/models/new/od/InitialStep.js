@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { Link, withNamespaces } from "../../../../i18n";
-import StepContentContainer from "../StepContentContainer";
+import StepContentContainer from "../../../StepContentContainer";
 
 const styles = theme => ({
   header: {

@@ -20,7 +20,7 @@ import AnnotatedImageTile from "../../../../components/models/annotate/Annotated
 import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import { routerPush } from "../../../../utils/router";
-import StepContentContainer from "../StepContentContainer";
+import StepContentContainer from "../../../StepContentContainer";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
@@ -469,22 +469,22 @@ class AnnotateStep extends React.Component {
         {loading ? (
           <LoadingContent />
         ) : (
-            <AnnotateContent
-              labels={labels}
-              labelCount={labelCount}
-              imageTiles={imageTiles}
-              annotationsByTile={annotationsByTile}
-              offset={offset}
-              count={count}
-              onChange={this.handleChange}
-              onNew={this.handleNew}
-              onDelete={this.handleDelete}
-              onFirstPageClick={this.handleFirstPageClick}
-              onPrevPageClick={this.handlePrevPageClick}
-              onNextPageClick={this.handleNextPageClick}
-              onLastPageClick={this.handleLastPageClick}
-            />
-          )}
+          <AnnotateContent
+            labels={labels}
+            labelCount={labelCount}
+            imageTiles={imageTiles}
+            annotationsByTile={annotationsByTile}
+            offset={offset}
+            count={count}
+            onChange={this.handleChange}
+            onNew={this.handleNew}
+            onDelete={this.handleDelete}
+            onFirstPageClick={this.handleFirstPageClick}
+            onPrevPageClick={this.handlePrevPageClick}
+            onNextPageClick={this.handleNextPageClick}
+            onLastPageClick={this.handleLastPageClick}
+          />
+        )}
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}

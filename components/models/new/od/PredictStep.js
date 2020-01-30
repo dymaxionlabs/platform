@@ -6,7 +6,7 @@ import axios from "axios";
 import React from "react";
 import { i18n, Link, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
-import StepContentContainer from "../StepContentContainer";
+import StepContentContainer from "../../../StepContentContainer";
 import { routerPush } from "../../../../utils/router";
 
 const styles = theme => ({
@@ -24,21 +24,21 @@ const styles = theme => ({
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
-    backgroundColor: 'rgb(255, 181, 173)',
+    backgroundColor: "rgb(255, 181, 173)"
   },
   bar: {
     borderRadius: 20,
-    backgroundColor: '#ff6c5c',
-  },
+    backgroundColor: "#ff6c5c"
+  }
 })(LinearProgress);
 
 class PredictStep extends React.Component {
   state = {
     finished: false,
-    percentage : 0,
+    percentage: 0
   };
 
-  async checkFinishedPredictingJob(){
+  async checkFinishedPredictingJob() {
     const { token, estimatorId } = this.props;
     const response = await axios.get(
       buildApiUrl(`/estimators/${estimatorId}/predicted/`),
@@ -47,32 +47,35 @@ class PredictStep extends React.Component {
           Authorization: token,
           "Accept-Language": i18n.language
         }
-    });
-    if(response.data.detail){
-      this.setState({finished: true});
+      }
+    );
+    if (response.data.detail) {
+      this.setState({ finished: true });
       clearInterval(this.interval);
-    }
-    else{
-      if (this.state.percentage < 100){
-        if (!typeof this.offInterval === 'undefined')
+    } else {
+      if (this.state.percentage < 100) {
+        if (!typeof this.offInterval === "undefined")
           clearInterval(this.offInterval);
-        this.setState({percentage: response.data.percentage});
+        this.setState({ percentage: response.data.percentage });
         this.offInterval = setInterval(() => {
-          this.setState({percentage: this.state.percentage + 1});;
-        }, 1000*60);
+          this.setState({ percentage: this.state.percentage + 1 });
+        }, 1000 * 60);
       }
     }
   }
 
-  handleClickView(){
-    routerPush('/home/layers');
+  handleClickView() {
+    routerPush("/home/layers");
   }
 
   async componentDidMount() {
-    if (this.state.percentage == 0){
+    if (this.state.percentage == 0) {
       this.checkFinishedPredictingJob();
     }
-    this.interval = setInterval(() => this.checkFinishedPredictingJob(), 1000*60*5);
+    this.interval = setInterval(
+      () => this.checkFinishedPredictingJob(),
+      1000 * 60 * 5
+    );
   }
 
   render() {
@@ -85,34 +88,39 @@ class PredictStep extends React.Component {
           {t("predict_step.title")}
         </Typography>
         <Typography>{t("predict_step.explanation")}</Typography>
-        { finished 
-          ? 
+        {finished ? (
           <Link>
-            <Button color="primary" variant="contained" onClick={this.handleClickView}>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={this.handleClickView}
+            >
               {t("predict_step.view")}
             </Button>
           </Link>
-          :
+        ) : (
           <div>
-          <div className={classes.progress}>
-          { percentage <= 100 ? (
-            <BorderLinearProgress
-              className={classes.margin}
-              variant="determinate"
-              color="secondary"
-              value={percentage}
-            />
-            ) : (
-              <Typography>{t("predict_step.undefined_explanation")}</Typography>
-            ) }
+            <div className={classes.progress}>
+              {percentage <= 100 ? (
+                <BorderLinearProgress
+                  className={classes.margin}
+                  variant="determinate"
+                  color="secondary"
+                  value={percentage}
+                />
+              ) : (
+                <Typography>
+                  {t("predict_step.undefined_explanation")}
+                </Typography>
+              )}
+            </div>
+            <Link href="/home/models">
+              <Button color="primary" fullWidth="true" variant="contained">
+                {t("predict_step.back")}
+              </Button>
+            </Link>
           </div>
-          <Link href="/home/models">
-            <Button color="primary" fullWidth="true" variant="contained" >
-              {t("predict_step.back")}
-            </Button>
-          </Link>
-          </div>
-        }
+        )}
       </StepContentContainer>
     );
   }

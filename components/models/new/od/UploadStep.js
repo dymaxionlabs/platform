@@ -9,7 +9,7 @@ import { i18n, withNamespaces } from "../../../../i18n";
 import { buildApiUrl } from "../../../../utils/api";
 import { routerPush } from "../../../../utils/router";
 import DropzoneArea from "../../../upload/DropzoneArea";
-import StepContentContainer from "../StepContentContainer";
+import StepContentContainer from "../../../StepContentContainer";
 
 const styles = theme => ({
   header: {
