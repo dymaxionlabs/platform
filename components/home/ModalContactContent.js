@@ -67,8 +67,7 @@ class ModalContactContent extends React.Component {
       await axios.post(buildApiUrl("/contact/"), {
         email: userData.email,
         username: userData.username,
-        landing:  window.location.href,
-        message: `Mensaje desde /models/new: ${message}`
+        message: message
       });
 
       this.setState({
