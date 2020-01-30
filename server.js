@@ -58,7 +58,6 @@ const handle = app.getRequestHandler();
 
   server.get("/testdrive/:step", (req, res) => {
     const { step } = req.params;
-    // const { id } = req.query;
     return app.render(req, res, "/testdrive", { step });
   });
 

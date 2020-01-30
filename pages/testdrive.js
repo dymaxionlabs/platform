@@ -78,19 +78,19 @@ class TestDrive extends React.Component {
         return <CreateStep token={token} />;
       }
       case "upload": {
-        return <UploadStep token={token} estimatorId={query.id} />;
+        return <UploadStep token={token} />;
       }
       case "annotate": {
-        return <AnnotateStep token={token} estimatorId={query.id} />;
+        return <AnnotateStep token={token} />;
       }
       case "train": {
-        return <TrainStep token={token} estimatorId={query.id} />;
+        return <TrainStep token={token} />;
       }
       case "select": {
-        return <SelectStep token={token} estimatorId={query.id} />;
+        return <SelectStep token={token} />;
       }
       case "predict": {
-        return <PredictStep token={token} estimatorId={query.id} />;
+        return <PredictStep token={token} />;
       }
     }
   }

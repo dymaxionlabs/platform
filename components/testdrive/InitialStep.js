@@ -1,9 +1,9 @@
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import StepContentContainer from "../StepContentContainer";
 import React from "react";
 import { Link, withNamespaces } from "../../i18n";
-import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
@@ -17,7 +17,10 @@ let InitialStep = ({ classes, t }) => (
     <Typography className={classes.header} component="h1" variant="h5">
       {t("new.od.header")}
     </Typography>
-    <Link href="/models/new/od/create">
+    <Typography>
+      (acá va el diagrama y una descripción general de todo el proceso...)
+    </Typography>
+    <Link href="/testdrive/choose-usecase">
       <Button color="primary" variant="contained">
         {t("new.start_building")}
       </Button>
