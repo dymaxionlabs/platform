@@ -24,13 +24,16 @@ const styles = theme => ({
     minWidth: 700
   },
   title: {
-    marginBottom: "10px"
+    marginBottom: theme.spacing.unit * 2
   },
   paragraph: {
-    marginBottom: "20px"
+    marginBottom: theme.spacing.unit
   },
   anchorButton: {
     textDecoration: "none"
+  },
+  section: {
+    marginBottom: theme.spacing.unit * 2
   }
 });
 
@@ -45,33 +48,42 @@ class HomeContent extends React.Component {
           <Typography variant="h4" component="h3" className={classes.title}>
             Welcome to Dymaxion Labs Platform
           </Typography>
-
-          <Typography variant="h5" component="h3" className={classes.title}>
-            {t(`home.models_title`)}
-          </Typography>
-          <Typography component="p" className={classes.paragraph}>
-            If this is your first time here, just go to the{" "}
-            <a href="/quote" className={classes.anchorButton}>
-              <Button className={classes.button}>Test Drive</Button>
-            </a>
-            to see what you can achieve with the Models application.
-          </Typography>
-          {!free && (
-            <Typography component="p" className={classes.paragraph}>
-              {t(`home.models_descrip`)} <a href="/models">link</a>.
+          <div className={classes.section}>
+            <Typography variant="h5" component="h3" className={classes.title}>
+              {t(`home.models_title`)}
             </Typography>
-          )}
-          <Typography variant="h5" component="h3" className={classes.title}>
-            {t(`home.api_title`)}
-          </Typography>
-          <Typography component="p" className={classes.paragraph}>
-            {t(`home.api_descrip1`)} <a href="/home/keys">link</a>{" "}
-            {t(`home.api_descrip2`)}
-          </Typography>
-          <Typography variant="h5" component="h3" className={classes.title}>
-            {t(`home.project_title`)}
-          </Typography>
-          <div>
+
+            <Typography component="p" className={classes.paragraph}>
+              If this is your first time here, we recommend you to do a{" "}
+              <strong>Test Drive</strong> to understand what you can achieve
+              with our <strong>Models</strong> application.
+            </Typography>
+
+            <a href="/testdrive" className={classes.anchorButton}>
+              <Button variant="contained" color="primary">
+                Test Drive
+              </Button>
+            </a>
+
+            {!free && (
+              <Typography component="p" className={classes.paragraph}>
+                {t(`home.models_descrip`)} <a href="/models">link</a>.
+              </Typography>
+            )}
+          </div>
+          <div className={classes.section}>
+            <Typography variant="h5" component="h3" className={classes.title}>
+              {t(`home.api_title`)}
+            </Typography>
+            <Typography component="p" className={classes.paragraph}>
+              {t(`home.api_descrip1`)} <a href="/home/keys">link</a>{" "}
+              {t(`home.api_descrip2`)}
+            </Typography>
+          </div>
+          <div className={classes.section}>
+            <Typography variant="h5" component="h3" className={classes.title}>
+              {t(`home.project_title`)}
+            </Typography>
             <Typography component="p" className={classes.paragraph}>
               {t(`home.project_descrip`)} <br />
             </Typography>
