@@ -133,7 +133,6 @@ class Layers extends React.Component {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          {/* <CliengoLoader /> */}
         </Head>
         <Map
           bounds={bounds}
