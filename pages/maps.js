@@ -218,7 +218,7 @@ class Maps extends React.Component {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <CliengoLoader />
+          {/* <CliengoLoader /> */}
         </Head>
         <Map
           bounds={bounds}
@@ -235,7 +235,7 @@ class Maps extends React.Component {
             onOpacityChange={this.handleOpacityChange}
           />
           <LayersLegendExpansionPanel layers={layersWithLegend} />
-          <QuoteButton isAuthenticated={Boolean(token)} />
+          {/* <QuoteButton isAuthenticated={Boolean(token)} /> */}
           {tileLayers}
         </Map>
       </div>
