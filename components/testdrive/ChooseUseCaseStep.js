@@ -1,4 +1,9 @@
 import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
@@ -10,10 +15,49 @@ const styles = theme => ({
   header: {
     marginBottom: theme.spacing.unit * 3,
     textAlign: "center"
+  },
+  grid: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  card: {
+    display: "flex", // Fix IE 11 issue.
+    flexDirection: "column",
+    height: "100%",
+    [theme.breakpoints.up(220 + theme.spacing.unit * 2 * 2)]: {
+      marginLeft: 18,
+      marginTop: 15
+    }
+  },
+  cardContent: {
+    display: "flex",
+    flex: "1 0 auto",
+    alignItems: "flex-start",
+    flexDirection: "column",
+    height: "75%"
+  },
+  cardActions: {
+    display: "flex",
+    justifyContent: "flex-start"
+  },
+  image: {
+    marginTop: theme.spacing.unit * 2,
+    width: "100%",
+    cursor: "pointer"
   }
 });
 
 const useCases = ["pools", "cattle"];
+
+const useCasesDesc = {
+  pools: {
+    title: "Pools",
+    desc: "Detect pools"
+  },
+  cattle: {
+    title: "Cattle",
+    desc: "Detect and count cattle"
+  }
+};
 
 class ChooseUseCaseStep extends React.Component {
   handleButtonClick = useCase => {
@@ -27,19 +71,36 @@ class ChooseUseCaseStep extends React.Component {
     const { classes, t } = this.props;
 
     return (
-      <StepContentContainer>
+      <StepContentContainer width={800}>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("new.od.header")}
+          {/* {t("new.od.header")} */}
+          Choose Use Case
         </Typography>
-        {useCases.map(useCase => (
-          <Button
-            key={useCase}
-            variant="contained"
-            onClick={() => this.handleButtonClick(useCase)}
-          >
-            {useCase}
-          </Button>
-        ))}
+        <Grid container spacing={8} className={classes.grid}>
+          {useCases.map((useCase, i) => (
+            <Grid item xs={6} key={useCase}>
+              <Card className={classes.card}>
+                <CardContent className={classes.cardContent}>
+                  <Typography gutterBottom variant="h6" component="h3">
+                    {useCasesDesc[useCase].title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {useCasesDesc[useCase].desc}
+                  </Typography>
+                  <img
+                    className={classes.image}
+                    src={`/static/testdrive/case${i + 1}.png`}
+                    onClick={() => this.handleButtonClick(useCase)}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </StepContentContainer>
     );
   }
