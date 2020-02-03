@@ -1,28 +1,81 @@
-import Button from "@material-ui/core/Button";
+import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import StepContentContainer from "../StepContentContainer";
-import React from "react";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import { Link, withNamespaces } from "../../i18n";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 5,
     textAlign: "center"
+  },
+  guide: {
+    marginBottom: theme.spacing.unit * 5
+  },
+  step: {
+    textAlign: "center",
+    marginRight: theme.spacing.unit * 2
+  },
+  stepImage: {
+    marginBottom: theme.spacing.unit
   }
 });
 
+const steps = [
+  {
+    title: "Problem",
+    desc: "Problem definition. Available data. Alternative sources."
+  },
+  {
+    title: "Data",
+    desc: "Data wrangling. Preprocessing. Outlier removal."
+  },
+  {
+    title: "Annotation",
+    desc: "Imagery labeling. Experts validation. Ground truth."
+  },
+  {
+    title: "Modeling",
+    desc: "Train/Test split. Deep Neural Network. Hyperparameters."
+  },
+  {
+    title: "Deploy",
+    desc: "Map tile server. Data compression. Visualization."
+  }
+];
+
+let GuideSteps = ({ classes, t }) => (
+  <Grid container className={classes.guide} justify="center">
+    {steps.map((step, i) => (
+      <Grid item xs={2} className={classes.step} key={`step${i}`}>
+        <img
+          className={classes.stepImage}
+          height={64}
+          src={`/static/testdrive/step${i + 1}.png`}
+        />
+        <Typography variant="h6">{step.title}</Typography>
+        <Typography variant="body2">{step.desc}</Typography>
+      </Grid>
+    ))}
+  </Grid>
+);
+
+GuideSteps = withStyles(styles)(GuideSteps);
+GuideSteps = withNamespaces("models")(GuideSteps);
+
 let InitialStep = ({ classes, t }) => (
-  <StepContentContainer>
+  <StepContentContainer width={900}>
     <Typography className={classes.header} component="h1" variant="h5">
-      {t("new.od.header")}
+      {/* {t("new.od.header")} */}
+      Test Drive
     </Typography>
-    <Typography>
-      (acá va el diagrama y una descripción general de todo el proceso...)
-    </Typography>
+    <GuideSteps />
     <Link href="/testdrive/choose-usecase">
       <Button color="primary" variant="contained">
-        {t("new.start_building")}
+        {/* {t("new.start_building")} */}
+        Start
       </Button>
     </Link>
   </StepContentContainer>
