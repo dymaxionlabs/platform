@@ -2,6 +2,7 @@ import { Component } from "react";
 import { routerPush } from "./router";
 import nextCookie from "next-cookies";
 import cookie from "js-cookie";
+import querystring from "querystring";
 
 export const login = async ({ token, expires, redirectTo = "/home" }) => {
   cookie.set("token", token, { expires: expires });
@@ -78,7 +79,8 @@ export const auth = (ctx, redirect) => {
 
   if (redirect) {
     if (ctx.req && !token) {
-      ctx.res.writeHead(302, { Location: "/login" });
+      const query = querystring.stringify({ redirect: ctx.req.url });
+      ctx.res.writeHead(302, { Location: `/login?${query}` });
       ctx.res.end();
       return;
     }

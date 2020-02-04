@@ -69,10 +69,18 @@ class PasswordReset extends React.Component {
     isSubmitting: false
   };
 
-  static async getInitialProps() {
+  static async getInitialProps({ query }) {
     return {
-      namespacesRequired: ["common"]
+      namespacesRequired: ["common"],
+      query
     };
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { email } = props.query;
+    this.state.email = email;
   }
 
   onEmailChange = e => {
@@ -120,7 +128,8 @@ class PasswordReset extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
+    const { t, classes, query } = this.props;
+    const { redirect, beta, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -159,7 +168,12 @@ class PasswordReset extends React.Component {
             </FormControl>
             <Grid container spacing={24}>
               <Grid item xs>
-                <Link href="/login">
+                <Link
+                  href={{
+                    pathname: "/login",
+                    query: { redirect, beta, email }
+                  }}
+                >
                   <Button
                     className={classes.submit}
                     variant="contained"

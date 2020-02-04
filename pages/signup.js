@@ -203,8 +203,8 @@ class Register extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
-    const { redirect, beta } = this.props.query;
+    const { t, classes, query } = this.props;
+    const { redirect, beta, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -303,8 +303,8 @@ class Register extends React.Component {
               <Grid item xs>
                 <Link
                   href={{
-                    pathname: "login",
-                    query: { redirect: redirect, beta: beta }
+                    pathname: "/login",
+                    query: { redirect, email, beta }
                   }}
                 >
                   <Button
@@ -335,8 +335,8 @@ class Register extends React.Component {
             {t("signup.already_has_account")}{" "}
             <Link
               href={{
-                pathname: "login",
-                query: { redirect: redirect, beta: beta }
+                pathname: "/login",
+                query: { redirect, email, beta }
               }}
             >
               <a>{t("signup.login")}</a>

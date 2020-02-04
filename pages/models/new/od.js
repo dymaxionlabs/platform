@@ -10,8 +10,8 @@ import TrainStep from "../../../components/models/new/od/TrainStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
 import SelectStep from "../../../components/models/new/od/SelectStep";
 import PredictStep from "../../../components/models/new/od/PredictStep";
-import StepperContent from "../../../components/models/new/StepperContent";
-// import StepperAppbar from "../../../components/models/new/StepperAppbar";
+import StepperContent from "../../../components/StepperContent";
+// import StepperAppbar from "../../../components/StepperAppbar";
 import { i18n, withNamespaces } from "../../../i18n";
 import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
@@ -32,7 +32,15 @@ const styles = theme => ({
   }
 });
 
-const steps = ["initial", "create", "upload", "annotate", "train", "select", "predict"];
+const steps = [
+  "initial",
+  "create",
+  "upload",
+  "annotate",
+  "train",
+  "select",
+  "predict"
+];
 
 class NewODModel extends React.Component {
   state = {
@@ -99,7 +107,7 @@ class NewODModel extends React.Component {
         return <SelectStep token={token} estimatorId={query.id} />;
       }
       case "predict": {
-        return <PredictStep token={token} estimatorId={query.id} />
+        return <PredictStep token={token} estimatorId={query.id} />;
       }
     }
   }

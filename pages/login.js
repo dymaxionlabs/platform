@@ -145,8 +145,8 @@ class Login extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
-    const { redirect, beta, email } = this.props.query;
+    const { t, classes, query } = this.props;
+    const { redirect, beta, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -207,7 +207,12 @@ class Login extends React.Component {
           </form>
           <Typography className={classes.passwordReset}>
             {t("login.cant_remember")}{" "}
-            <Link href="/password/reset">
+            <Link
+              href={{
+                pathname: "/password/reset",
+                query: { redirect, beta, email }
+              }}
+            >
               <a>{t("login.request_new_password")}</a>
             </Link>
           </Typography>
@@ -215,8 +220,8 @@ class Login extends React.Component {
             {t("login.has_no_account")}{" "}
             <Link
               href={{
-                pathname: "signup",
-                query: { redirect: redirect, beta: beta, email: email }
+                pathname: "/signup",
+                query: { redirect, beta, email }
               }}
             >
               <a>{t("login.signup")}</a>
