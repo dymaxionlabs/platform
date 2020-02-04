@@ -41,48 +41,43 @@ class CreateStep extends React.Component {
   };
 
   checkClasses = () => {
-    var current = JSON.parse(window.localStorage.getItem("current"))
+    var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     var chips = this.state.classes;
     const { t } = this.props;
-    console.log('chips:' + chips)
-    
-    if (useCase == 'cattle'){
-      var i = chips.indexOf('red');
-      var e = chips.indexOf('black');
-      if (i == -1 || e == -1){
-        this.setState({errorClassMsg: t('create_step.error_msg_cattle')})
-        this.setState({showAlerts: true});
+    console.log("chips:" + chips);
+
+    if (useCase == "cattle") {
+      var i = chips.indexOf("red");
+      var e = chips.indexOf("black");
+      if (i == -1 || e == -1) {
+        this.setState({ errorClassMsg: t("create_step.error_msg_cattle") });
+        this.setState({ showAlerts: true });
         return false;
-      }
-      else if(chips.length != 2){
-        this.setState({errorClassMsg: t('create_step.error_msg_cattle')})
-        this.setState({showAlerts: true});
+      } else if (chips.length != 2) {
+        this.setState({ errorClassMsg: t("create_step.error_msg_cattle") });
+        this.setState({ showAlerts: true });
         return false;
-        
-      }else{
-        this.setState({showAlerts: false});
+      } else {
+        this.setState({ showAlerts: false });
         return true;
       }
-    }else if (useCase == 'pools'){
-      var m = chips.indexOf('pool');
-      if(m == -1){
-        this.setState({errorClassMsg: t('create_step.error_msg_pools')})
-        this.setState({showAlerts: true});
+    } else if (useCase == "pools") {
+      var m = chips.indexOf("pool");
+      if (m == -1) {
+        this.setState({ errorClassMsg: t("create_step.error_msg_pools") });
+        this.setState({ showAlerts: true });
         return false;
-      }
-      else if(chips.length != 1){
-        this.setState({errorClassMsg: t('create_step.error_msg_pools')})
-        this.setState({showAlerts: true});
+      } else if (chips.length != 1) {
+        this.setState({ errorClassMsg: t("create_step.error_msg_pools") });
+        this.setState({ showAlerts: true });
         return false;
-
-      }
-      else{
-        this.setState({showAlerts: false});
+      } else {
+        this.setState({ showAlerts: false });
         return true;
       }
     }
-  }
+  };
 
   handleSubmit = event => {
     event.preventDefault();
@@ -153,7 +148,7 @@ class CreateStep extends React.Component {
 
   handleChangeClasses = chips => {
     this.setState({ classes: chips });
-    this.setState({ showAlerts: false});
+    this.setState({ showAlerts: false });
   };
 
   render() {
@@ -210,15 +205,14 @@ class CreateStep extends React.Component {
         </form>
         {showAlerts && (
           <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left"
-          }}
-          open={showAlerts}
-          autoHideDuration={6000}
-          message={errorClassMsg}
-        >
-        </Snackbar>
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left"
+            }}
+            open={showAlerts}
+            autoHideDuration={6000}
+            message={errorClassMsg}
+          ></Snackbar>
         )}
       </StepContentContainer>
     );
