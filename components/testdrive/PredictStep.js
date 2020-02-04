@@ -127,6 +127,6 @@ class PredictStep extends React.Component {
 }
 
 PredictStep = withStyles(styles)(PredictStep);
-PredictStep = withNamespaces("models")(PredictStep);
+PredictStep = withNamespaces("testdrive")(PredictStep);
 
 export default PredictStep;

@@ -107,6 +107,6 @@ class ChooseUseCaseStep extends React.Component {
 }
 
 ChooseUseCaseStep = withStyles(styles)(ChooseUseCaseStep);
-ChooseUseCaseStep = withNamespaces("models")(ChooseUseCaseStep);
+ChooseUseCaseStep = withNamespaces("testdrive")(ChooseUseCaseStep);
 
 export default ChooseUseCaseStep;

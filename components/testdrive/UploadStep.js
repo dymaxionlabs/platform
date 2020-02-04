@@ -167,6 +167,6 @@ class UploadStep extends React.Component {
 }
 
 UploadStep = withStyles(styles)(UploadStep);
-UploadStep = withNamespaces("models")(UploadStep);
+UploadStep = withNamespaces("testdrive")(UploadStep);
 
 export default UploadStep;

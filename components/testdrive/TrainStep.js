@@ -142,6 +142,6 @@ class TrainStep extends React.Component {
 }
 
 TrainStep = withStyles(styles)(TrainStep);
-TrainStep = withNamespaces("models")(TrainStep);
+TrainStep = withNamespaces("testdrive")(TrainStep);
 
 export default TrainStep;

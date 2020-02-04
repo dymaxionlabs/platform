@@ -247,6 +247,6 @@ class SelectStep extends React.Component {
 }
 
 SelectStep = withStyles(styles)(SelectStep);
-SelectStep = withNamespaces("models")(SelectStep);
+SelectStep = withNamespaces("testdrive")(SelectStep);
 
 export default SelectStep;
