@@ -45,16 +45,11 @@ class CreateStep extends React.Component {
     var useCase = current["useCase"];
     var chips = this.state.classes;
     const { t } = this.props;
-    console.log("chips:" + chips);
 
     if (useCase == "cattle") {
       var i = chips.indexOf("red");
       var e = chips.indexOf("black");
-      if (i == -1 || e == -1) {
-        this.setState({ errorClassMsg: t("create_step.error_msg_cattle") });
-        this.setState({ showAlerts: true });
-        return false;
-      } else if (chips.length != 2) {
+      if ((i === -1 || e === -1) && chips.length !== 2) {
         this.setState({ errorClassMsg: t("create_step.error_msg_cattle") });
         this.setState({ showAlerts: true });
         return false;
@@ -64,11 +59,7 @@ class CreateStep extends React.Component {
       }
     } else if (useCase == "pools") {
       var m = chips.indexOf("pool");
-      if (m == -1) {
-        this.setState({ errorClassMsg: t("create_step.error_msg_pools") });
-        this.setState({ showAlerts: true });
-        return false;
-      } else if (chips.length != 1) {
+      if (m === -1 && chips.length !== 1) {
         this.setState({ errorClassMsg: t("create_step.error_msg_pools") });
         this.setState({ showAlerts: true });
         return false;
@@ -93,7 +84,7 @@ class CreateStep extends React.Component {
       classes: classes
     };
 
-    if (this.checkClasses() == false) {
+    if (!this.checkClasses()) {
       return;
     }
 
