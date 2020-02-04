@@ -294,8 +294,6 @@ models,new_title,Nuevo Modelo,New Model
 models,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
 models,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.
 models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.
-models,create_step.error_msg_cattle,"Cattle debe tener estos campos: red, black.","Cattle must have these fields: red, black."
-models,create_step.error_msg_pools,Pools debe tener este campo: pool,Pools must have this field: pool
 models,annotate_step.remaining,Restantes,Remaining
 models,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
 models,annotate_step.cancel,Cancelar,Cancel
@@ -313,6 +311,8 @@ testdrive,create_step.submit_btn,Crear,Create
 testdrive,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
 testdrive,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.
 testdrive,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.
+testdrive,create_step.error_msg_cattle,"Cattle debe tener estos campos: red, black.","Cattle must have these fields: red, black."
+testdrive,create_step.error_msg_pools,Pools debe tener este campo: pool,Pools must have this field: pool
 testdrive,upload_step.title,Elegir o subir imágenes,Choose or upload images
 testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
 testdrive,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
