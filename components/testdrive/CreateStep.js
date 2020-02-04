@@ -43,16 +43,15 @@ class CreateStep extends React.Component {
   checkClasses = () => {
     var current = JSON.parse(window.localStorage.getItem("current"))
     var useCase = current["useCase"];
-    console.log("useCase: " + useCase);
     var chips = this.state.classes;
-    console.log("Chips: " + chips);
+    const { t } = this.props;
     
     if (useCase == 'cattle'){
       var i = chips.indexOf('red');
       var e = chips.indexOf('black');
       
       if(i == -1 || e == -1){
-        this.setState({errorClassMsg: 'cattle debe tener estos campos: red, black'})
+        this.setState({errorClassMsg: t('create_step.error_msg_cattle')})
         this.setState({showAlerts: true});
         return false;
       }
@@ -63,7 +62,7 @@ class CreateStep extends React.Component {
     }else if (useCase == 'pools'){
       var m = chips.indexOf('pool');
       if(m == -1){
-        this.setState({errorClassMsg: 'pools debe tener este campo: pool'})
+        this.setState({errorClassMsg: t('create_step.error_msg_pools')})
         this.setState({showAlerts: true});
         return false;
       }
