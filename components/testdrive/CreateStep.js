@@ -215,6 +215,6 @@ class CreateStep extends React.Component {
 }
 
 CreateStep = withStyles(styles)(CreateStep);
-CreateStep = withNamespaces("models")(CreateStep);
+CreateStep = withNamespaces("testdrive")(CreateStep);
 
 export default CreateStep;

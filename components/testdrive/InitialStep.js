@@ -63,25 +63,23 @@ let GuideSteps = ({ classes, t }) => (
 );
 
 GuideSteps = withStyles(styles)(GuideSteps);
-GuideSteps = withNamespaces("models")(GuideSteps);
+GuideSteps = withNamespaces("testdrive")(GuideSteps);
 
 let InitialStep = ({ classes, t }) => (
   <StepContentContainer width={900}>
     <Typography className={classes.header} component="h1" variant="h5">
-      {/* {t("new.od.header")} */}
-      Test Drive
+      {t("header")}
     </Typography>
     <GuideSteps />
     <Link href="/testdrive/choose-usecase">
       <Button color="primary" variant="contained">
-        {/* {t("new.start_building")} */}
-        Start
+        {t("start")}
       </Button>
     </Link>
   </StepContentContainer>
 );
 
 InitialStep = withStyles(styles)(InitialStep);
-InitialStep = withNamespaces("models")(InitialStep);
+InitialStep = withNamespaces("testdrive")(InitialStep);
 
 export default InitialStep;
