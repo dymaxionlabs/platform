@@ -64,7 +64,7 @@
   "upload_step": {
     "dropzone": "Drag and drop your images here, or click.",
     "explanation": "Select one or more images and then click upload.",
-    "submit_btn": "Upload",
+    "select_btn": "Select images",
     "title": "Choose or upload images"
   }
 }

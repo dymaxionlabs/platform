@@ -64,7 +64,7 @@
   "upload_step": {
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
     "explanation": "Selecciona una o m\u00e1s im\u00e1genes y luego cliquea subir.",
-    "submit_btn": "Subir",
+    "select_btn": "Seleccionar im\u00e1genes",
     "title": "Elegir o subir im\u00e1genes"
   }
 }

@@ -317,7 +317,7 @@ testdrive,create_step.error_msg_wrong_classes,Para el caso de uso elegido debe i
 testdrive,upload_step.title,Elegir o subir imágenes,Choose or upload images
 testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
 testdrive,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
-testdrive,upload_step.submit_btn,Subir,Upload
+testdrive,upload_step.select_btn,Seleccionar imágenes,Select images
 testdrive,annotate_step.title,Anotar imágenes,Annotate images
 testdrive,annotate_step.explanation,Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. ¡Cuantos más marques mejor!,Label some objects to let your model train to find them. More labeled objects give you better accuracy.
 testdrive,annotate_step.save_btn,Guardar,Save
