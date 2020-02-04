@@ -19,6 +19,7 @@
     "error_msg_duplicate": "Ya existe un modelo con ese nombre, ingrese otro.",
     "error_msg_internal": "Ha ocurrido un error. Por favor reintente.",
     "error_msg_pools": "Pools debe tener este campo: pool",
+    "error_msg_wrong_classes": "Para el caso de uso elegido debe ingresar exactamente estas clases:",
     "explanation": "Elige un nombre y las clases que van a intervenir en tu modelo.",
     "name_helper": "Ingrese un nombre para su modelo.",
     "name_label": "Nombre",

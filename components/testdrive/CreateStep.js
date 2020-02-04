@@ -5,12 +5,9 @@ import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
-import cookie from "js-cookie";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
-import { i18n, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
+import { withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -40,7 +37,7 @@ class CreateStep extends React.Component {
     errorClassMsg: ""
   };
 
-  checkClasses = () => {
+  checkClasses() {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     var chips = this.state.classes;
@@ -49,8 +46,12 @@ class CreateStep extends React.Component {
     if (useCase == "cattle") {
       var i = chips.indexOf("red");
       var e = chips.indexOf("black");
-      if ((i === -1 || e === -1) && chips.length !== 2) {
-        this.setState({ errorClassMsg: t("create_step.error_msg_cattle") });
+      if (i === -1 || e === -1 || chips.length !== 2) {
+        this.setState({
+          errorClassMsg: `${t(
+            "create_step.error_msg_wrong_classes"
+          )}: "red", "black"`
+        });
         this.setState({ showAlerts: true });
         return false;
       } else {
@@ -59,8 +60,10 @@ class CreateStep extends React.Component {
       }
     } else if (useCase == "pools") {
       var m = chips.indexOf("pool");
-      if (m === -1 && chips.length !== 1) {
-        this.setState({ errorClassMsg: t("create_step.error_msg_pools") });
+      if (m === -1 || chips.length !== 1) {
+        this.setState({
+          errorClassMsg: `${t("create_step.error_msg_wrong_classes")}: "pool"`
+        });
         this.setState({ showAlerts: true });
         return false;
       } else {
@@ -68,21 +71,10 @@ class CreateStep extends React.Component {
         return true;
       }
     }
-  };
+  }
 
   handleSubmit = event => {
     event.preventDefault();
-
-    const project = cookie.get("project");
-    const { t, token } = this.props;
-    const { name, classes } = this.state;
-
-    const dataSend = {
-      project: project,
-      estimator_type: "OD",
-      name: name,
-      classes: classes
-    };
 
     if (!this.checkClasses()) {
       return;
@@ -94,43 +86,7 @@ class CreateStep extends React.Component {
       isSubmitting: true
     });
 
-    axios
-      .post(buildApiUrl("/estimators/"), dataSend, {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      })
-      .then(response => {
-        const modelId = response.data.uuid;
-        routerPush(`/models/new/od/upload?id=${modelId}`);
-      })
-      .catch(error => {
-        if (error.response) {
-          const { response } = error;
-          if (response.status === 400) {
-            if (response.data.hasOwnProperty("non_field_errors")) {
-              this.setState({
-                errorMsg: t("create_step.error_msg_duplicate"),
-                isSubmitting: false
-              });
-            }
-            if (response.data.hasOwnProperty("classes")) {
-              this.setState({
-                errorMsg: t("create_step.error_msg_classes"),
-                isSubmitting: false
-              });
-            }
-          }
-        }
-
-        if (!error.response || error.response.status >= 500) {
-          this.setState({
-            errorMsg: t("create_step.error_msg_internal"),
-            isSubmitting: false
-          });
-        }
-      });
+    routerPush("/testdrive/upload");
   };
 
   handleNameChange = e => {
