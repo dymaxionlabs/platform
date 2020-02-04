@@ -1,137 +1,95 @@
+import React from "react";
 import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
-import cookie from "js-cookie";
-import React from "react";
-import { i18n, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { routerPush } from "../../utils/router";
-import DropzoneArea from "../upload/DropzoneArea";
+import { withNamespaces } from "../../i18n";
+import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import FileGallery from "../FileGallery.js";
 
 const styles = theme => ({
   header: {
     marginBottom: theme.spacing.unit * 3,
     textAlign: "center"
   },
-  classesLabel: {
-    paddingBottom: theme.spacing.unit
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3
-  },
   errorMsg: {
     color: "red"
   }
 });
 
+const useCaseFiles = {
+  pools: [
+    { name: "pools.tif", src: "/static/logo.png" },
+    { name: "pools2.tif", src: "/static/logo.png" }
+  ],
+  cattle: [{ name: "cattle.tif", src: "/static/logo.png" }]
+};
+
 class UploadStep extends React.Component {
   state = {
+    currentModel: null,
     files: [],
-    uploading: false,
-    currentProgress: 0,
-    totalProgress: 0
+    filesLoaded: false,
+    fileSelected: false
   };
 
-  handleSubmit = async () => {
-    const project = cookie.get("project");
-    const { estimatorId } = this.props;
+  componentDidMount() {
+    this._loadCurrentModel();
+  }
+
+  handleFileClick = file => {
     const { files } = this.state;
 
-    if (files.length == 0) return;
-
-    this.setState({ uploading: true, currentProgress: 0, totalProgress: 0 });
-
-    let count = 0;
-    for (const file of files) {
-      try {
-        await axios.post(
-          buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
-          file,
-          {
-            headers: {
-              Authorization: this.props.token,
-              "Accept-Language": i18n.language
-            },
-            onUploadProgress: progressEvent => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              this.setState({ currentProgress: percentCompleted });
-              console.log(percentCompleted);
-            }
-          }
-        );
-      } catch (err) {
-        console.error(err);
-        this.setState({ uploading: false });
-        return;
+    files.map(item => {
+      if (item["name"] == file) {
+        item["selected"] = !item["selected"];
       }
+    });
 
-      count += 1;
-      this.setState({ totalProgress: (count / files.length) * 100 });
-      if (count === files.length) {
-        this._setFilesOnEstimator(files, estimatorId);
-      }
-      if (!this.state.uploading) return;
+    this.setState({ ...this.state, fileSelected: true });
+  };
+
+  handleSelect = () => {
+    this._saveSelectedFiles();
+
+    routerPush("/testdrive/train");
+  };
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace.replace("/testdrive");
+      return;
     }
-  };
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
 
-  _setFilesOnEstimator = (files, estimatorId) => {
-    console.log(`Associate ${files} to estimator ${estimatorId}`);
+    this.setState({ currentModel }, () => this._loadFiles());
+  }
 
-    axios
-      .get(buildApiUrl(`/estimators/${estimatorId}/`), {
-        headers: {
-          Authorization: this.props.token,
-          "Accept-Language": i18n.language
-        }
-      })
-      .then(res => {
-        const { project, name, classes, image_files } = res.data;
-        const newFiles = files.map(file => file.name);
-        const uniqueImageFiles = [...new Set(image_files.concat(newFiles))];
+  _loadFiles() {
+    console.log("Loading files...");
+    const { currentModel } = this.state;
+    if (!currentModel || !currentModel["useCase"]) {
+      // TODO Throw error and redirect...
+      console.error("currentModel is null or invalid");
+      return;
+    }
 
-        const dataSend = {
-          project: project,
-          name: name,
-          classes: classes,
-          image_files: uniqueImageFiles
-        };
+    const files = useCaseFiles[currentModel.useCase];
+    this.setState({ files, filesLoaded: true });
+  }
 
-        axios
-          .put(buildApiUrl(`/estimators/${estimatorId}/`), dataSend, {
-            headers: {
-              Authorization: this.props.token,
-              "Accept-Language": i18n.language
-            }
-          })
-          .then(() => {
-            this.setState({ uploading: false });
-            routerPush(`/models/new/od/annotate?id=${estimatorId}`);
-          })
-          .catch(error => {
-            console.error(error);
-            this.setState({
-              //errorMsg: t("upload_step.error_msg", { message: error }),
-              errorMsg: JSON.stringify(
-                error.response && error.response.data.detail
-              ),
-              uploading: false
-            });
-          });
-      });
-  };
-
-  handleDropzoneChange = files => {
-    this.setState({ files: files });
-  };
+  _saveSelectedFiles() {
+    const { currentModel, files } = this.state;
+    const selectedFiles = files.filter(file => file.selected);
+    const newModel = { trainingFiles: selectedFiles, ...currentModel };
+    window.localStorage.setItem("current", JSON.stringify(newModel));
+  }
 
   render() {
     const { classes, t } = this.props;
-    const { uploading, currentProgress, totalProgress } = this.state;
+    const { fileSelected, files, filesLoaded } = this.state;
 
     return (
       <StepContentContainer>
@@ -139,28 +97,19 @@ class UploadStep extends React.Component {
           {t("upload_step.title")}
         </Typography>
         <Typography variant="body2">{t("upload_step.explanation")}</Typography>
-        <DropzoneArea
-          dropzoneText={t("upload_step.dropzone")}
-          filesLimit={10}
-          showPreviews={false}
-          maxFileSize={2000000000} /* 2gb */
-          onChange={this.handleDropzoneChange}
-          showFileNamesInPreview={true}
+        <FileGallery
+          loaded={filesLoaded}
+          onFileClick={this.handleFileClick}
+          files={files}
         />
         <Button
           color="primary"
           variant="contained"
-          onClick={this.handleSubmit}
-          disabled={uploading}
+          onClick={this.handleSelect}
+          disabled={!fileSelected}
         >
-          {t("upload_step.submit_btn")}
+          {t("upload_step.select_btn")}
         </Button>
-        {uploading && (
-          <div>
-            <LinearProgress variant="determinate" value={currentProgress} />
-            <LinearProgress variant="determinate" value={totalProgress} />
-          </div>
-        )}
       </StepContentContainer>
     );
   }
