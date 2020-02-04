@@ -294,7 +294,60 @@ models,new_title,Nuevo Modelo,New Model
 models,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
 models,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.
 models,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.
+models,create_step.error_msg_cattle,"Cattle debe tener estos campos: red, black.","Cattle must have these fields: red, black."
+models,create_step.error_msg_pools,Pools debe tener este campo: pool,Pools must have this field: pool
 models,annotate_step.remaining,Restantes,Remaining
 models,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
 models,annotate_step.cancel,Cancelar,Cancel
 models,annotate_step.delete,Borrar,Delete
+testdrive,header,Test Drive,Test Drive
+testdrive,start,Comenzar,Start
+testdrive,create_step.title,Crear nuevo modelo,Create new model
+testdrive,create_step.explanation,Elige un nombre y las clases que van a intervenir en tu modelo.,Choose a name and labels to setup your model.
+testdrive,create_step.name_label,Nombre,Name
+testdrive,create_step.name_helper,Ingrese un nombre para su modelo.,Enter a name for your model.
+testdrive,create_step.classes_label,Clases de objetos,Object classes
+testdrive,create_step.classes_helper_1,Ingrese el nombre de una clase y presione la tecla,Enter the name of a class and press the
+testdrive,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes in this way.
+testdrive,create_step.submit_btn,Crear,Create
+testdrive,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
+testdrive,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.
+testdrive,create_step.error_msg_internal,Ha ocurrido un error. Por favor reintente.,An error has ocurred. Please retry.
+testdrive,upload_step.title,Elegir o subir imágenes,Choose or upload images
+testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
+testdrive,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
+testdrive,upload_step.submit_btn,Subir,Upload
+testdrive,annotate_step.title,Anotar imágenes,Annotate images
+testdrive,annotate_step.explanation,Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. ¡Cuantos más marques mejor!,Label some objects to let your model train to find them. More labeled objects give you better accuracy.
+testdrive,annotate_step.save_btn,Guardar,Save
+testdrive,annotate_step.continue_btn,Guardar y continuar,Save and continue
+testdrive,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
+testdrive,annotate_step.remaining,Restantes,Remaining
+testdrive,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
+testdrive,annotate_step.cancel,Cancelar,Cancel
+testdrive,annotate_step.delete,Borrar,Delete
+testdrive,train_step.title,Entrenar modelo,Train model
+testdrive,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
+testdrive,train_step.continue,Continuar,Continue
+testdrive,train_step.back,Ir atrás,Go back
+testdrive,train_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
+testdrive,train_step.finished_explanation,El proceso de entrenamiento terminó. Haga clic en continuar para realizar una predicción,The training process is over. Click continue to make a prediction
+testdrive,select_step.title,Seleccionar imágenes,Select images
+testdrive,select_step.explanation,Selecciona las imágenes preexistentes o carga nuevas y luego cliquea Predecir,Select pre-existing images or upload new ones and then click Predict
+testdrive,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
+testdrive,select_step.submit_btn,Predecir,Predict
+testdrive,predict_step.title,Predecir modelo,Predict model
+testdrive,predict_step.explanation,En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ver los resultados.,At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.
+testdrive,predict_step.back,Ir atrás,Go back
+testdrive,predict_step.view,Ver resultados,View results
+testdrive,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
+testdrive,new_btn,Nuevo,New
+testdrive,new_title,Nuevo Modelo,New Model
+testdrive,steps.initial,Inicial,Initial
+testdrive,steps.choose-usecase,Elegir caso de uso,Choose use case
+testdrive,steps.create,Crear,Create
+testdrive,steps.upload,Subir,Upload
+testdrive,steps.annotate,Anotar,Annotate
+testdrive,steps.train,Entrenar,Train
+testdrive,steps.select,Seleccionar,Select
+testdrive,steps.predict,Predecir,Predict

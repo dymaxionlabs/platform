@@ -13,6 +13,7 @@ import { i18n, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const styles = theme => ({
   header: {
@@ -34,8 +35,43 @@ class CreateStep extends React.Component {
   state = {
     name: "",
     classes: [],
-    isSubmitting: false
+    isSubmitting: false,
+    showAlerts: false,
+    errorClassMsg: ""
   };
+
+  checkClasses = () => {
+    var current = JSON.parse(window.localStorage.getItem("current"))
+    var useCase = current["useCase"];
+    var chips = this.state.classes;
+    const { t } = this.props;
+    
+    if (useCase == 'cattle'){
+      var i = chips.indexOf('red');
+      var e = chips.indexOf('black');
+      
+      if(i == -1 || e == -1){
+        this.setState({errorClassMsg: t('create_step.error_msg_cattle')})
+        this.setState({showAlerts: true});
+        return false;
+      }
+      else{
+        this.setState({showAlerts: false});
+        return true;
+      }
+    }else if (useCase == 'pools'){
+      var m = chips.indexOf('pool');
+      if(m == -1){
+        this.setState({errorClassMsg: t('create_step.error_msg_pools')})
+        this.setState({showAlerts: true});
+        return false;
+      }
+      else{
+        this.setState({showAlerts: false});
+        return true;
+      }
+    }
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -50,6 +86,10 @@ class CreateStep extends React.Component {
       name: name,
       classes: classes
     };
+
+    if (this.checkClasses() == false) {
+      return;
+    }
 
     // Reset messages
     this.setState({
@@ -102,12 +142,12 @@ class CreateStep extends React.Component {
 
   handleChangeClasses = chips => {
     this.setState({ classes: chips });
+    this.setState({ showAlerts: false});
   };
 
   render() {
     const { classes, t } = this.props;
-    const { isSubmitting, errorMsg } = this.state;
-
+    const { isSubmitting, errorMsg, showAlerts, errorClassMsg } = this.state;
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
@@ -157,6 +197,18 @@ class CreateStep extends React.Component {
             {t("create_step.submit_btn")}
           </Button>
         </form>
+        {showAlerts && (
+          <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          open={showAlerts}
+          autoHideDuration={6000}
+          message={errorClassMsg}
+        >
+        </Snackbar>
+        )}
       </StepContentContainer>
     );
   }
