@@ -2,11 +2,11 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { withStyles } from "@material-ui/core/styles";
-import { withNamespaces } from "../i18n";
+import { withNamespaces } from "../../../../i18n";
 import PropTypes from "prop-types";
 import React from "react";
 
-const styles = theme => ({
+const styles = _theme => ({
   stepper: {
     backgroundColor: "none"
   }
@@ -17,20 +17,11 @@ class StepperContent extends React.Component {
     activeStep: 0
   };
 
-  steps = () => {
-    return this.props.steps;
-  };
-
-  activeStep = step => {
-    let steps = this.steps();
-    return steps.indexOf(step);
-  };
-
   render() {
-    const { t, classes, activeStep } = this.props;
+    const { t, classes, steps } = this.props;
+    const { activeStep } = this.state;
 
-    const steps = this.steps();
-    const activeStepName = this.activeStep(activeStep);
+    const activeStepName = steps.indexOf(activeStep);
 
     return (
       <React.Fragment>

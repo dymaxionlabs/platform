@@ -10,8 +10,7 @@ import TrainStep from "../../../components/models/new/od/TrainStep";
 import UploadStep from "../../../components/models/new/od/UploadStep";
 import SelectStep from "../../../components/models/new/od/SelectStep";
 import PredictStep from "../../../components/models/new/od/PredictStep";
-import StepperContent from "../../../components/StepperContent";
-// import StepperAppbar from "../../../components/StepperAppbar";
+import StepperContent from "../../../components/models/new/od/StepperContent";
 import { i18n, withNamespaces } from "../../../i18n";
 import { buildApiUrl } from "../../../utils/api";
 import { withAuthSync } from "../../../utils/auth";
@@ -121,7 +120,6 @@ class NewODModel extends React.Component {
           <title>{t("new.od.header")}</title>
         </Head>
         <BasicAppbar />
-        {/* <StepperAppbar activeStep={this.state.step} steps={steps} /> */}
         {this.stepContent()}
         <div className={classes.stepperContent}>
           <StepperContent

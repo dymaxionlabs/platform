@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
 import StepperContent from "./StepperContent";
-import { Link } from "../i18n";
+import { Link } from "../../../../i18n";
 
 const styles = theme => ({
   appBar: {

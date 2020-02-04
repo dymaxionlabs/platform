@@ -10,7 +10,7 @@ import TrainStep from "../components/testdrive/TrainStep";
 import UploadStep from "../components/testdrive/UploadStep";
 import SelectStep from "../components/testdrive/SelectStep";
 import PredictStep from "../components/testdrive/PredictStep";
-import StepperContent from "../components/StepperContent";
+import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import { withAuthSync } from "../utils/auth";
 
@@ -47,7 +47,7 @@ class TestDrive extends React.Component {
 
   static async getInitialProps({ query }) {
     return {
-      namespacesRequired: ["models"],
+      namespacesRequired: ["testdrive"],
       query: query
     };
   }
@@ -64,7 +64,7 @@ class TestDrive extends React.Component {
   }
 
   stepContent() {
-    const { token, query } = this.props;
+    const { token } = this.props;
     const { step } = this.state;
 
     switch (step) {
@@ -101,10 +101,9 @@ class TestDrive extends React.Component {
     return (
       <React.Fragment>
         <Head>
-          <title>{t("new.od.header")}</title>
+          <title>{t("header")}</title>
         </Head>
         <BasicAppbar />
-        {/* <StepperAppbar activeStep={this.state.step} steps={steps} /> */}
         {this.stepContent()}
         <div className={classes.stepperContent}>
           <StepperContent
@@ -119,7 +118,7 @@ class TestDrive extends React.Component {
 }
 
 TestDrive = withStyles(styles)(TestDrive);
-TestDrive = withNamespaces("models")(TestDrive);
+TestDrive = withNamespaces("testdrive")(TestDrive);
 TestDrive = withAuthSync(TestDrive);
 
 export default TestDrive;
