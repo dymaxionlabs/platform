@@ -328,7 +328,7 @@ testdrive,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde 
 testdrive,annotate_step.cancel,Cancelar,Cancel
 testdrive,annotate_step.delete,Borrar,Delete
 testdrive,train_step.title,Entrenar modelo,Train model
-testdrive,train_step.explanation,En este momento se está entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ser utilizado.,Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.
+testdrive,train_step.explanation,"Esto es una demo, por favor presione el boton continuar.","This a demo, please press the continue button"
 testdrive,train_step.continue,Continuar,Continue
 testdrive,train_step.back,Ir atrás,Go back
 testdrive,train_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined

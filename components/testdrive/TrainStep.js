@@ -129,9 +129,13 @@ class TrainStep extends React.Component {
                 <Typography>{t("train_step.undefined_explanation")}</Typography>
               )}
             </div>
-            <Link href="/home/models">
-              <Button color="primary" variant="contained" fullWidth="true">
-                {t("train_step.back")}
+            <Link>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => this.handleClickContinue()}
+              >
+                {t("train_step.continue")}
               </Button>
             </Link>
           </div>
