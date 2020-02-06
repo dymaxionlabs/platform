@@ -1,246 +1,115 @@
+import React from "react";
 import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
-import cookie from "js-cookie";
-import React from "react";
-import FileGallery from "../FileGallery.js";
-import { i18n, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { routerPush } from "../../utils/router";
-import DropzoneArea from "../upload/DropzoneArea";
+import { withNamespaces } from "../../i18n";
+import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import FileGallery from "../FileGallery.js";
 
 const styles = theme => ({
   header: {
     marginBottom: theme.spacing.unit * 3,
     textAlign: "center"
   },
-  classesLabel: {
-    paddingBottom: theme.spacing.unit
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3
-  },
   errorMsg: {
     color: "red"
   }
 });
 
+const useCaseFiles = {
+  pools: [
+    { name: "pools.tif", src: "/static/logo.png" },
+    { name: "pools2.tif", src: "/static/logo.png" }
+  ],
+  cattle: [{ name: "cattle.tif", src: "/static/logo.png" }]
+};
+
 class SelectStep extends React.Component {
   state = {
+    currentModel: null,
     files: [],
-    previousFiles: [],
     filesLoaded: false,
-    uploading: false,
-    currentProgress: 0,
-    totalProgress: 0,
-    disabledSubmitBtn: true
+    fileSelected: false
   };
 
-  selectedOrUploadFiles(files) {
-    if (files.length != 0) return true;
-    else {
-      let selected = false;
-      this.state.previousFiles.map((item, key) => {
-        if (item["selected"]) {
-          selected = true;
-        }
-      });
-      return selected;
-    }
+  componentDidMount() {
+    this._loadCurrentModel();
   }
-
-  async setPredictingJob(newNameFiles = []) {
-    const { estimatorId, token } = this.props;
-    let selectedFiles = [];
-    this.state.previousFiles.map((item, key) => {
-      if (item["selected"]) {
-        selectedFiles.push(item["name"]);
-      }
-    });
-
-    const response = await axios.post(
-      buildApiUrl(`/estimators/${estimatorId}/predict/`),
-      { files: selectedFiles.concat(newNameFiles) },
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-    console.log(response);
-    routerPush(`/models/new/od/predict?id=${estimatorId}`);
-  }
-
-  handleSubmit = async () => {
-    const project = cookie.get("project");
-    const { token } = this.props;
-    const { files } = this.state;
-    let newNameFiles = [];
-
-    if (!this.selectedOrUploadFiles(files)) return;
-
-    this.setState({ uploading: true, currentProgress: 0, totalProgress: 0 });
-
-    let count = 0;
-    if (files.length > 0) {
-      for (const file of files) {
-        try {
-          await axios
-            .post(
-              buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
-              file,
-              {
-                headers: {
-                  Authorization: token,
-                  "Accept-Language": i18n.language
-                },
-                onUploadProgress: progressEvent => {
-                  const percentCompleted = Math.round(
-                    (progressEvent.loaded * 100) / progressEvent.total
-                  );
-                  this.setState({ currentProgress: percentCompleted });
-                  console.log(percentCompleted);
-                }
-              }
-            )
-            .then(res => {
-              newNameFiles.push(res.data.detail["name"]);
-            });
-        } catch (err) {
-          console.error(err);
-          this.setState({ uploading: false });
-          return;
-        }
-
-        count += 1;
-        this.setState({ totalProgress: (count / files.length) * 100 });
-        if (count === files.length) {
-          this.setPredictingJob(newNameFiles);
-        }
-        if (!this.state.uploading) return;
-      }
-    } else {
-      this.setPredictingJob();
-    }
-  };
-
-  handleDropzoneChange = files => {
-    this.setState({
-      files: files,
-      disabledSubmitBtn: !this.selectedOrUploadFiles(files)
-    });
-  };
 
   handleFileClick = file => {
-    this.state.previousFiles.map((item, key) => {
+    const { files } = this.state;
+
+    files.map(item => {
       if (item["name"] == file) {
         item["selected"] = !item["selected"];
       }
     });
-    this.setState(this.state);
-    this.setState({
-      disabledSubmitBtn: !this.selectedOrUploadFiles(this.state.files)
-    });
+
+    this.setState({ ...this.state, fileSelected: true });
   };
 
-  async checkPendingJob() {
-    const { token, estimatorId } = this.props;
-    const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/predicted/`),
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-    /* detail will be true is doesn't exist any predictionjob with finished = False */
-    let detail = response.data.detail;
-    if (!detail) {
-      routerPush(`/models/new/od/predict?id=${estimatorId}`);
+  handleSelect = () => {
+    this._saveSelectedFiles();
+
+    routerPush("/models/new/od/predict");
+  };
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace.replace("/testdrive");
+      return;
     }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel }, () => this._loadFiles());
   }
 
-  async componentDidMount() {
-    const project = cookie.get("project");
-    const { token } = this.props;
-
-    this.checkPendingJob();
-
-    const response = await axios.get(
-      buildApiUrl(`/files/?project_uuid=${project}`),
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-    let files = response.data.results;
-    for (let i = 0; i < files.length; i++) {
-      this.state.previousFiles.push({
-        src: files[i]["file"],
-        width: 2,
-        height: 2,
-        name: files[i]["name"],
-        selected: false
-      });
-      this.setState(this.state);
+  _loadFiles() {
+    console.log("Loading files...");
+    const { currentModel } = this.state;
+    if (!currentModel || !currentModel["useCase"]) {
+      // TODO Throw error and redirect...
+      console.error("currentModel is null or invalid");
+      return;
     }
-    this.setState({
-      filesLoaded: true,
-      disabledSubmitBtn: !this.selectedOrUploadFiles(this.state.files)
-    });
+
+    const files = useCaseFiles[currentModel.useCase];
+    this.setState({ files, filesLoaded: true });
+  }
+
+  _saveSelectedFiles() {
+    const { currentModel, files } = this.state;
+    const selectedFiles = files.filter(file => file.selected);
+    const newModel = { predictionFiles : selectedFiles, ...currentModel };
+    window.localStorage.setItem("current", JSON.stringify(newModel));
   }
 
   render() {
     const { classes, t } = this.props;
-    const {
-      previousFiles,
-      filesLoaded,
-      uploading,
-      currentProgress,
-      totalProgress,
-      disabledSubmitBtn
-    } = this.state;
+    const { fileSelected, files, filesLoaded } = this.state;
 
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("select_step.title")}
+          {t("upload_step.title")}
         </Typography>
-        <Typography variant="body2">{t("select_step.explanation")}</Typography>
-        <DropzoneArea
-          dropzoneText={t("select_step.dropzone")}
-          filesLimit={10}
-          showPreviews={false}
-          maxFileSize={2000000000} /* 2gb */
-          onChange={this.handleDropzoneChange}
-          showFileNamesInPreview={true}
-        />
+        <Typography variant="body2">{t("upload_step.explanation")}</Typography>
         <FileGallery
           loaded={filesLoaded}
           onFileClick={this.handleFileClick}
-          files={previousFiles}
+          files={files}
         />
         <Button
           color="primary"
           variant="contained"
-          onClick={this.handleSubmit}
-          disabled={disabledSubmitBtn}
+          onClick={this.handleSelect}
+          disabled={!fileSelected}
         >
-          {t("select_step.submit_btn")}
+          {t("upload_step.select_btn")}
         </Button>
-        {uploading && (
-          <div>
-            <LinearProgress variant="determinate" value={currentProgress} />
-            <LinearProgress variant="determinate" value={totalProgress} />
-          </div>
-        )}
       </StepContentContainer>
     );
   }
