@@ -31,7 +31,8 @@
   "new_title": "New Model",
   "predict_step": {
     "back": "Go back",
-    "explanation": "At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.",
+    "continue": "continue",
+    "explanation": "This is a demo, please press the continue button to see the result.",
     "title": "Predict model",
     "undefined_explanation": "The remaining time is undefined",
     "view": "View results"
@@ -56,7 +57,7 @@
   "train_step": {
     "back": "Go back",
     "continue": "Continue",
-    "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",
+    "explanation": "This a demo, please press the continue button",
     "finished_explanation": "The training process is over. Click continue to make a prediction",
     "title": "Train model",
     "undefined_explanation": "The remaining time is undefined"
