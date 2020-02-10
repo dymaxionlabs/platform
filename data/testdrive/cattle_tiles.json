@@ -1,0 +1,17 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1317,
+            "file": "EC_L19_P13.jpg",
+            "col_off": 4000, 
+            "row_off": 2000,
+            "width": 1000,
+            "height": 1000,
+            "tile_file": "/static/testdrive/tiles/cattle/2_4.jpg",
+            "index": -2002317078
+        }
+    ]
+}

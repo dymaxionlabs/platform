@@ -2,7 +2,7 @@
   "annotate_step": {
     "annotations_per_class": "Anotaciones por clase",
     "cancel": "Cancelar",
-    "continue_btn": "Guardar y continuar",
+    "continue_btn": "Continuar",
     "delete": "Borrar",
     "explanation": "Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. \u00a1Cuantos m\u00e1s marques mejor!",
     "loading": "Procesando im\u00e1genes subidas. Por favor aguarde unos minutos...",
@@ -31,7 +31,8 @@
   "new_title": "Nuevo Modelo",
   "predict_step": {
     "back": "Ir atr\u00e1s",
-    "explanation": "En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ver los resultados.",
+    "continue": "Continuar",
+    "explanation": "Esto es una demo, por favor presione el boton continuar para ver el resultado.",
     "title": "Predecir modelo",
     "undefined_explanation": "El tiempo restante es indefinido",
     "view": "Ver resultados"
@@ -56,7 +57,7 @@
   "train_step": {
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",
-    "explanation": "En este momento se est\u00e1 entrenando tu modelo. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ser utilizado.",
+    "explanation": "Esto es una demo, por favor presione el boton continuar.",
     "finished_explanation": "El proceso de entrenamiento termin\u00f3. Haga clic en continuar para realizar una predicci\u00f3n",
     "title": "Entrenar modelo",
     "undefined_explanation": "El tiempo restante es indefinido"

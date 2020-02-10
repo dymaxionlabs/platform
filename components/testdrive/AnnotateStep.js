@@ -14,27 +14,24 @@ import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import axios from "axios";
 import React from "react";
 import AnnotatedImageTile from "../models/annotate/AnnotatedImageTile";
-import { i18n, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
+import { withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
-import cattle_estimator from "../../static/testdrive/cattle_estimator.json"
-import cattle_annotations from "../../static/testdrive/cattle_annotations.json";
-import cattle_tiles from "../../static/testdrive/cattle_tiles.json"
-import cattle_labels from "../../static/testdrive/cattle_labels.json"
+import cattle_estimator from "../../data/testdrive/cattle_estimator.json"
+import cattle_annotations from "../../data/testdrive/cattle_annotations.json";
+import cattle_tiles from "../../data/testdrive/cattle_tiles.json"
+import cattle_labels from "../../data/testdrive/cattle_labels.json"
 
-import pools_estimator from "../../static/testdrive/pools_estimator.json"
-import pools_annotations from "../../static/testdrive/pools_annotations.json"
-import pools_tiles from "../../static/testdrive/pools_tiles.json"
-import pools_labels from "../../static/testdrive/pools_labels.json"
+import pools_estimator from "../../data/testdrive/pools_estimator.json"
+import pools_annotations from "../../data/testdrive/pools_annotations.json"
+import pools_tiles from "../../data/testdrive/pools_tiles.json"
+import pools_labels from "../../data/testdrive/pools_labels.json"
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
-const MIN_IMAGE_TILES = PAGE_SIZE;
 const MIN_COUNT_PER_LABEL = 50;
 
 const styles = theme => ({
@@ -407,9 +404,6 @@ class AnnotateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-        {loading ? (
-          <LoadingContent />
-        ) : (
           <AnnotateContent
             labels={labels}
             labelCount={labelCount}
@@ -425,7 +419,6 @@ class AnnotateStep extends React.Component {
             onNextPageClick={this.handleNextPageClick}
             onLastPageClick={this.handleLastPageClick}
           />
-        )}
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}
@@ -434,9 +427,7 @@ class AnnotateStep extends React.Component {
             variant="contained"
             onClick={this.handleSubmit}
           >
-            {canAdvance
-              ? t("annotate_step.continue_btn")
-              : t("annotate_step.save_btn")}
+            { t("annotate_step.continue_btn")}
           </Button>
         </div>
       </StepContentContainer>
@@ -445,6 +436,6 @@ class AnnotateStep extends React.Component {
 }
 
 AnnotateStep = withStyles(styles)(AnnotateStep);
-AnnotateStep = withNamespaces("models")(AnnotateStep);
+AnnotateStep = withNamespaces("testdrive")(AnnotateStep);
 
 export default AnnotateStep;
