@@ -18,11 +18,8 @@ const styles = theme => ({
 });
 
 const useCaseFiles = {
-  pools: [
-    { name: "pools.tif", src: "/static/logo.png" },
-    { name: "pools2.tif", src: "/static/logo.png" }
-  ],
-  cattle: [{ name: "cattle.tif", src: "/static/logo.png" }]
+  pools: [{ name: "pools.tif", src: "/static/testdrive/pools/predict1.png" }],
+  cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/predict1.png" }]
 };
 
 class SelectStep extends React.Component {
@@ -83,7 +80,7 @@ class SelectStep extends React.Component {
   _saveSelectedFiles() {
     const { currentModel, files } = this.state;
     const selectedFiles = files.filter(file => file.selected);
-    const newModel = { predictionFiles : selectedFiles, ...currentModel };
+    const newModel = { predictionFiles: selectedFiles, ...currentModel };
     window.localStorage.setItem("current", JSON.stringify(newModel));
   }
 
