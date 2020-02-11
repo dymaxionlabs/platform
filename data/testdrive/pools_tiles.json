@@ -1,0 +1,17 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 2829,
+            "file": "pilar_pools.tif",
+            "col_off": 500,
+            "row_off": 0,
+            "width": 500,
+            "height": 500,
+            "tile_file": "/static/testdrive/tiles/pools/0_1.jpg",
+            "index": -2076896884
+        }
+    ]
+}

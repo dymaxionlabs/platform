@@ -14,17 +14,24 @@ import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import axios from "axios";
 import React from "react";
 import AnnotatedImageTile from "../models/annotate/AnnotatedImageTile";
-import { i18n, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
+import { withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
+import cattle_estimator from "../../data/testdrive/cattle_estimator.json"
+import cattle_annotations from "../../data/testdrive/cattle_annotations.json";
+import cattle_tiles from "../../data/testdrive/cattle_tiles.json"
+import cattle_labels from "../../data/testdrive/cattle_labels.json"
+
+import pools_estimator from "../../data/testdrive/pools_estimator.json"
+import pools_annotations from "../../data/testdrive/pools_annotations.json"
+import pools_tiles from "../../data/testdrive/pools_tiles.json"
+import pools_labels from "../../data/testdrive/pools_labels.json"
+
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
-const MIN_IMAGE_TILES = PAGE_SIZE;
 const MIN_COUNT_PER_LABEL = 50;
 
 const styles = theme => ({
@@ -206,111 +213,76 @@ class AnnotateStep extends React.Component {
   async componentDidMount() {
     await this.fetchEstimator();
     await this.fetchImageTiles();
-
-    this.fetchAnnotations();
-    this.fetchLabelCount();
+    await this.fetchAnnotations();
+    await this.fetchLabelCount();
+    this.setState({loading : false});
   }
 
   async fetchEstimator() {
-    const { token, estimatorId } = this.props;
-
+    var current = JSON.parse(window.localStorage.getItem("current"));
+    var useCase = current["useCase"];
     console.log("fetchEstimator");
-
-    const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/`),
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-
+    console.log("useCase: " + useCase);
+    if (useCase == 'cattle')  {
+      this.setState({estimator : cattle_estimator});
+    }
+    else if (useCase == 'pools') {
+      this.setState({estimator : pools_estimator});
+    }
+    console.log(this.state.estimator);
     console.log("done fetchEstimator");
-
-    this.setState({ estimator: response.data });
   }
 
   async fetchImageTiles() {
-    const { token } = this.props;
-    const { estimator, offset } = this.state;
-
     console.log("fetchImageTiles");
-
-    const response = await axios.get(buildApiUrl(`/image_tiles/`), {
-      params: {
-        limit: PAGE_SIZE,
-        offset: offset,
-        files: estimator.image_files.join(",")
-      },
-      headers: {
-        Authorization: token,
-        "Accept-Language": i18n.language
-      }
-    });
-
-    const { count } = response.data;
-
-    this.setState({ imageTiles: response.data.results, count: count });
-
-    console.log("done fetchImageTiles");
-
-    const notEnoughImages = count < MIN_IMAGE_TILES;
-    this.setState({ loading: notEnoughImages });
-
-    if (notEnoughImages) {
-      console.log("not enough tiles; set timeout");
-      setTimeout(
-        (() => {
-          console.log("running set timeout");
-          this.fetchImageTiles();
-        }).bind(this),
-        3000
-      );
+    var current = JSON.parse(window.localStorage.getItem("current"));
+    var useCase = current["useCase"];
+    var data;
+    if (useCase == 'cattle')  {
+      data = cattle_tiles;
     }
+    else if (useCase == 'pools') {
+      data = pools_tiles;
+    }
+    const { count } = data;
+    this.setState({imageTiles : data.results});
+    this.state.count = count;
+    console.log("done fetchImageTiles");
   }
 
   async fetchAnnotations() {
-    const { token } = this.props;
-    const { estimator, imageTiles } = this.state;
-    const imageTileIds = imageTiles.map(imageTile => imageTile.id);
-
-    const response = await axios.get(buildApiUrl(`/annotations/`), {
-      params: {
-        estimator: estimator.uuid,
-        image_tile: imageTileIds.join(",")
-      },
-      headers: {
-        Authorization: token,
-        "Accept-Language": i18n.language
-      }
-    });
-
-    const annotationsByTile = response.data.results.reduce((obj, annot) => {
+    console.log("fetchAnnotations");
+    var current = JSON.parse(window.localStorage.getItem("current"));
+    var useCase = current["useCase"];
+    var data;
+    if(useCase == 'pools'){
+      data = pools_annotations;
+    }
+    else if (useCase == 'cattle') {
+      data = cattle_annotations;
+    }
+    const annotationsByTile = data.results.reduce((obj, annot) => {
       const segments = annot.segments
         .map((segment, i) => [i, Object.assign(segment, { name: String(i) })])
         .reduce((obj, [i, segment]) => ({ ...obj, [i]: segment }), {});
       return { ...obj, [annot.image_tile]: segments };
     }, {});
-
-    this.setState({ annotationsByTile });
+    this.setState({annotationsByTile});
+    console.log("Done fetchAnnotations");
   }
 
   async fetchLabelCount() {
-    const { token, estimatorId } = this.props;
-
-    const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/segments_per_label/`),
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-
-    let labelCount = response.data["detail"];
-
+    console.log("fetchLabelCount");
+    var current = JSON.parse(window.localStorage.getItem("current"));
+    var useCase = current["useCase"];
+    var data;
+    if (useCase == 'cattle')  {
+      data = cattle_labels;
+    }
+    else if (useCase == 'pools') {
+      data = pools_labels;
+    }
+    let labelCount = data["detail"];
     // In case object is empty, fill it with all known labels
     const labels = this.state.estimator.classes;
     for (const label of labels) {
@@ -318,8 +290,8 @@ class AnnotateStep extends React.Component {
         labelCount[label] = 0;
       }
     }
-
-    this.setState({ labelCount });
+    this.setState({labelCount});
+    console.log("done fetchLabelCount");
   }
 
   _hasPrevPage() {
@@ -332,14 +304,7 @@ class AnnotateStep extends React.Component {
     return offset + PAGE_SIZE < offset;
   }
 
-  _hasEnoughAnnotations() {
-    const { labelCount } = this.state;
-    const hasLabels = Object.entries(labelCount).length > 0;
-    const allLabelsHaveEnoughAnnotations = Object.values(labelCount).every(
-      count => count >= MIN_COUNT_PER_LABEL
-    );
-    return hasLabels && allLabelsHaveEnoughAnnotations;
-  }
+ 
 
   handleChange = (imageTileId, rectangles) => {
     this.setState((state, _) => ({
@@ -404,46 +369,8 @@ class AnnotateStep extends React.Component {
   };
 
   handleSubmit = async () => {
-    const { token } = this.props;
-    const { estimator, imageTiles, annotationsByTile } = this.state;
-
-    let savedTiles = 0;
-    for (const imageTile of imageTiles) {
-      const annotations = annotationsByTile[imageTile.id] || {};
-      const segments = Object.values(annotations).map(segment => ({
-        x: segment.x,
-        y: segment.y,
-        width: segment.width,
-        height: segment.height,
-        label: segment.label
-      }));
-
-      const data = {
-        estimator: estimator.uuid,
-        image_tile: imageTile.id,
-        segments: segments
-      };
-
-      axios
-        .post(buildApiUrl(`/annotations/`), data, {
-          headers: {
-            Authorization: token,
-            "Accept-Language": i18n.language
-          }
-        })
-        .then(response => {
-          savedTiles += 1;
-          if (savedTiles === imageTiles.length) {
-            console.log("All annotations saved!");
-
-            const canAdvance = this._hasEnoughAnnotations();
-            if (canAdvance) {
-              console.log("Advance");
-              routerPush(`/models/new/od/train?id=${estimator.uuid}`);
-            }
-          }
-        });
-    }
+    routerPush(`/testdrive/train`);
+    
   };
 
   render() {
@@ -455,20 +382,17 @@ class AnnotateStep extends React.Component {
       annotationsByTile,
       labelCount,
       offset,
-      count
+      count,
     } = this.state;
 
     const labels = estimator && estimator.classes;
-    const canAdvance = this._hasEnoughAnnotations();
+    
 
     return (
       <StepContentContainer width={1000}>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-        {loading ? (
-          <LoadingContent />
-        ) : (
           <AnnotateContent
             labels={labels}
             labelCount={labelCount}
@@ -484,7 +408,6 @@ class AnnotateStep extends React.Component {
             onNextPageClick={this.handleNextPageClick}
             onLastPageClick={this.handleLastPageClick}
           />
-        )}
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}
@@ -493,9 +416,7 @@ class AnnotateStep extends React.Component {
             variant="contained"
             onClick={this.handleSubmit}
           >
-            {canAdvance
-              ? t("annotate_step.continue_btn")
-              : t("annotate_step.save_btn")}
+            { t("annotate_step.continue_btn")}
           </Button>
         </div>
       </StepContentContainer>
@@ -504,6 +425,6 @@ class AnnotateStep extends React.Component {
 }
 
 AnnotateStep = withStyles(styles)(AnnotateStep);
-AnnotateStep = withNamespaces("models")(AnnotateStep);
+AnnotateStep = withNamespaces("testdrive")(AnnotateStep);
 
 export default AnnotateStep;

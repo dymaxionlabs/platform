@@ -321,7 +321,7 @@ testdrive,upload_step.select_btn,Seleccionar imágenes,Select images
 testdrive,annotate_step.title,Anotar imágenes,Annotate images
 testdrive,annotate_step.explanation,Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos. ¡Cuantos más marques mejor!,Label some objects to let your model train to find them. More labeled objects give you better accuracy.
 testdrive,annotate_step.save_btn,Guardar,Save
-testdrive,annotate_step.continue_btn,Guardar y continuar,Save and continue
+testdrive,annotate_step.continue_btn,Continuar,Continue
 testdrive,annotate_step.annotations_per_class,Anotaciones por clase,Annotations per class
 testdrive,annotate_step.remaining,Restantes,Remaining
 testdrive,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
