@@ -13,26 +13,19 @@ const styles = _theme => ({
 });
 
 class StepperContent extends React.Component {
-  state = {
-    activeStep: 0
-  };
-
   render() {
-    const { t, classes, steps } = this.props;
-    const { activeStep } = this.state;
+    const { t, classes, steps, activeStep } = this.props;
 
-    const activeStepName = steps.indexOf(activeStep);
+    const activeStepIndex = steps.indexOf(activeStep);
 
     return (
-      <React.Fragment>
-        <Stepper className={classes.stepper} activeStep={activeStepName}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{t(`steps.${label}`)}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </React.Fragment>
+      <Stepper className={classes.stepper} activeStep={activeStepIndex}>
+        {steps.map(label => (
+          <Step key={label}>
+            <StepLabel>{t(`steps.${label}`)}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
     );
   }
 }
