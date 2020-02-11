@@ -39,7 +39,7 @@ class PredictStep extends React.Component {
 
   handleClickContinue() {
     const { estimatorId } = this.props;
-    routerPush(`/models/new/od/select?id=${estimatorId}`);
+    alert("To do");
   }
 
   
