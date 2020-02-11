@@ -99,6 +99,10 @@ class TestDrive extends React.Component {
 
   render() {
     const { t, classes, ...props } = this.props;
+    const { step } = this.state;
+
+    const isHiddenStep = step => hiddenSteps.includes(step);
+    const showStepper = !isHiddenStep(step);
 
     return (
       <React.Fragment>
@@ -107,13 +111,15 @@ class TestDrive extends React.Component {
         </Head>
         <BasicAppbar />
         {this.stepContent()}
-        <div className={classes.stepperContent}>
-          <StepperContent
-            activeStep={this.state.step}
-            steps={steps.filter(step => !hiddenSteps.includes(step))}
-            {...props}
-          />
-        </div>
+        {showStepper && (
+          <div className={classes.stepperContent}>
+            <StepperContent
+              activeStep={step}
+              steps={steps.filter(step => !isHiddenStep(step))}
+              {...props}
+            />
+          </div>
+        )}
       </React.Fragment>
     );
   }
