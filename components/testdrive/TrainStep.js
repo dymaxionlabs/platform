@@ -2,10 +2,8 @@ import { LinearProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 import React from "react";
-import { i18n, Link, withNamespaces } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
+import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
@@ -38,58 +36,12 @@ class TrainStep extends React.Component {
     percentage: 0
   };
 
-  async checkFinishedTrainingJob() {
-    const { token, estimatorId } = this.props;
-    const response = await axios.get(
-      buildApiUrl(`/estimators/${estimatorId}/finished/`),
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-    if (response.data.detail) {
-      this.setState({ finished: true });
-      clearInterval(this.interval);
-    } else {
-      if (this.state.percentage < 100) {
-        if (!typeof this.offInterval === "undefined")
-          clearInterval(this.offInterval);
-        this.setState({ percentage: response.data.percentage });
-        this.offInterval = setInterval(() => {
-          this.setState({ percentage: this.state.percentage + 1 });
-        }, 1000 * 60);
-      }
-    }
-  }
 
   handleClickContinue() {
     const { estimatorId } = this.props;
     routerPush(`/models/new/od/select?id=${estimatorId}`);
   }
 
-  async componentDidMount() {
-    const { token, estimatorId } = this.props;
-
-    await axios.post(
-      buildApiUrl(`/estimators/${estimatorId}/train/`),
-      {},
-      {
-        headers: {
-          Authorization: token,
-          "Accept-Language": i18n.language
-        }
-      }
-    );
-    if (this.state.percentage == 0) {
-      this.checkFinishedTrainingJob();
-    }
-    this.interval = setInterval(
-      () => this.checkFinishedTrainingJob(),
-      1000 * 60 * 5
-    );
-  }
 
   render() {
     const { classes, t } = this.props;
@@ -129,9 +81,13 @@ class TrainStep extends React.Component {
                 <Typography>{t("train_step.undefined_explanation")}</Typography>
               )}
             </div>
-            <Link href="/home/models">
-              <Button color="primary" variant="contained" fullWidth="true">
-                {t("train_step.back")}
+            <Link>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => this.handleClickContinue()}
+              >
+                {t("train_step.continue")}
               </Button>
             </Link>
           </div>
