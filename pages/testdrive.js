@@ -40,6 +40,8 @@ const steps = [
   "predict"
 ];
 
+const hiddenSteps = ["initial", "choose-usecase"];
+
 class TestDrive extends React.Component {
   state = {
     step: steps[0]
@@ -108,7 +110,7 @@ class TestDrive extends React.Component {
         <div className={classes.stepperContent}>
           <StepperContent
             activeStep={this.state.step}
-            steps={steps}
+            steps={steps.filter(step => !hiddenSteps.includes(step))}
             {...props}
           />
         </div>
