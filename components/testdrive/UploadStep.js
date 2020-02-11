@@ -18,11 +18,8 @@ const styles = theme => ({
 });
 
 const useCaseFiles = {
-  pools: [
-    { name: "pools.tif", src: "/static/logo.png" },
-    { name: "pools2.tif", src: "/static/logo.png" }
-  ],
-  cattle: [{ name: "cattle.tif", src: "/static/logo.png" }]
+  pools: [{ name: "pools.tif", src: "/static/testdrive/pools/train1.png" }],
+  cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/train1.png" }]
 };
 
 class UploadStep extends React.Component {
