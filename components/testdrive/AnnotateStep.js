@@ -304,14 +304,7 @@ class AnnotateStep extends React.Component {
     return offset + PAGE_SIZE < offset;
   }
 
-  _hasEnoughAnnotations() {
-    const { labelCount } = this.state;
-    const hasLabels = Object.entries(labelCount).length > 0;
-    const allLabelsHaveEnoughAnnotations = Object.values(labelCount).every(
-      count => count >= MIN_COUNT_PER_LABEL
-    );
-    return hasLabels && allLabelsHaveEnoughAnnotations;
-  }
+ 
 
   handleChange = (imageTileId, rectangles) => {
     this.setState((state, _) => ({
@@ -376,12 +369,8 @@ class AnnotateStep extends React.Component {
   };
 
   handleSubmit = async () => {
-    const { estimator } = this.state;
-    const canAdvance = this._hasEnoughAnnotations();
-    if (canAdvance) {
-      console.log("Advance");
-      routerPush(`/models/new/od/train?id=${estimator.uuid}`);
-    }
+    routerPush(`/testdrive/train`);
+    
   };
 
   render() {
@@ -393,11 +382,11 @@ class AnnotateStep extends React.Component {
       annotationsByTile,
       labelCount,
       offset,
-      count
+      count,
     } = this.state;
 
     const labels = estimator && estimator.classes;
-    const canAdvance = this._hasEnoughAnnotations();
+    
 
     return (
       <StepContentContainer width={1000}>
