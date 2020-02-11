@@ -224,10 +224,10 @@ class AnnotateStep extends React.Component {
     console.log("fetchEstimator");
     console.log("useCase: " + useCase);
     if (useCase == 'cattle')  {
-      this.state.estimator = cattle_estimator;
+      this.setState({estimator : cattle_estimator});
     }
     else if (useCase == 'pools') {
-      this.state.estimator = pools_estimator;
+      this.setState({estimator : pools_estimator});
     }
     console.log(this.state.estimator);
     console.log("done fetchEstimator");
@@ -245,7 +245,7 @@ class AnnotateStep extends React.Component {
       data = pools_tiles;
     }
     const { count } = data;
-    this.state.imageTiles = data.results;
+    this.setState({imageTiles : data.results});
     this.state.count = count;
     console.log("done fetchImageTiles");
   }
@@ -267,7 +267,7 @@ class AnnotateStep extends React.Component {
         .reduce((obj, [i, segment]) => ({ ...obj, [i]: segment }), {});
       return { ...obj, [annot.image_tile]: segments };
     }, {});
-    this.state.annotationsByTile = annotationsByTile;
+    this.setState({annotationsByTile});
     console.log("Done fetchAnnotations");
   }
 
@@ -290,7 +290,7 @@ class AnnotateStep extends React.Component {
         labelCount[label] = 0;
       }
     }
-    this.state.labelCount = labelCount;
+    this.setState({labelCount});
     console.log("done fetchLabelCount");
   }
 
