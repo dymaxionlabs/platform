@@ -49,7 +49,7 @@ class UploadStep extends React.Component {
   handleSelect = () => {
     this._saveSelectedFiles();
 
-    routerPush("/testdrive/train");
+    routerPush("/testdrive/annotate");
   };
 
   _loadCurrentModel() {
