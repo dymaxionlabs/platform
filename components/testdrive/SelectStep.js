@@ -52,7 +52,7 @@ class SelectStep extends React.Component {
   handleSelect = () => {
     this._saveSelectedFiles();
 
-    routerPush("/models/new/od/predict");
+    routerPush("/testdrive/predict");
   };
 
   _loadCurrentModel() {
