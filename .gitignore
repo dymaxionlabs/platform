@@ -127,3 +127,5 @@ dmypy.json
 
 .google_auth_token.pkl
 .google_client_secret.json
+
+.DS_Store
