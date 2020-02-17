@@ -57,6 +57,7 @@
     "add_imgs": "Add images",
     "classes": "Classes",
     "created_at": "Creation date",
+    "delete_models": "Delete Model",
     "estimator_type": "Type",
     "more_info": "More information",
     "name": "Name",
@@ -64,7 +65,8 @@
     "title": "Your Models",
     "types": {
       "OD": "Object Detection"
-    }
+    },
+    "uuid": "UUID"
   },
   "requests": {
     "area_km2": "Area (km\u00b2)",
