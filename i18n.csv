@@ -159,6 +159,8 @@ me,models.types.OD,Detección de Objetos,Object Detection
 me,models.more_info,Más información,More information
 me,models.add_imgs,Agregar imágenes,Add images
 me,models.add_annot,Agregar anotaciones,Add annotations
+me,models.delete_models,Borrar Modelo,Delete Model
+me,models.uuid,UUID,UUID
 me,layers.title,Tus capas,Your layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name
@@ -298,7 +300,9 @@ models,annotate_step.remaining,Restantes,Remaining
 models,annotate_step.loading,Procesando imágenes subidas. Por favor aguarde unos minutos...,Processing uploaded images. Please wait a few minutes...
 models,annotate_step.cancel,Cancelar,Cancel
 models,annotate_step.delete,Borrar,Delete
-testdrive,header,Test Drive,Test Drive
+testdrive,header,"DYMAX TEST DRIVE
+","DYMAX TEST DRIVE
+"
 testdrive,start,Comenzar,Start
 testdrive,create_step.title,Crear nuevo modelo,Create new model
 testdrive,create_step.explanation,Elige un nombre y las clases que van a intervenir en tu modelo.,Choose a name and labels to setup your model.
