@@ -35,6 +35,7 @@
     "back": "Go back",
     "continue": "continue",
     "explanation": "At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.",
+    "finished_explanation": "The prediction process is over. Click Continue to see the results.",
     "title": "Predict model",
     "undefined_explanation": "The remaining time is undefined",
     "view": "View results"

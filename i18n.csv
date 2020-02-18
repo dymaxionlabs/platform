@@ -352,6 +352,7 @@ testdrive,predict_step.explanation,En este momento se estan analizando sus image
 testdrive,predict_step.back,Ir atrás,Go back
 testdrive,predict_step.view,Ver resultados,View results
 testdrive,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
+testdrive,predict_step.finished_explanation,El proceso de predicción terminó. Haga clic en continuar para ver los resultados.,The prediction process is over. Click Continue to see the results.
 testdrive,predict_step.continue,Continuar,continue
 testdrive,new_btn,Nuevo,New
 testdrive,new_title,Nuevo Modelo,New Model

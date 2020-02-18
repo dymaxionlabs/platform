@@ -30,19 +30,39 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
+const INCREMENT = 5;
+const INTERVAL = 250;
+
 class PredictStep extends React.Component {
   state = {
     finished: false,
     percentage: 0
   };
 
+  increment = 10;
+  interval = 750;
+
+  componentDidMount() {
+    setTimeout(() => this.advanceProgressBar(), this.interval);
+  }
+
+  advanceProgressBar() {
+    const { increment, interval } = this;
+    this.setState(prevState => {
+      const newPerc = prevState.percentage + increment;
+      if (newPerc < 100) {
+        setTimeout(() => this.advanceProgressBar(increment), interval);
+        return { percentage: newPerc, finished: false };
+      } else {
+        return { percentage: 100, finished: true };
+      }
+    });
+  }
 
   handleClickContinue() {
-    const { estimatorId } = this.props;
     alert("To do");
   }
 
-  
   render() {
     const { classes, t } = this.props;
     const { finished, percentage } = this.state;
@@ -54,30 +74,34 @@ class PredictStep extends React.Component {
         </Typography>
         <Typography>
           {finished
-            ? t("train_step.finished_explanation")
+            ? t("predict_step.finished_explanation")
             : t("predict_step.explanation")}
         </Typography>
         {finished ? (
-          <Link>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => this.handleClickContinue()}
-            >
-              {t("predict_step.continue")}
-            </Button>
-          </Link>
+          <Button
+            color="primary"
+            variant="contained"
+            fullWidth
+            onClick={() => this.handleClickContinue()}
+          >
+            {t("predict_step.continue")}
+          </Button>
         ) : (
           <div>
-            <Link>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => this.handleClickContinue()}
-              >
-                {t("predict_step.continue")}
-              </Button>
-            </Link>
+            <div className={classes.progress}>
+              {percentage <= 100 ? (
+                <BorderLinearProgress
+                  className={classes.margin}
+                  variant="determinate"
+                  color="secondary"
+                  value={percentage}
+                />
+              ) : (
+                <Typography>
+                  {t("predict_step.undefined_explanation")}
+                </Typography>
+              )}
+            </div>
           </div>
         )}
       </StepContentContainer>

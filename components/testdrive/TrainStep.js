@@ -36,19 +36,19 @@ class TrainStep extends React.Component {
     percentage: 0
   };
 
+  increment = 10;
+  interval = 1000;
+
   componentDidMount() {
-    this.start();
+    setTimeout(() => this.advanceProgressBar(), this.interval);
   }
 
-  start() {
-    setTimeout(() => this.advanceProgressBar(10), 1000);
-  }
-
-  advanceProgressBar(delta) {
+  advanceProgressBar() {
+    const { increment, interval } = this;
     this.setState(prevState => {
-      const newPerc = prevState.percentage + delta;
+      const newPerc = prevState.percentage + increment;
       if (newPerc < 100) {
-        setTimeout(() => this.advanceProgressBar(delta), 1000);
+        setTimeout(() => this.advanceProgressBar(increment), interval);
         return { percentage: newPerc, finished: false };
       } else {
         return { percentage: 100, finished: true };
