@@ -43,7 +43,12 @@ class UploadStep extends React.Component {
       }
     });
 
-    this.setState({ ...this.state, fileSelected: true });
+    this.setState({ ...this.state, fileSelected: false });
+    files.forEach(file => {
+      if (file["selected"]) {
+        this.setState({ ...this.state, fileSelected: true });
+      }
+    });
   };
 
   handleSelect = () => {
