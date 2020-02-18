@@ -20,15 +20,15 @@ import { withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
-import cattle_estimator from "../../data/testdrive/cattle_estimator.json"
+import cattle_estimator from "../../data/testdrive/cattle_estimator.json";
 import cattle_annotations from "../../data/testdrive/cattle_annotations.json";
-import cattle_tiles from "../../data/testdrive/cattle_tiles.json"
-import cattle_labels from "../../data/testdrive/cattle_labels.json"
+import cattle_tiles from "../../data/testdrive/cattle_tiles.json";
+import cattle_labels from "../../data/testdrive/cattle_labels.json";
 
-import pools_estimator from "../../data/testdrive/pools_estimator.json"
-import pools_annotations from "../../data/testdrive/pools_annotations.json"
-import pools_tiles from "../../data/testdrive/pools_tiles.json"
-import pools_labels from "../../data/testdrive/pools_labels.json"
+import pools_estimator from "../../data/testdrive/pools_estimator.json";
+import pools_annotations from "../../data/testdrive/pools_annotations.json";
+import pools_tiles from "../../data/testdrive/pools_tiles.json";
+import pools_labels from "../../data/testdrive/pools_labels.json";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
@@ -164,7 +164,7 @@ let LabelCountList = ({ t, classes, labelCount }) => (
   </Paper>
 );
 
-LabelCountList = withNamespaces("models")(LabelCountList);
+LabelCountList = withNamespaces("testdrive")(LabelCountList);
 LabelCountList = withStyles(styles)(LabelCountList);
 
 let LoadingContent = ({ t }) => (
@@ -174,7 +174,7 @@ let LoadingContent = ({ t }) => (
   </React.Fragment>
 );
 
-LoadingContent = withNamespaces("models")(LoadingContent);
+LoadingContent = withNamespaces("testdrive")(LoadingContent);
 LoadingContent = withStyles(styles)(LoadingContent);
 
 let AnnotateContent = ({ t, classes, ...props }) => (
@@ -197,7 +197,7 @@ let AnnotateContent = ({ t, classes, ...props }) => (
   </React.Fragment>
 );
 
-AnnotateContent = withNamespaces("models")(AnnotateContent);
+AnnotateContent = withNamespaces("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 class AnnotateStep extends React.Component {
@@ -217,7 +217,7 @@ class AnnotateStep extends React.Component {
     await this.fetchImageTiles();
     await this.fetchAnnotations();
     await this.fetchLabelCount();
-    this.setState({loading : false});
+    this.setState({ loading: false });
   }
 
   async fetchEstimator() {
@@ -225,11 +225,10 @@ class AnnotateStep extends React.Component {
     var useCase = current["useCase"];
     console.log("fetchEstimator");
     console.log("useCase: " + useCase);
-    if (useCase == 'cattle')  {
-      this.setState({estimator : cattle_estimator});
-    }
-    else if (useCase == 'pools') {
-      this.setState({estimator : pools_estimator});
+    if (useCase == "cattle") {
+      this.setState({ estimator: cattle_estimator });
+    } else if (useCase == "pools") {
+      this.setState({ estimator: pools_estimator });
     }
     console.log(this.state.estimator);
     console.log("done fetchEstimator");
@@ -240,14 +239,13 @@ class AnnotateStep extends React.Component {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     var data;
-    if (useCase == 'cattle')  {
+    if (useCase == "cattle") {
       data = cattle_tiles;
-    }
-    else if (useCase == 'pools') {
+    } else if (useCase == "pools") {
       data = pools_tiles;
     }
     const { count } = data;
-    this.setState({imageTiles : data.results});
+    this.setState({ imageTiles: data.results });
     this.state.count = count;
     console.log("done fetchImageTiles");
   }
@@ -257,10 +255,9 @@ class AnnotateStep extends React.Component {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     var data;
-    if(useCase == 'pools'){
+    if (useCase == "pools") {
       data = pools_annotations;
-    }
-    else if (useCase == 'cattle') {
+    } else if (useCase == "cattle") {
       data = cattle_annotations;
     }
     const annotationsByTile = data.results.reduce((obj, annot) => {
@@ -269,7 +266,7 @@ class AnnotateStep extends React.Component {
         .reduce((obj, [i, segment]) => ({ ...obj, [i]: segment }), {});
       return { ...obj, [annot.image_tile]: segments };
     }, {});
-    this.setState({annotationsByTile});
+    this.setState({ annotationsByTile });
     console.log("Done fetchAnnotations");
   }
 
@@ -278,10 +275,9 @@ class AnnotateStep extends React.Component {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     var data;
-    if (useCase == 'cattle')  {
+    if (useCase == "cattle") {
       data = cattle_labels;
-    }
-    else if (useCase == 'pools') {
+    } else if (useCase == "pools") {
       data = pools_labels;
     }
     let labelCount = data["detail"];
@@ -292,7 +288,7 @@ class AnnotateStep extends React.Component {
         labelCount[label] = 0;
       }
     }
-    this.setState({labelCount});
+    this.setState({ labelCount });
     console.log("done fetchLabelCount");
   }
 
@@ -305,8 +301,6 @@ class AnnotateStep extends React.Component {
     const { offset } = this.state;
     return offset + PAGE_SIZE < offset;
   }
-
- 
 
   handleChange = (imageTileId, rectangles) => {
     this.setState((state, _) => ({
@@ -372,7 +366,6 @@ class AnnotateStep extends React.Component {
 
   handleSubmit = async () => {
     routerPush(`/testdrive/train`);
-    
   };
 
   render() {
@@ -384,32 +377,31 @@ class AnnotateStep extends React.Component {
       annotationsByTile,
       labelCount,
       offset,
-      count,
+      count
     } = this.state;
 
     const labels = estimator && estimator.classes;
-    
 
     return (
       <StepContentContainer width={1000}>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-          <AnnotateContent
-            labels={labels}
-            labelCount={labelCount}
-            imageTiles={imageTiles}
-            annotationsByTile={annotationsByTile}
-            offset={offset}
-            count={count}
-            onChange={this.handleChange}
-            onNew={this.handleNew}
-            onDelete={this.handleDelete}
-            onFirstPageClick={this.handleFirstPageClick}
-            onPrevPageClick={this.handlePrevPageClick}
-            onNextPageClick={this.handleNextPageClick}
-            onLastPageClick={this.handleLastPageClick}
-          />
+        <AnnotateContent
+          labels={labels}
+          labelCount={labelCount}
+          imageTiles={imageTiles}
+          annotationsByTile={annotationsByTile}
+          offset={offset}
+          count={count}
+          onChange={this.handleChange}
+          onNew={this.handleNew}
+          onDelete={this.handleDelete}
+          onFirstPageClick={this.handleFirstPageClick}
+          onPrevPageClick={this.handlePrevPageClick}
+          onNextPageClick={this.handleNextPageClick}
+          onLastPageClick={this.handleLastPageClick}
+        />
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}
@@ -418,7 +410,7 @@ class AnnotateStep extends React.Component {
             variant="contained"
             onClick={this.handleSubmit}
           >
-            { t("annotate_step.continue_btn")}
+            {t("annotate_step.continue_btn")}
           </Button>
         </div>
       </StepContentContainer>
