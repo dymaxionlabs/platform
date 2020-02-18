@@ -43,7 +43,12 @@ class SelectStep extends React.Component {
       }
     });
 
-    this.setState({ ...this.state, fileSelected: true });
+    this.setState({ ...this.state, fileSelected: false });
+    files.forEach(file => {
+      if (file["selected"]) {
+        this.setState({ ...this.state, fileSelected: true });
+      }
+    });
   };
 
   handleSelect = () => {
@@ -93,7 +98,7 @@ class SelectStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("upload_step.title")}
         </Typography>
-        <Typography variant="body2">{t("upload_step.explanation")}</Typography>
+        <Typography variant="body2">{t("select_step.text")}</Typography>
         <FileGallery
           loaded={filesLoaded}
           onFileClick={this.handleFileClick}

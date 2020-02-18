@@ -318,8 +318,10 @@ testdrive,create_step.error_msg_internal,Ha ocurrido un error. Por favor reinten
 testdrive,create_step.error_msg_cattle,"Cattle debe tener estos campos: red, black.","Cattle must have these fields: red, black."
 testdrive,create_step.error_msg_pools,Pools debe tener este campo: pool,Pools must have this field: pool
 testdrive,create_step.error_msg_wrong_classes,Para el caso de uso elegido debe ingresar exactamente estas clases:,For the chosen use case you must enter exactly these classes:
-testdrive,upload_step.title,Elegir o subir imágenes,Choose or upload images
-testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
+testdrive,upload_step.title,Elegir imágenes,Choose or upload images
+testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea seleccionar imágenes.,Select one or more images and then click select images.
+testdrive,select_step.text,"Ahora que el modelo fue entrenado, puedes aplicarlo para predecir sobre imágenes. En este paso debes elegir una o más imágenes. Las imágenes pueden ser subidas manualmente o en lote utilizando nuestro API.","Now that the model was trained, you can apply it to predict images. In this step you must choose one or more images. Images can be uploaded manually or in batch using our API."
+testdrive,upload_step.text,En este paso debes elegir una o más imágenes para entrenar el modelo. Las imágenes pueden ser subidas manualmente o en lote utilizando nuestro API.,In this step you must choose one or more images to train the model. Images can be uploaded manually or in batch using our API.
 testdrive,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 testdrive,upload_step.select_btn,Seleccionar imágenes,Select images
 testdrive,annotate_step.title,Anotar imágenes,Annotate images
