@@ -36,12 +36,29 @@ class TrainStep extends React.Component {
     percentage: 0
   };
 
-
-  handleClickContinue() {
-    const { estimatorId } = this.props;
-    routerPush(`/testdrive/select`);
+  componentDidMount() {
+    this.start();
   }
 
+  start() {
+    setTimeout(() => this.advanceProgressBar(10), 1000);
+  }
+
+  advanceProgressBar(delta) {
+    this.setState(prevState => {
+      const newPerc = prevState.percentage + delta;
+      if (newPerc < 100) {
+        setTimeout(() => this.advanceProgressBar(delta), 1000);
+        return { percentage: newPerc, finished: false };
+      } else {
+        return { percentage: 100, finished: true };
+      }
+    });
+  }
+
+  handleClickContinue() {
+    routerPush(`/testdrive/select`);
+  }
 
   render() {
     const { classes, t } = this.props;
@@ -58,15 +75,14 @@ class TrainStep extends React.Component {
             : t("train_step.explanation")}
         </Typography>
         {finished ? (
-          <Link>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => this.handleClickContinue()}
-            >
-              {t("train_step.continue")}
-            </Button>
-          </Link>
+          <Button
+            color="primary"
+            variant="contained"
+            fullWidth
+            onClick={() => this.handleClickContinue()}
+          >
+            {t("train_step.continue")}
+          </Button>
         ) : (
           <div>
             <div className={classes.progress}>
@@ -81,15 +97,6 @@ class TrainStep extends React.Component {
                 <Typography>{t("train_step.undefined_explanation")}</Typography>
               )}
             </div>
-            <Link>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => this.handleClickContinue()}
-              >
-                {t("train_step.continue")}
-              </Button>
-            </Link>
           </div>
         )}
       </StepContentContainer>
