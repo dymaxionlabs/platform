@@ -179,7 +179,9 @@ LoadingContent = withStyles(styles)(LoadingContent);
 
 let AnnotateContent = ({ t, classes, ...props }) => (
   <React.Fragment>
-    <Typography variant="body2">{t("annotate_step.explanation")}</Typography>
+    <Typography variant="body2">{t("annotate_step.explanation1")}</Typography>
+    <Typography variant="body2">{t("annotate_step.explanation2")}</Typography>
+    <Typography variant="body2">{t("annotate_step.explanation3")}</Typography>
     <Grid container spacing={24}>
       <Grid item xs={9}>
         <div className={classes.imageTileListContainer}>
