@@ -26,7 +26,7 @@
     "submit_btn": "Create",
     "title": "Create new model"
   },
-  "header": "Test Drive",
+  "header": "DYMAX TEST DRIVE",
   "new_btn": "New",
   "new_title": "New Model",
   "predict_step": {
@@ -64,8 +64,9 @@
   },
   "upload_step": {
     "dropzone": "Drag and drop your images here, or click.",
-    "explanation": "Select one or more images and then click upload.",
+    "explanation": "Select one or more images and then click select images.",
     "select_btn": "Select images",
+    "text": "Now that the model was trained, you can apply it to predict images. In this step you must choose one or more images. Images can be uploaded manually or in batch using our API.",
     "title": "Choose or upload images"
   }
 }
