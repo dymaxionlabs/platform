@@ -1,12 +1,18 @@
 [Unit]
 Description=gunicorn daemon
+Requires=gunicorn.socket
 After=network.target
 
 [Service]
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/terra
-ExecStart=/home/ubuntu/.local/share/virtualenvs/terra-XVGhZdP0/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/terra/terra.sock terra.wsgi:application
+ExecStart=/home/ubuntu/.local/share/virtualenvs/terra-XVGhZdP0/bin/gunicorn \
+          --access-logfile - \
+	  --timeout 600 \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          terra.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
