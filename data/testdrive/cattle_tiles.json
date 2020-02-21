@@ -54,36 +54,8 @@
             "tile_file": "/static/testdrive/tiles/cattle/2_3.jpg",
             "index": -574365356
         },
-        {
-            "id": 1313,
-            "file": "EC_L19_P13.jpg",
-            "col_off": 0,
-            "row_off": 2000,
-            "width": 1000,
-            "height": 1000,
-            "tile_file": "/static/testdrive/tiles/cattle/2_0.jpg",
-            "index": -522467787
-        },
-        {
-            "id": 1307,
-            "file": "EC_L19_P13.jpg",
-            "col_off": 4000,
-            "row_off": 0,
-            "width": 1000,
-            "height": 1000,
-            "tile_file": "/static/testdrive/tiles/cattle/0_4.jpg",
-            "index": 117026312
-        },
-        {
-            "id": 1306,
-            "file": "EC_L19_P13.jpg",
-            "col_off": 3000,
-            "row_off": 0,
-            "width": 1000,
-            "height": 1000,
-            "tile_file": "/static/testdrive/tiles/cattle/0_3.jpg",
-            "index": 182586756
-        },
+       
+       
         {
             "id": 1305,
             "file": "EC_L19_P13.jpg",
@@ -105,6 +77,26 @@
             "index": 260918415
         },
         {
+            "id": 1313,
+            "file": "EC_L19_P13.jpg",
+            "col_off": 0,
+            "row_off": 2000,
+            "width": 1000,
+            "height": 1000,
+            "tile_file": "/static/testdrive/tiles/cattle/2_0.jpg",
+            "index": -522467787
+        },
+        {
+            "id": 1306,
+            "file": "EC_L19_P13.jpg",
+            "col_off": 3000,
+            "row_off": 0,
+            "width": 1000,
+            "height": 1000,
+            "tile_file": "/static/testdrive/tiles/cattle/0_3.jpg",
+            "index": 182586756
+        },
+        {
             "id": 1304,
             "file": "EC_L19_P13.jpg",
             "col_off": 1000,
@@ -113,7 +105,7 @@
             "height": 1000,
             "tile_file": "/static/testdrive/tiles/cattle/0_1.jpg",
             "index": 308204950
-        },
+        }, 
         {
             "id": 1314,
             "file": "EC_L19_P13.jpg",
@@ -123,6 +115,16 @@
             "height": 1000,
             "tile_file": "/static/testdrive/tiles/cattle/2_1.jpg",
             "index": 1341096373
+        },
+        {
+            "id": 1307,
+            "file": "EC_L19_P13.jpg",
+            "col_off": 4000,
+            "row_off": 0,
+            "width": 1000,
+            "height": 1000,
+            "tile_file": "/static/testdrive/tiles/cattle/0_4.jpg",
+            "index": 117026312
         },
         {
             "id": 1312,
