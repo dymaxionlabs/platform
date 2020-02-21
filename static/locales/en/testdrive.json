@@ -40,6 +40,12 @@
     "undefined_explanation": "The remaining time is undefined",
     "view": "View results"
   },
+  "result_step": {
+    "geoJSON": "Results (GeoJSON)",
+    "recults_csv": "Results (CSV)",
+    "result_map": "View Map",
+    "title_result": "Results"
+  },
   "select_step": {
     "dropzone": "Drag and drop your images here, or click.",
     "explanation": "Select pre-existing images or upload new ones and then click Predict",
@@ -54,6 +60,7 @@
     "create": "Create",
     "initial": "Initial",
     "predict": "Predict",
+    "result": "Results",
     "select": "Select",
     "train": "Train",
     "upload": "Upload"

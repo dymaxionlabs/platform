@@ -353,6 +353,12 @@ testdrive,predict_step.back,Ir atrás,Go back
 testdrive,predict_step.view,Ver resultados,View results
 testdrive,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
 testdrive,predict_step.finished_explanation,El proceso de predicción terminó. Haga clic en continuar para ver los resultados.,The prediction process is over. Click Continue to see the results.
+testdrive,result_step.title_result,Resultados,Results
+testdrive,"result_step.result_map
+",Ver Mapa,"View Map
+"
+testdrive,result_step.geoJSON,Resultados (GeoJSON), Results (GeoJSON)
+testdrive,result_step.recults_csv,Resultados (CSV),Results (CSV)
 testdrive,predict_step.continue,Continuar,continue
 testdrive,new_btn,Nuevo,New
 testdrive,new_title,Nuevo Modelo,New Model
@@ -364,3 +370,4 @@ testdrive,steps.annotate,Anotar,Annotate
 testdrive,steps.train,Entrenar,Train
 testdrive,steps.select,Seleccionar,Select
 testdrive,steps.predict,Predecir,Predict
+testdrive,steps.result,Resultados,Results
