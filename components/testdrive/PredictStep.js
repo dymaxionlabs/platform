@@ -6,6 +6,7 @@ import React from "react";
 import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import router from "next/dist/lib/router";
 
 const styles = theme => ({
   header: {
@@ -60,7 +61,7 @@ class PredictStep extends React.Component {
   }
 
   handleClickContinue() {
-    alert("To do");
+    routerPush("/testdrive/result");
   }
 
   render() {

@@ -40,6 +40,12 @@
     "undefined_explanation": "El tiempo restante es indefinido",
     "view": "Ver resultados"
   },
+  "result_step": {
+    "geoJSON": "Resultados (GeoJSON)",
+    "recults_csv": "Resultados (CSV)",
+    "result_map": "Ver Mapa",
+    "title_result": "Resultados"
+  },
   "select_step": {
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
     "explanation": "Selecciona las im\u00e1genes preexistentes o carga nuevas y luego cliquea Predecir",
@@ -54,6 +60,7 @@
     "create": "Crear",
     "initial": "Inicial",
     "predict": "Predecir",
+    "result": "Resultados",
     "select": "Seleccionar",
     "train": "Entrenar",
     "upload": "Subir"
