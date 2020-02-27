@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { withNamespaces } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
+import { routerPush } from "../../utils/router";
 
 const styles = theme => ({
   header: {
@@ -46,8 +47,9 @@ class ResultStep extends React.Component {
   }
 
   handleClickResultMap() {
-    routerPush("../MapPool");
+    routerPush("/view/MapPool");
   }
+
   handleClickResultGeoJSON() {
     alert("To do");
   }
