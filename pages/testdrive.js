@@ -11,9 +11,11 @@ import UploadStep from "../components/testdrive/UploadStep";
 import SelectStep from "../components/testdrive/SelectStep";
 import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
+import MapStep from "../components/testdrive/MapStep";
 import { withNamespaces } from "../i18n";
 import { withAuthSync } from "../utils/auth";
 import ResultStep from "../components/testdrive/ResultStep";
+
 
 const styles = theme => ({
   stepperContent: {
@@ -39,7 +41,8 @@ const steps = [
   "train",
   "select",
   "predict",
-  "result"
+  "result",
+  "map",
 ];
 
 const hiddenSteps = ["initial", "choose-usecase"];
@@ -98,6 +101,9 @@ class TestDrive extends React.Component {
       }
       case "result": {
         return <ResultStep token={token} />;
+      }
+      case "map": {
+        return <MapStep token={token} />;
       }
     }
   }
