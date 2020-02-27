@@ -46,7 +46,7 @@ class ResultStep extends React.Component {
   }
 
   handleClickResultMap() {
-    alert("To do");
+    routerPush("../MapPool");
   }
   handleClickResultGeoJSON() {
     alert("To do");
