@@ -129,3 +129,4 @@ dmypy.json
 .google_client_secret.json
 
 .DS_Store
+*.swp
