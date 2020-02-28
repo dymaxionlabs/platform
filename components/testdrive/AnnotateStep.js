@@ -302,6 +302,15 @@ class AnnotateStep extends React.Component {
     return offset + PAGE_SIZE < offset;
   }
 
+  _hasEnoughAnnotations() {
+    const { labelCount } = this.state;
+    const hasLabels = Object.entries(labelCount).length > 0;
+    const allLabelsHaveEnoughAnnotations = Object.values(labelCount).every(
+      count => count >= MIN_COUNT_PER_LABEL
+    );
+    return hasLabels && allLabelsHaveEnoughAnnotations;
+  }
+
   handleChange = (imageTileId, rectangles) => {
     this.setState((state, _) => ({
       annotationsByTile: {
@@ -365,7 +374,37 @@ class AnnotateStep extends React.Component {
   };
 
   handleSubmit = async () => {
-    routerPush(`/testdrive/train`);
+    const { token } = this.props;
+    const { estimator, imageTiles, annotationsByTile } = this.state;
+
+    let savedTiles = 0;
+    for (const imageTile of imageTiles) {
+      const annotations = annotationsByTile[imageTile.id] || {};
+      const segments = Object.values(annotations).map(segment => ({
+        x: segment.x,
+        y: segment.y,
+        width: segment.width,
+        height: segment.height,
+        label: segment.label
+      }));
+
+      const data = {
+        estimator: estimator.uuid,
+        image_tile: imageTile.id,
+        segments: segments
+      };
+
+      savedTiles += 1;
+      if (savedTiles === imageTiles.length) {
+        console.log("All annotations saved!");
+
+        const canAdvance = this._hasEnoughAnnotations();
+        if (canAdvance) {
+          console.log("Advance");
+          routerPush(`/testdrive/train`);
+        }
+      }
+    }
   };
 
   render() {
@@ -381,31 +420,36 @@ class AnnotateStep extends React.Component {
     } = this.state;
 
     const labels = estimator && estimator.classes;
+    var canAdvance = this._hasEnoughAnnotations();
 
     return (
       <StepContentContainer width={1000}>
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-        <AnnotateContent
-          labels={labels}
-          labelCount={labelCount}
-          imageTiles={imageTiles}
-          annotationsByTile={annotationsByTile}
-          offset={offset}
-          count={count}
-          onChange={this.handleChange}
-          onNew={this.handleNew}
-          onDelete={this.handleDelete}
-          onFirstPageClick={this.handleFirstPageClick}
-          onPrevPageClick={this.handlePrevPageClick}
-          onNextPageClick={this.handleNextPageClick}
-          onLastPageClick={this.handleLastPageClick}
-        />
+        {loading ? (
+          <LoadingContent />
+        ) : (
+          <AnnotateContent
+            labels={labels}
+            labelCount={labelCount}
+            imageTiles={imageTiles}
+            annotationsByTile={annotationsByTile}
+            offset={offset}
+            count={count}
+            onChange={this.handleChange}
+            onNew={this.handleNew}
+            onDelete={this.handleDelete}
+            onFirstPageClick={this.handleFirstPageClick}
+            onPrevPageClick={this.handlePrevPageClick}
+            onNextPageClick={this.handleNextPageClick}
+            onLastPageClick={this.handleLastPageClick}
+          />
+        )}
         <div className={classes.buttons}>
           <Button
             className={classes.submitButton}
-            disabled={loading}
+            disabled={loading || !canAdvance}
             color="primary"
             variant="contained"
             onClick={this.handleSubmit}
