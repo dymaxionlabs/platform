@@ -103,7 +103,9 @@ class Register extends React.Component {
   }
 
   onUsernameChange = e => {
-    this.setState({ username: e.target.value });
+    var uname = e.target.value.toLowerCase();
+    this.setState({ username: uname });
+
   };
 
   onEmailChange = e => {
