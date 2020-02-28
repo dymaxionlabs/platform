@@ -374,13 +374,11 @@ class AnnotateStep extends React.Component {
   };
 
   handleSubmit = async () => {
-      const canAdvance = this._hasEnoughAnnotations();
-        if (canAdvance) {
-          console.log("Advance");
-          routerPush(`/testdrive/train`);
-        }
-      
-    
+    const canAdvance = this._hasEnoughAnnotations();
+      if (canAdvance) {
+        console.log("Advance");
+        routerPush(`/testdrive/train`);
+      }
   };
 
   render() {
