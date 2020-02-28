@@ -155,8 +155,8 @@ class ProjectSerializer(serializers.ModelSerializer):
                                           read_only=True,
                                           slug_field='username')
     estimators = serializers.SlugRelatedField(many=True,
-                                                read_only=True,
-                                                slug_field='uuid')
+                                              read_only=True,
+                                              slug_field='uuid')
 
     class Meta:
         model = Project
