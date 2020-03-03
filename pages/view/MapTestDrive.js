@@ -13,21 +13,27 @@ import {
 } from "semantic-ui-react";
 
 
-const lotsData = require( "../../static/testdrive/pools/results.json");
+var lotsData = {};
 const roiData = require("../../static/agri/roi.json");
 
-const data = {
-  "pool": {
-    "raster_url": "https://…",
-    "vector_url": "https://…",
-    "center": [12312,123123],
-    "zoom": 17
+const TileLayer = dynamic(() => import("../../components/TileLayer"), {
+  ssr: true
+});
+
+const map_data = {
+  pool: {
+    vector_data: require("../../static/testdrive/pools/results.json"),
+    center: [-34.43283793934236 ,-58.87167763852244],
+    zoom: 16,
+    zoom_min: 15,
+    zoom_max: 18
   },
-  "cattle": {
-    "raster_url": "https://…",
-    "vector_url": "https://…",
-    "center": [12312,123123],
-    "zoom": 17
+  cattle: {
+    vector_data: require("../../static/testdrive/cattle/results.json"),
+    center: [-37.79857199410538, -57.49418322639319],
+    zoom: 17,
+    zoom_min: 16,
+    zoom_max: 20
   },
 };
 
@@ -42,14 +48,12 @@ const lotColors = {
   G1: "#b95af0"
 };
 
-const initialViewport = {
+var initialViewport = {
   center : [-34.43283793934236 ,-58.87167763852244],
   zoom: 16
 };
 
-
 const dymaxionAttribution = "&copy; Dymaxion Labs 2020";
-
 
 const Map = dynamic(() => import("../../components/Map"), {
   ssr: false,
@@ -64,10 +68,26 @@ const GeoJSON = dynamic(() => import("../../components/GeoJSON"), {
   ssr: false
 });
 
+const sentinelModifiedAttribution =
+  'Contains modified <a href="http://www.esa.int/Our_Activities/Observing_the_Earth/Copernicus">Copernicus</a> Sentinel data 2019, processed by ESA.';
 
+const rasterLayers = [
+  {
+    id: "cattle",
+    type: "raster",
+    url: "https://storage.googleapis.com/dym-tiles/testdrive/cattle/{z}/{x}/{y}.png",
+    attribution: sentinelModifiedAttribution
+  },
+  {
+    id: "pools",
+    type: "raster",
+    url: "https://storage.googleapis.com/dym-tiles/testdrive/pools/{z}/{x}/{y}.png",
+    attribution: sentinelModifiedAttribution
+  }
+];
 
-
-
+var SelectedRasterLayer = {};
+var key = '';
 
 class LotsLayer extends React.Component {
   _style = feature => {
@@ -114,11 +134,42 @@ class LotsLayer extends React.Component {
 LotsLayer = withNamespaces("testdrive")(LotsLayer);
 
 
-class MapPool extends React.Component {
+class MapTestDrive extends React.Component {
   state = {
     viewport: initialViewport,
-    selectedLayers: ["true_color"]
+    selectedLayers: ["true_color"],
+    min_zoom: 1,
+    max_zoom: 20
   };
+
+  async componentDidMount() {
+    var current = JSON.parse(window.localStorage.getItem("current"));
+    var useCase = current["useCase"];
+    key = useCase;
+    if (useCase == "cattle") {
+      console.log("loading cattle");
+      initialViewport.center = map_data.cattle.center;
+      initialViewport.zoom = map_data.cattle.zoom;
+      this.setState({min_zoom: map_data.cattle.zoom_min});
+      this.setState({max_zoom: map_data.cattle.zoom_max});
+      lotsData = map_data.cattle.vector_data;
+      SelectedRasterLayer = rasterLayers[0];
+
+    } else if (useCase == "pools") {
+      console.log("loading pools");
+      initialViewport.center = map_data.pool.center;
+      initialViewport.zoom = map_data.pool.zoom;
+      this.setState({min_zoom: map_data.pool.zoom_min});
+      this.setState({max_zoom: map_data.pool.zoom_max});
+      lotsData = map_data.pool.vector_data;
+      SelectedRasterLayer = rasterLayers[1];
+
+    } else {
+      alert("Use case not found.")
+    }
+
+    this.setState({viewport: initialViewport})
+  }
 
   static async getInitialProps() {
     return {
@@ -127,7 +178,7 @@ class MapPool extends React.Component {
   }
 
   _trackEvent(action, value) {
-    this.props.analytics.event("View-MapPool", action, value);
+    this.props.analytics.event("View-MapTestDrive", action, value);
   }
 
   _onMapViewportChanged = viewport => {
@@ -154,7 +205,7 @@ class MapPool extends React.Component {
   }
 
   render() {
-    const { viewport, selectedLayers } = this.state;
+    const { viewport, max_zoom, min_zoom } = this.state;
 
     return (
       <div className="index">
@@ -174,16 +225,17 @@ class MapPool extends React.Component {
           viewport={viewport}
           onViewportChanged={this._onMapViewportChanged}
           roiData={roiData}
-          minZoom={1}
-          maxZoom={20}
+          minZoom={min_zoom}
+          maxZoom={max_zoom}
         >
           <LotsLayer />
           
-          
+          <TileLayer key={key} {...SelectedRasterLayer} />
+
         </Map>
       </div>
     );
   }
 }
 
-export default withNamespaces(["testdrive"])(MapPool);
+export default withNamespaces(["testdrive"])(MapTestDrive);
