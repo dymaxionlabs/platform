@@ -27,16 +27,6 @@ const map_data = {
   }
 };
 
-// FIXME colors should be in geojson
-const lotColors = {
-  S: "#67d1ca",
-  ST: "#677dca",
-  S2: "#cada50",
-  M: "#fdae61",
-  MT: "#e77148",
-  G1: "#b95af0"
-};
-
 var initialViewport = {
   center: [-34.43283793934236, -58.87167763852244],
   zoom: 16
