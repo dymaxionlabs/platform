@@ -20,7 +20,7 @@ const styles = theme => ({
 });
 
 
-class ResultStep extends React.Component {
+class ResultsStep extends React.Component {
   state = {
     finished: false,
     percentage: 0
@@ -95,7 +95,7 @@ class ResultStep extends React.Component {
   }
 }
 
-ResultStep = withStyles(styles)(ResultStep);
-ResultStep = withNamespaces("testdrive")(ResultStep);
+ResultsStep = withStyles(styles)(ResultsStep);
+ResultsStep = withNamespaces("testdrive")(ResultsStep);
 
-export default ResultStep;
+export default ResultsStep;
