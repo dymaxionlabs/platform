@@ -1,9 +1,8 @@
-import { LinearProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { Link, withNamespaces } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 import { routerPush } from "../../utils/router";
 
@@ -19,9 +18,9 @@ const styles = theme => ({
   }
 });
 
-
 class ResultsStep extends React.Component {
   state = {
+    currentModel: null,
     finished: false,
     percentage: 0
   };
@@ -30,7 +29,20 @@ class ResultsStep extends React.Component {
   interval = 750;
 
   componentDidMount() {
+    this._loadCurrentModel();
     setTimeout(() => this.advanceProgressBar(), this.interval);
+  }
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace.replace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel });
   }
 
   advanceProgressBar() {
@@ -47,24 +59,22 @@ class ResultsStep extends React.Component {
   }
 
   handleClickResultMap() {
-    routerPush('/view/testdrive-map')
-  }
-
-  handleClickResultGeoJSON() {
-    alert("To do");
-  }
-  handleClickResultCSV() {
-    alert("To do");
+    routerPush("/view/testdrive-map");
   }
 
   render() {
     const { classes, t } = this.props;
-    
+    const { currentModel } = this.state;
+
+    let useCase;
+    if (currentModel && currentModel["useCase"]) {
+      useCase = currentModel["useCase"];
+    }
 
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t('result_step.title_result')}
+          {t("result_step.title_result")}
         </Typography>
         <Button
           color="primary"
@@ -72,24 +82,22 @@ class ResultsStep extends React.Component {
           fullWidth
           onClick={() => this.handleClickResultMap()}
         >
-          {t('result_step.result_map')}
+          {t("result_step.result_map")}
         </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          fullWidth
-          onClick={() => this.handleClickResultGeoJSON()}
-        >
-          {t('result_step.geoJSON')}
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          fullWidth
-          onClick={() => this.handleClickResultCSV()}
-        >
-          {t('result_step.recults_csv')}
-        </Button>
+        {useCase && (
+          <Link href={`/static/testdrive/${useCase}/results.json`}>
+            <Button color="primary" variant="contained" fullWidth>
+              {t("result_step.geoJSON")}
+            </Button>
+          </Link>
+        )}
+        {useCase && (
+          <Link href={`/static/testdrive/${useCase}/results.csv`}>
+            <Button color="primary" variant="contained" fullWidth>
+              {t("result_step.recults_csv")}
+            </Button>
+          </Link>
+        )}
       </StepContentContainer>
     );
   }
