@@ -1,4 +1,3 @@
-
 import React from "react";
 import { withNamespaces, Link } from "../../i18n";
 import Head from "next/head";

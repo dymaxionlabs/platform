@@ -47,7 +47,7 @@ class ResultStep extends React.Component {
   }
 
   handleClickResultMap() {
-    routerPush('/view/MapTestDrive')
+    routerPush('/view/testdrive-map')
   }
 
   handleClickResultGeoJSON() {
