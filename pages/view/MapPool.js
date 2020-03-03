@@ -16,6 +16,21 @@ import {
 const lotsData = require( "../../static/testdrive/pools/results.json");
 const roiData = require("../../static/agri/roi.json");
 
+const data = {
+  "pool": {
+    "raster_url": "https://…",
+    "vector_url": "https://…",
+    "center": [12312,123123],
+    "zoom": 17
+  },
+  "cattle": {
+    "raster_url": "https://…",
+    "vector_url": "https://…",
+    "center": [12312,123123],
+    "zoom": 17
+  },
+};
+
 
 // FIXME colors should be in geojson
 const lotColors = {
