@@ -221,24 +221,24 @@ class AnnotateStep extends React.Component {
   }
 
   async fetchEstimator() {
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
-    console.log("fetchEstimator");
-    console.log("useCase: " + useCase);
+    const current = JSON.parse(window.localStorage.getItem("current"));
+    const useCase = current["useCase"];
+    console.debug("fetchEstimator");
+    console.debug("useCase: " + useCase);
     if (useCase == "cattle") {
       this.setState({ estimator: cattle_estimator });
     } else if (useCase == "pools") {
       this.setState({ estimator: pools_estimator });
     }
-    console.log(this.state.estimator);
-    console.log("done fetchEstimator");
+    console.debug(this.state.estimator);
+    console.debug("done fetchEstimator");
   }
 
   async fetchImageTiles() {
-    console.log("fetchImageTiles");
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
-    var data;
+    console.debug("fetchImageTiles");
+    const current = JSON.parse(window.localStorage.getItem("current"));
+    const useCase = current["useCase"];
+    let data;
     if (useCase == "cattle") {
       data = cattle_tiles;
     } else if (useCase == "pools") {
@@ -247,14 +247,14 @@ class AnnotateStep extends React.Component {
     const { count } = data;
     this.setState({ imageTiles: data.results });
     this.state.count = count;
-    console.log("done fetchImageTiles");
+    console.debug("done fetchImageTiles");
   }
 
   async fetchAnnotations() {
-    console.log("fetchAnnotations");
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
-    var data;
+    console.debug("fetchAnnotations");
+    const current = JSON.parse(window.localStorage.getItem("current"));
+    const useCase = current["useCase"];
+    let data;
     if (useCase == "pools") {
       data = pools_annotations;
     } else if (useCase == "cattle") {
@@ -267,14 +267,14 @@ class AnnotateStep extends React.Component {
       return { ...obj, [annot.image_tile]: segments };
     }, {});
     this.setState({ annotationsByTile });
-    console.log("Done fetchAnnotations");
+    console.debug("Done fetchAnnotations");
   }
 
   async fetchLabelCount() {
-    console.log("fetchLabelCount");
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
-    var data;
+    console.debug("fetchLabelCount");
+    const current = JSON.parse(window.localStorage.getItem("current"));
+    const useCase = current["useCase"];
+    let data;
     if (useCase == "cattle") {
       data = cattle_labels;
     } else if (useCase == "pools") {
@@ -289,7 +289,7 @@ class AnnotateStep extends React.Component {
       }
     }
     this.setState({ labelCount });
-    console.log("done fetchLabelCount");
+    console.debug("done fetchLabelCount");
   }
 
   _hasPrevPage() {
@@ -377,7 +377,7 @@ class AnnotateStep extends React.Component {
     const canAdvance = this._hasEnoughAnnotations();
 
     if (canAdvance) {
-      routerPush('/testdrive/train');
+      routerPush("/testdrive/train");
     }
   };
 
@@ -394,7 +394,7 @@ class AnnotateStep extends React.Component {
     } = this.state;
 
     const labels = estimator && estimator.classes;
-    var canAdvance = this._hasEnoughAnnotations();
+    const canAdvance = this._hasEnoughAnnotations();
 
     return (
       <StepContentContainer width={1000}>
