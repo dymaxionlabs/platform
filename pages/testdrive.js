@@ -15,6 +15,7 @@ import { withNamespaces } from "../i18n";
 import { withAuthSync } from "../utils/auth";
 import ResultStep from "../components/testdrive/ResultStep";
 
+
 const styles = theme => ({
   stepperContent: {
     width: "auto",
@@ -39,7 +40,7 @@ const steps = [
   "train",
   "select",
   "predict",
-  "result"
+  "result",
 ];
 
 const hiddenSteps = ["initial", "choose-usecase"];
