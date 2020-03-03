@@ -40,7 +40,7 @@
     "undefined_explanation": "El tiempo restante es indefinido",
     "view": "Ver resultados"
   },
-  "result_step": {
+  "results_step": {
     "download_csv": "Descargar Resultados (CSV)",
     "download_geojson": "Descargar Resultados (GeoJSON)",
     "explanation": "Si desea ver los resultados de la detecci\u00f3n de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.",
@@ -61,7 +61,7 @@
     "create": "Crear",
     "initial": "Inicial",
     "predict": "Predecir",
-    "result": "Resultados",
+    "results": "Resultados",
     "select": "Seleccionar",
     "train": "Entrenar",
     "upload": "Subir"

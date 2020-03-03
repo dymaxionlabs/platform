@@ -50,25 +50,25 @@ class ResultsStep extends React.Component {
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("result_step.title")}
+          {t("results_step.title")}
         </Typography>
-        <Typography>{t("result_step.explanation")}</Typography>
+        <Typography>{t("results_step.explanation")}</Typography>
         <Link href="/view/testdrive-map">
           <Button color="primary" variant="contained">
-            {t("result_step.view_map")}
+            {t("results_step.view_map")}
           </Button>
         </Link>
         {useCase && (
           <Link href={`/static/testdrive/${useCase}/results.json`}>
             <Button color="primary" variant="contained">
-              {t("result_step.download_geojson")}
+              {t("results_step.download_geojson")}
             </Button>
           </Link>
         )}
         {useCase && (
           <Link href={`/static/testdrive/${useCase}/results.csv`}>
             <Button color="primary" variant="contained">
-              {t("result_step.download_csv")}
+              {t("results_step.download_csv")}
             </Button>
           </Link>
         )}
