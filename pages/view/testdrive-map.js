@@ -6,7 +6,6 @@ import LoadingProgress from "../../components/LoadingProgress";
 
 
 var lotsData = {};
-const roiData = require("../../static/agri/roi.json");
 
 const TileLayer = dynamic(() => import("../../components/TileLayer"), {
   ssr: true
@@ -47,13 +46,10 @@ var initialViewport = {
 
 const dymaxionAttribution = "&copy; Dymaxion Labs 2020";
 
-
 const Map = dynamic(() => import("../../components/Map"), {
   ssr: false,
   loading: LoadingProgress
 });
-
-
 
 const GeoJSON = dynamic(() => import("../../components/GeoJSON"), {
   ssr: false
@@ -81,28 +77,6 @@ var SelectedRasterLayer = {};
 var key = '';
 
 class LotsLayer extends React.Component {
-  _style = feature => {
-    const color = lotColors[feature.properties["SIGLA"]] || "#ff0000";
-
-    return {
-      color: color,
-      fillColor: color,
-      opacity: 1,
-      fillOpacity: 0.5,
-      weight: 2
-    };
-  };
-
-  _onEachFeature = (feature, layer) => {
-    const { t } = this.props;
-    const id = feature.properties["SIGLA"];
-    const popupContent = `<b>${t(`crop_lots_type_${id}`)}</b>`;
-    layer.bindPopup(popupContent, {
-      closeButton: false,
-      offset: L.point(0, -20)
-    });
-  };
-
   render() {
     const { t } = this.props;
 
@@ -110,11 +84,7 @@ class LotsLayer extends React.Component {
       <div>
         <GeoJSON
           data={lotsData}
-          style={this._style}
           attribution={dymaxionAttribution}
-          onmouseover={this._onMouseOver}
-          onmouseout={this._onMouseOut}
-          onEachFeature={this._onEachFeature}
         />
         
       </div>
@@ -215,7 +185,6 @@ class MapTestDrive extends React.Component {
         <Map
           viewport={viewport}
           onViewportChanged={this._onMapViewportChanged}
-          roiData={roiData}
           minZoom={min_zoom}
           maxZoom={max_zoom}
         >
