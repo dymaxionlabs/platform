@@ -41,10 +41,11 @@
     "view": "Ver resultados"
   },
   "result_step": {
-    "geoJSON": "Resultados (GeoJSON)",
-    "recults_csv": "Resultados (CSV)",
-    "result_map": "Ver Mapa",
-    "title_result": "Resultados"
+    "download_csv": "Descargar Resultados (CSV)",
+    "download_geojson": "Descargar Resultados (GeoJSON)",
+    "explanation": "Si desea ver los resultados de la detecci\u00f3n de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.",
+    "title": "Resultados",
+    "view_map": "Ver Mapa"
   },
   "select_step": {
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",

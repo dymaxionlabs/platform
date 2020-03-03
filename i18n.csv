@@ -353,13 +353,13 @@ testdrive,predict_step.back,Ir atrás,Go back
 testdrive,predict_step.view,Ver resultados,View results
 testdrive,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
 testdrive,predict_step.finished_explanation,El proceso de predicción terminó. Haga clic en continuar para ver los resultados.,The prediction process is over. Click Continue to see the results.
-testdrive,result_step.title_result,Resultados,Results
-testdrive,"result_step.result_map
-",Ver Mapa,"View Map
-"
-testdrive,result_step.geoJSON,Resultados (GeoJSON), Results (GeoJSON)
-testdrive,result_step.recults_csv,Resultados (CSV),Results (CSV)
 testdrive,predict_step.continue,Continuar,continue
+testdrive,result_step.title,Resultados,Results
+testdrive,result_step.explanation,"Si desea ver los resultados de la detección de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.","If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results."
+testdrive,result_step.view_map,Ver Mapa,"View Map
+"
+testdrive,result_step.download_geojson,Descargar Resultados (GeoJSON),Download Results (GeoJSON)
+testdrive,result_step.download_csv,Descargar Resultados (CSV),Download Results (CSV)
 testdrive,new_btn,Nuevo,New
 testdrive,new_title,Nuevo Modelo,New Model
 testdrive,steps.initial,Inicial,Initial

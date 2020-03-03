@@ -50,27 +50,28 @@ class ResultsStep extends React.Component {
     return (
       <StepContentContainer>
         <Typography className={classes.header} component="h1" variant="h5">
-          {t("result_step.title_result")}
+          {t("result_step.title")}
         </Typography>
+        <Typography>{t("result_step.explanation")}</Typography>
         <Button
           color="primary"
           variant="contained"
           fullWidth
           onClick={() => this.handleClickResultMap()}
         >
-          {t("result_step.result_map")}
+          {t("result_step.view_map")}
         </Button>
         {useCase && (
           <Link href={`/static/testdrive/${useCase}/results.json`}>
             <Button color="primary" variant="contained" fullWidth>
-              {t("result_step.geoJSON")}
+              {t("result_step.download_geojson")}
             </Button>
           </Link>
         )}
         {useCase && (
           <Link href={`/static/testdrive/${useCase}/results.csv`}>
             <Button color="primary" variant="contained" fullWidth>
-              {t("result_step.recults_csv")}
+              {t("result_step.download_csv")}
             </Button>
           </Link>
         )}

@@ -41,10 +41,11 @@
     "view": "View results"
   },
   "result_step": {
-    "geoJSON": "Results (GeoJSON)",
-    "recults_csv": "Results (CSV)",
-    "result_map": "View Map",
-    "title_result": "Results"
+    "download_csv": "Download Results (CSV)",
+    "download_geojson": "Download Results (GeoJSON)",
+    "explanation": "If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results.",
+    "title": "Results",
+    "view_map": "View Map"
   },
   "select_step": {
     "dropzone": "Drag and drop your images here, or click.",
