@@ -4,7 +4,6 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 
-
 var lotsData = {};
 
 const TileLayer = dynamic(() => import("../../components/TileLayer"), {
@@ -14,7 +13,7 @@ const TileLayer = dynamic(() => import("../../components/TileLayer"), {
 const map_data = {
   pool: {
     vector_data: require("../../static/testdrive/pools/results.json"),
-    center: [-34.43283793934236 ,-58.87167763852244],
+    center: [-34.43283793934236, -58.87167763852244],
     zoom: 16,
     zoom_min: 15,
     zoom_max: 18
@@ -25,9 +24,8 @@ const map_data = {
     zoom: 17,
     zoom_min: 16,
     zoom_max: 20
-  },
+  }
 };
-
 
 // FIXME colors should be in geojson
 const lotColors = {
@@ -40,7 +38,7 @@ const lotColors = {
 };
 
 var initialViewport = {
-  center : [-34.43283793934236 ,-58.87167763852244],
+  center: [-34.43283793934236, -58.87167763852244],
   zoom: 16
 };
 
@@ -62,19 +60,21 @@ const rasterLayers = [
   {
     id: "cattle",
     type: "raster",
-    url: "https://storage.googleapis.com/dym-tiles/testdrive/cattle/{z}/{x}/{y}.png",
+    url:
+      "https://storage.googleapis.com/dym-tiles/testdrive/cattle/{z}/{x}/{y}.png",
     attribution: sentinelModifiedAttribution
   },
   {
     id: "pools",
     type: "raster",
-    url: "https://storage.googleapis.com/dym-tiles/testdrive/pools/{z}/{x}/{y}.png",
+    url:
+      "https://storage.googleapis.com/dym-tiles/testdrive/pools/{z}/{x}/{y}.png",
     attribution: sentinelModifiedAttribution
   }
 ];
 
 var SelectedRasterLayer = {};
-var key = '';
+var key = "";
 
 class LotsLayer extends React.Component {
   render() {
@@ -82,18 +82,13 @@ class LotsLayer extends React.Component {
 
     return (
       <div>
-        <GeoJSON
-          data={lotsData}
-          attribution={dymaxionAttribution}
-        />
-        
+        <GeoJSON data={lotsData} attribution={dymaxionAttribution} />
       </div>
     );
   }
 }
 
 LotsLayer = withNamespaces("testdrive")(LotsLayer);
-
 
 class MapTestDrive extends React.Component {
   state = {
@@ -111,25 +106,23 @@ class MapTestDrive extends React.Component {
       console.log("loading cattle");
       initialViewport.center = map_data.cattle.center;
       initialViewport.zoom = map_data.cattle.zoom;
-      this.setState({min_zoom: map_data.cattle.zoom_min});
-      this.setState({max_zoom: map_data.cattle.zoom_max});
+      this.setState({ min_zoom: map_data.cattle.zoom_min });
+      this.setState({ max_zoom: map_data.cattle.zoom_max });
       lotsData = map_data.cattle.vector_data;
       SelectedRasterLayer = rasterLayers[0];
-
     } else if (useCase == "pools") {
       console.log("loading pools");
       initialViewport.center = map_data.pool.center;
       initialViewport.zoom = map_data.pool.zoom;
-      this.setState({min_zoom: map_data.pool.zoom_min});
-      this.setState({max_zoom: map_data.pool.zoom_max});
+      this.setState({ min_zoom: map_data.pool.zoom_min });
+      this.setState({ max_zoom: map_data.pool.zoom_max });
       lotsData = map_data.pool.vector_data;
       SelectedRasterLayer = rasterLayers[1];
-
     } else {
-      alert("Use case not found.")
+      alert("Use case not found.");
     }
 
-    this.setState({viewport: initialViewport})
+    this.setState({ viewport: initialViewport });
   }
 
   static async getInitialProps() {
@@ -189,9 +182,8 @@ class MapTestDrive extends React.Component {
           maxZoom={max_zoom}
         >
           <LotsLayer />
-          
-          <TileLayer key={key} {...SelectedRasterLayer} />
 
+          <TileLayer key={key} {...SelectedRasterLayer} />
         </Map>
       </div>
     );
