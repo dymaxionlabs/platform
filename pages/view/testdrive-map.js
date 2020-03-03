@@ -43,23 +43,20 @@ const GeoJSON = dynamic(() => import("../../components/GeoJSON"), {
   ssr: false
 });
 
-const sentinelModifiedAttribution =
-  'Contains modified <a href="http://www.esa.int/Our_Activities/Observing_the_Earth/Copernicus">Copernicus</a> Sentinel data 2019, processed by ESA.';
-
 const rasterLayers = [
   {
     id: "cattle",
     type: "raster",
     url:
       "https://storage.googleapis.com/dym-tiles/testdrive/cattle/{z}/{x}/{y}.png",
-    attribution: sentinelModifiedAttribution
+    attribution: dymaxionAttribution
   },
   {
     id: "pools",
     type: "raster",
     url:
       "https://storage.googleapis.com/dym-tiles/testdrive/pools/{z}/{x}/{y}.png",
-    attribution: sentinelModifiedAttribution
+    attribution: dymaxionAttribution
   }
 ];
 
@@ -68,13 +65,7 @@ var key = "";
 
 class LotsLayer extends React.Component {
   render() {
-    const { t } = this.props;
-
-    return (
-      <div>
-        <GeoJSON data={lotsData} attribution={dymaxionAttribution} />
-      </div>
-    );
+    return <GeoJSON data={lotsData} attribution={dymaxionAttribution} />;
   }
 }
 
@@ -88,7 +79,7 @@ class MapTestDrive extends React.Component {
     max_zoom: 20
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
     key = useCase;
