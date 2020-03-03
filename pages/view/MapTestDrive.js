@@ -1,16 +1,9 @@
-import "../../static/index.css"; // FIXME Convert to JSX styles
-import "../../static/App.css"; // FIXME Convert to JSX styles
-import "semantic-ui-css/semantic.css"; // FIXME Move this Layout
 
 import React from "react";
 import { withNamespaces, Link } from "../../i18n";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import {
-  Dimmer,
-  Loader,
-  Button
-} from "semantic-ui-react";
+import LoadingProgress from "../../components/LoadingProgress";
 
 
 var lotsData = {};
@@ -55,14 +48,13 @@ var initialViewport = {
 
 const dymaxionAttribution = "&copy; Dymaxion Labs 2020";
 
+
 const Map = dynamic(() => import("../../components/Map"), {
   ssr: false,
-  loading: withNamespaces()(({ t }) => (
-    <Dimmer active>
-      <Loader size="big">{t("loading")}</Loader>
-    </Dimmer>
-  ))
+  loading: LoadingProgress
 });
+
+
 
 const GeoJSON = dynamic(() => import("../../components/GeoJSON"), {
   ssr: false
