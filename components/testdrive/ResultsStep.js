@@ -3,34 +3,23 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { Link, withNamespaces } from "../../i18n";
-import StepContentContainer from "../StepContentContainer";
 import { routerPush } from "../../utils/router";
+import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
     marginBottom: theme.spacing.unit * 3,
     textAlign: "center"
-  },
-  progress: {
-    flexGrow: 1,
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
   }
 });
 
 class ResultsStep extends React.Component {
   state = {
-    currentModel: null,
-    finished: false,
-    percentage: 0
+    currentModel: null
   };
-
-  increment = 10;
-  interval = 750;
 
   componentDidMount() {
     this._loadCurrentModel();
-    setTimeout(() => this.advanceProgressBar(), this.interval);
   }
 
   _loadCurrentModel() {
@@ -43,19 +32,6 @@ class ResultsStep extends React.Component {
     console.debug(currentModel);
 
     this.setState({ currentModel });
-  }
-
-  advanceProgressBar() {
-    const { increment, interval } = this;
-    this.setState(prevState => {
-      const newPerc = prevState.percentage + increment;
-      if (newPerc < 100) {
-        setTimeout(() => this.advanceProgressBar(increment), interval);
-        return { percentage: newPerc, finished: false };
-      } else {
-        return { percentage: 100, finished: true };
-      }
-    });
   }
 
   handleClickResultMap() {
