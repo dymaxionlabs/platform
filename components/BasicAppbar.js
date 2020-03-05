@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "../i18n";
+import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
   appBar: {
@@ -20,7 +21,8 @@ const styles = theme => ({
   }
 });
 
-const BasicAppbar = withStyles(styles)(({ classes }) => (
+const BasicAppbar = withStyles(styles)(({ classes, btn_visible, btn_text, btn_onClick }) => (
+   
   <AppBar position="absolute" color="default" className={classes.appBar}>
     <Toolbar>
       <Link href="/">
@@ -34,8 +36,29 @@ const BasicAppbar = withStyles(styles)(({ classes }) => (
           className={classes.title}
         >
           Dymaxion Labs Platform
+          
         </Typography>
       </Link>
+      
+      { btn_visible && 
+        <Button style={{ marginLeft: "auto" }} 
+                onClick={btn_onClick} 
+                color="primary" 
+                variant="contained"
+         >
+          <Typography
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
+            { btn_text }
+          </Typography>
+            
+        </Button>
+      }
+      
+      
     </Toolbar>
   </AppBar>
 ));

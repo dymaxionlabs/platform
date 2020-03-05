@@ -46,7 +46,8 @@ const hiddenSteps = ["initial", "choose-usecase"];
 
 class TestDrive extends React.Component {
   state = {
-    step: steps[0]
+    step: steps[0],
+    btn_api_web: false
   };
 
   static async getInitialProps({ query }) {
@@ -102,9 +103,17 @@ class TestDrive extends React.Component {
     }
   }
 
+  handle_btn_onClick = () => {   
+    if (this.state.btn_api_web) {
+      this.setState({btn_api_web: false})
+    } else {
+      this.setState({btn_api_web: true})
+    }
+  }
+
   render() {
     const { t, classes, ...props } = this.props;
-    const { step } = this.state;
+    const { step, btn_api_web } = this.state;
 
     const isHiddenStep = step => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
@@ -114,7 +123,12 @@ class TestDrive extends React.Component {
         <Head>
           <title>{t("header")}</title>
         </Head>
-        <BasicAppbar />
+        <BasicAppbar 
+          btn_visible={(step != "initial") && (step != "choose-usecase")} 
+          btn_text={
+            btn_api_web ? "Use API" : "Use Web UI"
+          }
+          btn_onClick={this.handle_btn_onClick} />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
