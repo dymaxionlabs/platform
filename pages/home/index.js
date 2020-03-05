@@ -352,7 +352,7 @@ class Home extends React.Component {
             >
               <MenuItem>{userEmail}</MenuItem>
               <MenuItem onClick={this.profileLogout}>
-                {t("common:logout_title")}
+                {t("common:logout_btn")}
                 <ListItemSecondaryAction>
                   <ListItemIcon edge="end" aria-label="logout">
                     <PowerSettingsNewIcon />
