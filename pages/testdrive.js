@@ -126,7 +126,9 @@ class TestDrive extends React.Component {
         <BasicAppbar 
           btn_visible={(step != "initial") && (step != "choose-usecase")} 
           btn_text={
-            btn_api_web ? "Use API" : "Use Web UI"
+            btn_api_web 
+            ? t("btn_use_api") 
+            : t("btn_use_web_ui")
           }
           btn_onClick={this.handle_btn_onClick} />
         {this.stepContent()}
