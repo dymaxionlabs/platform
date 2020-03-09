@@ -12,7 +12,6 @@ import SelectStep from "../components/testdrive/SelectStep";
 import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
-import { withAuthSync } from "../utils/auth";
 import ResultsStep from "../components/testdrive/ResultsStep";
 
 
@@ -133,6 +132,5 @@ class TestDrive extends React.Component {
 
 TestDrive = withStyles(styles)(TestDrive);
 TestDrive = withNamespaces("testdrive")(TestDrive);
-TestDrive = withAuthSync(TestDrive);
 
 export default TestDrive;
