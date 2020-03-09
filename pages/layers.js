@@ -4,7 +4,6 @@ import Head from "next/head";
 import React from "react";
 import "semantic-ui-css/semantic.css"; // FIXME Move this Layout
 import { Dimmer, Loader } from "semantic-ui-react";
-import CliengoLoader from "../components/CliengoLoader";
 import LayerLegend from "../components/LayerLegend";
 import { withNamespaces } from "../i18n";
 import "../static/App.css"; // FIXME Convert to JSX styles
