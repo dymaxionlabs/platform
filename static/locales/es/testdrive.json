@@ -12,6 +12,9 @@
     "save_btn": "Guardar",
     "title": "Anotar im\u00e1genes"
   },
+  "btn_contact_modal": "Cont\u00e1ctenos",
+  "btn_use_api": "Usar API",
+  "btn_use_web_ui": "Usar Web UI",
   "create_step": {
     "classes_helper_1": "Ingrese el nombre de una clase y presione la tecla",
     "classes_helper_2": ". Puede ingresar varias clases de esta manera.",

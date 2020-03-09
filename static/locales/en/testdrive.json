@@ -12,6 +12,9 @@
     "save_btn": "Save",
     "title": "Annotate images"
   },
+  "btn_contact_modal": "Contact sales",
+  "btn_use_api": "Use API",
+  "btn_use_web_ui": "Use Web UI",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
     "classes_helper_2": "key. You can enter several classes in this way.",

@@ -371,3 +371,6 @@ testdrive,steps.train,Entrenar,Train
 testdrive,steps.select,Seleccionar,Select
 testdrive,steps.predict,Predecir,Predict
 testdrive,steps.results,Resultados,Results
+testdrive,btn_use_api,Usar API,Use API
+testdrive,btn_use_web_ui,Usar Web UI,Use Web UI
+testdrive,btn_contact_modal,Contáctenos,Contact sales

@@ -1,5 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import Head from "next/head";
+import ContactButton from "../components/ContactButton";
 import React from "react";
 import BasicAppbar from "../components/BasicAppbar";
 import AnnotateStep from "../components/testdrive/AnnotateStep";
@@ -13,7 +14,6 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
-
 
 const styles = theme => ({
   stepperContent: {
@@ -39,7 +39,7 @@ const steps = [
   "train",
   "select",
   "predict",
-  "results",
+  "results"
 ];
 
 const hiddenSteps = ["initial", "choose-usecase"];
@@ -125,6 +125,7 @@ class TestDrive extends React.Component {
             />
           </div>
         )}
+        <ContactButton />
       </React.Fragment>
     );
   }
