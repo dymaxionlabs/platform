@@ -56,7 +56,7 @@ class Index extends React.Component {
         </Head>
         <main className={classes.main}>
           <Paper className={classes.paper}>
-            <img src="/static/logo.png" />
+            <img src="/static/logo.png" height="64" />
             <Typography className={classes.header} component="h1" variant="h5">
               {t("loading")}
             </Typography>

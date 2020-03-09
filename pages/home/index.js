@@ -321,7 +321,7 @@ class Home extends React.Component {
             >
               <img
                 className={classes.titleLogo}
-                src="/static/logo.png"
+                src="/static/logo_wh.png"
                 height="24"
               />
               Dymaxion Labs Platform
