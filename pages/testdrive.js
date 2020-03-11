@@ -67,9 +67,15 @@ class TestDrive extends React.Component {
     }
   }
 
+  _trackEvent(action, value) {
+    this.props.analytics.event("Testdrive", action, value);
+  }
+
   stepContent() {
     const { token } = this.props;
     const { step } = this.state;
+
+    this._trackEvent("stepContent", step);
 
     switch (step) {
       case "initial": {
