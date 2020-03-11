@@ -44,8 +44,9 @@
     "view": "Ver resultados"
   },
   "results_step": {
-    "download_csv": "Descargar Resultados (CSV)",
-    "download_geojson": "Descargar Resultados (GeoJSON)",
+    "download_btn": "Descargar",
+    "download_csv": "Archivo CSV",
+    "download_geojson": "Archivo GeoJSON",
     "explanation": "Si desea ver los resultados de la detecci\u00f3n de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.",
     "title": "Resultados",
     "view_map": "Ver Mapa"

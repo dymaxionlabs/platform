@@ -358,8 +358,9 @@ testdrive,results_step.title,Resultados,Results
 testdrive,results_step.explanation,"Si desea ver los resultados de la detección de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.","If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results."
 testdrive,results_step.view_map,Ver Mapa,"View Map
 "
-testdrive,results_step.download_geojson,Descargar Resultados (GeoJSON),Download Results (GeoJSON)
-testdrive,results_step.download_csv,Descargar Resultados (CSV),Download Results (CSV)
+testdrive,results_step.download_btn,Descargar,Download
+testdrive,results_step.download_geojson,Archivo GeoJSON,GeoJSON file
+testdrive,results_step.download_csv,Archivo CSV,CSV file
 testdrive,new_btn,Nuevo,New
 testdrive,new_title,Nuevo Modelo,New Model
 testdrive,steps.initial,Inicial,Initial
