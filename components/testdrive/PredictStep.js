@@ -61,7 +61,7 @@ class PredictStep extends React.Component {
   }
 
   handleClickContinue() {
-    routerPush("/testdrive/results");
+    routerPush("/view/testdrive-map");
   }
 
   render() {

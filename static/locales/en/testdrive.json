@@ -44,8 +44,9 @@
     "view": "View results"
   },
   "results_step": {
-    "download_csv": "Download Results (CSV)",
-    "download_geojson": "Download Results (GeoJSON)",
+    "download_btn": "Download",
+    "download_csv": "CSV file",
+    "download_geojson": "GeoJSON file",
     "explanation": "If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results.",
     "title": "Results",
     "view_map": "View Map"
