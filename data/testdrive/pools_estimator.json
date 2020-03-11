@@ -1,10 +1,10 @@
 {
     "project": "3e2de42d-c66d-4f86-a28f-95098d25424d",
     "image_files": [
-    "pilar_pools.tif"
+      "pilar_pools.tif"
     ],
     "classes": [
-    "pools"
+      "pool"
     ],
     "uuid": "ae2fad61-95ad-4cc1-a20a-20540ec4e784",
     "estimator_type": "OD",

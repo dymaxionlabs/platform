@@ -4,8 +4,8 @@
       "EC_L19_P13.jpg"
     ],
     "classes": [
-      "Negros",
-      "Colorados"
+      "black",
+      "red"
     ],
     "uuid": "56492778-8899-45eb-991b-ecd318aa9a33",
     "estimator_type": "OD",
