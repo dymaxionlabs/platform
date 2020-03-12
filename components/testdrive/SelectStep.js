@@ -51,7 +51,14 @@ class SelectStep extends React.Component {
     });
   };
 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  }
+  
   handleSelect = () => {
+    this._trackEvent("SelectStep","buttonClick")
     this._saveSelectedFiles();
 
     routerPush("/testdrive/predict");

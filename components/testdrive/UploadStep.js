@@ -30,6 +30,12 @@ class UploadStep extends React.Component {
     fileSelected: false
   };
 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  };
+ 
   componentDidMount() {
     this._loadCurrentModel();
   }
@@ -53,6 +59,7 @@ class UploadStep extends React.Component {
 
   handleSelect = () => {
     this._saveSelectedFiles();
+    this._trackEvent("UploadStep","buttonClick")
 
     routerPush("/testdrive/annotate");
   };

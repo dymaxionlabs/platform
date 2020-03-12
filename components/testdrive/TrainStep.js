@@ -56,8 +56,15 @@ class TrainStep extends React.Component {
     });
   }
 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  }
+  
   handleClickContinue() {
     routerPush(`/testdrive/select`);
+    this._trackEvent("TrainStep","buttonClick")
   }
 
   render() {

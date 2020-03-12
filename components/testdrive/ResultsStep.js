@@ -34,7 +34,14 @@ class ResultsStep extends React.Component {
     this.setState({ currentModel });
   }
 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  }
+
   handleClickResultMap() {
+    this._trackEvent("ResultsStep","buttonClick")
     routerPush("/view/testdrive-map");
   }
 
