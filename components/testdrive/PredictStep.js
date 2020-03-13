@@ -47,6 +47,12 @@ class PredictStep extends React.Component {
     setTimeout(() => this.advanceProgressBar(), this.interval);
   }
 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  };
+ 
   advanceProgressBar() {
     const { increment, interval } = this;
     this.setState(prevState => {
@@ -61,6 +67,7 @@ class PredictStep extends React.Component {
   }
 
   handleClickContinue() {
+    this._trackEvent("PredictStep","buttonClick");
     routerPush("/view/testdrive-map");
   }
 

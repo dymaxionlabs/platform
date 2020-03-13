@@ -68,36 +68,36 @@ class TestDrive extends React.Component {
   }
 
   stepContent() {
-    const { token } = this.props;
+    const { token, analytics } = this.props;
     const { step } = this.state;
 
     switch (step) {
       case "initial": {
-        return <InitialStep token={token} />;
+        return <InitialStep token={token} analytics={analytics}/>;
       }
       case "choose-usecase": {
-        return <ChooseUseCaseStep token={token} />;
+        return <ChooseUseCaseStep token={token} analytics={analytics}/>;
       }
       case "create": {
-        return <CreateStep token={token} />;
+        return <CreateStep token={token} analytics={analytics}/>;
       }
       case "upload": {
-        return <UploadStep token={token} />;
+        return <UploadStep token={token} analytics={analytics}/>;
       }
       case "annotate": {
-        return <AnnotateStep token={token} />;
+        return <AnnotateStep token={token} analytics={analytics} />;
       }
       case "train": {
-        return <TrainStep token={token} />;
+        return <TrainStep token={token} analytics={analytics}/>;
       }
       case "select": {
-        return <SelectStep token={token} />;
+        return <SelectStep token={token} analytics={analytics}/>;
       }
       case "predict": {
-        return <PredictStep token={token} />;
+        return <PredictStep token={token} analytics={analytics}/>;
       }
       case "results": {
-        return <ResultsStep token={token} />;
+        return <ResultsStep token={token} analytics={analytics}/>;
       }
     }
   }

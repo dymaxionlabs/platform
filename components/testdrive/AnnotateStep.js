@@ -291,6 +291,11 @@ class AnnotateStep extends React.Component {
     this.setState({ labelCount });
     console.debug("done fetchLabelCount");
   }
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  };
 
   _hasPrevPage() {
     const { offset } = this.state;
@@ -375,8 +380,9 @@ class AnnotateStep extends React.Component {
 
   handleSubmit = async () => {
     const canAdvance = this._hasEnoughAnnotations();
-
+    
     if (canAdvance) {
+      this._trackEvent("AnnotateStep","buttonClick");
       routerPush("/testdrive/train");
     }
   };

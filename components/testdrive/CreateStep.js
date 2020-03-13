@@ -37,6 +37,17 @@ class CreateStep extends React.Component {
     errorClassMsg: ""
   };
 
+ 
+  _trackEvent = (action, value) => {
+    if (this.props.analytics) {
+      this.props.analytics.event("testdrive", action, value);
+    } 
+  };
+
+  handleClick = ()=> {
+    this._trackEvent("CreateStep","buttonClick")
+  }
+  
   checkClasses() {
     var current = JSON.parse(window.localStorage.getItem("current"));
     var useCase = current["useCase"];
@@ -146,6 +157,7 @@ class CreateStep extends React.Component {
             color="primary"
             disabled={isSubmitting}
             className={classes.submit}
+            onClick={this.handleClick}
           >
             {t("create_step.submit_btn")}
           </Button>
