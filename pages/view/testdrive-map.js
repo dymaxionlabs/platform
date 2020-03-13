@@ -1,8 +1,10 @@
 import React from "react";
-import { withNamespaces, Link } from "../../i18n";
+import { withNamespaces } from "../../i18n";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
+import ResultsButton from "../../components/testdrive/ResultsButton";
+import LayersFab from "../../components/LayersFab";
 
 var lotsData = {};
 
@@ -74,9 +76,23 @@ LotsLayer = withNamespaces("testdrive")(LotsLayer);
 class MapTestDrive extends React.Component {
   state = {
     viewport: initialViewport,
-    selectedLayers: ["true_color"],
     min_zoom: 1,
-    max_zoom: 20
+    max_zoom: 20,
+    layersOpacity: {
+      annotations: 100,
+      tiles: 100
+    },
+    layers: [
+      {
+        uuid: "annotations",
+        name: "Annotations"
+      },
+      {
+        uuid: "tiles",
+        name: "Tiles"
+      }
+    ],
+    activeLayers: ["tiles", "annotations"]
   };
 
   componentDidMount() {
@@ -112,35 +128,40 @@ class MapTestDrive extends React.Component {
     };
   }
 
-  _trackEvent(action, value) {
-    this.props.analytics.event("View-MapTestDrive", action, value);
-  }
-
   _onMapViewportChanged = viewport => {
     this.setState({ viewport });
   };
 
-  _onToggleLayer = layer => {
-    const selectedLayers = this._addOrRemove(this.state.selectedLayers, layer);
+  onToggle = layer => {
+    var { activeLayers } = this.state;
 
-    if (selectedLayers.includes(layer)) {
-      this._trackEvent("enable-layer", layer);
+    if (activeLayers.includes(layer.uuid)) {
+      activeLayers.splice(activeLayers.indexOf(layer.uuid), 1);
     } else {
-      this._trackEvent("disable-layer", layer);
+      activeLayers.push(layer.uuid);
     }
 
-    this.setState({ selectedLayers });
+    this.setState({ activeLayers });
   };
 
-  _addOrRemove(array, item) {
-    const include = array.includes(item);
-    return include
-      ? array.filter(arrayItem => arrayItem !== item)
-      : [...array, item];
-  }
+  onOpacityChange = (uuid, value) => {
+    var { layersOpacity } = this.state;
+
+    layersOpacity[uuid] = value;
+
+    this.setState({ layersOpacity });
+  };
 
   render() {
-    const { viewport, max_zoom, min_zoom } = this.state;
+    const {
+      viewport,
+      max_zoom,
+      min_zoom,
+      layersOpacity,
+      layers,
+      activeLayers
+    } = this.state;
+    const { token, t } = this.props;
 
     return (
       <div className="index">
@@ -162,9 +183,28 @@ class MapTestDrive extends React.Component {
           minZoom={min_zoom}
           maxZoom={max_zoom}
         >
-          <LotsLayer />
+          <LayersFab
+            layers={layers}
+            activeLayers={activeLayers}
+            layersOpacity={layersOpacity}
+            onToggle={this.onToggle}
+            onOpacityChange={this.onOpacityChange}
+          />
 
-          <TileLayer key={key} {...SelectedRasterLayer} />
+          {activeLayers.includes("annotations") && (
+            <LotsLayer
+              style={{ fillOpacity: layersOpacity["annotations"] / 100 }}
+            />
+          )}
+          {activeLayers.includes("tiles") && (
+            <TileLayer
+              opacity={layersOpacity["tiles"] / 100}
+              key={key}
+              {...SelectedRasterLayer}
+            />
+          )}
+
+          <ResultsButton />
         </Map>
       </div>
     );
