@@ -380,9 +380,9 @@ class AnnotateStep extends React.Component {
 
   handleSubmit = async () => {
     const canAdvance = this._hasEnoughAnnotations();
-    this._trackEvent("AnnotateStep","buttonClick");
-
+    
     if (canAdvance) {
+      this._trackEvent("AnnotateStep","buttonClick");
       routerPush("/testdrive/train");
     }
   };

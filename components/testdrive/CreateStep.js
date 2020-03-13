@@ -37,17 +37,14 @@ class CreateStep extends React.Component {
     errorClassMsg: ""
   };
 
-  constructor(props) {
-    super(props);
-  }
-
+ 
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
     } 
   };
 
-  hadleOnclik = ()=> {
+  handleClick = ()=> {
     this._trackEvent("CreateStep","buttonClick")
   }
   
@@ -160,7 +157,7 @@ class CreateStep extends React.Component {
             color="primary"
             disabled={isSubmitting}
             className={classes.submit}
-            onClick={this.hadleOnclik}
+            onClick={this.handleClick}
           >
             {t("create_step.submit_btn")}
           </Button>

@@ -63,8 +63,8 @@ class TrainStep extends React.Component {
   }
   
   handleClickContinue() {
-    routerPush(`/testdrive/select`);
-    this._trackEvent("TrainStep","buttonClick")
+    this._trackEvent("TrainStep","buttonClick");
+    routerPush(`/testdrive/select`); 
   }
 
   render() {
