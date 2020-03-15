@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
 import LayersFab from "../../components/LayersFab";
+import { Segment, Header, List } from "semantic-ui-react";
 
 var lotsData = {};
 
@@ -64,12 +65,68 @@ const rasterLayers = [
 
 var SelectedRasterLayer = {};
 var key = "";
+var metricsData = {}; 
 
 class LotsLayer extends React.Component {
   render() {
     return <GeoJSON data={lotsData} attribution={dymaxionAttribution} />;
   }
 }
+
+const Color = ({ value }) => (
+  <div>
+    <style jsx>{`
+      div {
+        border: 1px solid #000;
+        width: 16px;
+        height: 16px;
+        background-color: ${value};
+        display: inline-block;
+        margin-right: 8px;
+        margin-bottom: -3px;
+      }
+    `}</style>
+  </div>
+);
+
+const LotsLegend = withNamespaces("case_study__agri")(({ t }) => (
+  <div>
+    <Segment
+      style={{
+        position: "fixed",
+        left: 20,
+        top: 20,
+        zIndex: 1000,
+        width: 190,
+        cursor: "default"
+      }}
+    >
+      <Header style={{ marginBottom: "0.2em" }}>
+        {"Resultados"}
+      </Header>
+      <Header as="h5" style={{ margin: 0 }}>
+        {"Objetos Detectados: " + metricsData["objectCount"]}
+      </Header>
+      <Header as="h5" style={{ margin: 0 }}>
+        {"Área: " + metricsData["area"] + " m^2"}
+      </Header>
+      <Header as="h5" style={{ margin: 0 }}>
+        {"Clases detectadas:"}
+      </Header>
+      {metricsData["classes"].map(item => (
+        <List.Item style={{ marginBottom: "3px" }}>
+          <List.Content>
+            <List.Header>
+              <Color value={item[2]} />
+              {item[0] + ": " + item[1]}
+            </List.Header>
+          </List.Content>
+        </List.Item>
+      ))}
+      <ResultsButton />
+    </Segment>
+  </div>
+));
 
 LotsLayer = withNamespaces("testdrive")(LotsLayer);
 
@@ -100,6 +157,7 @@ class MapTestDrive extends React.Component {
     var useCase = current["useCase"];
     key = useCase;
     if (useCase == "cattle") {
+      metricsData = require("../../static/testdrive/cattle/metrics_cattle.json");
       console.log("loading cattle");
       initialViewport.center = map_data.cattle.center;
       initialViewport.zoom = map_data.cattle.zoom;
@@ -109,12 +167,13 @@ class MapTestDrive extends React.Component {
       SelectedRasterLayer = rasterLayers[0];
     } else if (useCase == "pools") {
       console.log("loading pools");
+      metricsData = require("../../static/testdrive/pools/metrics_pool.json");
       initialViewport.center = map_data.pool.center;
       initialViewport.zoom = map_data.pool.zoom;
       this.setState({ min_zoom: map_data.pool.zoom_min });
       this.setState({ max_zoom: map_data.pool.zoom_max });
       lotsData = map_data.pool.vector_data;
-      SelectedRasterLayer = rasterLayers[1];
+      SelectedRasterLayer = rasterLayers[1];  
     } else {
       alert("Use case not found.");
     }
@@ -204,7 +263,8 @@ class MapTestDrive extends React.Component {
             />
           )}
 
-          <ResultsButton />
+          <LotsLegend />
+
         </Map>
       </div>
     );
