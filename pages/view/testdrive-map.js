@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
 import LayersFab from "../../components/LayersFab";
-import { Segment, Header, List } from "semantic-ui-react";
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import ListItem from '@material-ui/core/ListItem';
 
 var lotsData = {};
 
@@ -91,7 +93,7 @@ const Color = ({ value }) => (
 
 const LotsLegend = withNamespaces("case_study__agri")(({ t }) => (
   <div>
-    <Segment
+    <Paper
       style={{
         position: "fixed",
         left: 20,
@@ -101,30 +103,30 @@ const LotsLegend = withNamespaces("case_study__agri")(({ t }) => (
         cursor: "default"
       }}
     >
-      <Header style={{ marginBottom: "0.2em" }}>
+      <Typography style={{ marginLeft: "10px" }} variant="h5" component="h3">
         {"Resultados"}
-      </Header>
-      <Header as="h5" style={{ margin: 0 }}>
+      </Typography>
+      <Typography style={{ marginLeft: "10px" }} component="p">
         {"Objetos Detectados: " + metricsData["objectCount"]}
-      </Header>
-      <Header as="h5" style={{ margin: 0 }}>
-        {"Área: " + metricsData["area"] + " m^2"}
-      </Header>
-      <Header as="h5" style={{ margin: 0 }}>
+      </Typography>
+      <Typography style={{ marginLeft: "10px" }} component="p">
+        {"Área: " + metricsData["area"] + "m²"}
+      </Typography>
+      <Typography style={{ marginLeft: "10px" }} component="p">
         {"Clases detectadas:"}
-      </Header>
+      </Typography >
       {metricsData["classes"].map(item => (
-        <List.Item style={{ marginBottom: "3px" }}>
-          <List.Content>
-            <List.Header>
-              <Color value={item[2]} />
-              {item[0] + ": " + item[1]}
-            </List.Header>
-          </List.Content>
-        </List.Item>
+        <ListItem style={{ marginBottom: "3px" }}>
+          <Typography component="p">
+            <Color value={item[2]} />
+            {item[0] + ": " + item[1]}
+          </Typography>
+        </ListItem>
       ))}
-      <ResultsButton />
-    </Segment>
+      <div style={{  marginLeft: "10px" , marginBottom: "4px" }}>
+        <ResultsButton/>
+      </div>
+    </Paper>
   </div>
 ));
 
