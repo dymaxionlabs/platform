@@ -12,20 +12,20 @@ const TileLayer = dynamic(() => import("../../components/TileLayer"), {
   ssr: true
 });
 
-const map_data = {
+const mapData = {
   pool: {
-    vector_data: require("../../static/testdrive/pools/results.json"),
+    vectorData: require("../../static/testdrive/pools/results.json"),
     center: [-34.43283793934236, -58.87167763852244],
     zoom: 16,
-    zoom_min: 15,
-    zoom_max: 18
+    minZoom: 15,
+    maxZoom: 18
   },
   cattle: {
-    vector_data: require("../../static/testdrive/cattle/results.json"),
+    vectorData: require("../../static/testdrive/cattle/results.json"),
     center: [-37.79857199410538, -57.49418322639319],
     zoom: 17,
-    zoom_min: 16,
-    zoom_max: 20
+    minZoom: 16,
+    maxZoom: 20
   }
 };
 
@@ -62,7 +62,7 @@ const rasterLayers = [
   }
 ];
 
-var SelectedRasterLayer = {};
+var selectedRasterLayer = {};
 var key = "";
 
 class LotsLayer extends React.Component {
@@ -76,8 +76,8 @@ LotsLayer = withNamespaces("testdrive")(LotsLayer);
 class MapTestDrive extends React.Component {
   state = {
     viewport: initialViewport,
-    min_zoom: 1,
-    max_zoom: 20,
+    minZoom: 1,
+    maxZoom: 20,
     layersOpacity: {
       annotations: 100,
       tiles: 100
@@ -101,20 +101,20 @@ class MapTestDrive extends React.Component {
     key = useCase;
     if (useCase == "cattle") {
       console.log("loading cattle");
-      initialViewport.center = map_data.cattle.center;
-      initialViewport.zoom = map_data.cattle.zoom;
-      this.setState({ min_zoom: map_data.cattle.zoom_min });
-      this.setState({ max_zoom: map_data.cattle.zoom_max });
-      lotsData = map_data.cattle.vector_data;
-      SelectedRasterLayer = rasterLayers[0];
+      initialViewport.center = mapData.cattle.center;
+      initialViewport.zoom = mapData.cattle.zoom;
+      this.setState({ minZoom: mapData.cattle.minZoom });
+      this.setState({ maxZoom: mapData.cattle.maxZoom });
+      lotsData = mapData.cattle.vectorData;
+      selectedRasterLayer = rasterLayers[0];
     } else if (useCase == "pools") {
       console.log("loading pools");
-      initialViewport.center = map_data.pool.center;
-      initialViewport.zoom = map_data.pool.zoom;
-      this.setState({ min_zoom: map_data.pool.zoom_min });
-      this.setState({ max_zoom: map_data.pool.zoom_max });
-      lotsData = map_data.pool.vector_data;
-      SelectedRasterLayer = rasterLayers[1];
+      initialViewport.center = mapData.pool.center;
+      initialViewport.zoom = mapData.pool.zoom;
+      this.setState({ minZoom: mapData.pool.minZoom });
+      this.setState({ maxZoom: mapData.pool.maxZoom });
+      lotsData = mapData.pool.vectorData;
+      selectedRasterLayer = rasterLayers[1];
     } else {
       alert("Use case not found.");
     }
@@ -155,13 +155,12 @@ class MapTestDrive extends React.Component {
   render() {
     const {
       viewport,
-      max_zoom,
-      min_zoom,
+      maxZoom,
+      minZoom,
       layersOpacity,
       layers,
       activeLayers
     } = this.state;
-    const { token, t } = this.props;
 
     return (
       <div className="index">
@@ -180,8 +179,8 @@ class MapTestDrive extends React.Component {
         <Map
           viewport={viewport}
           onViewportChanged={this._onMapViewportChanged}
-          minZoom={min_zoom}
-          maxZoom={max_zoom}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
         >
           <LayersFab
             layers={layers}
@@ -200,7 +199,7 @@ class MapTestDrive extends React.Component {
             <TileLayer
               opacity={layersOpacity["tiles"] / 100}
               key={key}
-              {...SelectedRasterLayer}
+              {...selectedRasterLayer}
             />
           )}
 
