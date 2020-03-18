@@ -4,7 +4,11 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
+import ContactButton from "../../components/ContactButton";
 import LayersFab from "../../components/LayersFab";
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import ListItem from '@material-ui/core/ListItem';
 
 var lotsData = {};
 
@@ -64,12 +68,68 @@ const rasterLayers = [
 
 var selectedRasterLayer = {};
 var key = "";
+var metricsData = {}; 
 
 class LotsLayer extends React.Component {
   render() {
     return <GeoJSON data={lotsData} attribution={dymaxionAttribution} />;
   }
 }
+
+const Color = ({ value }) => (
+  <div>
+    <style jsx>{`
+      div {
+        border: 1px solid #000;
+        width: 16px;
+        height: 16px;
+        background-color: ${value};
+        display: inline-block;
+        margin-right: 8px;
+        margin-bottom: -3px;
+      }
+    `}</style>
+  </div>
+);
+
+const LotsLegend = withNamespaces("testdrive")(({ t }) => (
+  <div>
+    <Paper
+      style={{
+        position: "fixed",
+        left: 20,
+        top: 20,
+        zIndex: 1000,
+        width: 190,
+        cursor: "default"
+      }}
+    >
+      <Typography style={{ marginLeft: "15px", marginTop: "15px",marginBottom: "10px" }} variant="h6" component="h3">
+        <strong>{t("metrics_title_result")}</strong>
+      </Typography>
+      <Typography style={{ marginLeft: "15px" , marginBottom: "4px"}} component="p">
+        <strong>{t("metrics_title_object")}: </strong>{metricsData["objectCount"]}
+      </Typography>
+      <Typography style={{ marginLeft: "15px",  marginBottom: "4px" }} component="p">
+        <strong>{t("metrics_title_area")}: </strong>{metricsData["area"] + "m²"}
+      </Typography>
+      <Typography style={{ marginLeft: "15px" }} component="p">
+        <strong>{t("metrics_title_class")}: </strong>
+      </Typography >
+      {metricsData["classes"].map(item => (
+        <ListItem style={{ marginLeft: "15px", paddingBottom:"4px", paddingTop: "4px" }}>
+          <Typography component="p">
+            <Color value={item[2]} />
+            <strong>{item[0] + ": "}</strong>{item[1]}
+          </Typography>
+        </ListItem>
+      ))}
+      <div style={{  marginLeft: "15px" , marginBottom: "15px", marginTop:"10px" }}>
+        <ResultsButton/>
+      </div>
+    </Paper>
+  </div>
+));
 
 LotsLayer = withNamespaces("testdrive")(LotsLayer);
 
@@ -100,6 +160,7 @@ class MapTestDrive extends React.Component {
     var useCase = current["useCase"];
     key = useCase;
     if (useCase == "cattle") {
+      metricsData = require("../../static/testdrive/cattle/metrics_cattle.json");
       console.log("loading cattle");
       initialViewport.center = mapData.cattle.center;
       initialViewport.zoom = mapData.cattle.zoom;
@@ -108,6 +169,7 @@ class MapTestDrive extends React.Component {
       lotsData = mapData.cattle.vectorData;
       selectedRasterLayer = rasterLayers[0];
     } else if (useCase == "pools") {
+      metricsData = require("../../static/testdrive/pools/metrics_pool.json");
       console.log("loading pools");
       initialViewport.center = mapData.pool.center;
       initialViewport.zoom = mapData.pool.zoom;
@@ -203,7 +265,8 @@ class MapTestDrive extends React.Component {
             />
           )}
 
-          <ResultsButton />
+          <LotsLegend />
+          <ContactButton />
         </Map>
       </div>
     );

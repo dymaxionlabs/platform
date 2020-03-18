@@ -70,7 +70,7 @@ class ResultsButton extends React.Component {
     }
 
     return useCase ? (
-      <div className={classes.root}>
+      <div>
         <Button
           color="primary"
           variant="contained"
