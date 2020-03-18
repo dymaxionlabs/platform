@@ -145,11 +145,11 @@ class MapTestDrive extends React.Component {
     layers: [
       {
         uuid: "annotations",
-        name: "Results"
+        name: "select_layer_results"
       },
       {
         uuid: "tiles",
-        name: "Tiles"
+        name: "select_layer_tiles"
       }
     ],
     activeLayers: ["tiles", "annotations"]
@@ -223,6 +223,12 @@ class MapTestDrive extends React.Component {
       layers,
       activeLayers
     } = this.state;
+
+    const { t } = this.props;
+
+    layers.map(layer => {
+      layer.name = t(layer.name);
+    });
 
     return (
       <div className="index">

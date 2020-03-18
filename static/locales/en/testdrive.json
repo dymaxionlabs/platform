@@ -55,6 +55,8 @@
     "title": "Results",
     "view_map": "View Map"
   },
+  "select_layer_results": "Results",
+  "select_layer_tiles": "Tiles",
   "select_step": {
     "dropzone": "Drag and drop your images here, or click.",
     "explanation": "Select pre-existing images or upload new ones and then click Predict",
