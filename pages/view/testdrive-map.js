@@ -91,7 +91,7 @@ const Color = ({ value }) => (
   </div>
 );
 
-const LotsLegend = withNamespaces("case_study__agri")(({ t }) => (
+const LotsLegend = withNamespaces("testdrive")(({ t }) => (
   <div>
     <Paper
       style={{
@@ -103,27 +103,27 @@ const LotsLegend = withNamespaces("case_study__agri")(({ t }) => (
         cursor: "default"
       }}
     >
-      <Typography style={{ marginLeft: "10px" }} variant="h5" component="h3">
-        {"Resultados"}
+      <Typography style={{ marginLeft: "15px", marginTop: "15px",marginBottom: "10px" }} variant="h6" component="h3">
+        <strong>{t("metrics_title_result")}</strong>
       </Typography>
-      <Typography style={{ marginLeft: "10px" }} component="p">
-        {"Objetos Detectados: " + metricsData["objectCount"]}
+      <Typography style={{ marginLeft: "15px" , marginBottom: "4px"}} component="p">
+        <strong>{t("metrics_title_object: ")}</strong>{metricsData["objectCount"]}
       </Typography>
-      <Typography style={{ marginLeft: "10px" }} component="p">
-        {"Área: " + metricsData["area"] + "m²"}
+      <Typography style={{ marginLeft: "15px",  marginBottom: "4px" }} component="p">
+        <strong>{t("metrics_title_area: " )}</strong>{metricsData["area"] + "m²"}
       </Typography>
-      <Typography style={{ marginLeft: "10px" }} component="p">
-        {"Clases detectadas:"}
+      <Typography style={{ marginLeft: "15px" }} component="p">
+        <strong>{t("metrics_title_class:")}</strong>
       </Typography >
       {metricsData["classes"].map(item => (
-        <ListItem style={{ marginBottom: "3px" }}>
+        <ListItem style={{ marginLeft: "15px", paddingBottom:"4px", paddingTop: "4px" }}>
           <Typography component="p">
             <Color value={item[2]} />
-            {item[0] + ": " + item[1]}
+            <strong>{item[0] + ": "}</strong>{item[1]}
           </Typography>
         </ListItem>
       ))}
-      <div style={{  marginLeft: "10px" , marginBottom: "4px" }}>
+      <div style={{  marginLeft: "15px" , marginBottom: "15px", marginTop:"10px" }}>
         <ResultsButton/>
       </div>
     </Paper>
