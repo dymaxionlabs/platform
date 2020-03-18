@@ -32,9 +32,9 @@
     "title": "Create new model"
   },
   "header": "DYMAX TEST DRIVE",
-  "metrics_title_area": "Area",
-  "metrics_title_class": "Classes Detected",
-  "metrics_title_object": "Objetos Detectados",
+  "metrics_title_area": "Area (km\u00b2)",
+  "metrics_title_class": "Objects per class",
+  "metrics_title_object": "Detected objects",
   "metrics_title_result": "Results",
   "new_btn": "New",
   "new_title": "New Model",
