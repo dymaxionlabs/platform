@@ -4,6 +4,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
+import ContactButton from "../../components/ContactButton";
 import LayersFab from "../../components/LayersFab";
 
 var lotsData = {};
@@ -204,6 +205,7 @@ class MapTestDrive extends React.Component {
           )}
 
           <ResultsButton />
+          <ContactButton />
         </Map>
       </div>
     );
