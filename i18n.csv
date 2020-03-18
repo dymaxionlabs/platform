@@ -375,3 +375,7 @@ testdrive,steps.results,Resultados,Results
 testdrive,btn_use_api,Usar API,Use API
 testdrive,btn_use_web_ui,Usar Web UI,Use Web UI
 testdrive,btn_contact_modal,Contáctenos,Contact sales
+testdrive,metrics_title_result,Resultados,Results
+testdrive,metrics_title_object,Objetos Detectados,Detected objects
+testdrive,metrics_title_area,Área (km²),Area (km²)
+testdrive,metrics_title_class,Objetos por clase,Objects per class
