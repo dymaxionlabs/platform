@@ -107,13 +107,13 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
         <strong>{t("metrics_title_result")}</strong>
       </Typography>
       <Typography style={{ marginLeft: "15px" , marginBottom: "4px"}} component="p">
-        <strong>{t("metrics_title_object: ")}</strong>{metricsData["objectCount"]}
+        <strong>{t("metrics_title_object")}: </strong>{metricsData["objectCount"]}
       </Typography>
       <Typography style={{ marginLeft: "15px",  marginBottom: "4px" }} component="p">
-        <strong>{t("metrics_title_area: " )}</strong>{metricsData["area"] + "m²"}
+        <strong>{t("metrics_title_area")}: </strong>{metricsData["area"] + "m²"}
       </Typography>
       <Typography style={{ marginLeft: "15px" }} component="p">
-        <strong>{t("metrics_title_class:")}</strong>
+        <strong>{t("metrics_title_class")}: </strong>
       </Typography >
       {metricsData["classes"].map(item => (
         <ListItem style={{ marginLeft: "15px", paddingBottom:"4px", paddingTop: "4px" }}>
