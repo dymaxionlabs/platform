@@ -4,6 +4,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
+import ContactButton from "../../components/ContactButton";
 import LayersFab from "../../components/LayersFab";
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -265,7 +266,7 @@ class MapTestDrive extends React.Component {
           )}
 
           <LotsLegend />
-
+          <ContactButton />
         </Map>
       </div>
     );
