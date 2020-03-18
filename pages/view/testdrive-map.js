@@ -145,7 +145,7 @@ class MapTestDrive extends React.Component {
     layers: [
       {
         uuid: "annotations",
-        name: "Annotations"
+        name: "Results"
       },
       {
         uuid: "tiles",
