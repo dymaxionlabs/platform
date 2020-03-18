@@ -123,7 +123,7 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
         component="p"
       >
         <strong>{t("metrics_title_area")}: </strong>
-        {metricsData["area"] + "m²"}
+        {metricsData["area"] + "km²"}
       </Typography>
       <Typography style={{ marginLeft: "15px" }} component="p">
         <strong>{t("metrics_title_class")}: </strong>
