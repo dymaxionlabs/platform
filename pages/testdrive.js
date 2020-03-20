@@ -30,6 +30,16 @@ const styles = theme => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  paper: {
+    width: 700,
+    marginTop: theme.spacing.unit * 4,
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    flexDirection: "column",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   }
 });
 
@@ -106,6 +116,123 @@ class TestDrive extends React.Component {
     }
   }
 
+  stepApiContent() {
+    const { token, analytics } = this.props;
+    const { step } = this.state;
+
+    switch (step) {
+      case "initial": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+        <div>
+          <code>
+            from dymaxionlabs.models import Model
+          </code>
+        </div>
+        <code>
+          pools_detector = Model.create(name="Pools detector",
+                                        type="object_detection",
+                                        labels=["pool"])
+        </code></div>);
+      }
+      case "choose-usecase": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "create": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "upload": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "annotate": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "train": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "select": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "predict": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+      case "results": {
+        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
+          <div>
+            <code>
+              from dymaxionlabs.models import Model
+            </code>
+          </div>
+          <code>
+            pools_detector = Model.create(name="Pools detector",
+                                          type="object_detection",
+                                          labels=["pool"])
+          </code></div>);      }
+    }
+  }
+
   handle_btn_onClick = () => {   
     if (this.state.btn_api_web) {
       this.setState({btn_api_web: false})
@@ -137,27 +264,8 @@ class TestDrive extends React.Component {
         {!btn_api_web && this.stepContent()}
         {btn_api_web && 
           <div>
-            <Paper  style={{
-              position: "sticky",
-              left: 0,
-              top: 1300,
-              zIndex: 1000,
-              width: 400,
-              cursor: "default"
-            }}>
-                <Typography>To create a model, using the Python package, execute:</Typography> 
-                <div>
-                  <code>
-                    from dymaxionlabs.models import Model
-                  </code>
-                </div>
-                <code>
-                  pools_detector = Model.create(name="Pools detector",
-                                                type="object_detection",
-                                                labels=["pool"])
-                </code>
-            
-              
+            <Paper  className={classes.paper} >
+                {this.stepApiContent()}             
             </Paper>
           </div>}
         {showStepper && (
