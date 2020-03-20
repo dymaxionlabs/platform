@@ -14,6 +14,9 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
+import Step from "@material-ui/core/Step";
+import { Typography, Paper } from "@material-ui/core";
+
 
 const styles = theme => ({
   stepperContent: {
@@ -131,7 +134,32 @@ class TestDrive extends React.Component {
             : t("btn_use_web_ui")
           }
           btn_onClick={this.handle_btn_onClick} />
-        {this.stepContent()}
+        {!btn_api_web && this.stepContent()}
+        {btn_api_web && 
+          <div>
+            <Paper  style={{
+              position: "sticky",
+              left: 0,
+              top: 1300,
+              zIndex: 1000,
+              width: 400,
+              cursor: "default"
+            }}>
+                <Typography>To create a model, using the Python package, execute:</Typography> 
+                <div>
+                  <code>
+                    from dymaxionlabs.models import Model
+                  </code>
+                </div>
+                <code>
+                  pools_detector = Model.create(name="Pools detector",
+                                                type="object_detection",
+                                                labels=["pool"])
+                </code>
+            
+              
+            </Paper>
+          </div>}
         {showStepper && (
           <div className={classes.stepperContent}>
             <StepperContent
