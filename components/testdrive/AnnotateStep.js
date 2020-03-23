@@ -16,9 +16,10 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React from "react";
 import AnnotatedImageTile from "../models/annotate/AnnotatedImageTile";
-import { withNamespaces } from "../../i18n";
+import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import CodeBlock from "../CodeBlock";
 
 import cattle_estimator from "../../data/testdrive/cattle_estimator.json";
 import cattle_annotations from "../../data/testdrive/cattle_annotations.json";
@@ -200,6 +201,41 @@ let AnnotateContent = ({ t, classes, ...props }) => (
 AnnotateContent = withNamespaces("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
+let APIContent = ({ classes, t }) => (
+  <div>
+    <Typography>
+      You can upload a vector file (a Shapefile or GeoJSON) with annotated
+      objects. Each feature must contain a single rectangle, and a property
+      "class", referencing one of the class names you entered when you created
+      the model.
+    </Typography>
+    <Typography>
+      To upload a vector file named annotations.geojson, using the Python
+      package, execute:
+    </Typography>
+    <CodeBlock language="python">
+      {`from dymaxionlabs.models import Model
+
+pools_detector = Model.get("Pools detector")
+pools_detector.upload_annotations("./annotations.geojson")`}
+    </CodeBlock>
+    <Link href="/testdrive/train">
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+      >
+        {t("next_btn")}
+      </Button>
+    </Link>
+  </div>
+);
+
+APIContent = withStyles(styles)(APIContent);
+APIContent = withNamespaces("testdrive")(APIContent);
+
 class AnnotateStep extends React.Component {
   state = {
     offset: 0,
@@ -294,7 +330,7 @@ class AnnotateStep extends React.Component {
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
-    } 
+    }
   };
 
   _hasPrevPage() {
@@ -380,15 +416,15 @@ class AnnotateStep extends React.Component {
 
   handleSubmit = async () => {
     const canAdvance = this._hasEnoughAnnotations();
-    
+
     if (canAdvance) {
-      this._trackEvent("AnnotateStep","buttonClick");
+      this._trackEvent("AnnotateStep", "buttonClick");
       routerPush("/testdrive/train");
     }
   };
 
   render() {
-    const { classes, t } = this.props;
+    const { classes, t, apiMode } = this.props;
     const {
       loading,
       imageTiles,
@@ -407,36 +443,42 @@ class AnnotateStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("annotate_step.title")}
         </Typography>
-        {loading ? (
-          <LoadingContent />
+        {apiMode ? (
+          <APIContent />
         ) : (
-          <AnnotateContent
-            labels={labels}
-            labelCount={labelCount}
-            imageTiles={imageTiles}
-            annotationsByTile={annotationsByTile}
-            offset={offset}
-            count={count}
-            onChange={this.handleChange}
-            onNew={this.handleNew}
-            onDelete={this.handleDelete}
-            onFirstPageClick={this.handleFirstPageClick}
-            onPrevPageClick={this.handlePrevPageClick}
-            onNextPageClick={this.handleNextPageClick}
-            onLastPageClick={this.handleLastPageClick}
-          />
+          <React.Fragment>
+            {loading ? (
+              <LoadingContent />
+            ) : (
+              <AnnotateContent
+                labels={labels}
+                labelCount={labelCount}
+                imageTiles={imageTiles}
+                annotationsByTile={annotationsByTile}
+                offset={offset}
+                count={count}
+                onChange={this.handleChange}
+                onNew={this.handleNew}
+                onDelete={this.handleDelete}
+                onFirstPageClick={this.handleFirstPageClick}
+                onPrevPageClick={this.handlePrevPageClick}
+                onNextPageClick={this.handleNextPageClick}
+                onLastPageClick={this.handleLastPageClick}
+              />
+            )}
+            <div className={classes.buttons}>
+              <Button
+                className={classes.submitButton}
+                disabled={loading || !canAdvance}
+                color="primary"
+                variant="contained"
+                onClick={this.handleSubmit}
+              >
+                {t("annotate_step.continue_btn")}
+              </Button>
+            </div>
+          </React.Fragment>
         )}
-        <div className={classes.buttons}>
-          <Button
-            className={classes.submitButton}
-            disabled={loading || !canAdvance}
-            color="primary"
-            variant="contained"
-            onClick={this.handleSubmit}
-          >
-            {t("annotate_step.continue_btn")}
-          </Button>
-        </div>
       </StepContentContainer>
     );
   }
