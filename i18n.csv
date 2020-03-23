@@ -379,3 +379,5 @@ testdrive,metrics_title_result,Resultados,Results
 testdrive,metrics_title_object,Objetos Detectados,Detected objects
 testdrive,metrics_title_area,Área (km²),Area (km²)
 testdrive,metrics_title_class,Objetos por clase,Objects per class
+testdrive,select_layer_results,Resultados,Results
+testdrive,select_layer_tiles,Tiles,Tiles

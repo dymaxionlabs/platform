@@ -6,9 +6,9 @@ import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
 import ContactButton from "../../components/ContactButton";
 import LayersFab from "../../components/LayersFab";
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import ListItem from '@material-ui/core/ListItem';
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import ListItem from "@material-ui/core/ListItem";
 
 var lotsData = {};
 
@@ -68,7 +68,7 @@ const rasterLayers = [
 
 var selectedRasterLayer = {};
 var key = "";
-var metricsData = {}; 
+var metricsData = {};
 
 class LotsLayer extends React.Component {
   render() {
@@ -104,28 +104,49 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
         cursor: "default"
       }}
     >
-      <Typography style={{ marginLeft: "15px", marginTop: "15px",marginBottom: "10px" }} variant="h6" component="h3">
+      <Typography
+        style={{ marginLeft: "15px", marginTop: "15px", marginBottom: "10px" }}
+        variant="h6"
+        component="h3"
+      >
         <strong>{t("metrics_title_result")}</strong>
       </Typography>
-      <Typography style={{ marginLeft: "15px" , marginBottom: "4px"}} component="p">
-        <strong>{t("metrics_title_object")}: </strong>{metricsData["objectCount"]}
+      <Typography
+        style={{ marginLeft: "15px", marginBottom: "4px" }}
+        component="p"
+      >
+        <strong>{t("metrics_title_object")}: </strong>
+        {metricsData["objectCount"]}
       </Typography>
-      <Typography style={{ marginLeft: "15px",  marginBottom: "4px" }} component="p">
-        <strong>{t("metrics_title_area")}: </strong>{metricsData["area"] + "m²"}
+      <Typography
+        style={{ marginLeft: "15px", marginBottom: "4px" }}
+        component="p"
+      >
+        <strong>{t("metrics_title_area")}: </strong>
+        {metricsData["area"] + "m²"}
       </Typography>
       <Typography style={{ marginLeft: "15px" }} component="p">
         <strong>{t("metrics_title_class")}: </strong>
-      </Typography >
+      </Typography>
       {metricsData["classes"].map(item => (
-        <ListItem style={{ marginLeft: "15px", paddingBottom:"4px", paddingTop: "4px" }}>
+        <ListItem
+          style={{
+            marginLeft: "15px",
+            paddingBottom: "4px",
+            paddingTop: "4px"
+          }}
+        >
           <Typography component="p">
             <Color value={item[2]} />
-            <strong>{item[0] + ": "}</strong>{item[1]}
+            <strong>{item[0] + ": "}</strong>
+            {item[1]}
           </Typography>
         </ListItem>
       ))}
-      <div style={{  marginLeft: "15px" , marginBottom: "15px", marginTop:"10px" }}>
-        <ResultsButton/>
+      <div
+        style={{ marginLeft: "15px", marginBottom: "15px", marginTop: "10px" }}
+      >
+        <ResultsButton />
       </div>
     </Paper>
   </div>
@@ -145,11 +166,11 @@ class MapTestDrive extends React.Component {
     layers: [
       {
         uuid: "annotations",
-        name: "Annotations"
+        name: "select_layer_results"
       },
       {
         uuid: "tiles",
-        name: "Tiles"
+        name: "select_layer_tiles"
       }
     ],
     activeLayers: ["tiles", "annotations"]
@@ -224,6 +245,8 @@ class MapTestDrive extends React.Component {
       activeLayers
     } = this.state;
 
+    const { t } = this.props;
+
     return (
       <div className="index">
         <Head>
@@ -245,7 +268,7 @@ class MapTestDrive extends React.Component {
           maxZoom={maxZoom}
         >
           <LayersFab
-            layers={layers}
+            layers={layers.map(layer => ({ ...layer, name: t(layer.name) }))}
             activeLayers={activeLayers}
             layersOpacity={layersOpacity}
             onToggle={this.onToggle}
