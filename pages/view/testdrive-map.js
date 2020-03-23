@@ -226,10 +226,6 @@ class MapTestDrive extends React.Component {
 
     const { t } = this.props;
 
-    layers.map(layer => {
-      layer.name = t(layer.name);
-    });
-
     return (
       <div className="index">
         <Head>
@@ -251,7 +247,7 @@ class MapTestDrive extends React.Component {
           maxZoom={maxZoom}
         >
           <LayersFab
-            layers={layers}
+            layers={layers.map(layer => ({ ...layer, name: t(layer.name) }))}
             activeLayers={activeLayers}
             layersOpacity={layersOpacity}
             onToggle={this.onToggle}
