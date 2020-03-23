@@ -17,7 +17,6 @@ import ResultsStep from "../components/testdrive/ResultsStep";
 import Step from "@material-ui/core/Step";
 import { Typography, Paper } from "@material-ui/core";
 
-
 const styles = theme => ({
   stepperContent: {
     width: "auto",
@@ -60,7 +59,7 @@ const hiddenSteps = ["initial", "choose-usecase"];
 class TestDrive extends React.Component {
   state = {
     step: steps[0],
-    btn_api_web: false
+    apiMode: false
   };
 
   static async getInitialProps({ query }) {
@@ -83,191 +82,84 @@ class TestDrive extends React.Component {
 
   stepContent() {
     const { token, analytics } = this.props;
-    const { step } = this.state;
+    const { step, apiMode } = this.state;
 
     switch (step) {
       case "initial": {
-        return <InitialStep token={token} analytics={analytics}/>;
+        return (
+          <InitialStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "choose-usecase": {
-        return <ChooseUseCaseStep token={token} analytics={analytics}/>;
+        return (
+          <ChooseUseCaseStep
+            token={token}
+            analytics={analytics}
+            apiMode={apiMode}
+          />
+        );
       }
       case "create": {
-        return <CreateStep token={token} analytics={analytics}/>;
+        return (
+          <CreateStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "upload": {
-        return <UploadStep token={token} analytics={analytics}/>;
+        return (
+          <UploadStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "annotate": {
-        return <AnnotateStep token={token} analytics={analytics} />;
+        return (
+          <AnnotateStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "train": {
-        return <TrainStep token={token} analytics={analytics}/>;
+        return (
+          <TrainStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "select": {
-        return <SelectStep token={token} analytics={analytics}/>;
+        return (
+          <SelectStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "predict": {
-        return <PredictStep token={token} analytics={analytics}/>;
+        return (
+          <PredictStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "results": {
-        return <ResultsStep token={token} analytics={analytics}/>;
+        return (
+          <ResultsStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
     }
   }
 
-  stepApiContent() {
-    const { token, analytics } = this.props;
-    const { step } = this.state;
-
-    switch (step) {
-      case "initial": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-        <div>
-          <code>
-            from dymaxionlabs.models import Model
-          </code>
-        </div>
-        <code>
-          pools_detector = Model.create(name="Pools detector",
-                                        type="object_detection",
-                                        labels=["pool"])
-        </code></div>);
-      }
-      case "choose-usecase": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "create": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "upload": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "annotate": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "train": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "select": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "predict": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-      case "results": {
-        return (<div><Typography>To create a model, using the Python package, execute:</Typography> 
-          <div>
-            <code>
-              from dymaxionlabs.models import Model
-            </code>
-          </div>
-          <code>
-            pools_detector = Model.create(name="Pools detector",
-                                          type="object_detection",
-                                          labels=["pool"])
-          </code></div>);      }
-    }
-  }
-
-  handle_btn_onClick = () => {   
-    if (this.state.btn_api_web) {
-      this.setState({btn_api_web: false})
-    } else {
-      this.setState({btn_api_web: true})
-    }
-  }
+  handleModeButtonClick = () => {
+    this.setState(prevState => ({ apiMode: !prevState.apiMode }));
+  };
 
   render() {
     const { t, classes, ...props } = this.props;
-    const { step, btn_api_web } = this.state;
+    const { step, apiMode } = this.state;
 
     const isHiddenStep = step => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
+    const showModeButton = !isHiddenStep(step);
 
     return (
       <React.Fragment>
         <Head>
           <title>{t("header")}</title>
         </Head>
-        <BasicAppbar 
-          btn_visible={(step != "initial") && (step != "choose-usecase")} 
-          btn_text={
-            btn_api_web 
-            ? t("btn_use_api") 
-            : t("btn_use_web_ui")
-          }
-          btn_onClick={this.handle_btn_onClick} />
-        {!btn_api_web && this.stepContent()}
-        {btn_api_web && 
-          <div>
-            <Paper  className={classes.paper} >
-                {this.stepApiContent()}             
-            </Paper>
-          </div>}
+        <BasicAppbar
+          showModeButton={showModeButton}
+          modeButtonText={apiMode ? t("btn_use_api") : t("btn_use_web_ui")}
+          onModeButtonClick={this.handleModeButtonClick}
+        />
+        {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
             <StepperContent
