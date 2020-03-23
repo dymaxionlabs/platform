@@ -156,7 +156,7 @@ class TestDrive extends React.Component {
         </Head>
         <BasicAppbar
           showModeButton={showModeButton}
-          modeButtonText={apiMode ? t("btn_use_api") : t("btn_use_web_ui")}
+          modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
         {this.stepContent()}

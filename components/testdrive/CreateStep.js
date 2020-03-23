@@ -7,10 +7,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import Snackbar from "@material-ui/core/Snackbar";
+import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
@@ -33,15 +34,25 @@ let APIContent = ({ classes, t }) => (
     <Typography>
       To create a model, using the Python package, execute:
     </Typography>
-    <Typography as="code">
-      {`
-      from dymaxionlabs.models import Model
+    <CodeBlock language="python">
+      {`from dymaxionlabs.models import Model
 
-      pools_detector = Model.create(name="Pools detector",
-                                    type="object_detection",
-                                    labels=["pool"])
-      `}
-    </Typography>
+pools_detector = Model.create(name="Pools detector",
+                              type="object_detection",
+                              labels=["pool"])`}
+    </CodeBlock>
+
+    <Link href="/testdrive/upload">
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+      >
+        {t("next_btn")}
+      </Button>
+    </Link>
   </div>
 );
 
