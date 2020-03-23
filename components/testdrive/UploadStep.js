@@ -2,10 +2,11 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { withNamespaces } from "../../i18n";
+import { Link, withNamespaces } from "../../i18n";
 import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
-import FileGallery from "../FileGallery.js";
+import FileGallery from "../FileGallery";
+import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
@@ -22,6 +23,34 @@ const useCaseFiles = {
   cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/train1.png" }]
 };
 
+let APIContent = ({ classes, t }) => (
+  <div>
+    <Typography>
+      To upload multiple files, using the Python package, execute:
+    </Typography>
+    <CodeBlock language="python">
+      {`from dymaxionlabs.files import File
+
+for path in files:
+    File.upload(path)`}
+    </CodeBlock>
+    <Link href="/testdrive/annotate">
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+      >
+        {t("next_btn")}
+      </Button>
+    </Link>
+  </div>
+);
+
+APIContent = withStyles(styles)(APIContent);
+APIContent = withNamespaces("testdrive")(APIContent);
+
 class UploadStep extends React.Component {
   state = {
     currentModel: null,
@@ -33,9 +62,9 @@ class UploadStep extends React.Component {
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
-    } 
+    }
   };
- 
+
   componentDidMount() {
     this._loadCurrentModel();
   }
@@ -59,7 +88,7 @@ class UploadStep extends React.Component {
 
   handleSelect = () => {
     this._saveSelectedFiles();
-    this._trackEvent("UploadStep","buttonClick")
+    this._trackEvent("UploadStep", "buttonClick");
 
     routerPush("/testdrive/annotate");
   };
@@ -97,7 +126,7 @@ class UploadStep extends React.Component {
   }
 
   render() {
-    const { classes, t } = this.props;
+    const { classes, t, apiMode } = this.props;
     const { fileSelected, files, filesLoaded } = this.state;
 
     return (
@@ -105,20 +134,26 @@ class UploadStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("upload_step.title")}
         </Typography>
-        <Typography variant="body2">{t("upload_step.text")}</Typography>
-        <FileGallery
-          loaded={filesLoaded}
-          onFileClick={this.handleFileClick}
-          files={files}
-        />
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.handleSelect}
-          disabled={!fileSelected}
-        >
-          {t("upload_step.select_btn")}
-        </Button>
+        {apiMode ? (
+          <APIContent />
+        ) : (
+          <React.Fragment>
+            <Typography variant="body2">{t("upload_step.text")}</Typography>
+            <FileGallery
+              loaded={filesLoaded}
+              onFileClick={this.handleFileClick}
+              files={files}
+            />
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={this.handleSelect}
+              disabled={!fileSelected}
+            >
+              {t("upload_step.select_btn")}
+            </Button>
+          </React.Fragment>
+        )}
       </StepContentContainer>
     );
   }
