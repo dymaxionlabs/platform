@@ -15,7 +15,7 @@ const styles = theme => ({
 });
 
 const ContactButton = ({ t, classes }) => (
-  <a href="https://dymaxionlabs.com/contact">
+  <a href="https://dymaxionlabs.com/contact" target="_blank">
     <Button className={classes.btn} color="primary" variant="contained">
       {t("btn_contact_modal")}
     </Button>
