@@ -6,6 +6,7 @@ import React from "react";
 import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
+import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
@@ -29,6 +30,46 @@ const BorderLinearProgress = withStyles({
     backgroundColor: "#ff6c5c"
   }
 })(LinearProgress);
+
+let APIContent = ({ classes, t }) => (
+  <div>
+    <Typography>
+      When you have enough annotations and images, you can train your model.
+    </Typography>
+    <Typography>
+      To train a model, using the Python package, execute:
+    </Typography>
+    <CodeBlock language="python">
+      {`from dymaxionlabs.models import Model
+
+pools_detector = Model.get("Pools detector")
+job = pools_detector.train()`}
+    </CodeBlock>
+    <Typography>
+      Because training can take hours to complete, the <code>train()</code>{" "}
+      method returns a<code>Job</code> instance, which you can use to fetch the
+      job status:
+    </Typography>
+    <CodeBlock language="python">
+      {`job.is_running()
+# => True`}
+    </CodeBlock>
+    <Link href="/testdrive/select">
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+      >
+        {t("next_btn")}
+      </Button>
+    </Link>
+  </div>
+);
+
+APIContent = withStyles(styles)(APIContent);
+APIContent = withNamespaces("testdrive")(APIContent);
 
 class TrainStep extends React.Component {
   state = {
@@ -59,16 +100,16 @@ class TrainStep extends React.Component {
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
-    } 
-  }
-  
+    }
+  };
+
   handleClickContinue() {
-    this._trackEvent("TrainStep","buttonClick");
-    routerPush(`/testdrive/select`); 
+    this._trackEvent("TrainStep", "buttonClick");
+    routerPush(`/testdrive/select`);
   }
 
   render() {
-    const { classes, t } = this.props;
+    const { classes, t, apiMode } = this.props;
     const { finished, percentage } = this.state;
 
     return (
@@ -76,35 +117,43 @@ class TrainStep extends React.Component {
         <Typography className={classes.header} component="h1" variant="h5">
           {t("train_step.title")}
         </Typography>
-        <Typography>
-          {finished
-            ? t("train_step.finished_explanation")
-            : t("train_step.explanation")}
-        </Typography>
-        {finished ? (
-          <Button
-            color="primary"
-            variant="contained"
-            fullWidth
-            onClick={() => this.handleClickContinue()}
-          >
-            {t("train_step.continue")}
-          </Button>
+        {apiMode ? (
+          <APIContent />
         ) : (
-          <div>
-            <div className={classes.progress}>
-              {percentage <= 100 ? (
-                <BorderLinearProgress
-                  className={classes.margin}
-                  variant="determinate"
-                  color="secondary"
-                  value={percentage}
-                />
-              ) : (
-                <Typography>{t("train_step.undefined_explanation")}</Typography>
-              )}
-            </div>
-          </div>
+          <React.Fragment>
+            <Typography>
+              {finished
+                ? t("train_step.finished_explanation")
+                : t("train_step.explanation")}
+            </Typography>
+            {finished ? (
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={() => this.handleClickContinue()}
+              >
+                {t("train_step.continue")}
+              </Button>
+            ) : (
+              <div>
+                <div className={classes.progress}>
+                  {percentage <= 100 ? (
+                    <BorderLinearProgress
+                      className={classes.margin}
+                      variant="determinate"
+                      color="secondary"
+                      value={percentage}
+                    />
+                  ) : (
+                    <Typography>
+                      {t("train_step.undefined_explanation")}
+                    </Typography>
+                  )}
+                </div>
+              </div>
+            )}
+          </React.Fragment>
         )}
       </StepContentContainer>
     );

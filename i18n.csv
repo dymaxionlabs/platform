@@ -304,6 +304,7 @@ testdrive,header,"DYMAX TEST DRIVE
 ","DYMAX TEST DRIVE
 "
 testdrive,start,Comenzar,Start
+testdrive,next_btn,Siguiente,Next
 testdrive,create_step.title,Crear nuevo modelo,Create new model
 testdrive,create_step.explanation,Elige un nombre y las clases que van a intervenir en tu modelo.,Choose a name and labels to setup your model.
 testdrive,create_step.name_label,Nombre,Name

@@ -14,6 +14,8 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
+import Step from "@material-ui/core/Step";
+import { Typography, Paper } from "@material-ui/core";
 
 const styles = theme => ({
   stepperContent: {
@@ -27,6 +29,16 @@ const styles = theme => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  paper: {
+    width: 700,
+    marginTop: theme.spacing.unit * 4,
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    flexDirection: "column",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   }
 });
 
@@ -46,7 +58,8 @@ const hiddenSteps = ["initial", "choose-usecase"];
 
 class TestDrive extends React.Component {
   state = {
-    step: steps[0]
+    step: steps[0],
+    apiMode: false
   };
 
   static async getInitialProps({ query }) {
@@ -69,52 +82,83 @@ class TestDrive extends React.Component {
 
   stepContent() {
     const { token, analytics } = this.props;
-    const { step } = this.state;
+    const { step, apiMode } = this.state;
 
     switch (step) {
       case "initial": {
-        return <InitialStep token={token} analytics={analytics}/>;
+        return (
+          <InitialStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "choose-usecase": {
-        return <ChooseUseCaseStep token={token} analytics={analytics}/>;
+        return (
+          <ChooseUseCaseStep
+            token={token}
+            analytics={analytics}
+            apiMode={apiMode}
+          />
+        );
       }
       case "create": {
-        return <CreateStep token={token} analytics={analytics}/>;
+        return (
+          <CreateStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "upload": {
-        return <UploadStep token={token} analytics={analytics}/>;
+        return (
+          <UploadStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "annotate": {
-        return <AnnotateStep token={token} analytics={analytics} />;
+        return (
+          <AnnotateStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "train": {
-        return <TrainStep token={token} analytics={analytics}/>;
+        return (
+          <TrainStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "select": {
-        return <SelectStep token={token} analytics={analytics}/>;
+        return (
+          <SelectStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "predict": {
-        return <PredictStep token={token} analytics={analytics}/>;
+        return (
+          <PredictStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
       case "results": {
-        return <ResultsStep token={token} analytics={analytics}/>;
+        return (
+          <ResultsStep token={token} analytics={analytics} apiMode={apiMode} />
+        );
       }
     }
   }
 
+  handleModeButtonClick = () => {
+    this.setState(prevState => ({ apiMode: !prevState.apiMode }));
+  };
+
   render() {
     const { t, classes, ...props } = this.props;
-    const { step } = this.state;
+    const { step, apiMode } = this.state;
 
     const isHiddenStep = step => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
+    const showModeButton = !isHiddenStep(step);
 
     return (
       <React.Fragment>
         <Head>
           <title>{t("header")}</title>
         </Head>
-        <BasicAppbar />
+        <BasicAppbar
+          showModeButton={showModeButton}
+          modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
+          onModeButtonClick={this.handleModeButtonClick}
+        />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
