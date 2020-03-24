@@ -99,7 +99,7 @@ class SelectStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace.replace("/testdrive");
+      routerReplace("/testdrive");
       return;
     }
     const currentModel = JSON.parse(current);
