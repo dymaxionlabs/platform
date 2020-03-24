@@ -1,5 +1,6 @@
 import React from "react";
 import { withNamespaces } from "../../i18n";
+import { routerReplace } from "../../utils/router";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
@@ -128,21 +129,22 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
       <Typography style={{ marginLeft: "15px" }} component="p">
         <strong>{t("metrics_title_class")}: </strong>
       </Typography>
-      {metricsData["classes"].map(item => (
-        <ListItem
-          style={{
-            marginLeft: "15px",
-            paddingBottom: "4px",
-            paddingTop: "4px"
-          }}
-        >
-          <Typography component="p">
-            <Color value={item[2]} />
-            <strong>{item[0] + ": "}</strong>
-            {item[1]}
-          </Typography>
-        </ListItem>
-      ))}
+      {metricsData["classes"] &&
+        metricsData["classes"].map(item => (
+          <ListItem
+            style={{
+              marginLeft: "15px",
+              paddingBottom: "4px",
+              paddingTop: "4px"
+            }}
+          >
+            <Typography component="p">
+              <Color value={item[2]} />
+              <strong>{item[0] + ": "}</strong>
+              {item[1]}
+            </Typography>
+          </ListItem>
+        ))}
       <div
         style={{ marginLeft: "15px", marginBottom: "15px", marginTop: "10px" }}
       >
@@ -156,6 +158,7 @@ LotsLayer = withNamespaces("testdrive")(LotsLayer);
 
 class MapTestDrive extends React.Component {
   state = {
+    currentModel: null,
     viewport: initialViewport,
     minZoom: 1,
     maxZoom: 20,
@@ -177,8 +180,30 @@ class MapTestDrive extends React.Component {
   };
 
   componentDidMount() {
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
+    this._loadCurrentModel();
+  }
+
+  static async getInitialProps() {
+    return {
+      namespacesRequired: ["testdrive"]
+    };
+  }
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel }, () => this._loadData());
+  }
+
+  _loadData() {
+    const { currentModel } = this.state;
+    const useCase = currentModel["useCase"];
     key = useCase;
     if (useCase == "cattle") {
       metricsData = require("../../static/testdrive/cattle/metrics_cattle.json");
@@ -203,12 +228,6 @@ class MapTestDrive extends React.Component {
     }
 
     this.setState({ viewport: initialViewport });
-  }
-
-  static async getInitialProps() {
-    return {
-      namespacesRequired: ["testdrive"]
-    };
   }
 
   _onMapViewportChanged = viewport => {
