@@ -29,7 +29,16 @@ const styles = theme => ({
   }
 });
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
+  cattle: {
+    name: "Cattle detector",
+    classes: ["red", "black"],
+    var: "cattle_detector"
+  }
+};
+
+let APIContent = ({ classes, t, modelVar, modelName, modelClasses }) => (
   <div>
     <Typography>
       To create a model, using the Python package, execute:
@@ -37,9 +46,9 @@ let APIContent = ({ classes, t }) => (
     <CodeBlock language="python">
       {`from dymaxionlabs.models import Model
 
-pools_detector = Model.create(name="Pools detector",
+${modelVar} = Model.create(name=${JSON.stringify(modelName)},
                               type="object_detection",
-                              labels=["pool"])`}
+                              labels=${JSON.stringify(modelClasses)})`}
     </CodeBlock>
 
     <Link href="/testdrive/upload">
@@ -68,25 +77,42 @@ class CreateStep extends React.Component {
     errorClassMsg: ""
   };
 
+  componentDidMount() {
+    this._loadCurrentModel();
+  }
+
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
     }
   };
 
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel });
+  }
+
   handleClick = () => {
     this._trackEvent("CreateStep", "buttonClick");
   };
 
   checkClasses() {
-    var current = JSON.parse(window.localStorage.getItem("current"));
-    var useCase = current["useCase"];
-    var chips = this.state.classes;
+    const { currentModel } = this.state;
+
+    const useCase = currentModel["useCase"];
+    const chips = this.state.classes;
     const { t } = this.props;
 
     if (useCase == "cattle") {
-      var i = chips.indexOf("red");
-      var e = chips.indexOf("black");
+      const i = chips.indexOf("red");
+      const e = chips.indexOf("black");
       if (i === -1 || e === -1 || chips.length !== 2) {
         this.setState({
           errorClassMsg: `${t(
@@ -100,7 +126,7 @@ class CreateStep extends React.Component {
         return true;
       }
     } else if (useCase == "pools") {
-      var m = chips.indexOf("pool");
+      const m = chips.indexOf("pool");
       if (m === -1 || chips.length !== 1) {
         this.setState({
           errorClassMsg: `${t("create_step.error_msg_wrong_classes")}: "pool"`
@@ -141,7 +167,19 @@ class CreateStep extends React.Component {
 
   render() {
     const { classes, t, apiMode } = this.props;
-    const { isSubmitting, errorMsg, showAlerts, errorClassMsg } = this.state;
+    const {
+      currentModel,
+      isSubmitting,
+      errorMsg,
+      showAlerts,
+      errorClassMsg
+    } = this.state;
+
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer>
@@ -149,7 +187,11 @@ class CreateStep extends React.Component {
           {t("create_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent
+            modelName={apiContent["name"]}
+            modelClasses={apiContent["classes"]}
+            modelVar={apiContent["var"]}
+          />
         ) : (
           <React.Fragment>
             <Typography variant="body2">
