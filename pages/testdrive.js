@@ -14,6 +14,7 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
+import ModalContactEmail from "../components/testdrive/ModalContactEmail"
 import Step from "@material-ui/core/Step";
 import { Typography, Paper } from "@material-ui/core";
 
@@ -159,6 +160,7 @@ class TestDrive extends React.Component {
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
+        <ModalContactEmail />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
