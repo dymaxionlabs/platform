@@ -40,6 +40,7 @@ class ProjectAdmin(GuardedModelAdmin):
     list_filter = ('owners', )
     list_display = (
         'id',
+        'uuid',
         'name',
         'description',
         'owner_names',
@@ -86,6 +87,7 @@ class LayerAdmin(admin.ModelAdmin):
     list_filter = ('project', 'layer_type')
     list_display = (
         'id',
+        'uuid',
         'name',
         'layer_type',
         'project',
@@ -116,6 +118,7 @@ class MapAdmin(admin.ModelAdmin):
     list_filter = ('project', )
     list_display = (
         'id',
+        'uuid',
         'name',
         'description',
         'project',
