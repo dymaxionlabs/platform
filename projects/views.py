@@ -358,7 +358,7 @@ class FileDownloadView(APIView):
                     content_type=mimetypes.MimeTypes().guess_type(src)[0])
 
 
-class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+class UserAPIKeyView(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = UserAPIKey.objects.get_usable_keys()
     serializer_class = UserAPIKeySerializer
     permission_classes = (permissions.IsAuthenticated,
@@ -372,7 +372,8 @@ class UserAPIKeyList(generics.ListCreateAPIView, mixins.UpdateModelMixin):
 
     def create(self, request):
         api_key, key = UserAPIKey.objects.create_key(name=request.data['name'],
-                                                     user=request.user)
+                                                     user=request.user,
+                                                     project=request.project)
         serializer = self.serializer_class(api_key)
         return Response({'data': serializer.data, 'key': key})
 
