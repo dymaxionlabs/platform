@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -18,7 +17,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import { routerPush } from "../../utils/router";
-import { i18n, Link, withNamespaces } from "../../i18n";
+import { i18n, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import ShowUuidDialog from "../ShowUuidDialog";
@@ -42,14 +41,6 @@ const styles = theme => ({
     marginRight: theme.spacing.unit
   }
 });
-
-let NewModelButton = ({ t, className }) => (
-  <Link href="/models/new">
-    <Button className={className}>{t("models.new_btn")}</Button>
-  </Link>
-);
-
-NewModelButton = withNamespaces("me")(NewModelButton);
 
 class ModelsContent extends React.Component {
   state = {
@@ -174,9 +165,6 @@ class ModelsContent extends React.Component {
     } = this.state;
 
     const locale = i18n.language;
-    const showNewModelButton = false;
-    const showAddImagesButton = false;
-    const showAddAnnotationsButton = false;
 
     return (
       <div>
@@ -186,9 +174,6 @@ class ModelsContent extends React.Component {
           gutterBottom
           component="h2"
         >
-          {showNewModelButton && (
-            <NewModelButton className={classes.modelBtn} />
-          )}
           {t("models.title")}
         </Typography>
         <Paper className={classes.root}>
@@ -239,13 +224,6 @@ class ModelsContent extends React.Component {
                       <MenuItem onClick={() => this.estimatorViewUUID(model)}>
                         {t("models.uuid")}
                       </MenuItem>
-                      {showAddImagesButton && (<MenuItem onClick={() => this.estimatorAddImages(model)}>
-                        {t("models.add_imgs")}
-                      </MenuItem>)}
-                      {showAddAnnotationsButton && (<MenuItem
-                        onClick={() => this.estimatorAddAnnotations(model)}>
-                        {t("models.add_annot")}
-                      </MenuItem>)}
                       <MenuItem onClick={() => this.estimatorDelete(model)}>
                         {t("models.delete_models")}
                       </MenuItem>
