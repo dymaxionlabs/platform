@@ -322,13 +322,13 @@ testdrive,create_step.error_msg_wrong_classes,Para el caso de uso elegido debe i
 testdrive,upload_step.title,Elegir imágenes,Choose or upload images
 testdrive,upload_step.explanation,Selecciona una o más imágenes y luego cliquea seleccionar imágenes.,Select one or more images and then click select images.
 testdrive,select_step.text,"Ahora que el modelo fue entrenado, puedes aplicarlo para predecir sobre imágenes. En este paso debes elegir una o más imágenes. Las imágenes pueden ser subidas manualmente o en lote utilizando nuestro API.","Now that the model was trained, you can apply it to predict images. In this step you must choose one or more images. Images can be uploaded manually or in batch using our API."
-testdrive,upload_step.text,En este paso debes elegir una o más imágenes para entrenar el modelo. Las imágenes pueden ser subidas manualmente o en lote utilizando nuestro API.,In this step you must choose one or more images to train the model. Images can be uploaded manually or in batch using our API.
+testdrive,upload_step.text,Elija imágenes de su área de interés. Las imágenes se pueden cargar manualmente o en lotes usando nuestra API.,Choose images of your area of interest. Images can be uploaded manually or in batches using our API.
 testdrive,upload_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 testdrive,upload_step.select_btn,Seleccionar imágenes,Select images
 testdrive,annotate_step.title,Anotar imágenes,Annotate images
 testdrive,"annotate_step.explanation1
-",Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos.  ,The model learns to recognize the objects you are interested in detecting from examples.
-testdrive,annotate_step.explanation2,"Para esto, tomamos las imágenes que elegiste en el paso anterior, las particionamos en una grilla y te presentamos los cuadro en esta página para que anotes ejemplos.","For this, we took the images you chose in the previous step, we partitioned them into a grid and we present the pictures on this page for you to write down examples."
+",El modelo aprende con el ejemplo. Necesita que anote algunas muestras del objeto de interés para que pueda aprender sus patrones en las imágenes.,The model learns by example. It needs you to annotate a few samples of the object of interest so that it can learn their patterns in the images.
+testdrive,annotate_step.explanation2,"Un buen número para anotar son 50 muestras de cada clase. Cuando haya terminado, haga clic en Continuar.","A good number to annotate is 50 samples of each class. When you are done, click Continue."
 testdrive,"annotate_step.explanation3
 ","Para que el modelo aprenda, te pedimos que marques al menos 50 ejemplos de cada clase. Cuando termines, haz clic en Continuar.","For the model to learn, we ask you to mark at least 50 examples of each class. When you're done, click Continue."
 testdrive,annotate_step.save_btn,Guardar,Save
@@ -349,11 +349,11 @@ testdrive,select_step.explanation,Selecciona las imágenes preexistentes o carga
 testdrive,select_step.dropzone,"Arrastrá y soltá tus imágenes acá, o hacé clic.","Drag and drop your images here, or click."
 testdrive,select_step.submit_btn,Predecir,Predict
 testdrive,predict_step.title,Predecir modelo,Predict model
-testdrive,predict_step.explanation,En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando esté listo para ver los resultados.,At this time their images are being analyzed. This process may take a few hours. We will notify you by mail when it is ready to see the results.
+testdrive,predict_step.explanation,"En este momento se está analizando su conjunto completo de imágenes. Este proceso puede demorar algunas horas, pero en nuestra prueba de manejo es solo cuestión de segundos. ¡Estas casi listo!","At this time your full set of images are being analyzed. This process may take a few hours, but in our test drive is just a matter of seconds. You are almost done!"
 testdrive,predict_step.back,Ir atrás,Go back
 testdrive,predict_step.view,Ver resultados,View results
 testdrive,predict_step.undefined_explanation,El tiempo restante es indefinido,The remaining time is undefined
-testdrive,predict_step.finished_explanation,El proceso de predicción terminó. Haga clic en continuar para ver los resultados.,The prediction process is over. Click Continue to see the results.
+testdrive,predict_step.finished_explanation,"Hey, ya terminaste! Finalmente ha entrenado un modelo ML y lo ha utilizado para detectar su objeto de interés en un área geográfica específica. Haga clic en Continuar para ver un mapa con los resultados.","Hey, you are done! You've finally trained an ML model and used it to detect your object of interest over a specific geographical area. Click Continue to view a map with the results."
 testdrive,predict_step.continue,Continuar,continue
 testdrive,results_step.title,Resultados,Results
 testdrive,results_step.explanation,"Si desea ver los resultados de la detección de objetos en nuestro visor online, haga clic en Ver Mapa. Si desea descargar los resultados (en formato GeoJSON o CSV) para trabajarlos en otra herramienta, haga clic en Descargar Resultados.","If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results."
@@ -387,4 +387,5 @@ testdrive,subscribe.body,Por favor dejanos tu email,Please leave us your email
 testdrive,subscribe.cancel_btn,Cancelar,Cancel
 testdrive,subscribe.submit_btn,Subscribir,Subscribe
 testdrive,subscribe.error_msg,"Ocurrió un error al enviar el mensaje. Por favor, intente de nuevo o contáctese con nosotros a {{contactLink}}.",An error occurred when sending the message. Please try again or contact us at {{contactLink}}.
-testdrive,subscribe.success_msg,Gracias por enviar su mensaje. Le escribiremos en la brevedad con más información.,Thanks for sending your message. We will write to you shortly with more information.
+testdrive,subscribe.success_msg,Gracias por enviar su mensaje. Le escribiremos en la brevedad con más información.,Thanks for sending your message. We will write to you shortly with more information.
+testdrive,text_metrics_map_view,"En nuestro mundo, hay una miríada de objetos que se pueden entrenar y detectar utilizando nuestra plataforma DYMA, como techos, paneles solares y automóviles. Conéctese para analizar hoy sus necesidades comerciales personales.","In our world, there is a myriad of objects that can be trained and detected using our DYMA platform, like roofs, solar panels and cars. Let's connect to discuss today your personal business needs."

@@ -4,8 +4,8 @@
     "cancel": "Cancelar",
     "continue_btn": "Continuar",
     "delete": "Borrar",
-    "explanation1": "Indicale a tu modelo algunos objetos de ejemplo para que pueda aprender a encontralos.",
-    "explanation2": "Para esto, tomamos las im\u00e1genes que elegiste en el paso anterior, las particionamos en una grilla y te presentamos los cuadro en esta p\u00e1gina para que anotes ejemplos.",
+    "explanation1": "El modelo aprende con el ejemplo. Necesita que anote algunas muestras del objeto de inter\u00e9s para que pueda aprender sus patrones en las im\u00e1genes.",
+    "explanation2": "Un buen n\u00famero para anotar son 50 muestras de cada clase. Cuando haya terminado, haga clic en Continuar.",
     "explanation3": "Para que el modelo aprenda, te pedimos que marques al menos 50 ejemplos de cada clase. Cuando termines, haz clic en Continuar.",
     "loading": "Procesando im\u00e1genes subidas. Por favor aguarde unos minutos...",
     "remaining": "Restantes",
@@ -42,8 +42,8 @@
   "predict_step": {
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",
-    "explanation": "En este momento se estan analizando sus imagenes. Este proceso puede tardar unas horas. Te avisaremos por correo cuando est\u00e9 listo para ver los resultados.",
-    "finished_explanation": "El proceso de predicci\u00f3n termin\u00f3. Haga clic en continuar para ver los resultados.",
+    "explanation": "En este momento se est\u00e1 analizando su conjunto completo de im\u00e1genes. Este proceso puede demorar algunas horas, pero en nuestra prueba de manejo es solo cuesti\u00f3n de segundos. \u00a1Estas casi listo!",
+    "finished_explanation": "Hey, ya terminaste! Finalmente ha entrenado un modelo ML y lo ha utilizado para detectar su objeto de inter\u00e9s en un \u00e1rea geogr\u00e1fica espec\u00edfica. Haga clic en Continuar para ver un mapa con los resultados.",
     "title": "Predecir modelo",
     "undefined_explanation": "El tiempo restante es indefinido",
     "view": "Ver resultados"
@@ -85,6 +85,7 @@
     "success_msg": "Gracias por enviar su mensaje. Le escribiremos en la brevedad con m\u00e1s informaci\u00f3n.",
     "title": "Subscripci\u00f3n a Beta"
   },
+  "text_metrics_map_view": "En nuestro mundo, hay una mir\u00edada de objetos que se pueden entrenar y detectar utilizando nuestra plataforma DYMA, como techos, paneles solares y autom\u00f3viles. Con\u00e9ctese para analizar hoy sus necesidades comerciales personales.",
   "train_step": {
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",
@@ -97,7 +98,7 @@
     "dropzone": "Arrastr\u00e1 y solt\u00e1 tus im\u00e1genes ac\u00e1, o hac\u00e9 clic.",
     "explanation": "Selecciona una o m\u00e1s im\u00e1genes y luego cliquea seleccionar im\u00e1genes.",
     "select_btn": "Seleccionar im\u00e1genes",
-    "text": "En este paso debes elegir una o m\u00e1s im\u00e1genes para entrenar el modelo. Las im\u00e1genes pueden ser subidas manualmente o en lote utilizando nuestro API.",
+    "text": "Elija im\u00e1genes de su \u00e1rea de inter\u00e9s. Las im\u00e1genes se pueden cargar manualmente o en lotes usando nuestra API.",
     "title": "Elegir im\u00e1genes"
   }
 }
