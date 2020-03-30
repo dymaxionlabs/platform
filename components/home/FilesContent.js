@@ -15,7 +15,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloseIcon from "@material-ui/icons/Close";
-import Button from "@material-ui/core/Button";
 
 import { i18n, withNamespaces } from "../../i18n";
 import { logout } from "../../utils/auth";
@@ -24,7 +23,6 @@ import { buildApiUrl } from "../../utils/api";
 import Moment from "react-moment";
 import cookie from "js-cookie";
 import FileDownload from "../../utils/file-download";
-import UploadDialog from "../UploadDialog";
 
 const styles = theme => ({
   root: {
@@ -151,15 +149,10 @@ class FilesContent extends React.Component {
   };
 
   render() {
-    const { t, classes, token } = this.props;
-    const {
-      files: files,
-      notImplementedOpen,
-      showFileDialogOpen
-    } = this.state;
+    const { t, classes } = this.props;
+    const { files, notImplementedOpen } = this.state;
 
     const locale = i18n.language;
-    const showUploadFileButton = false;
 
     return (
       <div>
@@ -170,15 +163,6 @@ class FilesContent extends React.Component {
           component="h2"
         >
           {t("files.title")}
-          {showUploadFileButton && (
-            <Button
-              onClick={() => this.UploadImages()}
-              className={classes.modelBtn}
-              style={{ left: 750 }}
-            >
-              {t("files.upload_image")}
-            </Button>
-          )}
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -228,12 +212,6 @@ class FilesContent extends React.Component {
         <NotImplementedSnackbar
           open={notImplementedOpen}
           onClose={this.handleNotImplementedClose}
-        />
-        <UploadDialog
-          onClose={this.onDialogResult}
-          open={showFileDialogOpen}
-          token={token}
-          handleComplete={this.onDialogResult}
         />
       </div>
     );
