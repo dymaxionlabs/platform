@@ -153,17 +153,12 @@ class ContactView(generics.GenericAPIView):
                             status=status.HTTP_200_OK)
 
 
-class ApiBetaView(generics.GenericAPIView):
+class SubscribeApiBetaView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
         email = request.data['email']
         list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
-
-        if 'landing' in request.data:
-            landing = request.data['landing']
-        else:
-            landing = 'none'
 
         if settings.MAILCHIMP_APIKEY is not None:
             client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
@@ -173,7 +168,7 @@ class ApiBetaView(generics.GenericAPIView):
                     list_id, {
                         'email_address': email,
                         'status': 'subscribed',
-                        'tags': [landing]
+                        'tags': ['api-beta']
                     })
                 return Response({"detail": _("User subscribed")},
                                 status=status.HTTP_200_OK)
