@@ -39,7 +39,7 @@ const styles = theme => ({
 
 class HomeContent extends React.Component {
   render() {
-    const { t, free, classes } = this.props;
+    const { t, beta, classes } = this.props;
     const projectId = cookie.get("project");
 
     return (
@@ -65,7 +65,7 @@ class HomeContent extends React.Component {
               </Button>
             </a>
 
-            {!free && (
+            {beta && (
               <Typography component="p" className={classes.paragraph}>
                 {t(`home.models_descrip`)} <a href="/models">link</a>.
               </Typography>
@@ -115,11 +115,11 @@ class HomeContent extends React.Component {
 
 HomeContent.propTypes = {
   classes: PropTypes.object.isRequired,
-  free: PropTypes.bool
+  beta: PropTypes.bool
 };
 
 HomeContent.defaultProps = {
-  free: true
+  beta: false
 };
 
 HomeContent = withStyles(styles)(HomeContent);

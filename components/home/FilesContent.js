@@ -79,7 +79,7 @@ class FilesContent extends React.Component {
     files: [],
     notImplementedOpen: false,
     showFileDialogOpen: false,
-    free: true
+    beta: false
   };
 
   componentDidMount() {
@@ -102,10 +102,10 @@ class FilesContent extends React.Component {
         }
       });
 
-    this.getFreeFlag();
+    this.getBetaFlag();
   }
 
-  async getFreeFlag() {
+  async getBetaFlag() {
     const { token } = this.props;
     try {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
@@ -115,7 +115,7 @@ class FilesContent extends React.Component {
         }
       });
       const userData = response.data;
-      this.setState({ free: userData.profile.free });
+      this.setState({ beta: userData.profile.beta });
     } catch (error) {
       console.error(error);
     }
@@ -155,12 +155,11 @@ class FilesContent extends React.Component {
     const {
       files: files,
       notImplementedOpen,
-      showFileDialogOpen,
-      free
+      showFileDialogOpen
     } = this.state;
 
     const locale = i18n.language;
-    const showUploadFileButton = !free;
+    const showUploadFileButton = false;
 
     return (
       <div>
