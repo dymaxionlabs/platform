@@ -71,7 +71,7 @@ class Command(BaseCommand):
         trainingJobs = TrainingJob.objects.all()
 
         for i, profile in enumerate(profiles):
-            if profile.in_beta == True:
+            if profile.beta == True:
                 has_projects = "No"
                 has_models = "No"
                 has_annotations = "No"
