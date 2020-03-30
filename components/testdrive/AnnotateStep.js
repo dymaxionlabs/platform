@@ -15,7 +15,7 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React from "react";
-import AnnotatedImageTile from "../models/annotate/AnnotatedImageTile";
+import AnnotatedImageTile from "./annotate/AnnotatedImageTile";
 import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";

@@ -160,18 +160,6 @@ const sections = {
   }
 };
 
-let QuoteButton = ({ t, classes }) => (
-  <a href="/quote" className={classes.anchorButton}>
-    <Button className={classes.button}>{t("quote_btn.value")}</Button>
-  </a>
-);
-QuoteButton.propTypes = {
-  classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
-};
-QuoteButton = withStyles(styles)(QuoteButton);
-QuoteButton = withNamespaces()(QuoteButton);
-
 class Home extends React.Component {
   state = {
     open: true,
@@ -268,13 +256,7 @@ class Home extends React.Component {
 
   render() {
     const { t, classes, token } = this.props;
-    const {
-      section,
-      open,
-      beta,
-      contextualMenuOpen,
-      userEmail
-    } = this.state;
+    const { section, open, beta, contextualMenuOpen, userEmail } = this.state;
 
     const sectionList = beta ? sortedSectionsBeta : sortedSections;
     const { contactModalOpen } = this.state;

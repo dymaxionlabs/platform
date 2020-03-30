@@ -4,7 +4,6 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
 import LayersFab from "../components/LayersFab";
-// import LayerLegend from "../components/LayerLegend";
 import LayersLegendExpansionPanel from "../components/LayersLegendExpansionPanel";
 import LoadingProgress from "../components/LoadingProgress";
 import { withNamespaces } from "../i18n";
