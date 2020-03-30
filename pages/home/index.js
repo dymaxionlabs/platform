@@ -268,13 +268,7 @@ class Home extends React.Component {
 
   render() {
     const { t, classes, token } = this.props;
-    const {
-      section,
-      open,
-      beta,
-      contextualMenuOpen,
-      userEmail
-    } = this.state;
+    const { section, open, beta, contextualMenuOpen, userEmail } = this.state;
 
     const sectionList = beta ? sortedSectionsBeta : sortedSections;
     const { contactModalOpen } = this.state;
