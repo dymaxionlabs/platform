@@ -177,7 +177,6 @@ class Home extends React.Component {
     open: true,
     section: null,
     beta: false,
-    free: true,
     contextualMenuOpen: null,
     userEmail: "",
     contactModalOpen: false
@@ -224,13 +223,12 @@ class Home extends React.Component {
 
       const {
         email,
-        profile: { in_beta, free }
+        profile: { beta }
       } = response.data;
 
-      this.setState({ userEmail: email, beta: in_beta, free });
+      this.setState({ userEmail: email, beta });
 
-      if (in_beta) console.debug("Beta mode enabled");
-      if (free) console.debug("Free mode enabled");
+      if (beta) console.debug("Beta mode enabled");
     } catch (error) {
       console.error(error);
     }
@@ -274,7 +272,6 @@ class Home extends React.Component {
       section,
       open,
       beta,
-      free,
       contextualMenuOpen,
       userEmail
     } = this.state;
@@ -287,7 +284,7 @@ class Home extends React.Component {
       originalContent &&
       React.cloneElement(originalContent, {
         token,
-        free
+        beta
       });
 
     return (
@@ -401,7 +398,7 @@ class Home extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {section == null ? (
-            <HomeContent token={token} free={free} />
+            <HomeContent token={token} beta={beta} />
           ) : (
             content
           )}

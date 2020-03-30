@@ -58,7 +58,7 @@ class ModelsContent extends React.Component {
     showUuidDialogOpen: false,
     deleteDialogOpen: false,
     currentUUID: "",
-    free: true
+    beta: false
   };
 
   getModels = async () => {
@@ -84,7 +84,7 @@ class ModelsContent extends React.Component {
       });
   };
 
-  async getFreeFlag() {
+  async getBetaFlag() {
     const { token } = this.props;
     try {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
@@ -94,7 +94,7 @@ class ModelsContent extends React.Component {
         }
       });
       const userData = response.data;
-      this.setState({ free: userData.profile.free });
+      this.setState({ beta: userData.profile.beta });
     } catch (error) {
       console.error(error);
     }
@@ -102,7 +102,7 @@ class ModelsContent extends React.Component {
 
   componentDidMount() {
     this.getModels();
-    this.getFreeFlag();
+    this.getBetaFlag();
   }
 
   estimatorTypeName(model) {
@@ -170,14 +170,13 @@ class ModelsContent extends React.Component {
       contextualMenuOpen,
       showUuidDialogOpen,
       currentUUID,
-      deleteDialogOpen,
-      free
+      deleteDialogOpen
     } = this.state;
 
     const locale = i18n.language;
-    const showNewModelButton = !free;
-    const showAddImagesButton = !free;
-    const showAddAnnotationsButton = !free;
+    const showNewModelButton = false;
+    const showAddImagesButton = false;
+    const showAddAnnotationsButton = false;
 
     return (
       <div>

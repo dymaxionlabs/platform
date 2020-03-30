@@ -159,7 +159,7 @@ class Register extends React.Component {
       if (beta) {
         axios.patch(
           buildApiUrl(`/user_profiles/${username}/`),
-          { in_beta: true },
+          { beta: true },
           {
             headers: { "Accept-Language": i18n.language, Authorization: token }
           }
