@@ -13,7 +13,7 @@ from .models import File, UserProfile, Project
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-        project = Project.objects.create(name='Demo')
+        project = Project.objects.create(name='Default')
         project.owners.set([instance])
 
 
