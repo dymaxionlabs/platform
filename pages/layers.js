@@ -2,12 +2,9 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
-import "semantic-ui-css/semantic.css"; // FIXME Move this Layout
-import { Dimmer, Loader } from "semantic-ui-react";
-import LayerLegend from "../components/LayerLegend";
+import LoadingProgress from "../components/LoadingProgress";
+import LayersLegendExpansionPanel from "../components/LayersLegendExpansionPanel";
 import { withNamespaces } from "../i18n";
-import "../static/App.css"; // FIXME Convert to JSX styles
-import "../static/index.css"; // FIXME Convert to JSX styles
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 
@@ -23,11 +20,7 @@ const initialViewport = {
 // Dynamically load TrialMap component as it only works on browser
 const Map = dynamic(() => import("../components/Map"), {
   ssr: false,
-  loading: withNamespaces()(({ t }) => (
-    <Dimmer active>
-      <Loader size="big">{t("loading")}</Loader>
-    </Dimmer>
-  ))
+  loading: LoadingProgress
 });
 
 const TileLayer = dynamic(() => import("../components/TileLayer"), {
@@ -114,10 +107,12 @@ class Layers extends React.Component {
     // Get area polygon
     const areaData = layer && layer.area_geom;
 
-    // Build Legend (if legend key is present on extra_fields)
-    const legendOpts =
-      layer && layer.extra_fields && layer.extra_fields["legend"];
-    const legend = legendOpts && <LayerLegend {...legendOpts} />;
+    const layersWithLegend = layers.filter(
+      layer =>
+        activeLayers.includes(layer.uuid) &&
+        layer.extra_fields &&
+        layer.extra_fields.legend
+    );
 
     return (
       <div className="index">
@@ -141,6 +136,7 @@ class Layers extends React.Component {
         >
           {tileLayer}
           {legend}
+          <LayersLegendExpansionPanel layers={layersWithLegend} />
         </Map>
       </div>
     );
