@@ -15,6 +15,7 @@
   "btn_contact_modal": "Contact sales",
   "btn_use_api": "Use API",
   "btn_use_web_ui": "Use Web UI",
+  "cancel_btn_email_modal": "Cancel",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
     "classes_helper_2": "key. You can enter several classes in this way.",
@@ -65,6 +66,7 @@
     "text": "Now that the model was trained, you can apply it to predict images. In this step you must choose one or more images. Images can be uploaded manually or in batch using our API.",
     "title": "Select images"
   },
+  "send_btn_email_modal": "Send",
   "start": "Start",
   "steps": {
     "annotate": "Annotate",
@@ -77,6 +79,8 @@
     "train": "Train",
     "upload": "Upload"
   },
+  "text_email_modal": "Please leave us your email",
+  "title_subscribe_email": "Email Subscription",
   "train_step": {
     "back": "Go back",
     "continue": "Continue",

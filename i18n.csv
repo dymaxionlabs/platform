@@ -382,3 +382,7 @@ testdrive,metrics_title_area,Área (km²),Area (km²)
 testdrive,metrics_title_class,Objetos por clase,Objects per class
 testdrive,select_layer_results,Resultados,Results
 testdrive,select_layer_tiles,Tiles,Tiles
+testdrive,title_subscribe_email,Subcripcion de Email,Email Subscription
+testdrive,text_email_modal,Por favor dejanos tu Email ,Please leave us your email
+testdrive,cancel_btn_email_modal,Cancelar,Cancel
+testdrive,send_btn_email_modal,Enviar,Send

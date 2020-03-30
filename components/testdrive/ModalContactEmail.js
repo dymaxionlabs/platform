@@ -107,7 +107,7 @@ class ModalContactEmail extends React.Component {
         open={open}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle>{t("title_subscribe")}</DialogTitle>
+        <DialogTitle>{t("title_subscribe_email")}</DialogTitle>
         <DialogContent>
           <Typography style={{ color: "red" }} variant="body1">
             {this.state.errorMsg}
@@ -116,10 +116,9 @@ class ModalContactEmail extends React.Component {
             {this.state.successMsg}
           </Typography>
           <Typography variant="body1">
-            {t("leave_email")}
+            {t("text_email_modal")}
           </Typography>
           <TextField
-            label={t("new.consult.message_label")}
             autoFocus
             margin="dense"
             id="name"
@@ -131,14 +130,14 @@ class ModalContactEmail extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose}>
-            {t("new.consult.cancel_btn")}
+            {t("cancel_btn_email_modal")}
           </Button>
           <Button
             color="primary"
             onClick={this.handleSubmit}
             disabled={submitting}
           >
-            {t("new.consult.send_btn")}
+            {t("send_btn_email_modal")}
           </Button>
         </DialogActions>
       </Dialog>
