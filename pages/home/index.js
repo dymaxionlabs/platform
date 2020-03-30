@@ -160,18 +160,6 @@ const sections = {
   }
 };
 
-let QuoteButton = ({ t, classes }) => (
-  <a href="/quote" className={classes.anchorButton}>
-    <Button className={classes.button}>{t("quote_btn.value")}</Button>
-  </a>
-);
-QuoteButton.propTypes = {
-  classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
-};
-QuoteButton = withStyles(styles)(QuoteButton);
-QuoteButton = withNamespaces()(QuoteButton);
-
 class Home extends React.Component {
   state = {
     open: true,
