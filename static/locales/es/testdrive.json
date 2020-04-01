@@ -15,7 +15,6 @@
   "btn_contact_modal": "Cont\u00e1ctenos",
   "btn_use_api": "Usar API",
   "btn_use_web_ui": "Usar Web UI",
-  "cancel_btn_email_modal": "Cancelar",
   "create_step": {
     "classes_helper_1": "Ingrese el nombre de una clase y presione la tecla",
     "classes_helper_2": ". Puede ingresar varias clases de esta manera.",
@@ -66,7 +65,6 @@
     "text": "Ahora que el modelo fue entrenado, puedes aplicarlo para predecir sobre im\u00e1genes. En este paso debes elegir una o m\u00e1s im\u00e1genes. Las im\u00e1genes pueden ser subidas manualmente o en lote utilizando nuestro API.",
     "title": "Seleccionar im\u00e1genes"
   },
-  "send_btn_email_modal": "Enviar",
   "start": "Comenzar",
   "steps": {
     "annotate": "Anotar",
@@ -79,8 +77,14 @@
     "train": "Entrenar",
     "upload": "Subir"
   },
-  "text_email_modal": "Por favor dejanos tu Email",
-  "title_subscribe_email": "Subcripcion de Email",
+  "subscribe": {
+    "body": "Por favor dejanos tu email",
+    "cancel_btn": "Cancelar",
+    "error_msg": "Ocurri\u00f3 un error al enviar el mensaje. Por favor, intente de nuevo o cont\u00e1ctese con nosotros a {{contactLink}}.",
+    "submit_btn": "Subscribir",
+    "success_msg": "Gracias por enviar su mensaje. Le escribiremos en la brevedad con m\u00e1s informaci\u00f3n.",
+    "title": "Subscripci\u00f3n a Beta"
+  },
   "train_step": {
     "back": "Ir atr\u00e1s",
     "continue": "Continuar",

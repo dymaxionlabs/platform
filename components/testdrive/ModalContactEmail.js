@@ -51,7 +51,7 @@ class ModalContactEmail extends React.Component {
     const { t } = this.props;
     const { email } = this.state;
 
-    const errorMsg = t("new.consult.error_msg", {
+    const errorMsg = t("subscribe.error_msg", {
       contactLink: "contact@dymaxionlabs.com"
     });
 
@@ -76,7 +76,7 @@ class ModalContactEmail extends React.Component {
       });
 
       this.setState({
-        successMsg: t("new.consult.success_msg"),
+        successMsg: t("subscribe.success_msg"),
         email: ""
       });
 
@@ -111,7 +111,7 @@ class ModalContactEmail extends React.Component {
         open={open}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle>{t("title_subscribe_email")}</DialogTitle>
+        <DialogTitle>{t("subscribe.title")}</DialogTitle>
         <DialogContent>
           <Typography style={{ color: "red" }} variant="body1">
             {this.state.errorMsg}
@@ -119,7 +119,7 @@ class ModalContactEmail extends React.Component {
           <Typography style={{ color: "green" }} variant="body1">
             {this.state.successMsg}
           </Typography>
-          <Typography variant="body1">{t("text_email_modal")}</Typography>
+          <Typography variant="body1">{t("subscribe.body")}</Typography>
           <TextField
             autoFocus
             margin="dense"
@@ -132,14 +132,14 @@ class ModalContactEmail extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose}>
-            {t("cancel_btn_email_modal")}
+            {t("subscribe.cancel_btn")}
           </Button>
           <Button
             color="primary"
             onClick={this.handleSubmit}
             disabled={submitting}
           >
-            {t("send_btn_email_modal")}
+            {t("subscribe.submit_btn")}
           </Button>
         </DialogActions>
       </Dialog>

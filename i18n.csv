@@ -382,7 +382,9 @@ testdrive,metrics_title_area,Área (km²),Area (km²)
 testdrive,metrics_title_class,Objetos por clase,Objects per class
 testdrive,select_layer_results,Resultados,Results
 testdrive,select_layer_tiles,Tiles,Tiles
-testdrive,title_subscribe_email,Subcripcion de Email,Email Subscription
-testdrive,text_email_modal,Por favor dejanos tu Email ,Please leave us your email
-testdrive,cancel_btn_email_modal,Cancelar,Cancel
-testdrive,send_btn_email_modal,Enviar,Send
+testdrive,subscribe.title,Subscripción a Beta,Beta Subscription
+testdrive,subscribe.body,Por favor dejanos tu email,Please leave us your email
+testdrive,subscribe.cancel_btn,Cancelar,Cancel
+testdrive,subscribe.submit_btn,Subscribir,Subscribe
+testdrive,subscribe.error_msg,"Ocurrió un error al enviar el mensaje. Por favor, intente de nuevo o contáctese con nosotros a {{contactLink}}.",An error occurred when sending the message. Please try again or contact us at {{contactLink}}.
+testdrive,subscribe.success_msg,Gracias por enviar su mensaje. Le escribiremos en la brevedad con más información.,Thanks for sending your message. We will write to you shortly with more information.
