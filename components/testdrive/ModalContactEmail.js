@@ -21,8 +21,12 @@ class ModalContactEmail extends React.Component {
   };
 
   componentDidMount() {
-    if (!cookie.get('ask_email') && !cookie.get("token")) {
-        this.setState({open: true});
+    // If user hasn't subscribed yet and haven't seen this modal, show modal
+    if (
+      !cookie.get("testdrive-subscribed") &&
+      !cookie.get("testdrive-subscription-read")
+    ) {
+      this.setState({ open: true });
     }
   }
 
@@ -39,11 +43,12 @@ class ModalContactEmail extends React.Component {
   };
 
   handleClose = () => {
+    cookie.set("testdrive-subscription-read", true);
     this.setState({ open: false });
   };
 
   handleSubmit = async () => {
-    const { t, token } = this.props;
+    const { t } = this.props;
     const { email } = this.state;
 
     const errorMsg = t("new.consult.error_msg", {
@@ -75,7 +80,7 @@ class ModalContactEmail extends React.Component {
         email: ""
       });
 
-      cookie.set('ask_email', true, {expires: 365 });
+      cookie.set("testdrive-subscribed", true, { expires: 365 });
 
       setTimeout(() => {
         this.setState({
@@ -114,9 +119,7 @@ class ModalContactEmail extends React.Component {
           <Typography style={{ color: "green" }} variant="body1">
             {this.state.successMsg}
           </Typography>
-          <Typography variant="body1">
-            {t("text_email_modal")}
-          </Typography>
+          <Typography variant="body1">{t("text_email_modal")}</Typography>
           <TextField
             autoFocus
             margin="dense"

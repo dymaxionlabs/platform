@@ -14,9 +14,7 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
-import ModalContactEmail from "../components/testdrive/ModalContactEmail"
-import Step from "@material-ui/core/Step";
-import { Typography, Paper } from "@material-ui/core";
+import ModalContactEmail from "../components/testdrive/ModalContactEmail";
 
 const styles = theme => ({
   stepperContent: {

@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
 import { Link, withNamespaces } from "../../i18n";
-import { routerPush } from "../../utils/router";
+import { routerPush, routerReplace } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import Snackbar from "@material-ui/core/Snackbar";
 import CodeBlock from "../CodeBlock";
