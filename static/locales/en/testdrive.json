@@ -77,6 +77,14 @@
     "train": "Train",
     "upload": "Upload"
   },
+  "subscribe": {
+    "body": "Please leave us your email",
+    "cancel_btn": "Cancel",
+    "error_msg": "An error occurred when sending the message. Please try again or contact us at {{contactLink}}.",
+    "submit_btn": "Subscribe",
+    "success_msg": "Thanks for sending your message. We will write to you shortly with more information.",
+    "title": "Beta Subscription"
+  },
   "train_step": {
     "back": "Go back",
     "continue": "Continue",
