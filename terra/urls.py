@@ -90,7 +90,7 @@ urlpatterns = [
         ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
     url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
-    url(r'^subscribe_api_beta/?', SubscribeApiBetaView.as_view()),
+    url(r'^subscribe/api_beta/?', SubscribeApiBetaView.as_view()),
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     url(r'^files/download/(?P<filename>[^/]+)$', FileDownloadView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
