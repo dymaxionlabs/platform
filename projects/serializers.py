@@ -209,6 +209,5 @@ class UserAPIKeySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserAPIKey
-        fields = ('id', 'prefix', 'created', 'name', 'revoked', 'user',
-                  'project')
+        fields = ('prefix', 'created', 'name', 'user', 'project')
         lookup_field = 'id'

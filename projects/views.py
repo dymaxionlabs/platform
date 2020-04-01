@@ -358,7 +358,7 @@ class FileDownloadView(APIView):
                     content_type=mimetypes.MimeTypes().guess_type(src)[0])
 
 
-class UserAPIKeyView(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = UserAPIKey.objects.get_usable_keys()
     serializer_class = UserAPIKeySerializer
     permission_classes = (permissions.IsAuthenticated,
@@ -367,15 +367,24 @@ class UserAPIKeyView(generics.ListCreateAPIView, mixins.UpdateModelMixin):
 
     def list(self, request):
         queryset = self.get_queryset().filter(user=request.user)
+        project_uuid = self.request.query_params.get('project', None)
+        if project_uuid:
+            project = Project.objects.filter(uuid=project_uuid).first()
+            if not project:
+                raise ValidationError({'project': 'Project not found'})
+            queryset = queryset.filter(project=project)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request):
+        project = Project.objects.filter(uuid=request.data['project']).first()
+        if not project:
+            raise ValidationError({'project': 'Project not found'})
         api_key, key = UserAPIKey.objects.create_key(name=request.data['name'],
                                                      user=request.user,
-                                                     project=request.project)
+                                                     project=project)
         serializer = self.serializer_class(api_key)
-        return Response({'data': serializer.data, 'key': key})
+        return Response({**serializer.data, 'key': key})
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
