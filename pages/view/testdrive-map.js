@@ -101,7 +101,7 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
         left: 20,
         top: 20,
         zIndex: 1000,
-        width: 190,
+        width: 400,
         cursor: "default"
       }}
     >
@@ -111,6 +111,13 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
         component="h3"
       >
         <strong>{t("metrics_title_result")}</strong>
+      </Typography>
+      <Typography
+        style={{ marginLeft: "15px", marginBottom: "4px" }}
+        component="p"
+      >
+        {t("text_metrics_map_view")}
+       
       </Typography>
       <Typography
         style={{ marginLeft: "15px", marginBottom: "4px" }}
