@@ -153,6 +153,38 @@ class ContactView(generics.GenericAPIView):
                             status=status.HTTP_200_OK)
 
 
+class SubscribeApiBetaView(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request):
+        email = request.data['email']
+        list_id = settings.MAILCHIMP_AUDIENCE_IDS['default']
+
+        if settings.MAILCHIMP_APIKEY is not None:
+            client = MailChimp(mc_api=settings.MAILCHIMP_APIKEY,
+                               mc_user=settings.MAILCHIMP_USER)
+            try:
+                client.lists.members.create(
+                    list_id, {
+                        'email_address': email,
+                        'status': 'subscribed',
+                        'tags': ['api-beta']
+                    })
+                return Response({"detail": _("User subscribed")},
+                                status=status.HTTP_200_OK)
+            except Exception as e:
+                if '\'title\': \'Member Exists\'' in str(e):
+                    return Response({"detail": _("User already subscribed")},
+                                    status=status.HTTP_200_OK)
+                else:
+                    return Response(
+                        {"detail": _("Error subscribing user")},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"detail": _("User subscribed")},
+                            status=status.HTTP_200_OK)
+
+
 class SubscribeBetaView(generics.GenericAPIView):
     serializer_class = SubscribeBetaSerializer
     permission_classes = (permissions.AllowAny, )
@@ -178,8 +210,13 @@ class SubscribeBetaView(generics.GenericAPIView):
                 return Response({"detail": _("User subscribed")},
                                 status=status.HTTP_200_OK)
             except Exception as e:
-                return Response({"detail": _("Error subscribing user")},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                if '\'title\': \'Member Exists\'' in str(e):
+                    return Response({"detail": _("User already subscribed")},
+                                    status=status.HTTP_200_OK)
+                else:
+                    return Response(
+                        {"detail": _("Error subscribing user")},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"detail": _("User subscribed")},
                             status=status.HTTP_200_OK)

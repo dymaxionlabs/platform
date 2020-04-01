@@ -34,7 +34,7 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             ProjectInvitationTokenViewSet, ProjectViewSet,
                             SubscribeBetaView, TestAuthView, TestErrorView,
                             TestTaskErrorView, UserProfileViewSet, UserViewSet,
-                            UserAPIKeyList)
+                            UserAPIKeyList, SubscribeApiBetaView)
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -90,6 +90,7 @@ urlpatterns = [
         ConfirmProjectInvitationView.as_view()),
     url(r'^contact/?', ContactView.as_view()),
     url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
+    url(r'^subscribe/api_beta/?', SubscribeApiBetaView.as_view()),
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     url(r'^files/download/(?P<filename>[^/]+)$', FileDownloadView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
@@ -102,15 +103,18 @@ urlpatterns = [
         FinishedPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
         StartPredictionJobView.as_view()),
-    url(r'^predictionjob/(?P<pk>[^/]+)$', 
-        PredictionJobView.as_view()),
-    url(r'^api_keys/(?P<prefix>[^/]+)$',  UserAPIKeyList.as_view(),),
-    url(r'^api_keys/', UserAPIKeyList.as_view(),),
-
+    url(r'^predictionjob/(?P<pk>[^/]+)$', PredictionJobView.as_view()),
+    url(
+        r'^api_keys/(?P<prefix>[^/]+)$',
+        UserAPIKeyList.as_view(),
+    ),
+    url(
+        r'^api_keys/',
+        UserAPIKeyList.as_view(),
+    ),
 
     #STAC urls
-    url(r'^stac/search/?',
-        SearchView.as_view()),
+    url(r'^stac/search/?', SearchView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),
