@@ -2,6 +2,7 @@ import React from "react";
 import { withNamespaces } from "../../i18n";
 import { routerReplace } from "../../utils/router";
 import Head from "next/head";
+import withStyles from "@material-ui/core/styles/withStyles";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
 import ResultsButton from "../../components/testdrive/ResultsButton";
@@ -10,6 +11,19 @@ import LayersFab from "../../components/LayersFab";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import ListItem from "@material-ui/core/ListItem";
+
+const styles = theme => ({
+  topLeft: {
+    position: "fixed",
+    left: theme.spacing.unit,
+    top: theme.spacing.unit,
+    zIndex: 1000
+  },
+  controlPaper: {
+    padding: theme.spacing.unit * 2,
+    margin: theme.spacing.unit * 2
+  }
+});
 
 var lotsData = {};
 
@@ -93,54 +107,50 @@ const Color = ({ value }) => (
   </div>
 );
 
-const LotsLegend = withNamespaces("testdrive")(({ t }) => (
+let DescriptionControl = ({ t, classes }) => (
   <div>
     <Paper
+      className={classes.controlPaper}
       style={{
-        position: "fixed",
-        left: 20,
-        top: 20,
-        zIndex: 1000,
         width: 400,
         cursor: "default"
       }}
     >
-      <Typography
-        style={{ marginLeft: "15px", marginTop: "15px", marginBottom: "10px" }}
-        variant="h6"
-        component="h3"
-      >
+      <Typography component="p">{t("text_metrics_map_view")}</Typography>
+    </Paper>
+  </div>
+);
+
+DescriptionControl = withStyles(styles)(DescriptionControl);
+DescriptionControl = withNamespaces("testdrive")(DescriptionControl);
+
+let LotsLegend = ({ t, classes }) => (
+  <div>
+    <Paper
+      className={classes.controlPaper}
+      style={{
+        width: 190,
+        cursor: "default"
+      }}
+    >
+      <Typography style={{ marginBottom: "10px" }} variant="h6" component="h3">
         <strong>{t("metrics_title_result")}</strong>
       </Typography>
-      <Typography
-        style={{ marginLeft: "15px", marginBottom: "4px" }}
-        component="p"
-      >
-        {t("text_metrics_map_view")}
-       
-      </Typography>
-      <Typography
-        style={{ marginLeft: "15px", marginBottom: "4px" }}
-        component="p"
-      >
+      <Typography style={{ marginBottom: "4px" }} component="p">
         <strong>{t("metrics_title_object")}: </strong>
         {metricsData["objectCount"]}
       </Typography>
-      <Typography
-        style={{ marginLeft: "15px", marginBottom: "4px" }}
-        component="p"
-      >
+      <Typography style={{ marginBottom: "4px" }} component="p">
         <strong>{t("metrics_title_area")}: </strong>
         {metricsData["area"] + "km²"}
       </Typography>
-      <Typography style={{ marginLeft: "15px" }} component="p">
+      <Typography component="p">
         <strong>{t("metrics_title_class")}: </strong>
       </Typography>
       {metricsData["classes"] &&
         metricsData["classes"].map(item => (
           <ListItem
             style={{
-              marginLeft: "15px",
               paddingBottom: "4px",
               paddingTop: "4px"
             }}
@@ -152,16 +162,15 @@ const LotsLegend = withNamespaces("testdrive")(({ t }) => (
             </Typography>
           </ListItem>
         ))}
-      <div
-        style={{ marginLeft: "15px", marginBottom: "15px", marginTop: "10px" }}
-      >
+      <div style={{ marginTop: "10px" }}>
         <ResultsButton />
       </div>
     </Paper>
   </div>
-));
+);
 
-LotsLayer = withNamespaces("testdrive")(LotsLayer);
+LotsLegend = withStyles(styles)(LotsLegend);
+LotsLegend = withNamespaces("testdrive")(LotsLegend);
 
 class MapTestDrive extends React.Component {
   state = {
@@ -271,7 +280,7 @@ class MapTestDrive extends React.Component {
       activeLayers
     } = this.state;
 
-    const { t } = this.props;
+    const { t, classes } = this.props;
 
     return (
       <div className="index">
@@ -314,7 +323,10 @@ class MapTestDrive extends React.Component {
             />
           )}
 
-          <LotsLegend />
+          <div className={classes.topLeft}>
+            <DescriptionControl />
+            <LotsLegend />
+          </div>
           <ContactButton />
         </Map>
       </div>
@@ -322,4 +334,7 @@ class MapTestDrive extends React.Component {
   }
 }
 
-export default withNamespaces(["testdrive"])(MapTestDrive);
+MapTestDrive = withStyles(styles)(MapTestDrive);
+MapTestDrive = withNamespaces(["testdrive"])(MapTestDrive);
+
+export default MapTestDrive;
