@@ -66,7 +66,7 @@ class ModalContactEmail extends React.Component {
     }
 
     try {
-      await axios.post(buildApiUrl("/subscribe_api_beta/"), {
+      await axios.post(buildApiUrl("/subscribe/api_beta/"), {
         email: email
       });
 
