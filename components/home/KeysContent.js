@@ -18,8 +18,9 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import NewKeyDialogForm from "../NewKeyDialog";
 import ConfirmationDialog from "../ConfirmationDialog";
-import { i18n, withNamespaces } from "../../i18n";
+import { withNamespaces } from "../../i18n";
 import axios from "axios";
+import cookie from "js-cookie";
 import { buildApiUrl } from "../../utils/api";
 
 const styles = theme => ({
@@ -34,7 +35,7 @@ const styles = theme => ({
     marginBottom: theme.spacing.units * 10
   },
   btnRight: {
-      float: "right",
+    float: "right"
   }
 });
 
@@ -75,46 +76,53 @@ NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 
 class KeysContent extends React.Component {
   state = {
-    keys : [],
-    openConfirmationDialog : false,
-    keyToRevoke : null
+    keys: [],
+    openConfirmationDialog: false,
+    keyToRevoke: null
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.getApiKeys();
   }
 
   getApiKeys = async () => {
-    await axios.get(
-        buildApiUrl(`/api_keys/`), { headers: { Authorization: this.props.token } }
-    ).then(response => {
-        this.setState({keys:response.data});
-    });
-  }
+    const project = cookie.get("project");
 
-  revoke = async (id) => {
-    this.setState({
-      keyToRevoke: id,
-      openConfirmationDialog: true,
-    });
-  }
-
-  onDialogResult = async (action) => {
-    if (action) {
-      const prefix = this.state.keyToRevoke.split(".")[0]
-      await axios.patch(
-        buildApiUrl(`/api_keys/${prefix}`), 
-        { "prefix": prefix, revoked : true },
-        { headers: { Authorization: this.props.token } }
-      ).then(() => {
-          this.getApiKeys();
+    await axios
+      .get(buildApiUrl(`/api_keys/`), {
+        params: { project },
+        headers: { Authorization: this.props.token }
+      })
+      .then(response => {
+        this.setState({ keys: response.data });
       });
+  };
+
+  revoke = async prefix => {
+    this.setState({
+      keyToRevoke: prefix,
+      openConfirmationDialog: true
+    });
+  };
+
+  onDialogResult = async action => {
+    if (action) {
+      const { keyToRevoke } = this.state;
+      await axios
+        .patch(
+          buildApiUrl(`/api_keys/${keyToRevoke}`),
+          { prefix: keyToRevoke, revoked: true },
+          { headers: { Authorization: this.props.token } }
+        )
+        .then(() => {
+          this.getApiKeys();
+        });
     }
     this.setState({
       keyToRevoke: null,
-      openConfirmationDialog: false,
-    })
-  }
+      openConfirmationDialog: false
+    });
+  };
 
   render() {
     const { t, classes, token } = this.props;
@@ -128,8 +136,11 @@ class KeysContent extends React.Component {
           gutterBottom
           component="h2"
         >
-            <NewKeyDialogForm token={token} created={this.getApiKeys}></NewKeyDialogForm>
-            {t("keys.title")}
+          <NewKeyDialogForm
+            token={token}
+            created={this.getApiKeys}
+          ></NewKeyDialogForm>
+          {t("keys.title")}
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -142,7 +153,7 @@ class KeysContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-            {keys.map((key, i) => (
+              {keys.map((key, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
                     {key.name}
@@ -151,12 +162,14 @@ class KeysContent extends React.Component {
                     {key.prefix}
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    { ! key.revoked && t("keys.active")}
+                    {!key.revoked && t("keys.active")}
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title={t('keys.revoke')}>
-                      <IconButton 
-                        onClick={() => {this.revoke(key.id)}}
+                    <Tooltip title={t("keys.revoke")}>
+                      <IconButton
+                        onClick={() => {
+                          this.revoke(key.prefix);
+                        }}
                         className={classes.button}
                         aria-label={t("keys.revoke")}
                       >
@@ -169,13 +182,12 @@ class KeysContent extends React.Component {
             </TableBody>
           </Table>
         </Paper>
-        <ConfirmationDialog 
-          onClose={this.onDialogResult} 
+        <ConfirmationDialog
+          onClose={this.onDialogResult}
           open={openConfirmationDialog}
           title={t("keys.confirmTitle")}
           content={t("keys.confirmContent")}
         />
-
       </div>
     );
   }
