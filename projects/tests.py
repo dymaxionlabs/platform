@@ -301,9 +301,10 @@ class UserAPIKeyViewSetTest(TestCase):
         api_key, _ = self.create_some_api_key(name='first')
         self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 1)
 
-        response = self.client.patch('/api_keys/{}'.format(api_key.prefix),
-                                     dict(revoked=True),
-                                     format='json')
+        response = self.client.patch(
+            '/api_keys/{prefix}'.format(prefix=api_key.prefix),
+            dict(revoked=True),
+            format='json')
         self.assertEquals(200, response.status_code)
         self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 0)
 
