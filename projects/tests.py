@@ -297,8 +297,15 @@ class UserAPIKeyViewSetTest(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEquals(0, len(response.data))
 
-    def test_delete_user_api_key(self):
-        pass
+    def test_revoke_user_api_key(self):
+        api_key, _ = self.create_some_api_key(name='first')
+        self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 1)
+
+        response = self.client.patch('/api_keys/{}'.format(api_key.prefix),
+                                     dict(revoked=True),
+                                     format='json')
+        self.assertEquals(200, response.status_code)
+        self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 0)
 
     def create_some_api_key(self, name='Default', user=None, project=None):
         return UserAPIKey.objects.create_key(name=name,
