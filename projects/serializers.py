@@ -205,8 +205,9 @@ class FileSerializer(serializers.ModelSerializer):
 
 class UserAPIKeySerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    project = serializers.SlugRelatedField(slug_field='uuid', read_only=True)
 
     class Meta:
         model = UserAPIKey
-        fields = ('id', 'prefix', 'created', 'name', 'revoked', 'user')
+        fields = ('prefix', 'created', 'name', 'user', 'project', 'revoked')
         lookup_field = 'id'

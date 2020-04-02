@@ -1,12 +1,14 @@
+from collections import OrderedDict
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from terra.tests import loginWithAPI
+from terra.tests import create_some_user, loginWithAPI
 
-from .models import Project, ProjectInvitationToken
+from .models import Project, ProjectInvitationToken, UserAPIKey
 
 
 def create_some_project(*, owners, **data):
@@ -152,8 +154,7 @@ class ContactViewTest(TestCase):
                                     format='json')
 
         self.assertEquals(200, response.status_code)
-        self.assertEquals('User subscribed',
-                          response.data['detail'])
+        self.assertEquals('User subscribed', response.data['detail'])
 
 
 class ConfirmProjectInvitationViewTest(TestCase):
@@ -211,3 +212,103 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
         # Check permissions again
         self.assertTrue(user.has_perm('view_project', project))
+
+
+class UserAPIKeyViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        loginWithAPI(self.client, self.user.username, 'secret')
+        self.project = create_some_project(name='Some project',
+                                           owners=[self.user])
+
+    def test_create_user_api_key(self):
+        params = {'name': 'default', 'project': self.project.uuid}
+        response = self.client.post('/api_keys/', params, format='json')
+
+        self.assertEquals(200, response.status_code)
+        for field in ['key', 'prefix', 'created']:
+            self.assertTrue(field in response.data)
+        self.assertEqual(response.data['user'], self.user.username)
+        self.assertEqual(response.data['project'], self.project.uuid)
+        self.assertEqual(response.data['name'], 'default')
+
+    def test_create_user_api_key_with_invalid_project(self):
+        invalid_uuid = 'e1a6e48c-7e72-476c-954e-f0df1cd5cb8f'
+
+        params = {'name': 'default', 'project': invalid_uuid}
+        response = self.client.post('/api_keys/', params, format='json')
+
+        self.assertEquals(400, response.status_code)
+        self.assertEquals(dict(project='Project not found'), response.data)
+
+    def test_list_all_user_api_keys(self):
+        # Create some API keys
+        api_keys = [
+            self.create_some_api_key(name=n)[0] for n in ['first', 'second']
+        ]
+
+        response = self.client.get('/api_keys/', format='json')
+        self.assertEquals(200, response.status_code)
+        expected_api_keys = [
+            dict(prefix=k.prefix,
+                 name=k.name,
+                 user=k.user.username,
+                 project=k.project.uuid) for k in api_keys
+        ]
+        response_api_keys = [
+            dict(prefix=k['prefix'],
+                 name=k['name'],
+                 user=k['user'],
+                 project=k['project']) for k in response.data
+        ]
+        key_fn = lambda d: d['prefix']
+        self.assertEqual(sorted(expected_api_keys, key=key_fn),
+                         sorted(response_api_keys, key=key_fn))
+
+    def test_list_user_api_keys_from_project(self):
+        # Create an API key on first project
+        self.create_some_api_key(name='first')
+
+        # Create a second project with an API key
+        second_project = create_some_project(name='Second project',
+                                             owners=[self.user])
+        second_project_api_key, _ = self.create_some_api_key(
+            name='second', project=second_project)
+
+        # Get all API keys from second project
+        response = self.client.get('/api_keys/',
+                                   dict(project=second_project.uuid),
+                                   format='json')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(1, len(response.data))
+        self.assertEquals(response.data[0]['prefix'],
+                          second_project_api_key.prefix)
+
+    def test_list_no_user_api_keys_from_other_user(self):
+        # Create an API key of another user and project
+        another_user = create_some_user(username='ana')
+        create_some_project(name='Another project', owners=[another_user])
+        self.create_some_api_key(name='first', user=another_user)
+
+        response = self.client.get('/api_keys/',
+                                   dict(project=self.project.uuid),
+                                   format='json')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(0, len(response.data))
+
+    def test_revoke_user_api_key(self):
+        api_key, _ = self.create_some_api_key(name='first')
+        self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 1)
+
+        response = self.client.patch(
+            '/api_keys/{prefix}'.format(prefix=api_key.prefix),
+            dict(revoked=True),
+            format='json')
+        self.assertEquals(200, response.status_code)
+        self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 0)
+
+    def create_some_api_key(self, name='Default', user=None, project=None):
+        return UserAPIKey.objects.create_key(name=name,
+                                             user=user or self.user,
+                                             project=project or self.project)

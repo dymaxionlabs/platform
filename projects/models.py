@@ -285,6 +285,10 @@ class MapLayer(models.Model):
 
 class UserAPIKey(AbstractAPIKey):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta(AbstractAPIKey.Meta):
         verbose_name = "User API key"
