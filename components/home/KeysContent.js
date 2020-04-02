@@ -111,7 +111,7 @@ class KeysContent extends React.Component {
       await axios
         .patch(
           buildApiUrl(`/api_keys/${keyToRevoke}`),
-          { prefix: keyToRevoke, revoked: true },
+          { revoked: true },
           { headers: { Authorization: this.props.token } }
         )
         .then(() => {
