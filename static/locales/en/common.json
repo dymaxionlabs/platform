@@ -17,13 +17,17 @@
   "informal_settlements_title": "Informal settlements",
   "invite": {
     "already_confirmed": "The invitation has already been confirmed.",
+    "already_has_account": "Already have an account?",
+    "confirm": "Confirm invitation",
     "email_placeholder": "Email",
     "error_msg": "An error has occurred. Please retry.",
     "header": "Invitation to project",
     "invalid_key": "The invitation link is invalid. Please contact us.",
+    "login": "Login",
     "password1_placeholder": "Password",
     "password2_placeholder": "Confirm password",
     "subheader": "You have been invited to the project \"{{project}}\". To access, you must register with a username and password.",
+    "subheader_already_logged_in": "You have been invited to the project \"{{project}}\". To access, you must confirm the invitation.",
     "submit": "Sign up",
     "success_msg": "Thank you for signing up! Soon you will be redirected...",
     "username_placeholder": "Username"

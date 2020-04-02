@@ -55,10 +55,14 @@ common,invite.success_msg,¡Gracias por registrarse! En breve será redirigido..
 common,invite.error_msg,Un error ha ocurrido. Por favor reintentelo.,An error has occurred. Please retry.
 common,invite.header,Invitación a proyecto,Invitation to project
 common,invite.subheader,"Ha sido invitado al proyecto ""{{project}}"". Para poder acceder, debe registrarse con un nombre de usuario y contraseña.","You have been invited to the project ""{{project}}"". To access, you must register with a username and password."
+common,invite.subheader_already_logged_in,"Ha sido invitado al proyecto ""{{project}}"". Para poder acceder, debe confirmar la invitación.","You have been invited to the project ""{{project}}"". To access, you must confirm the invitation."
 common,invite.username_placeholder,Nombre de usuario,Username
 common,invite.email_placeholder,Email,Email
 common,invite.password1_placeholder,Contraseña,Password
 common,invite.password2_placeholder,Confirmar contraseña,Confirm password
+common,invite.already_has_account,¿Ya tiene una cuenta?,Already have an account?
+common,invite.confirm,Confirmar invitación,Confirm invitation
+common,invite.login,Iniciar sesión,Login
 common,quote_btn.value,Cotizar nueva capa,Quote new layer
 common,invite.submit,Registrar,Sign up
 common,confirmation.cancel,Cancelar,Cancel
