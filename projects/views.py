@@ -89,7 +89,11 @@ class ConfirmProjectInvitationView(APIView):
     def post(self, request, key):
         invitation = ProjectInvitationToken.objects.get(key=key)
         invitation.confirm_for(request.user)
-        return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
+        return Response({
+            'detail': _('ok'),
+            'project': invitation.project.uuid
+        },
+                        status=status.HTTP_200_OK)
 
 
 class TestAuthView(APIView):
