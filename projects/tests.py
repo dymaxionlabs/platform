@@ -214,7 +214,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
         self.assertTrue(user.has_perm('view_project', project))
 
 
-class UserAPIKeyViewSetTest(TestCase):
+class UserAPIKeyViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
