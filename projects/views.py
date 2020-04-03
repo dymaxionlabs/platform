@@ -291,14 +291,14 @@ class FileUploadView(APIView):
 
         project_param = self.request.query_params.get('project', None)
         if project_param:
-            projects_qs = allowed_projects_for(Project.objects, user)
+            projects_qs = allowed_projects_for(project.objects, user)
             project = projects_qs.filter(uuid=project_param).first()
             if not project:
-                raise ValidationError(
-                    {'project': 'Project invalid or not found'})
+                raise validationerror(
+                    {'project': 'project invalid or not found'})
 
         if not project:
-            raise ValidationError({'project': 'Field is not present'})
+            raise validationerror({'project': 'field is not present'})
 
         filename = File.prepare_filename(filename)
 
@@ -311,18 +311,23 @@ class FileUploadView(APIView):
 
 
 class FileDownloadView(APIView):
-
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
     renderer_classes = (BinaryFileRenderer, )
 
     def get(self, request, filename):
-        user = self.request.user
-        uuid = self.request.query_params.get('project', None)
-        if not uuid:
-            raise ValidationError({'project': 'Field not present'})
-        project = Project.objects.filter(uuid=uuid).first()
+        user = request.user
+        project = request.project
+
+        project_param = self.request.query_params.get('project', None)
+        if project_param:
+            projects_qs = allowed_projects_for(project.objects, user)
+            project = projects_qs.filter(uuid=project_param).first()
+            if not project:
+                raise validationerror(
+                    {'project': 'project invalid or not found'})
+
         if not project:
-            raise ValidationError({'project': 'Invalid project uuid'})
+            raise validationerror({'project': 'field is not present'})
 
         filters = dict(name=filename, project=project)
         if not user.is_staff:
