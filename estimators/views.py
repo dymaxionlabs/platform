@@ -22,7 +22,7 @@ from .serializers import (AnnotationSerializer, EstimatorSerializer,
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
     queryset = Estimator.objects.all().order_by('-created_at')
     serializer_class = EstimatorSerializer
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedProjectPermission)
     lookup_field = 'uuid'
 
