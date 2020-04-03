@@ -31,7 +31,24 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: { 
+    name: "Pools detector", 
+    classes: ["pool"], 
+    var: "pools_detector",
+    filesVar: "pools_files",
+    files: "pools*.tif"
+  },
+  cattle: {
+    name: "Cattle detector",
+    classes: ["red", "black"],
+    var: "cattle_detector",
+    filesVar: "cattle_files",
+    files: "cattle*.tif"
+  }
+};
+
+let APIContent = ({ classes, t, modelVar, modelName, modelFiles, modelFilesVar }) => (
   <div>
     <Typography>
       To use your trained model on some of the uploaded images:
@@ -40,9 +57,9 @@ let APIContent = ({ classes, t }) => (
       {`from dymaxionlabs.models import Model
 from dymaxionlabs.files import File
 
-pools_detector = Model.get("Pools detector")
-pools_files = File.all("pools*.tif")
-job = pools_detector.predict_files(pools_files)`}
+${modelVar} = Model.get(${JSON.stringify(modelName)})
+${modelFilesVar} = File.all(${JSON.stringify(modelFiles)})
+job = ${modelVar}.predict_files(${modelFilesVar})`}
     </CodeBlock>
     <Typography>
       Similarly to training, prediction also takes time, so you can fetch the
@@ -80,6 +97,7 @@ class PredictStep extends React.Component {
 
   componentDidMount() {
     setTimeout(() => this.advanceProgressBar(), this.interval);
+    this._loadCurrentModel();
   }
 
   _trackEvent = (action, value) => {
@@ -87,6 +105,18 @@ class PredictStep extends React.Component {
       this.props.analytics.event("testdrive", action, value);
     }
   };
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel });
+  }
 
   advanceProgressBar() {
     const { increment, interval } = this;
@@ -108,7 +138,13 @@ class PredictStep extends React.Component {
 
   render() {
     const { classes, t, apiMode } = this.props;
-    const { finished, percentage } = this.state;
+    const { finished, percentage, currentModel } = this.state;
+
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer>
@@ -116,7 +152,12 @@ class PredictStep extends React.Component {
           {t("predict_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent
+            modelName={apiContent["name"]}
+            modelVar={apiContent["var"]}
+            modelFiles={apiContent["files"]}
+            modelFilesVar={apiContent["filesVar"]}
+          />
         ) : (
           <React.Fragment>
             <Typography>
