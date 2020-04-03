@@ -22,9 +22,12 @@ class ProjectRelatedModelListMixin:
         if user.is_anonymous:
             return self.queryset.none()
 
-        projects_qs = allowed_projects_for(Project.objects, user)
+        # Filter by request project (i.e. when using API keys)
+        if self.request.project:
+            return self.queryset.filter(project=self.request.project).all()
 
-        # Filter by uuid, if present
+        # Filter by project uuid, if present
+        projects_qs = allowed_projects_for(Project.objects, user)
         project_uuid = self.request.query_params.get('project_uuid', None)
         if project_uuid is not None:
             project = projects_qs.filter(uuid=project_uuid).first()
