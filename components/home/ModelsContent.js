@@ -56,7 +56,7 @@ class ModelsContent extends React.Component {
     const projectId = cookie.get("project");
     axios
       .get(buildApiUrl("/estimators/"), {
-        params: { project_uuid: projectId },
+        params: { project: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {

@@ -47,7 +47,7 @@ class MapsContent extends React.Component {
 
     axios
       .get(buildApiUrl("/maps/"), {
-        params: { project_uuid: projectId },
+        params: { project: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {
