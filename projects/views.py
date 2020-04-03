@@ -63,20 +63,6 @@ class UserProfileViewSet(mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
     lookup_field = 'user__username'
 
 
-# class ProjectInvitationTokenViewSet(viewsets.ModelViewSet):
-#     queryset = ProjectInvitationToken.objects.all()
-#     serializer_class = ProjectInvitationTokenSerializer
-#     permission_classes = (permissions.Is, )
-
-#     def get_queryset(self):
-#         # If logged-in user is not admin, filter by the current user
-#         user = self.request.user
-#         if user.is_staff:
-#             return self.queryset.all()
-#         else:
-#             return self.queryset.filter(id=user.id).all()
-
-
 class ProjectInvitationTokenViewSet(mixins.RetrieveModelMixin,
                                     viewsets.GenericViewSet):
     queryset = ProjectInvitationToken.objects.all()
@@ -249,7 +235,7 @@ class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
         res = super().get_queryset().distinct()
 
         # If not requesting a specific project_uuid, include *all* public maps
-        project_uuid = self.request.query_params.get('project_uuid', None)
+        project_uuid = self.request.query_params.get('project', None)
         if project_uuid is None:
             res = (res | self.queryset.filter(
                 extra_fields__public=True).distinct()).distinct()
@@ -284,7 +270,7 @@ class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
         projects_qs = allowed_projects_for(Project.objects, user)
 
         # Filter by uuid, if present
-        project_uuid = self.request.query_params.get('project_uuid', None)
+        project_uuid = self.request.query_params.get('project', None)
         if project_uuid is not None:
             project = projects_qs.filter(uuid=project_uuid).first()
             return self.queryset.filter(
@@ -304,14 +290,14 @@ class FileUploadView(APIView):
         user = self.request.user
 
         project = None
-        uuid = self.request.query_params.get('project_uuid', None)
+        uuid = self.request.query_params.get('project', None)
         if not uuid:
-            raise ValidationError({'project_uuid': 'Field not present'})
+            raise ValidationError({'project': 'Field not present'})
 
         projects_qs = allowed_projects_for(Project.objects, user)
         project = projects_qs.filter(uuid=uuid).first()
         if not project:
-            raise ValidationError({'project_uuid': 'Invalid project uuid'})
+            raise ValidationError({'project': 'Invalid project uuid'})
 
         filename = File.prepare_filename(filename)
 
@@ -329,12 +315,12 @@ class FileDownloadView(APIView):
 
     def get(self, request, filename):
         user = self.request.user
-        uuid = self.request.query_params.get('project_uuid', None)
+        uuid = self.request.query_params.get('project', None)
         if not uuid:
-            raise ValidationError({'project_uuid': 'Field not present'})
+            raise ValidationError({'project': 'Field not present'})
         project = Project.objects.filter(uuid=uuid).first()
         if not project:
-            raise ValidationError({'project_uuid': 'Invalid project uuid'})
+            raise ValidationError({'project': 'Invalid project uuid'})
 
         filters = dict(name=filename, project=project)
         if not user.is_staff:
