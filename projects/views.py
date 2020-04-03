@@ -259,13 +259,12 @@ class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
     serializer_class = FileSerializer
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedProjectFilesPermission)
-
     lookup_field = 'name'
+    lookup_value_regex = r'[\w.]+'
 
     def get_queryset(self):
         # Also return files from user that are not associated with a project
         # (backwards-compatibility)
-
         user = self.request.user
         projects_qs = allowed_projects_for(Project.objects, user)
 
