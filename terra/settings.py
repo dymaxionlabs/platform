@@ -209,9 +209,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
-        'Bearer': {
+        'User token': {
             'type': 'apiKey',
             'name': 'Authorization',
+            'in': 'header'
+        },
+        'API key': {
+            'type': 'apiKey',
+            'name': 'Api-Key',
             'in': 'header'
         }
     }
