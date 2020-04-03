@@ -12,7 +12,6 @@ class UserPermission(permissions.BasePermission):
     * Allow only if same user
 
     """
-
     def has_object_permission(self, request, view, obj):
         return request.user.is_staff or obj == request.user
 
@@ -25,7 +24,6 @@ class UserProfilePermission(permissions.BasePermission):
     * Allow only if from same user
 
     """
-
     def has_object_permission(self, request, view, obj):
         return request.user.is_staff or obj.user == request.user
 
@@ -37,7 +35,6 @@ class HasAccessToRelatedProjectPermission(permissions.BasePermission):
     * Allow staff or user who has access to associated Project
 
     """
-
     def has_object_permission(self, request, view, obj):
         user = request.user
         user_is_project_owner = user in obj.project.owners.all()
@@ -70,7 +67,6 @@ class HasAccessToProjectPermission(permissions.BasePermission):
     * Allow staff or user who has access to associated Project
 
     """
-
     def has_object_permission(self, request, view, obj):
         user = request.user
         user_is_owner = user in obj.owners.all()
@@ -90,8 +86,9 @@ class HasUserAPIKey(BaseHasAPIKey):
         is_valid = self.model.objects.is_valid(key)
         if is_valid:
             prefix, _, _ = key.partition(".")
-            instance = self.model.objects.get(prefix = prefix)
+            instance = self.model.objects.get(prefix=prefix)
             request.user = instance.user
+            request.project = instance.project
         return is_valid
 
 
