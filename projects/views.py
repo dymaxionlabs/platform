@@ -286,23 +286,26 @@ class FileUploadView(APIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
 
     def post(self, request, filename, format=None):
-        user = self.request.user
+        user = request.user
+        project = request.project
 
-        project = None
-        uuid = self.request.query_params.get('project', None)
-        if not uuid:
-            raise ValidationError({'project': 'Field not present'})
+        project_param = self.request.query_params.get('project', None)
+        if project_param:
+            projects_qs = allowed_projects_for(Project.objects, user)
+            project = projects_qs.filter(uuid=project_param).first()
+            if not project:
+                raise ValidationError(
+                    {'project': 'Project invalid or not found'})
 
-        projects_qs = allowed_projects_for(Project.objects, user)
-        project = projects_qs.filter(uuid=uuid).first()
         if not project:
-            raise ValidationError({'project': 'Invalid project uuid'})
+            raise ValidationError({'project': 'Field is not present'})
 
         filename = File.prepare_filename(filename)
 
         file = File(name=filename, owner=request.user, project=project)
         file.file = request.data['file']
         file.save()
+
         serializer = FileSerializer(file)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
