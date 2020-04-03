@@ -89,6 +89,9 @@ class HasUserAPIKey(BaseHasAPIKey):
             instance = self.model.objects.get(prefix=prefix)
             request.user = instance.user
             request.project = instance.project
+            # Also set on body, if not present
+            if 'project' not in request.data:
+                request.data['project'] = instance.project.uuid
         return is_valid
 
 
