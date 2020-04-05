@@ -15,6 +15,7 @@ import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
 import ModalContactEmail from "../components/testdrive/ModalContactEmail";
+import cookie from "js-cookie";
 
 const styles = theme => ({
   stepperContent: {
@@ -80,9 +81,27 @@ class TestDrive extends React.Component {
     }
   }
   
-  handleMouseLeave = () => {
-    this.setState({askEmail: true});
+  componentDidMount() {
+    // If user hasn't subscribed yet and haven't seen this modal, show modal
+    if (
+      !cookie.get("testdrive-subscribed") &&
+      !cookie.get("testdrive-subscription-read")
+    ) {
+      this.setState({ askEmail: true });
+    }
   }
+
+  handleMouseLeave = () => {
+    console.log("user leaving...");
+    if (!cookie.get("testdrive-subscribed")) {
+      this.setState({ askEmail: true});
+    }
+  }
+
+  handleEmailDialogClose = () => {
+    cookie.set("testdrive-subscription-read", true);
+    this.setState({ askEmail: false });
+  };
 
   stepContent() {
     const { token, analytics } = this.props;
@@ -163,7 +182,10 @@ class TestDrive extends React.Component {
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
-        <ModalContactEmail askEmail={askEmail} />
+        <ModalContactEmail 
+          open={askEmail}
+          onClose={this.handleEmailDialogClose}
+        />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>

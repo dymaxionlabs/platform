@@ -11,53 +11,32 @@ import { withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import cookie from "js-cookie";
 
-const styles = theme => ({
-  submit: {}
-});
-
 class ModalContactEmail extends React.Component {
   state = {
     email: "",
     errorMsg: "",
     successMsg: "",
     submitting: false,
-    open: false
   };
 
-  componentDidMount() {
-    // If user hasn't subscribed yet and haven't seen this modal, show modal
-    if (
-      !cookie.get("testdrive-subscribed") &&
-      !cookie.get("testdrive-subscription-read")
-    ) {
-      this.setState({ open: true });
-    }
-  }
-
-  handleEmailChange = event => {
+  handleEmailChange = (event) => {
     this.setState({ email: event.target.value });
   };
 
-  onKeyDown = event => {
-    if (event.key === 'Enter') {
+  onKeyDown = (event) => {
+    if (event.key === "Enter") {
       event.preventDefault();
       event.stopPropagation();
       this.handleSubmit();
     }
-  }
+  };
 
   handleEnter = () => {
     this.setState({
       errorMsg: "",
       successMsg: "",
       submitting: false,
-      userCancel: false
     });
-  };
-
-  handleClose = () => {
-    cookie.set("testdrive-subscription-read", true);
-    this.setState({ open: false, userCancel: true });
   };
 
   handleSubmit = async () => {
@@ -65,32 +44,32 @@ class ModalContactEmail extends React.Component {
     const { email } = this.state;
 
     const errorMsg = t("subscribe.error_msg", {
-      contactLink: "contact@dymaxionlabs.com"
+      contactLink: "contact@dymaxionlabs.com",
     });
 
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: true
+      submitting: true,
     });
 
     if (email === "") {
       this.setState({
         errorMsg: errorMsg,
         successMsg: "",
-        submitting: false
+        submitting: false,
       });
       return;
     }
 
     try {
       await axios.post(buildApiUrl("/subscribe/api_beta/"), {
-        email: email
+        email: email,
       });
 
       this.setState({
         successMsg: t("subscribe.success_msg"),
-        email: ""
+        email: "",
       });
 
       cookie.set("testdrive-subscribed", true, { expires: 365 });
@@ -98,9 +77,9 @@ class ModalContactEmail extends React.Component {
       setTimeout(() => {
         this.setState({
           successMsg: "",
-          errorMsg: ""
+          errorMsg: "",
         });
-        this.handleClose();
+        this.props.onClose();
       }, 3000);
     } catch (error) {
       const response = error.response;
@@ -108,25 +87,20 @@ class ModalContactEmail extends React.Component {
       this.setState({
         errorMsg: errorMsg,
         submitting: false,
-        successMsg: ""
+        successMsg: "",
       });
     }
   };
 
   render() {
-    const { t, classes, askEmail } = this.props;
-    const { submitting, open, userCancel } = this.state;
-
-    var openDialog = false;
-    if ((open || askEmail) && !userCancel) {
-      openDialog = true;
-    }
+    const { t, open, onClose } = this.props;
+    const { submitting } = this.state;
 
     return (
       <Dialog
         onEnter={this.handleEnter}
-        onClose={this.handleClose}
-        open={openDialog}
+        onClose={onClose}
+        open={open}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle>{t("subscribe.title")}</DialogTitle>
@@ -150,15 +124,8 @@ class ModalContactEmail extends React.Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose}>
-            {t("subscribe.cancel_btn")}
-          </Button>
-          <Button
-            color="primary"
-            disabled={submitting}
-            type="submit"
-            className={classes.submit}
-          >
+          <Button onClick={onClose}>{t("subscribe.cancel_btn")}</Button>
+          <Button color="primary" disabled={submitting} type="submit">
             {t("subscribe.submit_btn")}
           </Button>
         </DialogActions>
@@ -168,6 +135,5 @@ class ModalContactEmail extends React.Component {
 }
 
 ModalContactEmail = withNamespaces("testdrive")(ModalContactEmail);
-ModalContactEmail = withStyles(styles)(ModalContactEmail);
 
 export default ModalContactEmail;
