@@ -16,19 +16,8 @@ class ModalContactEmail extends React.Component {
     email: "",
     errorMsg: "",
     successMsg: "",
-    submitting: false,
-    open: false
+    submitting: false
   };
-
-  componentDidMount() {
-    // If user hasn't subscribed yet and haven't seen this modal, show modal
-    if (
-      !cookie.get("testdrive-subscribed") &&
-      !cookie.get("testdrive-subscription-read")
-    ) {
-      this.setState({ open: true });
-    }
-  }
 
   handleEmailChange = event => {
     this.setState({ email: event.target.value });
@@ -38,14 +27,8 @@ class ModalContactEmail extends React.Component {
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: false,
-      userCancel: false
+      submitting: false
     });
-  };
-
-  handleClose = () => {
-    cookie.set("testdrive-subscription-read", true);
-    this.setState({ open: false, userCancel: true });
   };
 
   handleSubmit = async () => {
@@ -88,7 +71,7 @@ class ModalContactEmail extends React.Component {
           successMsg: "",
           errorMsg: ""
         });
-        this.handleClose();
+        this.props.onClose();
       }, 3000);
     } catch (error) {
       const response = error.response;
@@ -102,19 +85,14 @@ class ModalContactEmail extends React.Component {
   };
 
   render() {
-    const { t, askEmail } = this.props;
-    const { submitting, open, userCancel } = this.state;    
-
-    var openDialog = false;
-    if ((open || askEmail) && !userCancel) {
-      openDialog = true;
-    }
+    const { t, open, onClose } = this.props;
+    const { submitting } = this.state;    
 
     return (
       <Dialog
         onEnter={this.handleEnter}
-        onClose={this.handleClose}
-        open={openDialog}
+        onClose={onClose}
+        open={open}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle>{t("subscribe.title")}</DialogTitle>
@@ -137,7 +115,7 @@ class ModalContactEmail extends React.Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose}>
+          <Button onClick={onClose}>
             {t("subscribe.cancel_btn")}
           </Button>
           <Button
