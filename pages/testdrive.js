@@ -158,7 +158,7 @@ class TestDrive extends React.Component {
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
-        <ModalContactEmail />
+        <ModalContactEmail classes={classes} />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>

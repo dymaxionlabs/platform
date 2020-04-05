@@ -34,6 +34,14 @@ class ModalContactEmail extends React.Component {
     this.setState({ email: event.target.value });
   };
 
+  onKeyDown = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.handleSubmit();
+    }
+  }
+
   handleEnter = () => {
     this.setState({
       errorMsg: "",
@@ -101,7 +109,7 @@ class ModalContactEmail extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, classes } = this.props;
     const { submitting, open } = this.state;
 
     return (
@@ -128,6 +136,7 @@ class ModalContactEmail extends React.Component {
             type="email"
             fullWidth
             onChange={this.handleEmailChange}
+            onKeyDown={this.onKeyDown}
           />
         </DialogContent>
         <DialogActions>
@@ -136,8 +145,9 @@ class ModalContactEmail extends React.Component {
           </Button>
           <Button
             color="primary"
-            onClick={this.handleSubmit}
             disabled={submitting}
+            type="submit"
+            className={classes.submit}
           >
             {t("subscribe.submit_btn")}
           </Button>
