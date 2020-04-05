@@ -58,7 +58,8 @@ const hiddenSteps = ["initial", "choose-usecase"];
 class TestDrive extends React.Component {
   state = {
     step: steps[0],
-    apiMode: false
+    apiMode: false,
+    askEmail: false
   };
 
   static async getInitialProps({ query }) {
@@ -77,6 +78,10 @@ class TestDrive extends React.Component {
     if (step && steps.includes(step)) {
       this.state.step = step;
     }
+  }
+  
+  handleMouseLeave = () => {
+    this.setState({askEmail: true});
   }
 
   stepContent() {
@@ -142,14 +147,14 @@ class TestDrive extends React.Component {
 
   render() {
     const { t, classes, ...props } = this.props;
-    const { step, apiMode } = this.state;
+    const { step, apiMode, askEmail } = this.state;
 
     const isHiddenStep = step => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
     const showModeButton = !isHiddenStep(step);
 
     return (
-      <React.Fragment>
+      <div onMouseLeave={this.handleMouseLeave}>
         <Head>
           <title>{t("header")}</title>
         </Head>
@@ -158,7 +163,7 @@ class TestDrive extends React.Component {
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
-        <ModalContactEmail />
+        <ModalContactEmail askEmail={askEmail} />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
@@ -170,7 +175,7 @@ class TestDrive extends React.Component {
           </div>
         )}
         <ContactButton />
-      </React.Fragment>
+      </div>
     );
   }
 }

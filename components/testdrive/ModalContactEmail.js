@@ -38,13 +38,14 @@ class ModalContactEmail extends React.Component {
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: false
+      submitting: false,
+      userCancel: false
     });
   };
 
   handleClose = () => {
     cookie.set("testdrive-subscription-read", true);
-    this.setState({ open: false });
+    this.setState({ open: false, userCancel: true });
   };
 
   handleSubmit = async () => {
@@ -101,14 +102,19 @@ class ModalContactEmail extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
-    const { submitting, open } = this.state;
+    const { t, askEmail } = this.props;
+    const { submitting, open, userCancel } = this.state;    
+
+    var openDialog = false;
+    if ((open || askEmail) && !userCancel) {
+      openDialog = true;
+    }
 
     return (
       <Dialog
         onEnter={this.handleEnter}
         onClose={this.handleClose}
-        open={open}
+        open={openDialog}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle>{t("subscribe.title")}</DialogTitle>
