@@ -294,11 +294,11 @@ class FileUploadView(APIView):
             projects_qs = allowed_projects_for(project.objects, user)
             project = projects_qs.filter(uuid=project_param).first()
             if not project:
-                raise validationerror(
-                    {'project': 'project invalid or not found'})
+                raise ValidationError(
+                    {'project': 'Project invalid or not found'})
 
         if not project:
-            raise validationerror({'project': 'field is not present'})
+            raise ValidationError({'project': 'Field is not present'})
 
         filename = File.prepare_filename(filename)
 
@@ -323,11 +323,11 @@ class FileDownloadView(APIView):
             projects_qs = allowed_projects_for(project.objects, user)
             project = projects_qs.filter(uuid=project_param).first()
             if not project:
-                raise validationerror(
-                    {'project': 'project invalid or not found'})
+                raise ValidationError(
+                    {'project': 'Project invalid or not found'})
 
         if not project:
-            raise validationerror({'project': 'field is not present'})
+            raise ValidationError({'project': 'Field is not present'})
 
         filters = dict(name=filename, project=project)
         if not user.is_staff:
