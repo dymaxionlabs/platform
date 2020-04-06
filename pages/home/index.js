@@ -81,7 +81,8 @@ const styles = theme => ({
   title: {
     display: "flex",
     flexGrow: 1,
-    alignItems: "center"
+    alignItems: "center",
+    cursor: "pointer"
   },
   titleLogo: {
     marginRight: 5
@@ -291,20 +292,25 @@ class Home extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
+            <Link href="/">
               <img
                 className={classes.titleLogo}
                 src="/static/logo_wh.png"
                 height="24"
               />
-              Dymaxion Labs Platform
-            </Typography>
+            </Link>
+            <Link href="/">
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                className={classes.title}
+              >
+                
+                Dymaxion Labs Platform
+              </Typography>
+            </Link>
             <SelectProjectButton token={token} />
             <Button className={classes.button} onClick={this.handleClickOpen}>
               {t("simple_modal_contact_form:header")}
