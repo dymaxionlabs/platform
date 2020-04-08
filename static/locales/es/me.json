@@ -66,7 +66,7 @@
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     },
-    "uuid": "UUID"
+    "uuid": "Mostrar UUID"
   },
   "requests": {
     "area_km2": "\u00c1rea (km\u00b2)",

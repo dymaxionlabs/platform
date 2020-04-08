@@ -164,7 +164,7 @@ me,models.more_info,Más información,More information
 me,models.add_imgs,Agregar imágenes,Add images
 me,models.add_annot,Agregar anotaciones,Add annotations
 me,models.delete_models,Borrar Modelo,Delete Model
-me,models.uuid,UUID,UUID
+me,models.uuid,Mostrar UUID,Show UUID
 me,layers.title,Tus capas,Your layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name
