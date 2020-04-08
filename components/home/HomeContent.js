@@ -14,32 +14,32 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { withNamespaces } from "../../i18n";
 import cookie from "js-cookie";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
     overflowX: "auto",
-    padding: "20px"
+    padding: "20px",
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
   },
   paragraph: {
-    marginBottom: theme.spacing.unit
+    marginBottom: theme.spacing.unit,
   },
   anchorButton: {
-    textDecoration: "none"
+    textDecoration: "none",
   },
   section: {
-    marginBottom: theme.spacing.unit * 2
-  }
+    marginBottom: theme.spacing.unit * 2,
+  },
 });
 
 class HomeContent extends React.Component {
   render() {
-    const { t, beta, classes } = this.props;
+    const { t, classes } = this.props;
     const projectId = cookie.get("project");
 
     return (
@@ -64,12 +64,6 @@ class HomeContent extends React.Component {
                 Test Drive
               </Button>
             </a>
-
-            {beta && (
-              <Typography component="p" className={classes.paragraph}>
-                {t(`home.models_descrip`)} <a href="/models">link</a>.
-              </Typography>
-            )}
           </div>
           <div className={classes.section}>
             <Typography variant="h5" component="h3" className={classes.title}>
@@ -103,7 +97,7 @@ class HomeContent extends React.Component {
                       </CopyToClipboard>
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
           </div>
@@ -115,11 +109,6 @@ class HomeContent extends React.Component {
 
 HomeContent.propTypes = {
   classes: PropTypes.object.isRequired,
-  beta: PropTypes.bool
-};
-
-HomeContent.defaultProps = {
-  beta: false
 };
 
 HomeContent = withStyles(styles)(HomeContent);
