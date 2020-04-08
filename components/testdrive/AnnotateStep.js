@@ -200,7 +200,16 @@ let AnnotateContent = ({ t, classes, ...props }) => (
 AnnotateContent = withNamespaces("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
+  cattle: {
+    name: "Cattle detector",
+    classes: ["red", "black"],
+    var: "cattle_detector"
+  }
+};
+
+let APIContent = ({ classes, t , modelVar, modelName }) => (
   <div>
     <Typography>
       You can upload a vector file (a Shapefile or GeoJSON) with annotated
@@ -215,8 +224,8 @@ let APIContent = ({ classes, t }) => (
     <CodeBlock language="python">
       {`from dymaxionlabs.models import Model
 
-pools_detector = Model.get("Pools detector")
-pools_detector.upload_annotations("./annotations.geojson")`}
+${modelVar} = Model.get(${JSON.stringify(modelName)})
+${modelVar}.upload_annotations("./annotations.geojson")`}
     </CodeBlock>
     <Link href="/testdrive/train">
       <Button
@@ -244,8 +253,21 @@ class AnnotateStep extends React.Component {
     imageTiles: [],
     annotationsByTile: {},
     labelCount: {},
-    loading: true
+    loading: true,
+    currentModel: null
   };
+
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel });
+  }
 
   async componentDidMount() {
     await this.fetchEstimator();
@@ -253,6 +275,7 @@ class AnnotateStep extends React.Component {
     await this.fetchAnnotations();
     await this.fetchLabelCount();
     this.setState({ loading: false });
+    this._loadCurrentModel();
   }
 
   async fetchEstimator() {
@@ -431,11 +454,18 @@ class AnnotateStep extends React.Component {
       annotationsByTile,
       labelCount,
       offset,
-      count
+      count,
+      currentModel
     } = this.state;
 
     const labels = estimator && estimator.classes;
     const canAdvance = this._hasEnoughAnnotations();
+
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer width={1000}>
@@ -443,7 +473,10 @@ class AnnotateStep extends React.Component {
           {t("annotate_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent 
+            modelName={apiContent["name"]}
+            modelVar={apiContent["var"]}
+          />
         ) : (
           <React.Fragment>
             {loading ? (
