@@ -107,7 +107,7 @@ class SegmentsPerLabelView(APIView):
 
 
 class StartTrainingJobView(APIView):
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
 
     def post(self, request, uuid):
