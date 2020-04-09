@@ -11,6 +11,8 @@ import LayersFab from "../../components/LayersFab";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import ListItem from "@material-ui/core/ListItem";
+import ModalContactEmail from "../../components/testdrive/ModalContactEmail";
+import cookie from "js-cookie";
 
 const styles = theme => ({
   topLeft: {
@@ -192,7 +194,22 @@ class MapTestDrive extends React.Component {
         name: "select_layer_tiles"
       }
     ],
-    activeLayers: ["tiles", "annotations"]
+    activeLayers: ["tiles", "annotations"],
+    askEmail: false
+  };
+
+  handleMouseLeave = () => {
+    console.log("user leaving...");
+    if (
+      !cookie.get("testdrive-subscribed") && 
+      !cookie.get("testdrive-subscription-read") ) {
+      this.setState({ askEmail: true});
+    }
+  }
+
+  handleEmailDialogClose = () => {
+    cookie.set("testdrive-subscription-read", true);
+    this.setState({ askEmail: false });
   };
 
   componentDidMount() {
@@ -277,13 +294,14 @@ class MapTestDrive extends React.Component {
       minZoom,
       layersOpacity,
       layers,
-      activeLayers
+      activeLayers,
+      askEmail
     } = this.state;
 
     const { t, classes } = this.props;
 
     return (
-      <div className="index">
+      <div className="index" onMouseLeave={this.handleMouseLeave}>
         <Head>
           <title>Dymaxion Labs Platform</title>
           <link
@@ -296,6 +314,10 @@ class MapTestDrive extends React.Component {
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
         </Head>
+        <ModalContactEmail 
+          open={askEmail}
+          onClose={this.handleEmailDialogClose}
+        />
         <Map
           viewport={viewport}
           onViewportChanged={this._onMapViewportChanged}

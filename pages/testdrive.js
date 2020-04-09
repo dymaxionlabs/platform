@@ -14,8 +14,6 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
-import ModalContactEmail from "../components/testdrive/ModalContactEmail";
-import cookie from "js-cookie";
 
 const styles = theme => ({
   stepperContent: {
@@ -59,8 +57,7 @@ const hiddenSteps = ["initial", "choose-usecase"];
 class TestDrive extends React.Component {
   state = {
     step: steps[0],
-    apiMode: false,
-    askEmail: false
+    apiMode: false
   };
 
   static async getInitialProps({ query }) {
@@ -80,28 +77,6 @@ class TestDrive extends React.Component {
       this.state.step = step;
     }
   }
-  
-  componentDidMount() {
-    // If user hasn't subscribed yet and haven't seen this modal, show modal
-    if (
-      !cookie.get("testdrive-subscribed") &&
-      !cookie.get("testdrive-subscription-read")
-    ) {
-      this.setState({ askEmail: true });
-    }
-  }
-
-  handleMouseLeave = () => {
-    console.log("user leaving...");
-    if (!cookie.get("testdrive-subscribed")) {
-      this.setState({ askEmail: true});
-    }
-  }
-
-  handleEmailDialogClose = () => {
-    cookie.set("testdrive-subscription-read", true);
-    this.setState({ askEmail: false });
-  };
 
   stepContent() {
     const { token, analytics } = this.props;
@@ -166,14 +141,14 @@ class TestDrive extends React.Component {
 
   render() {
     const { t, classes, ...props } = this.props;
-    const { step, apiMode, askEmail } = this.state;
+    const { step, apiMode } = this.state;
 
     const isHiddenStep = step => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
     const showModeButton = !isHiddenStep(step);
 
     return (
-      <div onMouseLeave={this.handleMouseLeave}>
+      <div>
         <Head>
           <title>{t("header")}</title>
         </Head>
@@ -181,10 +156,6 @@ class TestDrive extends React.Component {
           showModeButton={showModeButton}
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
-        />
-        <ModalContactEmail 
-          open={askEmail}
-          onClose={this.handleEmailDialogClose}
         />
         {this.stepContent()}
         {showStepper && (
