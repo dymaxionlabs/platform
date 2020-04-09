@@ -6,17 +6,17 @@ name = "pypi"
 [packages]
 django = "*"
 python-dotenv = "*"
-django-anymail = {extras = ["mailgun"],version = "*"}
+django-anymail = {version = "*",extras = ["mailgun"]}
 "psycopg2-binary" = "*"
 djangorestframework = "==3.9.4"
 gunicorn = "*"
-django-rest-auth = {extras = ["with_social"],version = "*"}
+django-rest-auth = {version = "*",extras = ["with_social"]}
 django-cors-headers = "*"
 drf-yasg = "*"
 djangorestframework-gis = "*"
 django-jsoneditor = "*"
 django-guardian = "*"
-django-storages = {extras = ["google"],version = "*"}
+django-storages = {version = "*",extras = ["google"]}
 sentry-sdk = "==0.12.3"
 honcho = "*"
 rasterio = "*"
@@ -33,6 +33,7 @@ google-auth-httplib2 = "*"
 google-cloud-pubsub = "*"
 djangorestframework-api-key = "*"
 filetype = "*"
+fiona = "*"
 
 [dev-packages]
 yapf = "*"
