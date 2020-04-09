@@ -25,7 +25,7 @@ class UploadDialog extends React.Component{
     for (const file of files) {
       try {
         await axios.post(
-          buildApiUrl(`/files/upload/${file.name}?project_uuid=${project}`),
+          buildApiUrl(`/files/upload/${file.name}?project=${project}`),
           file,
           {
             headers: {

@@ -31,7 +31,16 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
+  cattle: {
+    name: "Cattle detector",
+    classes: ["red", "black"],
+    var: "cattle_detector"
+  }
+};
+
+let APIContent = ({ classes, t, modelVar, modelName }) => (
   <div>
     <Typography>
       When you have enough annotations and images, you can train your model.
@@ -42,8 +51,8 @@ let APIContent = ({ classes, t }) => (
     <CodeBlock language="python">
       {`from dymaxionlabs.models import Model
 
-pools_detector = Model.get("Pools detector")
-job = pools_detector.train()`}
+${modelVar} = Model.get(${JSON.stringify(modelName)})
+job = ${modelVar}.train()`}
     </CodeBlock>
     <Typography>
       Because training can take hours to complete, the <code>train()</code>{" "}
@@ -74,7 +83,8 @@ APIContent = withNamespaces("testdrive")(APIContent);
 class TrainStep extends React.Component {
   state = {
     finished: false,
-    percentage: 0
+    percentage: 0,
+    currentModel: null
   };
 
   increment = 10;
@@ -82,6 +92,7 @@ class TrainStep extends React.Component {
 
   componentDidMount() {
     setTimeout(() => this.advanceProgressBar(), this.interval);
+    this._loadCurrentModel();
   }
 
   advanceProgressBar() {
@@ -103,6 +114,18 @@ class TrainStep extends React.Component {
     }
   };
 
+  _loadCurrentModel() {
+    const current = window.localStorage.getItem("current");
+    if (!current) {
+      routerReplace("/testdrive");
+      return;
+    }
+    const currentModel = JSON.parse(current);
+    console.debug(currentModel);
+
+    this.setState({ currentModel });
+  }
+
   handleClickContinue() {
     this._trackEvent("TrainStep", "buttonClick");
     routerPush(`/testdrive/select`);
@@ -110,7 +133,13 @@ class TrainStep extends React.Component {
 
   render() {
     const { classes, t, apiMode } = this.props;
-    const { finished, percentage } = this.state;
+    const { currentModel, finished, percentage } = this.state;
+    
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer>
@@ -118,7 +147,10 @@ class TrainStep extends React.Component {
           {t("train_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent
+            modelName={apiContent["name"]}
+            modelVar={apiContent["var"]} 
+          />
         ) : (
           <React.Fragment>
             <Typography>

@@ -83,7 +83,7 @@ class LayersContent extends React.Component {
 
     axios
       .get(buildApiUrl("/layers/"), {
-        params: { project_uuid: projectId },
+        params: { project: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {

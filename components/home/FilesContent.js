@@ -85,7 +85,7 @@ class FilesContent extends React.Component {
 
     axios
       .get(buildApiUrl("/files/"), {
-        params: { project_uuid: projectId },
+        params: { project: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {
@@ -127,7 +127,7 @@ class FilesContent extends React.Component {
     const projectId = cookie.get("project");
     axios
       .get(buildApiUrl(`/files/download/${file.name}`), {
-        params: { project_uuid: projectId },
+        params: { project: projectId },
         headers: { Authorization: this.props.token }
       })
       .then(response => {
