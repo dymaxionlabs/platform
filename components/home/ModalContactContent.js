@@ -6,6 +6,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
+import PropTypes from "prop-types";
 import React from "react";
 import { withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
@@ -15,10 +16,10 @@ class ModalContactContent extends React.Component {
     message: "",
     errorMsg: "",
     successMsg: "",
-    submitting: false,
+    submitting: false
   };
 
-  handleMessageChange = (event) => {
+  handleMessageChange = event => {
     this.setState({ message: event.target.value });
   };
 
@@ -26,7 +27,7 @@ class ModalContactContent extends React.Component {
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: false,
+      submitting: false
     });
   };
 
@@ -39,45 +40,45 @@ class ModalContactContent extends React.Component {
     const { message } = this.state;
 
     const errorMsg = t("new.consult.error_msg", {
-      contactLink: "contact@dymaxionlabs.com",
+      contactLink: "contact@dymaxionlabs.com"
     });
 
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: true,
+      submitting: true
     });
 
     if (message === "") {
       this.setState({
         errorMsg: errorMsg,
         successMsg: "",
-        submitting: false,
+        submitting: false
       });
       return;
     }
 
     try {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
-        headers: { Authorization: token },
+        headers: { Authorization: token }
       });
       const userData = response.data;
 
       await axios.post(buildApiUrl("/contact/"), {
         email: userData.email,
         username: userData.username,
-        message: message,
+        message: message
       });
 
       this.setState({
         successMsg: t("new.consult.success_msg"),
-        message: "",
+        message: ""
       });
 
       setTimeout(() => {
         this.setState({
           successMsg: "",
-          errorMsg: "",
+          errorMsg: ""
         });
         if (onClose) onClose();
       }, 3000);
@@ -87,7 +88,7 @@ class ModalContactContent extends React.Component {
       this.setState({
         errorMsg: errorMsg,
         submitting: false,
-        successMsg: "",
+        successMsg: ""
       });
     }
   };
