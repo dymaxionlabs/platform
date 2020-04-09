@@ -27,7 +27,8 @@ from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
                               StartTrainingJobView, FinishedTraininJobView,
                               StartPredictionJobView,
-                              FinishedPredictionJobView, PredictionJobView)
+                              FinishedPredictionJobView, PredictionJobView,
+                              AnnotationUpload)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileDownloadView, FileViewSet,
                             LayerViewSet, MapViewSet,
@@ -103,6 +104,8 @@ urlpatterns = [
         FinishedPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
         StartPredictionJobView.as_view()),
+    url(r'^estimators/(?P<uuid>[^/]+)/load_labels/?',
+        AnnotationUpload.as_view()),
     url(r'^predictionjob/(?P<pk>[^/]+)$', PredictionJobView.as_view()),
     url(
         r'^api_keys/(?P<prefix>[^/]+)$',
