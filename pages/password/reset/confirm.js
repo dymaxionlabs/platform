@@ -154,10 +154,8 @@ class PasswordResetConfirm extends React.Component {
     }
 
     if (
-      isPasswordValid &&
       this.state.err_pass2_msg === "" &&
-      this.state.pass2 !== this.state.pass1 &&
-      this.state.pass2.length > 0
+      this.state.pass2 !== this.state.pass1
     ) {
       this.setState({
         validForm: false,
