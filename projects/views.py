@@ -316,15 +316,16 @@ class FileDownloadView(APIView):
 
     def get(self, request, filename):
         user = request.user
-        project = request.project
 
         project_param = self.request.query_params.get('project', None)
         if project_param:
-            projects_qs = allowed_projects_for(project.objects, user)
+            projects_qs = allowed_projects_for(Project.objects, user)
             project = projects_qs.filter(uuid=project_param).first()
             if not project:
                 raise ValidationError(
                     {'project': 'Project invalid or not found'})
+        else:
+            project = request.project
 
         if not project:
             raise ValidationError({'project': 'Field is not present'})
