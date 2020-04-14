@@ -1,11 +1,15 @@
 import django_rq
+import json
+import fiona
+import rasterio
 from datetime import datetime, timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rasterio.transform import Affine
+from rasterio.windows import Window
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.models import File
 from projects.permissions import HasAccessToRelatedProjectPermission, HasUserAPIKey
@@ -103,7 +107,7 @@ class SegmentsPerLabelView(APIView):
 
 
 class StartTrainingJobView(APIView):
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
 
     def post(self, request, uuid):
@@ -218,3 +222,71 @@ class PredictionJobView(generics.RetrieveAPIView):
     serializer_class = PredictionJobSerializer
     queryset = PredictionJob.objects.all()
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
+
+
+class AnnotationUpload(APIView):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedEstimatorPermission)
+
+    @classmethod
+    def process_hits(cls, hits, index, transform, label):
+        from shapely.geometry import Polygon
+        segments = []
+        for hit in hits:
+            poly = Polygon(hit[1]['geometry']['coordinates'][0])
+            tmin = ~transform * (poly.bounds[0], poly.bounds[1])
+            tmax = ~transform * (poly.bounds[2], poly.bounds[3])
+            segment = {
+                'x': tmin[0] - index[0],
+                'y': tmin[1] - index[1],
+                'label': label,
+                'width': round(tmax[0] - tmin[0]),
+                'height': round(tmax[1] - tmin[1])
+            }
+            segments.append(segment)
+        return segments
+
+    def post(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        file = File.objects.filter(owner=request.user,
+                                   project__uuid=request.data['project'],
+                                   name=request.data['related_file']).first()
+        if not file:
+            return Response({'related_file': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        meta = json.loads(file.metadata)
+        transform = Affine(meta['transform'][0], meta['transform'][1],
+                           meta['transform'][2], meta['transform'][3],
+                           meta['transform'][4], meta['transform'][5])
+
+        vector_file = File.objects.filter(
+            owner=request.user,
+            project__uuid=request.data['project'],
+            name=request.data['vector_file']).first()
+        if not vector_file:
+            return Response({'vector_file': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        dataset = fiona.open(vector_file.file.path, "r")
+        annotations = []
+        for tile in ImageTile.objects.filter(file=file):
+            win = Window(tile.col_off, tile.row_off, tile.width, tile.height)
+            win_bounds = rasterio.windows.bounds(win, transform)
+            hits = list(
+                dataset.items(bbox=(win_bounds[0], win_bounds[1],
+                                    win_bounds[2], win_bounds[3])))
+            a = Annotation.objects.create(
+                estimator=estimator,
+                image_tile=tile,
+                segments=self.process_hits(hits, (tile.col_off, tile.row_off),
+                                           transform, request.data['label']))
+            annotations.append(a)
+        return Response({'detail': {
+            'annotation_created': len(annotations)
+        }},
+                        status=status.HTTP_200_OK)
