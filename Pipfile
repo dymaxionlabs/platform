@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+django = "==3.0.5"
+djangorestframework = "==3.11"
 python-dotenv = "*"
 django-anymail = {version = "*",extras = ["mailgun"]}
 "psycopg2-binary" = "*"
-djangorestframework = "==3.9.4"
 gunicorn = "*"
 django-rest-auth = {version = "*",extras = ["with_social"]}
 django-cors-headers = "*"
