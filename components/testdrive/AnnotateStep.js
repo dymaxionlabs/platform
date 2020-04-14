@@ -270,12 +270,12 @@ class AnnotateStep extends React.Component {
   }
 
   async componentDidMount() {
+    this._loadCurrentModel();
     await this.fetchEstimator();
     await this.fetchImageTiles();
     await this.fetchAnnotations();
     await this.fetchLabelCount();
     this.setState({ loading: false });
-    this._loadCurrentModel();
   }
 
   async fetchEstimator() {
