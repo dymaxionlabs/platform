@@ -78,6 +78,17 @@ class TestDrive extends React.Component {
     }
   }
 
+  loadApiMode() {
+    var apiMode = (cookie.get("testdrive-api-mode") === "true");
+    if (apiMode != this.state.apiMode) {
+      this.setState({ apiMode });
+    }
+  }
+
+  componentDidMount() {
+    this.loadApiMode();
+  }
+
   stepContent() {
     const { token, analytics } = this.props;
     const { step, apiMode } = this.state;
@@ -136,7 +147,9 @@ class TestDrive extends React.Component {
   }
 
   handleModeButtonClick = () => {
-    this.setState(prevState => ({ apiMode: !prevState.apiMode }));
+    this.setState(prevState => ({ apiMode: !prevState.apiMode }), () => {
+      cookie.set("testdrive-api-mode", this.state.apiMode);
+    });
   };
 
   render() {

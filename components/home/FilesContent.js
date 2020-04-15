@@ -128,7 +128,8 @@ class FilesContent extends React.Component {
     axios
       .get(buildApiUrl(`/files/download/${file.name}`), {
         params: { project: projectId },
-        headers: { Authorization: this.props.token }
+        headers: { Authorization: this.props.token },
+        responseType: 'blob'
       })
       .then(response => {
         FileDownload(response.data, file.name);
