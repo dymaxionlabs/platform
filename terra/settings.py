@@ -277,6 +277,10 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'projects.serializers.UserDetailsSerializer'
 }
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'projects.serializers.UserRegistrationSerializer'
+}
+
 GOOGLE_SDK_BIN_PATH = os.getenv('GOOGLE_SDK_BIN_PATH')
 GOOGLE_CREDENTIALS = os.getenv(
     'GOOGLE_CREDENTIALS', os.path.join(BASE_DIR, '.google_client_secret.json'))

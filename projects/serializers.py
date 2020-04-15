@@ -14,6 +14,8 @@ from terra.emails import EarlyAccessBetaEmail
 from .models import (File, Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile, UserAPIKey)
 
+import rest_auth.registration.serializers
+
 
 class UserProfileSimpleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -211,3 +213,17 @@ class UserAPIKeySerializer(serializers.ModelSerializer):
         model = UserAPIKey
         fields = ('prefix', 'created', 'name', 'user', 'project', 'revoked')
         lookup_field = 'id'
+
+
+class UserRegistrationSerializer(
+        rest_auth.registration.serializers.RegisterSerializer):
+    def get_cleaned_data(self):
+        clean_username = self.validated_data.get('username', '').lower()
+        return {
+            'username': clean_username,
+            'password1': self.validated_data.get('password1', ''),
+            'email': self.validated_data.get('email', '')
+        }
+
+    def save(self, request):
+        return super().save(request)
