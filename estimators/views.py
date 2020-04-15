@@ -133,7 +133,7 @@ class StartTrainingJobView(APIView):
 
 
 class FinishedTraininJobView(APIView):
-    permission_classes = (permissions.IsAuthenticated,
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
 
     def get(self, request, uuid):
