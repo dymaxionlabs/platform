@@ -16,19 +16,8 @@ class ModalContactEmail extends React.Component {
     email: "",
     errorMsg: "",
     successMsg: "",
-    submitting: false,
-    open: false
+    submitting: false
   };
-
-  componentDidMount() {
-    // If user hasn't subscribed yet and haven't seen this modal, show modal
-    if (
-      !cookie.get("testdrive-subscribed") &&
-      !cookie.get("testdrive-subscription-read")
-    ) {
-      this.setState({ open: true });
-    }
-  }
 
   handleEmailChange = event => {
     this.setState({ email: event.target.value });
@@ -40,7 +29,7 @@ class ModalContactEmail extends React.Component {
       event.stopPropagation();
       this.handleSubmit();
     }
-  }
+  };
 
   handleEnter = () => {
     this.setState({
@@ -48,11 +37,6 @@ class ModalContactEmail extends React.Component {
       successMsg: "",
       submitting: false
     });
-  };
-
-  handleClose = () => {
-    cookie.set("testdrive-subscription-read", true);
-    this.setState({ open: false });
   };
 
   handleSubmit = async () => {
@@ -95,7 +79,7 @@ class ModalContactEmail extends React.Component {
           successMsg: "",
           errorMsg: ""
         });
-        this.handleClose();
+        this.props.onClose();
       }, 3000);
     } catch (error) {
       const response = error.response;
@@ -109,13 +93,13 @@ class ModalContactEmail extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
-    const { submitting, open } = this.state;
+    const { t, open, onClose } = this.props;
+    const { submitting } = this.state;
 
     return (
       <Dialog
         onEnter={this.handleEnter}
-        onClose={this.handleClose}
+        onClose={onClose}
         open={open}
         aria-labelledby="form-dialog-title"
       >
@@ -140,15 +124,8 @@ class ModalContactEmail extends React.Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose}>
-            {t("subscribe.cancel_btn")}
-          </Button>
-          <Button
-            color="primary"
-            disabled={submitting}
-            type="submit"
-            className={classes.submit}
-          >
+          <Button onClick={onClose}>{t("subscribe.cancel_btn")}</Button>
+          <Button color="primary" disabled={submitting} type="submit">
             {t("subscribe.submit_btn")}
           </Button>
         </DialogActions>

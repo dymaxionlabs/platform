@@ -14,7 +14,6 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
-import ModalContactEmail from "../components/testdrive/ModalContactEmail";
 import cookie from "js-cookie";
 
 const styles = theme => ({
@@ -163,7 +162,7 @@ class TestDrive extends React.Component {
     const showModeButton = !isHiddenStep(step);
 
     return (
-      <React.Fragment>
+      <div>
         <Head>
           <title>{t("header")}</title>
         </Head>
@@ -172,7 +171,6 @@ class TestDrive extends React.Component {
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}
         />
-        <ModalContactEmail classes={classes} />
         {this.stepContent()}
         {showStepper && (
           <div className={classes.stepperContent}>
@@ -184,7 +182,7 @@ class TestDrive extends React.Component {
           </div>
         )}
         <ContactButton />
-      </React.Fragment>
+      </div>
     );
   }
 }

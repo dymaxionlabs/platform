@@ -218,6 +218,7 @@ class CreateStep extends React.Component {
                   onInput={this.handleNameChange}
                   onChange={this.handleNameChange}
                   value={this.state.name}
+                  autoComplete="off"
                 />
                 <FormHelperText>{t("create_step.name_helper")}</FormHelperText>
               </FormControl>
