@@ -14,6 +14,7 @@ import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
 import { withNamespaces } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
+import cookie from "js-cookie";
 
 const styles = theme => ({
   stepperContent: {
