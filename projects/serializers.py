@@ -224,6 +224,3 @@ class UserRegistrationSerializer(
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', '')
         }
-
-    def save(self, request):
-        return super().save(request)
