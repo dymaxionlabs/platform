@@ -71,6 +71,9 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
+  menuItem: {
+    minWidth: 150,
+  },
   menuButton: {
     marginLeft: 12,
     marginRight: 36
@@ -167,7 +170,7 @@ class Home extends React.Component {
     section: null,
     beta: false,
     contextualMenuOpen: null,
-    userEmail: "",
+    username: "",
     contactModalOpen: false
   };
 
@@ -211,11 +214,11 @@ class Home extends React.Component {
       });
 
       const {
-        email,
+        username,
         profile: { beta }
       } = response.data;
 
-      this.setState({ userEmail: email, beta });
+      this.setState({ username, beta });
 
       if (beta) console.debug("Beta mode enabled");
     } catch (error) {
@@ -257,7 +260,7 @@ class Home extends React.Component {
 
   render() {
     const { t, classes, token } = this.props;
-    const { section, open, beta, contextualMenuOpen, userEmail } = this.state;
+    const { section, open, beta, contextualMenuOpen, username } = this.state;
 
     const sectionList = beta ? sortedSectionsBeta : sortedSections;
     const { contactModalOpen } = this.state;
@@ -335,8 +338,13 @@ class Home extends React.Component {
               open={Boolean(contextualMenuOpen)}
               onClose={this.handleContextualMenuClose}
             >
-              <MenuItem>{userEmail}</MenuItem>
-              <MenuItem onClick={this.profileLogout}>
+              <MenuItem className={classes.menuItem}>
+                {username}
+              </MenuItem>
+              <MenuItem 
+                className={classes.menuItem} 
+                onClick={this.profileLogout}
+              >
                 {t("common:logout_btn")}
                 <ListItemSecondaryAction>
                   <ListItemIcon edge="end" aria-label="logout">
