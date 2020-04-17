@@ -3,6 +3,7 @@ import json
 import fiona
 import os
 import rasterio
+import tempfile
 from datetime import datetime, timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -273,21 +274,28 @@ class AnnotationUpload(APIView):
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        dataset = fiona.open(os.path.relpath(vector_file.file.path), "r")
-        annotations = []
-        for tile in ImageTile.objects.filter(file=file):
-            win = Window(tile.col_off, tile.row_off, tile.width, tile.height)
-            win_bounds = rasterio.windows.bounds(win, transform)
-            hits = list(
-                dataset.items(bbox=(win_bounds[0], win_bounds[1],
-                                    win_bounds[2], win_bounds[3])))
-            a = Annotation.objects.create(
-                estimator=estimator,
-                image_tile=tile,
-                segments=self.process_hits(hits, (tile.col_off, tile.row_off),
-                                           transform, request.data['label']))
-            annotations.append(a)
-        return Response({'detail': {
-            'annotation_created': len(annotations)
-        }},
-                        status=status.HTTP_200_OK)
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            shutil.copyfileobj(vector_file.file, tmpfile)
+
+            dataset = fiona.open(tmpfile, "r")
+            annotations = []
+            for tile in ImageTile.objects.filter(file=file):
+                win = Window(tile.col_off, tile.row_off, tile.width,
+                             tile.height)
+                win_bounds = rasterio.windows.bounds(win, transform)
+                hits = list(
+                    dataset.items(bbox=(win_bounds[0], win_bounds[1],
+                                        win_bounds[2], win_bounds[3])))
+                a = Annotation.objects.create(estimator=estimator,
+                                              image_tile=tile,
+                                              segments=self.process_hits(
+                                                  hits,
+                                                  (tile.col_off, tile.row_off),
+                                                  transform,
+                                                  request.data['label']))
+                annotations.append(a)
+            return Response(
+                {'detail': {
+                    'annotation_created': len(annotations)
+                }},
+                status=status.HTTP_200_OK)
