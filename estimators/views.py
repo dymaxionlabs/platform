@@ -273,7 +273,7 @@ class AnnotationUpload(APIView):
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        dataset = fiona.open(os.path.relpath(vector_file.file.url), "r")
+        dataset = fiona.open(os.path.relpath(vector_file.file.path), "r")
         annotations = []
         for tile in ImageTile.objects.filter(file=file):
             win = Window(tile.col_off, tile.row_off, tile.width, tile.height)
