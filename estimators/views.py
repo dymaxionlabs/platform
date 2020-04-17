@@ -3,6 +3,7 @@ import json
 import fiona
 import os
 import rasterio
+import shutil
 import tempfile
 from datetime import datetime, timezone
 from django.conf import settings
