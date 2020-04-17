@@ -1,6 +1,7 @@
 import django_rq
 import json
 import fiona
+import os
 import rasterio
 from datetime import datetime, timezone
 from django.conf import settings
@@ -272,7 +273,7 @@ class AnnotationUpload(APIView):
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        dataset = fiona.open(vector_file.file.path, "r")
+        dataset = fiona.open(os.path.relpath(vector_file.file.url), "r")
         annotations = []
         for tile in ImageTile.objects.filter(file=file):
             win = Window(tile.col_off, tile.row_off, tile.width, tile.height)

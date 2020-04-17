@@ -260,7 +260,7 @@ class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedProjectFilesPermission)
     lookup_field = 'name'
-    lookup_value_regex = r'[\w.]+'
+    lookup_value_regex = r'[\w\-.]+'
 
     def get_queryset(self):
         # Also return files from user that are not associated with a project
