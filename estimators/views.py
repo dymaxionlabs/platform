@@ -278,7 +278,7 @@ class AnnotationUpload(APIView):
         with tempfile.NamedTemporaryFile() as tmpfile:
             shutil.copyfileobj(vector_file.file, tmpfile)
 
-            dataset = fiona.open(tmpfile, "r")
+            dataset = fiona.open(tmpfile.name, "r")
             annotations = []
             for tile in ImageTile.objects.filter(file=file):
                 win = Window(tile.col_off, tile.row_off, tile.width,
