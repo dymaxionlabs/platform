@@ -108,9 +108,7 @@ def constrain_and_scale(coord, max_value):
     return round((min(max(coord, 0), 600) / 600) * max_value)
 
 
-def generate_annotations_csv(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator)
-
+def build_annotations_csv_rows(annotations):
     rows = []
     for annotation in annotations:
         tile = annotation.image_tile
@@ -128,6 +126,13 @@ def generate_annotations_csv(job):
                 basename=os.path.basename(tile.tile_file.name))
             row['label'] = s['label']
             rows.append(row)
+    return rows
+
+
+def generate_annotations_csv(job):
+    annotations = Annotation.objects.filter(estimator=job.estimator)
+
+    rows = build_annotations_csv_rows(annotations)
 
     rows_train, rows_val = train_val_split_rows(rows)
 
