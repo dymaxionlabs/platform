@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'quotations.apps.QuotationsConfig',
     'estimators.apps.EstimatorsConfig',
+    'storage.apps.StorageConfig',
     #'tasks.apps.TasksConfig',
     'rest_framework',
     'rest_framework_gis',
