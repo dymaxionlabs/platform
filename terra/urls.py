@@ -132,5 +132,6 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += swagger_urls
 
+urlpatterns += [path('storage/', include('storage.urls'))]
 urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
