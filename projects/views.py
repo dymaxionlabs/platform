@@ -34,6 +34,27 @@ from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
                           UserSerializer, UserAPIKeySerializer)
 
 
+class RelatedProjectAPIView(APIView):
+    def get_project(self):
+        user = self.request.user
+
+        if hasattr(self.request, 'project'):
+            project = self.request.project
+
+        project_param = self.request.query_params.get('project', None)
+        if project_param:
+            projects_qs = allowed_projects_for(Project.objects, user)
+            project = projects_qs.filter(uuid=project_param).first()
+            if not project:
+                raise ValidationError(
+                    {'project': 'Project invalid or not found'})
+
+        if not project:
+            raise ValidationError({'project': 'Field is not present'})
+
+        return project
+
+
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
