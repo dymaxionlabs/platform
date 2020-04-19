@@ -95,13 +95,13 @@ class File:
         self.blob.delete()
         self.deleted = True
 
-    def __repr__(self):
-        return "<File {name}{deleted}>".format(
-            name=self.name, deleted=" deleted" if self.deleted else "")
-
     @property
-    def name(self):
+    def path(self):
         return "/".join(self.blob.name.split("/")[1:])
+
+    def __repr__(self):
+        return "<File path={path}{deleted}>".format(
+            name=self.name, deleted=" deleted" if self.deleted else "")
 
 
 def upload_directory(rootdir, *, client):
