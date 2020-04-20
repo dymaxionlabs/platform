@@ -163,14 +163,15 @@ class Annotation(models.Model):
             bbox = box(*hit_shape.bounds)
             inter_bbox = window_box.intersection(bbox)
             inter_bbox_bounds = inter_bbox.bounds
-            tmin = ~transform * (inter_bbox_bounds[0], inter_bbox_bounds[1])
-            tmax = ~transform * (inter_bbox_bounds[2], inter_bbox_bounds[3])
-            segment = dict(x=tmin[0] - index[0],
-                           y=tmin[1] - index[1],
-                           width=round(tmax[0] - tmin[0]),
-                           height=round(tmin[1] - tmax[1]),
+            minx, maxy = ~transform * (inter_bbox_bounds[0], inter_bbox_bounds[1])
+            maxx, miny = ~transform * (inter_bbox_bounds[2], inter_bbox_bounds[3])
+            segment = dict(x=minx - index[0],
+                           y=miny - index[1],
+                           width=round(maxx - minx),
+                           height=round(maxy - miny),
                            label=label)
-            segments.append(segment)
+            if segment['width'] > 0 and segment['height'] > 0:
+                segments.append(segment)
         return segments
 
     def __str__(self):
