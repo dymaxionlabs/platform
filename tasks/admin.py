@@ -12,12 +12,12 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'status',
+        'state',
         'created_at',
         'finished_at',
     )
     list_filter = (
-        'status',
+        'state',
         'finished_at',
         'name',
     )
