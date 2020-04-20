@@ -40,7 +40,10 @@ class Task(models.Model):
 
     def start(self):
         if self.state == states.PENDING:
-            django_rq.enqueue(self.name, *self.args, **self.kwargs)
+            django_rq.enqueue(self.name,
+                              task_id=self.id,
+                              args=self.args,
+                              kwargs=self.kwargs)
             self.state = states.STARTED
             self.save(update_fields=['state', 'updated_at'])
             return True
@@ -58,7 +61,13 @@ class Task(models.Model):
         return self.state == states.PROGRESS
 
     def has_finished(self):
-        return self.state == status.FINISHED
+        return self.state == states.FINISHED
 
     def has_failed(self):
-        return self.state == status.FAILED
+        return self.state == states.FAILED
+
+    def update_status(self, status):
+        if self.metadata is None:
+            self.metadata = {}
+        self.metadata['status'] = str(status)
+        self.save(update_fields=['status', 'updated_at'])
