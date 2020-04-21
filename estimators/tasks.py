@@ -20,6 +20,8 @@ from projects.models import File
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
 
+IMAGE_TILE_SIZE = 500
+
 
 @job("default", timeout=3600)
 def generate_image_tiles(file_pk):
@@ -41,7 +43,7 @@ def generate_image_tiles(file_pk):
                 print("WARNING: Raster has {} bands. " \
                     "Going to assume first 3 bands are RGB...".format(ds.count))
 
-            size = (500, 500)
+            size = (IMAGE_TILE_SIZE, IMAGE_TILE_SIZE)
             windows = list(sliding_windows(size, size, ds.width, ds.height))
 
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -105,21 +107,24 @@ def constrain_and_scale(coord, max_value):
     # FIXME !! When Analytics starts saving annotations with scaled coordinates
     # (from 0 to 1), replace with:
     # return round(min(max(coord, 0), 1) * max_value)
-    return round((min(max(coord, 0), 600) / 600) * max_value)
+    # if coord < 0 or coord > IMAGE_TILE_SIZE:
+    #     import pdb
+    #     pdb.set_trace()
+    #     pass
+    return round(
+        (min(max(coord, 0), IMAGE_TILE_SIZE) / IMAGE_TILE_SIZE) * max_value)
 
 
-def generate_annotations_csv(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator)
-
+def build_annotations_csv_rows(annotations):
     rows = []
     for annotation in annotations:
         tile = annotation.image_tile
         w, h = tile.width, tile.height
         for s in annotation.segments:
+            print(annotation, s)
             row = {}
             x1, x2 = sorted([s['x'], s['x'] + s['width']])
             y1, y2 = sorted([s['y'], s['y'] + s['height']])
-            analytics_tile_size = 600
             row['x1'] = constrain_and_scale(x1, w)
             row['x2'] = constrain_and_scale(x2, w)
             row['y1'] = constrain_and_scale(y1, h)
@@ -128,6 +133,13 @@ def generate_annotations_csv(job):
                 basename=os.path.basename(tile.tile_file.name))
             row['label'] = s['label']
             rows.append(row)
+    return rows
+
+
+def generate_annotations_csv(job):
+    annotations = Annotation.objects.filter(estimator=job.estimator)
+
+    rows = build_annotations_csv_rows(annotations)
 
     rows_train, rows_val = train_val_split_rows(rows)
 

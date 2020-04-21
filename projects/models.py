@@ -91,8 +91,9 @@ class ProjectInvitationToken(models.Model):
 
 
 def user_images_path(instance, filename):
-    return 'user_{user_id}/{filename}'.format(user_id=instance.owner.id,
-                                              filename=filename)
+    return 'user_{user_id}/{path}/{filename}'.format(user_id=instance.owner.id,
+                                                     path=instance.path,
+                                                     filename=filename)
 
 
 class File(models.Model):
@@ -106,6 +107,7 @@ class File(models.Model):
                                 blank=True,
                                 null=True)
 
+    path = models.CharField(default="", max_length=512)
     file = models.FileField(upload_to=user_images_path)
     name = models.CharField(max_length=255)
     metadata = JSONField(null=True, blank=True)

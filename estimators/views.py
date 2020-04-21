@@ -1,10 +1,5 @@
 import django_rq
 import json
-import fiona
-import os
-import rasterio
-import shutil
-import tempfile
 from datetime import datetime, timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -12,7 +7,6 @@ from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rasterio.transform import Affine
-from rasterio.windows import Window
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.models import File
 from projects.permissions import HasAccessToRelatedProjectPermission, HasUserAPIKey
@@ -231,24 +225,6 @@ class AnnotationUpload(APIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
 
-    @classmethod
-    def process_hits(cls, hits, index, transform, label):
-        from shapely.geometry import Polygon
-        segments = []
-        for hit in hits:
-            poly = Polygon(hit[1]['geometry']['coordinates'][0])
-            tmin = ~transform * (poly.bounds[0], poly.bounds[1])
-            tmax = ~transform * (poly.bounds[2], poly.bounds[3])
-            segment = {
-                'x': tmin[0] - index[0],
-                'y': tmin[1] - index[1],
-                'label': label,
-                'width': round(tmax[0] - tmin[0]),
-                'height': round(tmax[1] - tmin[1])
-            }
-            segments.append(segment)
-        return segments
-
     def post(self, request, uuid):
         estimator = Estimator.objects.get(uuid=uuid)
         if not estimator:
@@ -275,28 +251,14 @@ class AnnotationUpload(APIView):
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            shutil.copyfileobj(vector_file.file, tmpfile)
+        annotations = Annotation.import_from_vector_file(
+            vector_file,
+            file,
+            estimator=estimator,
+            label=request.data['label'],
+            transform=transform)
 
-            dataset = fiona.open(tmpfile.name, "r")
-            annotations = []
-            for tile in ImageTile.objects.filter(file=file):
-                win = Window(tile.col_off, tile.row_off, tile.width,
-                             tile.height)
-                win_bounds = rasterio.windows.bounds(win, transform)
-                hits = list(
-                    dataset.items(bbox=(win_bounds[0], win_bounds[1],
-                                        win_bounds[2], win_bounds[3])))
-                a = Annotation.objects.create(estimator=estimator,
-                                              image_tile=tile,
-                                              segments=self.process_hits(
-                                                  hits,
-                                                  (tile.col_off, tile.row_off),
-                                                  transform,
-                                                  request.data['label']))
-                annotations.append(a)
-            return Response(
-                {'detail': {
-                    'annotation_created': len(annotations)
-                }},
-                status=status.HTTP_200_OK)
+        return Response({'detail': {
+            'annotation_created': len(annotations)
+        }},
+                        status=status.HTTP_200_OK)
