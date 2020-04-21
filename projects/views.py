@@ -343,11 +343,7 @@ class FileDownloadView(APIView):
         with tempfile.NamedTemporaryFile() as tmpfile:
             shutil.copyfileobj(file.file, tmpfile)
             src = tmpfile.name
-            response = FileResponse(open(src, 'rb'),
-                                    as_attachment=True,
-                                    filename=filename)
-            response['X-Accel-Redirect'] = "/protected/{}".format(filename)
-            return response
+            return FileResponse(open(src, 'rb'))
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
