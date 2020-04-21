@@ -233,6 +233,11 @@ def upload_prediction_image_tiles(job):
 
 
 def run_cloudml(job, script_name):
+    epochs = settings.CLOUDML_DEAULT_EPOCHS
+    if job.estimator.configuration is not None:
+        if 'training_hours' in job.estimator.configuration:
+            epochs = job.estimator.configuration['training_hours'] * 6
+
     p = subprocess.Popen(
         [script_name],
         env={
@@ -257,7 +262,9 @@ def run_cloudml(job, script_name):
             'SENTRY_SDK':
             os.environ['SENTRY_DNS'],
             'SENTRY_ENVIRONMENT':
-            os.environ['SENTRY_ENVIRONMENT']
+            os.environ['SENTRY_ENVIRONMENT'],
+            'EPOCHS':
+            epochs,
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)
