@@ -101,7 +101,7 @@ class File:
 
     def __repr__(self):
         return "<File path={path}{deleted}>".format(
-            name=self.name, deleted=" deleted" if self.deleted else "")
+            path=self.path, deleted=" deleted" if self.deleted else "")
 
 
 def upload_directory(rootdir, *, client):
