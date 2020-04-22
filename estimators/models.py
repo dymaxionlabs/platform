@@ -39,6 +39,7 @@ class Estimator(models.Model):
                                       default=OBJECT_DETECTION)
     name = models.CharField(_('name'), max_length=255)
     classes = ArrayField(models.CharField(max_length=32), default=list)
+    configuration = JSONField(null=True, blank=True)
     metadata = JSONField(null=True, blank=True)
     image_files = models.ManyToManyField(File,
                                          related_name='files',
@@ -163,8 +164,10 @@ class Annotation(models.Model):
             bbox = box(*hit_shape.bounds)
             inter_bbox = window_box.intersection(bbox)
             inter_bbox_bounds = inter_bbox.bounds
-            minx, maxy = ~transform * (inter_bbox_bounds[0], inter_bbox_bounds[1])
-            maxx, miny = ~transform * (inter_bbox_bounds[2], inter_bbox_bounds[3])
+            minx, maxy = ~transform * (inter_bbox_bounds[0],
+                                       inter_bbox_bounds[1])
+            maxx, miny = ~transform * (inter_bbox_bounds[2],
+                                       inter_bbox_bounds[3])
             segment = dict(x=minx - index[0],
                            y=miny - index[1],
                            width=round(maxx - minx),
