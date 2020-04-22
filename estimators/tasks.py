@@ -264,7 +264,7 @@ def run_cloudml(job, script_name):
             'SENTRY_ENVIRONMENT':
             os.environ['SENTRY_ENVIRONMENT'],
             'EPOCHS':
-            str(epochs),
+            str(round(epochs)),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)
