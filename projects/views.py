@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import FileResponse
-from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from mailchimp3 import MailChimp
 from rest_auth.registration.views import RegisterView
@@ -344,13 +343,7 @@ class FileDownloadView(APIView):
         with tempfile.NamedTemporaryFile() as tmpfile:
             shutil.copyfileobj(file.file, tmpfile)
             src = tmpfile.name
-
-            response = HttpResponse(open(src, 'rb'),
-                                    content_type='application/force-download')
-            response[
-                'Content-Disposition'] = 'attachment; filename="{}"'.format(
-                    filename)
-            return response
+            return FileResponse(open(src, 'rb'))
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
