@@ -340,10 +340,34 @@ class FileDownloadView(APIView):
         if not file:
             raise NotFound(detail=None, code=None)
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            shutil.copyfileobj(file.file, tmpfile)
-            src = tmpfile.name
-            return FileResponse(open(src, 'rb'))
+        return self.try_download_file(file)
+
+    def try_download_file(self, file):
+        # Copy file from storage to a temporary file
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        shutil.copyfileobj(file.file, tmp)
+        tmp.close()
+
+        try:
+            # Reopen temporary file as binary for streaming download
+            stream_file = open(tmp.name, 'rb')
+
+            # Monkey patch .close method so that file is removed after closing it
+            # i.e. when response finishes
+            original_close = stream_file.close
+            def new_close():
+                original_close()
+                os.remove(tmp.name)
+            stream_file.close = new_close
+
+            return FileResponse(stream_file,
+                                as_attachment=True,
+                                filename=file.name)
+        except Exception as err:
+            # Make sure to remove temp file
+            os.remove(tmp.name)
+            raise APIException(err)
+
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
