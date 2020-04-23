@@ -1,6 +1,6 @@
 from django.conf.urls import url
-from storage.views import List
+from storage.views import ListFile
 
 urlpatterns = [
-    url('', List.as_view(), name='index'),
+    url(r'^files/?', ListFile.as_view(), name='index'),
 ]

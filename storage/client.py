@@ -14,7 +14,7 @@ class Client:
         self._client = None
         self._bucket = None
 
-    def list_files(self, glob_path=""):
+    def list_files(self, glob_path="*"):
         clean_path = glob_path.lstrip(" /").rstrip()
         prefix = clean_path.split("*")[0]
         full_prefix = os.path.join(self._prefix, prefix)
@@ -23,7 +23,7 @@ class Client:
                                        prefix=full_prefix,
                                        versions=False)
         files = (File(blob) for blob in blobs)
-        return (f for f in files if fnmatch(f.name, clean_path))
+        return (f for f in files if fnmatch(f.path, clean_path))
 
     def upload_from_filename(self, filename, to='', content_type=None):
         full_path = self._get_path(to, filename=filename)

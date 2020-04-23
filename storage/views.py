@@ -16,7 +16,7 @@ from .client import Client
 from .serializers import FileSerializer
 
 
-class List(RelatedProjectAPIView):
+class ListFile(RelatedProjectAPIView):
     """
     View to list all files in the projects container
     """
@@ -42,7 +42,7 @@ class List(RelatedProjectAPIView):
         """
         # TODO Pagination
         project = self.get_project()
-        path = request.query_params.get('path', '')
+        path = request.query_params.get('path', '*')
 
         client = Client(project)
         files = client.list_files(path)
