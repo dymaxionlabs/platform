@@ -25,7 +25,6 @@ from rest_framework.routers import SimpleRouter
 
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
-                              StartTrainingJobView, FinishedTraininJobView,
                               StartPredictionJobView,
                               FinishedPredictionJobView, PredictionJobView,
                               AnnotationUpload)
@@ -36,6 +35,7 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             SubscribeBetaView, TestAuthView, TestErrorView,
                             TestTaskErrorView, UserProfileViewSet, UserViewSet,
                             UserAPIKeyViewSet, SubscribeApiBetaView)
+from tasks.views import StartTrainingJobView, FinishedTraininJobView
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 

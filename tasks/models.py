@@ -11,8 +11,7 @@ from . import states
 
 
 class Task(models.Model):
-    ALL_STATES = sorted(
-        ['PENDING', 'STARTED', 'PROGRESS', 'FINISHED', 'FAILED'])
+    ALL_STATES = sorted(['PENDING', 'STARTED', 'FINISHED', 'FAILED'])
     TASK_STATE_CHOICES = sorted(zip(ALL_STATES, ALL_STATES))
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -58,7 +57,7 @@ class Task(models.Model):
         self.start()
 
     def is_running(self):
-        return self.state == states.PROGRESS
+        return self.state == states.STARTED
 
     def has_finished(self):
         return self.state == states.FINISHED

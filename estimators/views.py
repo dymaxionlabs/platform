@@ -103,6 +103,8 @@ class SegmentsPerLabelView(APIView):
                         status=status.HTTP_200_OK)
 
 
+#TODO: Delete this method
+"""
 class StartTrainingJobView(APIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
@@ -117,7 +119,6 @@ class StartTrainingJobView(APIView):
                                          finished=False).first()
         if not job:
             job = TrainingJob.objects.create(estimator=estimator)
-
             # Send email
             user = request.user
             email = TrainingStartedEmail(estimator=estimator,
@@ -127,8 +128,8 @@ class StartTrainingJobView(APIView):
 
         serializer = TrainingJobSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
-
-
+"""
+"""
 class FinishedTraininJobView(APIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
@@ -149,6 +150,7 @@ class FinishedTraininJobView(APIView):
                                        settings.APROX_JOBS_TIME)
 
         return Response(data, status=status.HTTP_200_OK)
+"""
 
 
 class StartPredictionJobView(APIView):

@@ -19,7 +19,7 @@ from skimage.io import imsave
 from projects.models import File
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
-
+from tasks.models import Task
 IMAGE_TILE_SIZE = 500
 
 
@@ -87,8 +87,8 @@ def write_image(img, path):
 
 
 @job("default")
-def start_training_job(training_job_pk):
-    job = TrainingJob.objects.get(pk=training_job_pk)
+def start_training_job(task_id):
+    job = Task.objects.get(pk=task_id)
     annotation_csvs = generate_annotations_csv(job)
     classes_csv = generate_classes_csv(job)
     upload_image_tiles(job)
@@ -137,7 +137,8 @@ def build_annotations_csv_rows(annotations):
 
 
 def generate_annotations_csv(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator)
+    annotations = Annotation.objects.filter(
+        estimator__uuid=job.internal_metadata["estimator"])
 
     rows = build_annotations_csv_rows(annotations)
 
@@ -153,7 +154,7 @@ def generate_annotations_csv(job):
 
 
 def generate_classes_csv(job):
-    estimator = job.estimator
+    estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
     rows = [
         dict(label=label, class_id=i)
         for i, label in enumerate(estimator.classes)
@@ -180,7 +181,8 @@ def run_subprocess(cmd):
 
 
 def upload_image_tiles(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator).all()
+    annotations = Annotation.objects.filter(
+        estimator__uuid=job.internal_metadata["estimator"]).all()
     image_tiles = [a.image_tile for a in annotations]
 
     image_tile_urls = [
