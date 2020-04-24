@@ -32,14 +32,17 @@ class StartTrainingJobView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
                                   internal_metadata__estimator=str(
-                                      estimator.uuid)).first()
+                                      estimator.uuid),
+                                  name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
             job = Task.objects.create(
-                name="estimators.tasks.start_training_job",
+                name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
+                external=True,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
             # Send email
+            #TODO: Delete this comments before merge
             """
             user = request.user
             email = TrainingStartedEmail(estimator=estimator,
@@ -51,30 +54,51 @@ class StartTrainingJobView(APIView):
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
 
-class FinishedTraininJobView(APIView):
+class StartPredictionJobView(APIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedEstimatorPermission)
 
-    def get(self, request, uuid):
+    def post(self, request, uuid):
         estimator = Estimator.objects.get(uuid=uuid)
         if not estimator:
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        pending_task = Task.objects.filter(
-            Q(state='STARTED') | Q(state='PENDING'),
-            internal_metadata__estimator=str(estimator.uuid)).first()
-        if pending_task is None:
-            #TODO Como chequear el estado de una tarea terminada, tal vez sea mejor con el id de tarea y no con el uuid de estimador
-            last_finished_job = Task.objects.filter(
-                internal_metadata__estimator=str(estimator.uuid)).last()
-            data = {'detail': last_finished_job.state}
-        else:
-            #A pending job exists
-            data = {'detail': pending_task.state}
-            now = datetime.now(timezone.utc)
-            dif_minutes = (now - pending_task.created_at).total_seconds() / 60
-            data['percentage'] = round(dif_minutes * 100 /
-                                       settings.APROX_JOBS_TIME)
+        last_training_job = Task.objects.filter(
+            internal_metadata__estimator=str(estimator.uuid),
+            state='FINISHED',
+            name=Estimator.TRAINING_JOB_TASK).last()
+        if not last_training_job:
+            return Response({'training_job': _('Not found')},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data, status=status.HTTP_200_OK)
+        job = Task.objects.filter(internal_metadata__estimator=str(
+            estimator.uuid),
+                                  state='FINISHED',
+                                  name=Estimator.PREDICTION_JOB_TASK).first()
+
+        if not job:
+            files = File.objects.filter(name__in=request.data.get('files'),
+                                        project=estimator.project,
+                                        owner=request.user)
+            job = Task.objects.create(name=Estimator.PREDICTION_JOB_TASK,
+                                      project=estimator.project,
+                                      external=True,
+                                      internal_metadata={
+                                          'estimator': str(estimator.uuid),
+                                          'training_job': last_training_job.pk,
+                                          'image_files':
+                                          request.data.get('files')
+                                      })
+
+            # Send email
+            #TODO: Delete this comments before merge
+            """
+            user = request.user
+            email = PredictionStartedEmail(estimator=estimator,
+                                           recipients=[user.email],
+                                           language_code='es')
+            email.send_mail()
+            """
+        serializer = TaskSerializer(job)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)

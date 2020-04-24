@@ -70,3 +70,9 @@ class Task(models.Model):
             self.metadata = {}
         self.metadata['status'] = str(status)
         self.save(update_fields=['status', 'updated_at'])
+
+
+class TaskLogEntry(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    logged_at = models.DateTimeField()
+    log = JSONField()

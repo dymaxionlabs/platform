@@ -25,8 +25,6 @@ from rest_framework.routers import SimpleRouter
 
 from estimators.views import (AnnotationViewSet, EstimatorViewSet,
                               ImageTileViewSet, SegmentsPerLabelView,
-                              StartPredictionJobView,
-                              FinishedPredictionJobView, PredictionJobView,
                               AnnotationUpload)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
                             FileUploadView, FileDownloadView, FileViewSet,
@@ -35,7 +33,7 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             SubscribeBetaView, TestAuthView, TestErrorView,
                             TestTaskErrorView, UserProfileViewSet, UserViewSet,
                             UserAPIKeyViewSet, SubscribeApiBetaView)
-from tasks.views import TaskViewSet, StartTrainingJobView, FinishedTraininJobView
+from tasks.views import TaskViewSet, StartTrainingJobView, StartPredictionJobView
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -99,15 +97,10 @@ urlpatterns = [
         SegmentsPerLabelView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/train/?',
         StartTrainingJobView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/finished/?',
-        FinishedTraininJobView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/predicted/?',
-        FinishedPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
         StartPredictionJobView.as_view()),
     url(r'^estimators/(?P<uuid>[^/]+)/load_labels/?',
         AnnotationUpload.as_view()),
-    url(r'^predictionjob/(?P<pk>[^/]+)$', PredictionJobView.as_view()),
     url(
         r'^api_keys/(?P<prefix>[^/]+)$',
         UserAPIKeyViewSet.as_view(),
