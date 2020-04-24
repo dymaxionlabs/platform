@@ -4,13 +4,21 @@ from django.db.models import Q
 from django.shortcuts import render
 from estimators.models import Estimator
 from estimators.permissions import HasAccessToRelatedEstimatorPermission
+from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import HasAccessToRelatedProjectPermission, HasUserAPIKey
-from rest_framework import permissions, status
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 from terra.emails import TrainingStartedEmail, PredictionStartedEmail
+
+
+class TaskViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
+    queryset = Task.objects.all().order_by('-created_at')
+    serializer_class = TaskSerializer
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
 
 
 class StartTrainingJobView(APIView):

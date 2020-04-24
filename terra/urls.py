@@ -35,7 +35,7 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             SubscribeBetaView, TestAuthView, TestErrorView,
                             TestTaskErrorView, UserProfileViewSet, UserViewSet,
                             UserAPIKeyViewSet, SubscribeApiBetaView)
-from tasks.views import StartTrainingJobView, FinishedTraininJobView
+from tasks.views import TaskViewSet, StartTrainingJobView, FinishedTraininJobView
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -51,6 +51,7 @@ router.register(r'annotations', AnnotationViewSet)
 router.register(r'image_tiles', ImageTileViewSet)
 router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
+router.register(r'tasks', TaskViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
