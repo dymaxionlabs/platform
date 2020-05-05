@@ -195,11 +195,11 @@ def upload_image_tiles(job):
         for t in image_tiles
     ]
 
-    seq = zip(image_file_names, image_tile_urls)
-    seq.sort(key=itemgetter(0))
+    seq = sorted(zip(image_file_names, image_tile_urls), key=itemgetter(0))
     groups = groupby(seq, itemgetter(0))
 
     for img_file_name, urls in groups:
+        urls = [url for _, url in urls]
         dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
         run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
