@@ -5,6 +5,8 @@ import random
 import shutil
 import subprocess
 import tempfile
+from itertools import groupby
+from operator import itemgetter
 
 import numpy as np
 import rasterio
@@ -185,15 +187,24 @@ def upload_image_tiles(job):
 
     image_tile_urls = [
         'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
-                                      name=os.path.join(t.file.name, t.tile_file.name))
+                                      name=t.tile_file.name)
+        for t in image_tiles
+    ]
+    image_file_names = [
+        os.path.dirname(t.tile_file.name).split("/")[-1]
         for t in image_tiles
     ]
 
-    url = os.path.join(job.artifacts_url, 'img/')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=' '.join(image_tile_urls),
-        dst=url))
+    seq = zip(image_file_names, image_tile_urls)
+    seq.sort(key=itemgetter(0))
+    groups = groupby(seq, itemgetter(0))
+
+    for img_file_name, urls in groups:
+        dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+            src=' '.join(urls),
+            dst=dst_url))
 
 
 def upload_prediction_image_tiles(job):
