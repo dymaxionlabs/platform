@@ -130,7 +130,7 @@ def build_annotations_csv_rows(annotations):
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
             row['tile_path'] = 'img/{basename}'.format(
-                basename=os.path.basename(tile.tile_file.name))
+                basename=os.path.join(tile.file.name, os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
@@ -185,7 +185,7 @@ def upload_image_tiles(job):
 
     image_tile_urls = [
         'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
-                                      name=t.tile_file.name)
+                                      name=os.path.join(t.file.name, t.tile_file.name))
         for t in image_tiles
     ]
 
