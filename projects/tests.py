@@ -17,6 +17,14 @@ def create_some_project(*, owners, **data):
     return project
 
 
+def create_some_api_key(name='Default', *, user, project):
+    return UserAPIKey.objects.create_key(name=name, user=user, project=project)
+
+
+def login_with_api_key(client, api_key):
+    self.client.credentials(HTTP_AUTHORIZATION=f'Api-Key {api_key}')
+
+
 class LoginViewTest(TestCase):
     def setUp(self):
         self.test_user = User(email="test@prueba.com", username='test')
@@ -308,7 +316,7 @@ class UserAPIKeyViewTest(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 0)
 
-    def create_some_api_key(self, name='Default', user=None, project=None):
-        return UserAPIKey.objects.create_key(name=name,
-                                             user=user or self.user,
-                                             project=project or self.project)
+    def create_some_api_key(self, **kwargs):
+        new_kwargs = dict(user=self.user, project=self.project)
+        new_kwargs.update(**kwargs)
+        return create_some_api_key(**new_kwargs)
