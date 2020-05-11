@@ -3,6 +3,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import NotFound
+from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView, Response
@@ -14,6 +15,14 @@ from projects.views import RelatedProjectAPIView
 
 from .client import Client
 from .serializers import FileSerializer
+
+
+class StorageAPIView(RelatedProjectAPIView):
+    permission_classes = (HasUserAPIKey | IsAuthenticated, )
+
+    def get_client(self):
+        project = self.get_project()
+        return Client(project)
 
 
 class ListFile(RelatedProjectAPIView):
@@ -50,3 +59,18 @@ class ListFile(RelatedProjectAPIView):
         if not files:
             return Response(files, status=status.HTTP_204_NO_CONTENT)
         return Response(files)
+
+
+class UploadFile(StorageAPIView):
+    """
+    View for uploading a file
+    """
+
+    parser_classes = (FileUploadParser, )
+
+    def post(self, request, filename):
+        client = self.get_client()
+        file = client.upload_from_file(request.data['file'],
+                                       to=request.query_params.get('to', ''),
+                                       content_type=request.content_type)
+        return Response({'detail': file}, status=status.HTTP_200_OK)
