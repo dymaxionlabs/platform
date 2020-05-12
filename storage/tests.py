@@ -54,3 +54,11 @@ class UploadFileTest(TestCase):
         self.assertEqual(
             response.data['detail'],
             dict(name=os.path.basename(path), path=path, metadata={}))
+
+    def test_path_missing(self):
+        f = io.BytesIO(b"some initial binary data: \x00\x01")
+        response = self.client.post(f'/storage/upload/',
+                                    dict(file=f),
+                                    format='multipart')
+        self.assertEquals(400, response.status_code)
+        self.assertEqual(response.data['detail'], "'path' missing")
