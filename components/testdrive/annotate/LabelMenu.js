@@ -1,10 +1,7 @@
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Popover from "@material-ui/core/Popover";
-import Divider from "@material-ui/core/Divider";
 import React from "react";
 import { withNamespaces } from "../../../i18n";
+
+import { List, ListItem, ListItemText, Popover, Divider } from '@material-ui/core';
 
 class LabelMenu extends React.Component {
   render() {

@@ -1,12 +1,12 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import { Link, withNamespaces } from "../../i18n";
 import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery.js";
 import CodeBlock from "../CodeBlock";
+
+import { Button, Typography } from '@material-ui/core';
 
 const styles = theme => ({
   header: {

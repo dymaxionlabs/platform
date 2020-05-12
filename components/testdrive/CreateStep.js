@@ -1,17 +1,20 @@
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
 import { Link, withNamespaces } from "../../i18n";
 import { routerPush, routerReplace } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
-import Snackbar from "@material-ui/core/Snackbar";
 import CodeBlock from "../CodeBlock";
+
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  Input,
+  InputLabel,
+  Typography,
+  Snackbar,
+} from '@material-ui/core';
 
 const styles = theme => ({
   header: {

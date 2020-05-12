@@ -1,18 +1,4 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
@@ -39,6 +25,23 @@ import { i18n, Link, withNamespaces } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout, withAuthSync } from "../../utils/auth";
 import { routerReplace } from "../../utils/router";
+
+import {
+  AppBar,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 
 const drawerWidth = 200;
 

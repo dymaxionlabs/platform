@@ -1,15 +1,4 @@
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import IconButton from "@material-ui/core/IconButton";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
@@ -30,6 +19,20 @@ import pools_estimator from "../../data/testdrive/pools_estimator.json";
 import pools_annotations from "../../data/testdrive/pools_annotations.json";
 import pools_tiles from "../../data/testdrive/pools_tiles.json";
 import pools_labels from "../../data/testdrive/pools_labels.json";
+
+import {
+  Button,
+  Grid,
+  GridList,
+  GridListTile,
+  IconButton,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;

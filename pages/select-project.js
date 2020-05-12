@@ -1,14 +1,3 @@
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import Grid from "@material-ui/core/Grid";
-import Input from "@material-ui/core/Input";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import FolderIcon from "@material-ui/icons/Folder";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -22,6 +11,20 @@ import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 import { routerPush } from "../utils/router";
 import { withStyles } from '@material-ui/core/styles';
+
+import {
+  Avatar,
+  Button,
+  FormControl,
+  Grid,
+  Input,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 
 const styles = theme => ({
   main: {

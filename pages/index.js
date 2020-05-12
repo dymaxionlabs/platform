@@ -1,12 +1,11 @@
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
 import { withNamespaces } from "../i18n";
 import { withAuthSync } from "../utils/auth";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from '@material-ui/core/styles';
+
+import { Paper, Typography, LinearProgress } from '@material-ui/core';
 
 const styles = theme => ({
   main: {

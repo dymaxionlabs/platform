@@ -1,7 +1,5 @@
-import { LinearProgress } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import { LinearProgress, Button, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { Link, withNamespaces } from "../../i18n";
 import { routerPush } from "../../utils/router";
