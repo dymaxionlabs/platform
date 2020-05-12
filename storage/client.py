@@ -99,6 +99,14 @@ class File:
     def path(self):
         return "/".join(self.blob.name.split("/")[1:])
 
+    @property
+    def name(self):
+        return os.path.basename(self.path)
+
+    @property
+    def metadata(self):
+        return self.blob.metadata or {}
+
     def __repr__(self):
         return "<File path={path}{deleted}>".format(
             path=self.path, deleted=" deleted" if self.deleted else "")
