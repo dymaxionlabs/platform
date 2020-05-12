@@ -1,8 +1,8 @@
-import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import React from "react";
 import { withNamespaces } from "../i18n";
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   btn: {

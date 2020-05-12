@@ -1,11 +1,11 @@
 import AppBar from "@material-ui/core/AppBar";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
 import StepperContent from "./StepperContent";
 import { Link } from "../../i18n";
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   appBar: {

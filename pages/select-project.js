@@ -8,7 +8,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
 import FolderIcon from "@material-ui/icons/Folder";
 import axios from "axios";
@@ -22,6 +21,7 @@ import { i18n, withNamespaces } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 import { routerPush } from "../utils/router";
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   main: {

@@ -1,10 +1,10 @@
 import Button from "@material-ui/core/Button";
-import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from "prop-types";
 import React from "react";
 import { withNamespaces, Link } from "../../i18n";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {
