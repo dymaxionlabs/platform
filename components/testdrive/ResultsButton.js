@@ -12,7 +12,7 @@ const styles = theme => ({
     top: 10,
     left: 10,
     zIndex: 1000,
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   menu: {
     position: "fixed",

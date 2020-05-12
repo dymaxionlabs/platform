@@ -20,10 +20,10 @@ const styles = theme => ({
   stepperContent: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(700 + theme.spacing.unit * 2 * 2)]: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(700 + theme.spacing(2) * 2)]: {
       width: 700,
       marginLeft: "auto",
       marginRight: "auto"
@@ -31,13 +31,12 @@ const styles = theme => ({
   },
   paper: {
     width: 700,
-    marginTop: theme.spacing.unit * 4,
+    marginTop: theme.spacing(4),
     display: "block",
     marginLeft: "auto",
     marginRight: "auto",
     flexDirection: "column",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   }
 });
 

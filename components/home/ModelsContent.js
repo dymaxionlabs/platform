@@ -38,7 +38,7 @@ const styles = theme => ({
     float: "right"
   },
   chip: {
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   }
 });
 

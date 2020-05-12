@@ -13,7 +13,7 @@ const styles = theme => ({
   },
   logo: {
     height: 25,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
     cursor: "pointer"
   },
   title: {
@@ -22,10 +22,10 @@ const styles = theme => ({
   stepperContent: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(700 + theme.spacing.unit * 2 * 2)]: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(700 + theme.spacing(2) * 2)]: {
       width: 700,
       marginLeft: "auto",
       marginRight: "auto"

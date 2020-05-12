@@ -10,7 +10,7 @@ import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   errorMsg: {

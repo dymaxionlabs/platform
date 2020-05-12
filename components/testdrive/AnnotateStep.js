@@ -38,37 +38,36 @@ const MIN_COUNT_PER_LABEL = 50;
 const styles = theme => ({
   header: {
     textAlign: "center",
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing(3)
   },
   imageTileListContainer: {
     overflow: "hidden",
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   imageTileList: {
     height: 500,
     transform: "translateZ(0)"
   },
   paper: {
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   },
   pageButtons: {
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   pageButton: {
     marginTop: 0,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   page: {
     display: "inline",
     textAlign: "center"
   },
   submitButton: {
-    marginTop: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(1)
   },
   buttons: {
     textAlign: "center"

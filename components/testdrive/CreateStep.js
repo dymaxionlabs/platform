@@ -15,14 +15,14 @@ import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   classesLabel: {
-    paddingBottom: theme.spacing.unit
+    paddingBottom: theme.spacing(1)
   },
   submit: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing(3)
   },
   errorMessage: {
     color: "red"

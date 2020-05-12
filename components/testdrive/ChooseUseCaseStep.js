@@ -13,17 +13,17 @@ import { routerPush } from "../../utils/router";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   grid: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing(2)
   },
   card: {
     display: "flex", // Fix IE 11 issue.
     flexDirection: "column",
     height: "100%",
-    [theme.breakpoints.up(220 + theme.spacing.unit * 2 * 2)]: {
+    [theme.breakpoints.up(220 + theme.spacing(2) * 2)]: {
       marginLeft: 18,
       marginTop: 15
     }
@@ -40,7 +40,7 @@ const styles = theme => ({
     justifyContent: "flex-start"
   },
   image: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
     width: "100%",
     cursor: "pointer"
   }

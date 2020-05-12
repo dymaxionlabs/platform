@@ -24,16 +24,16 @@ const styles = (theme) => ({
     minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   paragraph: {
-    marginBottom: theme.spacing.unit,
+    marginBottom: theme.spacing(1),
   },
   anchorButton: {
     textDecoration: "none",
   },
   section: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
 });
 

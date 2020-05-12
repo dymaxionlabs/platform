@@ -8,18 +8,18 @@ import StepContentContainer from "../StepContentContainer";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 5,
+    marginBottom: theme.spacing(5),
     textAlign: "center"
   },
   guide: {
-    marginBottom: theme.spacing.unit * 5
+    marginBottom: theme.spacing(5)
   },
   step: {
     textAlign: "center",
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
   stepImage: {
-    marginBottom: theme.spacing.unit
+    marginBottom: theme.spacing(1)
   }
 });
 
