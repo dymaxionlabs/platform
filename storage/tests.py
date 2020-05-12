@@ -1,6 +1,15 @@
+import io
+import os
+
+from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from storage.client import Client
+from rest_framework.test import APIClient
+
 from projects.models import Project
+from projects.tests import create_some_api_key, login_with_api_key
+from storage.client import Client
+from terra.tests import create_some_user
 
 
 class ClientListFilesTest(TestCase):
@@ -22,3 +31,24 @@ class ClientListFilesTest(TestCase):
 
         for f in check_files:
             self.assertIn(f, uploaded_files)
+
+
+class UploadFileTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        self.project = Project.objects.filter(owners=self.user).first()
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+
+    def test_upload_file(self):
+        f = io.BytesIO(b"some initial binary data: \x00\x01")
+        path = "foo/data.bin"
+
+        response = self.client.post(f'/storage/upload/{path}', dict(file=f))
+        self.assertEquals(200, response.status_code)
+        self.assertTrue('detail' in response.data)
+        self.assertEqual(
+            response.data['detail'],
+            dict(name=os.path.basename(path), path=path, metadata={}))

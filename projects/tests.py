@@ -22,7 +22,7 @@ def create_some_api_key(name='Default', *, user, project):
 
 
 def login_with_api_key(client, api_key):
-    self.client.credentials(HTTP_AUTHORIZATION=f'Api-Key {api_key}')
+    client.credentials(HTTP_AUTHORIZATION=f'Api-Key {api_key}')
 
 
 class LoginViewTest(TestCase):
