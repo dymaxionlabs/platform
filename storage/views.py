@@ -3,7 +3,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView, Response
@@ -67,12 +67,15 @@ class UploadFile(StorageAPIView):
     View for uploading a file
     """
 
-    parser_classes = [FileUploadParser]
+    parser_classes = [MultiPartParser]
 
-    def post(self, request, filename, format=None):
+    def post(self, request, format=None):
         client = self.get_client()
+        path = request.data.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
         file = client.upload_from_file(request.data['file'],
-                                       to=filename,
+                                       to=path,
                                        content_type=request.content_type)
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)

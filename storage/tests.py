@@ -46,7 +46,9 @@ class UploadFileTest(TestCase):
         f = io.BytesIO(b"some initial binary data: \x00\x01")
         path = "foo/data.bin"
 
-        response = self.client.post(f'/storage/upload/{path}', dict(file=f))
+        response = self.client.post(f'/storage/upload/',
+                                    dict(path=path, file=f),
+                                    format='multipart')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
         self.assertEqual(
