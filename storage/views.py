@@ -18,7 +18,7 @@ from .serializers import FileSerializer
 
 
 class StorageAPIView(RelatedProjectAPIView):
-    permission_classes = (HasUserAPIKey | IsAuthenticated, )
+    permission_classes = [HasUserAPIKey | IsAuthenticated]
 
     def get_client(self):
         project = self.get_project()
@@ -56,6 +56,7 @@ class ListFile(RelatedProjectAPIView):
         client = Client(project)
         files = client.list_files(path)
 
+        files = [FileSerializer(f).data for f in files]
         if not files:
             return Response(files, status=status.HTTP_204_NO_CONTENT)
         return Response(files)
