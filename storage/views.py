@@ -69,6 +69,19 @@ class UploadFile(StorageAPIView):
 
     parser_classes = [MultiPartParser]
 
+    manual_parameters = [
+        openapi.Parameter('path',
+                          openapi.IN_QUERY,
+                          description="File output path in storage",
+                          type=openapi.TYPE_STRING)
+    ]
+    responses = {
+        200: FileSerializer,
+        400: openapi.Response('Bad request'),
+    }
+
+    @swagger_auto_schema(manual_parameters=manual_parameters,
+                         responses=responses)
     def post(self, request, format=None):
         client = self.get_client()
         path = request.data.get('path', None)
