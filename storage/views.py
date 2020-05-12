@@ -79,3 +79,37 @@ class UploadFile(StorageAPIView):
                                        content_type=request.content_type)
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
+
+
+class RetrieveFile(RelatedProjectAPIView):
+    permission_classes = [HasUserAPIKey | IsAuthenticated]
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('path',
+                          openapi.IN_QUERY,
+                          description="File path.",
+                          type=openapi.TYPE_STRING)
+    ],
+                         responses={
+                             200: FileSerializer(many=False),
+                             204: openapi.Response('No files'),
+                             400:
+                             openapi.Response('Invalid project or not found')
+                         })
+    def get(self, request, format=None):
+        """
+        Return the content of a file
+        """
+        # TODO Pagination
+        project = self.get_project()
+        path = request.query_params.get('path', '')
+
+        client = Client(project)
+
+        if path == '':
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+        blob = client.bucket.blob(path)
+        content = blob.download_as_string()
+
+        return Response(content, status=status.HTTP_200_OK)
