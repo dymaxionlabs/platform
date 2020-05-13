@@ -1,15 +1,3 @@
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import Grid from "@material-ui/core/Grid";
-import Input from "@material-ui/core/Input";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import withStyles from "@material-ui/core/styles/withStyles";
-import Typography from "@material-ui/core/Typography";
 import FolderIcon from "@material-ui/icons/Folder";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -18,33 +6,47 @@ import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import BasicAppbar from "../components/BasicAppbar";
-import { i18n, withNamespaces } from "../i18n";
+import { i18n, withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 import { routerPush } from "../utils/router";
+import { withStyles } from '@material-ui/core/styles';
+
+import {
+  Avatar,
+  Button,
+  FormControl,
+  Grid,
+  Input,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 
 const styles = theme => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(500 + theme.spacing.unit * 2 * 2)]: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(500 + theme.spacing(2) * 2)]: {
       width: 500,
       marginLeft: "auto",
       marginRight: "auto"
     }
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   },
   subheader: {
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing(3)
   },
   subsubheader: {
     fontWeight: 500
@@ -61,7 +63,7 @@ const styles = theme => ({
   },
   inlineFormControl: {
     flexGrow: 1,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   }
 });
 
@@ -148,7 +150,7 @@ NewProjectForm.propTypes = {
 };
 
 NewProjectForm = withStyles(styles)(NewProjectForm);
-NewProjectForm = withNamespaces("select_project")(NewProjectForm);
+NewProjectForm = withTranslation("select_project")(NewProjectForm);
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -243,7 +245,7 @@ OpenProjectList.propTypes = {
 };
 
 OpenProjectList = withStyles(styles)(OpenProjectList);
-OpenProjectList = withNamespaces("select_project")(OpenProjectList);
+OpenProjectList = withTranslation("select_project")(OpenProjectList);
 
 class SelectProject extends React.Component {
   static async getInitialProps(ctx) {
@@ -301,7 +303,7 @@ SelectProject.propTypes = {
 };
 
 SelectProject = withStyles(styles)(SelectProject);
-SelectProject = withNamespaces("select_project")(SelectProject);
+SelectProject = withTranslation("select_project")(SelectProject);
 SelectProject = withAuthSync(SelectProject);
 
 export default SelectProject;

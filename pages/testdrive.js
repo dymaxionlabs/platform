@@ -12,7 +12,7 @@ import UploadStep from "../components/testdrive/UploadStep";
 import SelectStep from "../components/testdrive/SelectStep";
 import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
 import cookie from "js-cookie";
 
@@ -20,10 +20,10 @@ const styles = theme => ({
   stepperContent: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(700 + theme.spacing.unit * 2 * 2)]: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(700 + theme.spacing(2) * 2)]: {
       width: 700,
       marginLeft: "auto",
       marginRight: "auto"
@@ -31,13 +31,12 @@ const styles = theme => ({
   },
   paper: {
     width: 700,
-    marginTop: theme.spacing.unit * 4,
+    marginTop: theme.spacing(4),
     display: "block",
     marginLeft: "auto",
     marginRight: "auto",
     flexDirection: "column",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   }
 });
 
@@ -188,6 +187,6 @@ class TestDrive extends React.Component {
 }
 
 TestDrive = withStyles(styles)(TestDrive);
-TestDrive = withNamespaces("testdrive")(TestDrive);
+TestDrive = withTranslation("testdrive")(TestDrive);
 
 export default TestDrive;

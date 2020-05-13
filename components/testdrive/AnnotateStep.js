@@ -1,22 +1,11 @@
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import IconButton from "@material-ui/core/IconButton";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React from "react";
 import AnnotatedImageTile from "./annotate/AnnotatedImageTile";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
@@ -31,6 +20,20 @@ import pools_annotations from "../../data/testdrive/pools_annotations.json";
 import pools_tiles from "../../data/testdrive/pools_tiles.json";
 import pools_labels from "../../data/testdrive/pools_labels.json";
 
+import {
+  Button,
+  Grid,
+  GridList,
+  GridListTile,
+  IconButton,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
 const MIN_COUNT_PER_LABEL = 50;
@@ -38,37 +41,36 @@ const MIN_COUNT_PER_LABEL = 50;
 const styles = theme => ({
   header: {
     textAlign: "center",
-    marginBottom: theme.spacing.unit * 3
+    marginBottom: theme.spacing(3)
   },
   imageTileListContainer: {
     overflow: "hidden",
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   imageTileList: {
     height: 500,
     transform: "translateZ(0)"
   },
   paper: {
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   },
   pageButtons: {
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   pageButton: {
     marginTop: 0,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   page: {
     display: "inline",
     textAlign: "center"
   },
   submitButton: {
-    marginTop: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(1)
   },
   buttons: {
     textAlign: "center"
@@ -165,7 +167,7 @@ let LabelCountList = ({ t, classes, labelCount }) => (
   </Paper>
 );
 
-LabelCountList = withNamespaces("testdrive")(LabelCountList);
+LabelCountList = withTranslation("testdrive")(LabelCountList);
 LabelCountList = withStyles(styles)(LabelCountList);
 
 let LoadingContent = ({ t }) => (
@@ -175,14 +177,14 @@ let LoadingContent = ({ t }) => (
   </React.Fragment>
 );
 
-LoadingContent = withNamespaces("testdrive")(LoadingContent);
+LoadingContent = withTranslation("testdrive")(LoadingContent);
 LoadingContent = withStyles(styles)(LoadingContent);
 
 let AnnotateContent = ({ t, classes, ...props }) => (
   <React.Fragment>
     <Typography variant="body2">{t("annotate_step.explanation1")}</Typography>
     <Typography variant="body2">{t("annotate_step.explanation2")}</Typography>
-    <Grid container spacing={24}>
+    <Grid container spacing={3}>
       <Grid item xs={9}>
         <div className={classes.imageTileListContainer}>
           <ImageTileList {...props} />
@@ -197,7 +199,7 @@ let AnnotateContent = ({ t, classes, ...props }) => (
   </React.Fragment>
 );
 
-AnnotateContent = withNamespaces("testdrive")(AnnotateContent);
+AnnotateContent = withTranslation("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 const apiContentByUseCase = {
@@ -242,7 +244,7 @@ ${modelVar}.upload_annotations("./annotations.geojson")`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class AnnotateStep extends React.Component {
   state = {
@@ -517,6 +519,6 @@ class AnnotateStep extends React.Component {
 }
 
 AnnotateStep = withStyles(styles)(AnnotateStep);
-AnnotateStep = withNamespaces("testdrive")(AnnotateStep);
+AnnotateStep = withTranslation("testdrive")(AnnotateStep);
 
 export default AnnotateStep;

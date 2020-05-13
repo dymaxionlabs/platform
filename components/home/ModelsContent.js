@@ -1,27 +1,30 @@
-import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
-import Chip from "@material-ui/core/Chip";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import cookie from "js-cookie";
 import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import { routerPush } from "../../utils/router";
-import { i18n, withNamespaces } from "../../i18n";
+import { i18n, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import ShowUuidDialog from "../ShowUuidDialog";
 import ConfirmationDialog from "../ConfirmationDialog";
+
+import {
+  Paper,
+  Table,
+  TableBody,
+  IconButton,
+  Chip,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -38,7 +41,7 @@ const styles = theme => ({
     float: "right"
   },
   chip: {
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   }
 });
 
@@ -263,6 +266,6 @@ ModelsContent.propTypes = {
 };
 
 ModelsContent = withStyles(styles)(ModelsContent);
-ModelsContent = withNamespaces("me")(ModelsContent);
+ModelsContent = withTranslation("me")(ModelsContent);
 
 export default ModelsContent;

@@ -1,28 +1,31 @@
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush, routerReplace } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
-import Snackbar from "@material-ui/core/Snackbar";
 import CodeBlock from "../CodeBlock";
+
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  Input,
+  InputLabel,
+  Typography,
+  Snackbar,
+} from '@material-ui/core';
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   classesLabel: {
-    paddingBottom: theme.spacing.unit
+    paddingBottom: theme.spacing(1)
   },
   submit: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing(3)
   },
   errorMessage: {
     color: "red"
@@ -66,7 +69,7 @@ ${modelVar} = Model.create(name=${JSON.stringify(modelName)},
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class CreateStep extends React.Component {
   state = {
@@ -263,6 +266,6 @@ class CreateStep extends React.Component {
 }
 
 CreateStep = withStyles(styles)(CreateStep);
-CreateStep = withNamespaces("testdrive")(CreateStep);
+CreateStep = withTranslation("testdrive")(CreateStep);
 
 export default CreateStep;

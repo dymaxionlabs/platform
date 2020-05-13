@@ -1,15 +1,15 @@
-import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
 import React from "react";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
+import { withStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 
 const styles = theme => ({
   btn: {
     position: "fixed",
     right: 10,
     bottom: 10,
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     zIndex: 1000
   }
 });
@@ -27,4 +27,4 @@ ContactButton.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces("testdrive")(withStyles(styles)(ContactButton));
+export default withTranslation("testdrive")(withStyles(styles)(ContactButton));

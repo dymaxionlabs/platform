@@ -1,5 +1,5 @@
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import { routerReplace } from "../../utils/router";
 import Head from "next/head";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -124,7 +124,7 @@ let DescriptionControl = ({ t, classes }) => (
 );
 
 DescriptionControl = withStyles(styles)(DescriptionControl);
-DescriptionControl = withNamespaces("testdrive")(DescriptionControl);
+DescriptionControl = withTranslation("testdrive")(DescriptionControl);
 
 let LotsLegend = ({ t, classes }) => (
   <div>
@@ -172,7 +172,7 @@ let LotsLegend = ({ t, classes }) => (
 );
 
 LotsLegend = withStyles(styles)(LotsLegend);
-LotsLegend = withNamespaces("testdrive")(LotsLegend);
+LotsLegend = withTranslation("testdrive")(LotsLegend);
 
 class MapTestDrive extends React.Component {
   state = {
@@ -357,6 +357,6 @@ class MapTestDrive extends React.Component {
 }
 
 MapTestDrive = withStyles(styles)(MapTestDrive);
-MapTestDrive = withNamespaces(["testdrive"])(MapTestDrive);
+MapTestDrive = withTranslation(["testdrive"])(MapTestDrive);
 
 export default MapTestDrive;

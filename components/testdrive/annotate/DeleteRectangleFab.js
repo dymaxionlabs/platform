@@ -1,6 +1,6 @@
-import Fab from "@material-ui/core/Fab";
 import ClearIcon from "@material-ui/icons/Clear";
 import React from "react";
+import { Fab } from '@material-ui/core';
 
 class DeleteRectangleFab extends React.Component {
   render() {

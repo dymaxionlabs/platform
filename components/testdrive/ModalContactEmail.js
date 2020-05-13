@@ -1,15 +1,18 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import cookie from "js-cookie";
+
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 
 class ModalContactEmail extends React.Component {
   state = {
@@ -134,6 +137,6 @@ class ModalContactEmail extends React.Component {
   }
 }
 
-ModalContactEmail = withNamespaces("testdrive")(ModalContactEmail);
+ModalContactEmail = withTranslation("testdrive")(ModalContactEmail);
 
 export default ModalContactEmail;

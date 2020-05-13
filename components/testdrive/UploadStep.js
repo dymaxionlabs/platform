@@ -1,16 +1,16 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery";
 import CodeBlock from "../CodeBlock";
 
+import { Button, Typography } from '@material-ui/core';
+
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   errorMsg: {
@@ -49,7 +49,7 @@ for path in files:
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class UploadStep extends React.Component {
   state = {
@@ -160,6 +160,6 @@ class UploadStep extends React.Component {
 }
 
 UploadStep = withStyles(styles)(UploadStep);
-UploadStep = withNamespaces("testdrive")(UploadStep);
+UploadStep = withTranslation("testdrive")(UploadStep);
 
 export default UploadStep;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import classNames from "classnames";
 
 const styles = theme => ({
@@ -89,6 +89,6 @@ FileGallery.propTypes = {
 };
 
 FileGallery = withStyles(styles)(FileGallery);
-FileGallery = withNamespaces("models")(FileGallery);
+FileGallery = withTranslation("models")(FileGallery);
 
 export default FileGallery;

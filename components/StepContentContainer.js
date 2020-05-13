@@ -1,25 +1,24 @@
-import Paper from "@material-ui/core/Paper";
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
+import { Paper } from '@material-ui/core';
 
 const styles = theme => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(500 + theme.spacing.unit * 2 * 2)]: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(500 + theme.spacing(2) * 2)]: {
       width: 500,
       marginLeft: "auto",
       marginRight: "auto"
     }
   },
   paper: {
-    marginTop: theme.spacing.unit * 4,
+    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   }
 });
 

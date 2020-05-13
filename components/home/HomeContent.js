@@ -2,17 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import cookie from "js-cookie";
+
+import { IconButton, InputAdornment, Button, Typography, TextField, Paper } from '@material-ui/core';
 
 const styles = (theme) => ({
   root: {
@@ -24,16 +20,16 @@ const styles = (theme) => ({
     minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   paragraph: {
-    marginBottom: theme.spacing.unit,
+    marginBottom: theme.spacing(1),
   },
   anchorButton: {
     textDecoration: "none",
   },
   section: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
 });
 
@@ -112,6 +108,6 @@ HomeContent.propTypes = {
 };
 
 HomeContent = withStyles(styles)(HomeContent);
-HomeContent = withNamespaces("me")(HomeContent);
+HomeContent = withTranslation("me")(HomeContent);
 
 export default HomeContent;

@@ -1,29 +1,24 @@
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 import { routerPush } from "../../utils/router";
 
+import { Button, Paper, Grid, Card, CardContent, CardActions, Typography } from '@material-ui/core';
+
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   grid: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing(2)
   },
   card: {
     display: "flex", // Fix IE 11 issue.
     flexDirection: "column",
     height: "100%",
-    [theme.breakpoints.up(220 + theme.spacing.unit * 2 * 2)]: {
+    [theme.breakpoints.up(220 + theme.spacing(2) * 2)]: {
       marginLeft: 18,
       marginTop: 15
     }
@@ -40,7 +35,7 @@ const styles = theme => ({
     justifyContent: "flex-start"
   },
   image: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
     width: "100%",
     cursor: "pointer"
   }
@@ -76,7 +71,7 @@ class ChooseUseCaseStep extends React.Component {
           {/* {t("new.od.header")} */}
           Choose Use Case
         </Typography>
-        <Grid container spacing={8} className={classes.grid}>
+        <Grid container spacing={1} className={classes.grid}>
           {useCases.map((useCase, i) => (
             <Grid item xs={6} key={useCase}>
               <Card className={classes.card}>
@@ -107,6 +102,6 @@ class ChooseUseCaseStep extends React.Component {
 }
 
 ChooseUseCaseStep = withStyles(styles)(ChooseUseCaseStep);
-ChooseUseCaseStep = withNamespaces("testdrive")(ChooseUseCaseStep);
+ChooseUseCaseStep = withTranslation("testdrive")(ChooseUseCaseStep);
 
 export default ChooseUseCaseStep;

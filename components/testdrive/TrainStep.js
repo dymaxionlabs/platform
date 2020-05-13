@@ -1,22 +1,20 @@
-import { LinearProgress } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import { LinearProgress, Button, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   progress: {
     flexGrow: 1,
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   }
 });
 
@@ -78,7 +76,7 @@ job = ${modelVar}.train()`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class TrainStep extends React.Component {
   state = {
@@ -193,6 +191,6 @@ class TrainStep extends React.Component {
 }
 
 TrainStep = withStyles(styles)(TrainStep);
-TrainStep = withNamespaces("testdrive")(TrainStep);
+TrainStep = withTranslation("testdrive")(TrainStep);
 
 export default TrainStep;

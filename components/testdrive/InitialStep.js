@@ -1,25 +1,24 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
+
+import { Typography, Button, Grid } from '@material-ui/core';
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 5,
+    marginBottom: theme.spacing(5),
     textAlign: "center"
   },
   guide: {
-    marginBottom: theme.spacing.unit * 5
+    marginBottom: theme.spacing(5)
   },
   step: {
     textAlign: "center",
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
   stepImage: {
-    marginBottom: theme.spacing.unit
+    marginBottom: theme.spacing(1)
   }
 });
 
@@ -63,7 +62,7 @@ let GuideSteps = ({ classes, t }) => (
 );
 
 GuideSteps = withStyles(styles)(GuideSteps);
-GuideSteps = withNamespaces("testdrive")(GuideSteps);
+GuideSteps = withTranslation("testdrive")(GuideSteps);
 
 let InitialStep = ({ classes, t }) => (
   <StepContentContainer width={900}>
@@ -80,6 +79,6 @@ let InitialStep = ({ classes, t }) => (
 );
 
 InitialStep = withStyles(styles)(InitialStep);
-InitialStep = withNamespaces("testdrive")(InitialStep);
+InitialStep = withTranslation("testdrive")(InitialStep);
 
 export default InitialStep;

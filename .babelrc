@@ -6,7 +6,8 @@
         "preset-env": {
           "targets": "> 0.25%, not dead",
           "debug": false,
-          "useBuiltIns": "usage"
+          "useBuiltIns": "usage",
+          "corejs": 3,
         },
       }
     ]

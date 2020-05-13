@@ -2,27 +2,30 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
-import Tooltip from "@material-ui/core/Tooltip";
 
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloseIcon from "@material-ui/icons/Close";
 
-import { i18n, withNamespaces } from "../../i18n";
+import { i18n, withTranslation } from "../../i18n";
 import { logout } from "../../utils/auth";
 import axios from "axios";
 import { buildApiUrl } from "../../utils/api";
 import Moment from "react-moment";
 import cookie from "js-cookie";
 import FileDownload from "../../utils/file-download";
+
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Snackbar,
+  Tooltip,
+} from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -224,6 +227,6 @@ FilesContent.propTypes = {
 };
 
 FilesContent = withStyles(styles)(FilesContent);
-FilesContent = withNamespaces("me")(FilesContent);
+FilesContent = withTranslation("me")(FilesContent);
 
 export default FilesContent;

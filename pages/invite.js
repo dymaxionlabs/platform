@@ -1,72 +1,74 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import Head from "next/head";
-import withStyles from "@material-ui/core/styles/withStyles";
 import cookie from "js-cookie";
 import axios from "axios";
-import { i18n, withNamespaces, Link } from "../i18n";
+import { i18n, withTranslation, Link } from "../i18n";
 import { withAuthSync, login } from "../utils/auth";
 import { buildApiUrl } from "../utils/api";
 import { routerPush } from "../utils/router";
+import { withStyles } from '@material-ui/core/styles';
+
+import {
+  Avatar,
+  Button,
+  LinearProgress,
+  FormControl,
+  FormHelperText,
+  Input,
+  InputLabel,
+  Paper,
+  Typography,
+  Grid,
+} from '@material-ui/core';
 
 const styles = theme => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
+    [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
       width: 400,
       marginLeft: "auto",
       marginRight: "auto"
     }
   },
   subheader: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     textAlign: "center"
   },
   errorMessage: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     textAlign: "center",
     color: "red"
   },
   successMessage: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     textAlign: "center",
     color: "green"
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
   },
   avatar: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   submit: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing(3)
   },
   loginPar: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
   }
 });
 
@@ -331,7 +333,7 @@ class Invite extends React.Component {
                 onSubmit={this.onConfirmSubmit}
               >
                 <FormControl margin="normal" required fullWidth>
-                  <Grid container spacing={24}>
+                  <Grid container spacing={3}>
                     <Grid item xs>
                       <Button
                         type="submit"
@@ -425,7 +427,7 @@ class Invite extends React.Component {
                       </FormHelperText>
                     )}
                   </FormControl>
-                  <Grid container spacing={24}>
+                  <Grid container spacing={3}>
                     <Grid item xs>
                       <Button
                         type="submit"
@@ -466,7 +468,7 @@ Invite.propTypes = {
 };
 
 Invite = withStyles(styles)(Invite);
-Invite = withNamespaces()(Invite);
+Invite = withTranslation()(Invite);
 Invite = withAuthSync(Invite, { redirect: false });
 
 export default Invite;

@@ -4,8 +4,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   pre: {
-    padding: theme.spacing.unit,
-    marginBottom: theme.spacing.unit,
+    padding: theme.spacing(1),
+    marginBottom: theme.spacing(1),
     borderRadius: "0 0 2px 2px",
     borderTop: `solid 1px ${theme.borderColor}`,
     backgroundColor: "#222",

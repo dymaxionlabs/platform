@@ -1,10 +1,9 @@
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import Stepper from "@material-ui/core/Stepper";
 import { withStyles } from "@material-ui/core/styles";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import PropTypes from "prop-types";
 import React from "react";
+
+import { Step, StepLabel, Stepper } from '@material-ui/core';
 
 const styles = _theme => ({
   stepper: {
@@ -35,6 +34,6 @@ StepperContent.propTypes = {
 };
 
 StepperContent = withStyles(styles)(StepperContent);
-StepperContent = withNamespaces("testdrive")(StepperContent);
+StepperContent = withTranslation("testdrive")(StepperContent);
 
 export default StepperContent;

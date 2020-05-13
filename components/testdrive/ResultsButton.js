@@ -1,10 +1,9 @@
-import Button from "@material-ui/core/Button";
-import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from "prop-types";
 import React from "react";
-import { withNamespaces, Link } from "../../i18n";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import { withTranslation, Link } from "../../i18n";
+import { withStyles } from '@material-ui/core/styles';
+
+import { Button, Menu, MenuItem } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -12,7 +11,7 @@ const styles = theme => ({
     top: 10,
     left: 10,
     zIndex: 1000,
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   menu: {
     position: "fixed",
@@ -125,6 +124,6 @@ ResultsButton.defaultProps = {
 };
 
 ResultsButton = withStyles(styles)(ResultsButton);
-ResultsButton = withNamespaces("testdrive")(ResultsButton);
+ResultsButton = withTranslation("testdrive")(ResultsButton);
 
 export default ResultsButton;

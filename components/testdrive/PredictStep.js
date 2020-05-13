@@ -1,22 +1,20 @@
-import { LinearProgress } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import { LinearProgress, Button, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
 
 const styles = theme => ({
   header: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
     textAlign: "center"
   },
   progress: {
     flexGrow: 1,
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   }
 });
 
@@ -84,7 +82,7 @@ job = ${modelVar}.predict_files(${modelFilesVar})`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class PredictStep extends React.Component {
   state = {
@@ -200,6 +198,6 @@ class PredictStep extends React.Component {
 }
 
 PredictStep = withStyles(styles)(PredictStep);
-PredictStep = withNamespaces("testdrive")(PredictStep);
+PredictStep = withTranslation("testdrive")(PredictStep);
 
 export default PredictStep;
