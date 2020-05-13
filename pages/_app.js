@@ -2,9 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import App from "next/app";
 import i18next from "i18next";
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { SnackbarProvider } from "notistack";
-import MomentUtils from '@date-io/moment';
 import { ThemeProvider } from "@material-ui/core/styles";
 import { appWithTranslation, Router } from "../i18n";
 import withGA from "../utils/ga";
@@ -35,12 +33,10 @@ function CustomApp(props) {
 
       <CssBaseline />
       <SnackbarProvider maxSnack={3}>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <Component
-            {...pageProps}
-            analytics={analytics}
-          />
-        </MuiPickersUtilsProvider>
+        <Component
+          {...pageProps}
+          analytics={analytics}
+        />
       </SnackbarProvider>
     </ThemeProvider>
   );
