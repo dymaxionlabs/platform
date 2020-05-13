@@ -62,3 +62,37 @@ class UploadFileTest(TestCase):
                                     format='multipart')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
+
+
+class RetrieveFileTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        self.project = Project.objects.filter(owners=self.user).first()
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+        self.storage_client = Client(self.project)
+        self.test_data = io.BytesIO(b"test file content")
+        self.test_path = "foo/data.bin"
+        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+
+    def test_retrieve_file(self):
+        response = self.client.get(f'/storage/file/?path={self.test_path}')
+        self.assertEquals(200, response.status_code)
+        self.assertTrue('detail' in response.data)
+        self.assertEqual(
+            response.data['detail'],
+            dict(name=os.path.basename(self.test_path),
+                 path=self.test_path,
+                 metadata={}))
+
+    def test_file_missing(self):
+        missing_path = self.test_path + '.1'
+        response = self.client.get(f'/storage/file/?path={missing_path}')
+        self.assertEquals(404, response.status_code)
+
+    def test_path_missing(self):
+        response = self.client.get(f'/storage/file/')
+        self.assertEquals(400, response.status_code)
+        self.assertEqual(response.data['detail'], "'path' missing")
