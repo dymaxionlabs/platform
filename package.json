@@ -22,7 +22,7 @@
     "moment-timezone": "^0.5.23",
     "next": "^9.4.0",
     "next-cookies": "^1.1.0",
-    "next-i18next": "^0.32.0",
+    "next-i18next": "^4.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.0",
     "react-copy-to-clipboard": "^5.0.1",
