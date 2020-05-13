@@ -12,7 +12,7 @@ import UploadStep from "../components/testdrive/UploadStep";
 import SelectStep from "../components/testdrive/SelectStep";
 import PredictStep from "../components/testdrive/PredictStep";
 import StepperContent from "../components/testdrive/StepperContent";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
 import cookie from "js-cookie";
 
@@ -187,6 +187,6 @@ class TestDrive extends React.Component {
 }
 
 TestDrive = withStyles(styles)(TestDrive);
-TestDrive = withNamespaces("testdrive")(TestDrive);
+TestDrive = withTranslation("testdrive")(TestDrive);
 
 export default TestDrive;

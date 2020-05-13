@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 
 import { Typography, Button, Grid } from '@material-ui/core';
@@ -62,7 +62,7 @@ let GuideSteps = ({ classes, t }) => (
 );
 
 GuideSteps = withStyles(styles)(GuideSteps);
-GuideSteps = withNamespaces("testdrive")(GuideSteps);
+GuideSteps = withTranslation("testdrive")(GuideSteps);
 
 let InitialStep = ({ classes, t }) => (
   <StepContentContainer width={900}>
@@ -79,6 +79,6 @@ let InitialStep = ({ classes, t }) => (
 );
 
 InitialStep = withStyles(styles)(InitialStep);
-InitialStep = withNamespaces("testdrive")(InitialStep);
+InitialStep = withTranslation("testdrive")(InitialStep);
 
 export default InitialStep;

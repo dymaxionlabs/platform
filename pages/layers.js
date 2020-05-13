@@ -4,7 +4,7 @@ import Head from "next/head";
 import React from "react";
 import LoadingProgress from "../components/LoadingProgress";
 import LayersLegendExpansionPanel from "../components/LayersLegendExpansionPanel";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 
@@ -143,7 +143,7 @@ class Layers extends React.Component {
   }
 }
 
-Layers = withNamespaces()(Layers);
+Layers = withTranslation()(Layers);
 Layers = withAuthSync(Layers);
 
 export default Layers;

@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery.js";
@@ -52,7 +52,7 @@ File.upload(path)`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class SelectStep extends React.Component {
   state = {
@@ -163,6 +163,6 @@ class SelectStep extends React.Component {
 }
 
 SelectStep = withStyles(styles)(SelectStep);
-SelectStep = withNamespaces("testdrive")(SelectStep);
+SelectStep = withTranslation("testdrive")(SelectStep);
 
 export default SelectStep;

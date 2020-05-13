@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { withNamespaces, Link } from "../../i18n";
+import { withTranslation, Link } from "../../i18n";
 import { withStyles } from '@material-ui/core/styles';
 
 import { Button, Menu, MenuItem } from '@material-ui/core';
@@ -124,6 +124,6 @@ ResultsButton.defaultProps = {
 };
 
 ResultsButton = withStyles(styles)(ResultsButton);
-ResultsButton = withNamespaces("testdrive")(ResultsButton);
+ResultsButton = withTranslation("testdrive")(ResultsButton);
 
 export default ResultsButton;

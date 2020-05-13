@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 
@@ -27,4 +27,4 @@ ContactButton.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces("testdrive")(withStyles(styles)(ContactButton));
+export default withTranslation("testdrive")(withStyles(styles)(ContactButton));

@@ -5,7 +5,7 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React from "react";
 import AnnotatedImageTile from "./annotate/AnnotatedImageTile";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
@@ -167,7 +167,7 @@ let LabelCountList = ({ t, classes, labelCount }) => (
   </Paper>
 );
 
-LabelCountList = withNamespaces("testdrive")(LabelCountList);
+LabelCountList = withTranslation("testdrive")(LabelCountList);
 LabelCountList = withStyles(styles)(LabelCountList);
 
 let LoadingContent = ({ t }) => (
@@ -177,7 +177,7 @@ let LoadingContent = ({ t }) => (
   </React.Fragment>
 );
 
-LoadingContent = withNamespaces("testdrive")(LoadingContent);
+LoadingContent = withTranslation("testdrive")(LoadingContent);
 LoadingContent = withStyles(styles)(LoadingContent);
 
 let AnnotateContent = ({ t, classes, ...props }) => (
@@ -199,7 +199,7 @@ let AnnotateContent = ({ t, classes, ...props }) => (
   </React.Fragment>
 );
 
-AnnotateContent = withNamespaces("testdrive")(AnnotateContent);
+AnnotateContent = withTranslation("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 const apiContentByUseCase = {
@@ -244,7 +244,7 @@ ${modelVar}.upload_annotations("./annotations.geojson")`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class AnnotateStep extends React.Component {
   state = {
@@ -519,6 +519,6 @@ class AnnotateStep extends React.Component {
 }
 
 AnnotateStep = withStyles(styles)(AnnotateStep);
-AnnotateStep = withNamespaces("testdrive")(AnnotateStep);
+AnnotateStep = withTranslation("testdrive")(AnnotateStep);
 
 export default AnnotateStep;

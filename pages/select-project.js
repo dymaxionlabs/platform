@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import BasicAppbar from "../components/BasicAppbar";
-import { i18n, withNamespaces } from "../i18n";
+import { i18n, withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 import { routerPush } from "../utils/router";
@@ -150,7 +150,7 @@ NewProjectForm.propTypes = {
 };
 
 NewProjectForm = withStyles(styles)(NewProjectForm);
-NewProjectForm = withNamespaces("select_project")(NewProjectForm);
+NewProjectForm = withTranslation("select_project")(NewProjectForm);
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -245,7 +245,7 @@ OpenProjectList.propTypes = {
 };
 
 OpenProjectList = withStyles(styles)(OpenProjectList);
-OpenProjectList = withNamespaces("select_project")(OpenProjectList);
+OpenProjectList = withTranslation("select_project")(OpenProjectList);
 
 class SelectProject extends React.Component {
   static async getInitialProps(ctx) {
@@ -303,7 +303,7 @@ SelectProject.propTypes = {
 };
 
 SelectProject = withStyles(styles)(SelectProject);
-SelectProject = withNamespaces("select_project")(SelectProject);
+SelectProject = withTranslation("select_project")(SelectProject);
 SelectProject = withAuthSync(SelectProject);
 
 export default SelectProject;

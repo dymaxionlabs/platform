@@ -1,7 +1,7 @@
 import { LinearProgress, Button, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
@@ -76,7 +76,7 @@ job = ${modelVar}.train()`}
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class TrainStep extends React.Component {
   state = {
@@ -191,6 +191,6 @@ class TrainStep extends React.Component {
 }
 
 TrainStep = withStyles(styles)(TrainStep);
-TrainStep = withNamespaces("testdrive")(TrainStep);
+TrainStep = withTranslation("testdrive")(TrainStep);
 
 export default TrainStep;

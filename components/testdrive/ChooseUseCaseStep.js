@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 import { routerPush } from "../../utils/router";
 
@@ -102,6 +102,6 @@ class ChooseUseCaseStep extends React.Component {
 }
 
 ChooseUseCaseStep = withStyles(styles)(ChooseUseCaseStep);
-ChooseUseCaseStep = withNamespaces("testdrive")(ChooseUseCaseStep);
+ChooseUseCaseStep = withTranslation("testdrive")(ChooseUseCaseStep);
 
 export default ChooseUseCaseStep;

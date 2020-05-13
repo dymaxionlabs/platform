@@ -21,7 +21,7 @@ import MapsContent from "../../components/home/MapsContent";
 import ModalContactContent from "../../components/home/ModalContactContent";
 import ModelsContent from "../../components/home/ModelsContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
-import { i18n, Link, withNamespaces } from "../../i18n";
+import { i18n, Link, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout, withAuthSync } from "../../utils/auth";
 import { routerReplace } from "../../utils/router";
@@ -412,7 +412,7 @@ Home.propTypes = {
 };
 
 Home = withStyles(styles)(Home);
-Home = withNamespaces(["me", "common", "simple_modal_contact_form"])(Home);
+Home = withTranslation(["me", "common", "simple_modal_contact_form"])(Home);
 Home = withAuthSync(Home);
 
 export default Home;

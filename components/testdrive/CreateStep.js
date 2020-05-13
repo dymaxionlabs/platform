@@ -1,7 +1,7 @@
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush, routerReplace } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
@@ -69,7 +69,7 @@ ${modelVar} = Model.create(name=${JSON.stringify(modelName)},
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class CreateStep extends React.Component {
   state = {
@@ -266,6 +266,6 @@ class CreateStep extends React.Component {
 }
 
 CreateStep = withStyles(styles)(CreateStep);
-CreateStep = withNamespaces("testdrive")(CreateStep);
+CreateStep = withTranslation("testdrive")(CreateStep);
 
 export default CreateStep;

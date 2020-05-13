@@ -4,7 +4,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Head from "next/head";
 import cookie from "js-cookie";
 import axios from "axios";
-import { i18n, withNamespaces, Link } from "../i18n";
+import { i18n, withTranslation, Link } from "../i18n";
 import { withAuthSync, login } from "../utils/auth";
 import { buildApiUrl } from "../utils/api";
 import { routerPush } from "../utils/router";
@@ -468,7 +468,7 @@ Invite.propTypes = {
 };
 
 Invite = withStyles(styles)(Invite);
-Invite = withNamespaces()(Invite);
+Invite = withTranslation()(Invite);
 Invite = withAuthSync(Invite, { redirect: false });
 
 export default Invite;

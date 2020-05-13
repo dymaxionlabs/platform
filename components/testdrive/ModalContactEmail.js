@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { withNamespaces } from "../../i18n";
+import { withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import cookie from "js-cookie";
 
@@ -137,6 +137,6 @@ class ModalContactEmail extends React.Component {
   }
 }
 
-ModalContactEmail = withNamespaces("testdrive")(ModalContactEmail);
+ModalContactEmail = withTranslation("testdrive")(ModalContactEmail);
 
 export default ModalContactEmail;

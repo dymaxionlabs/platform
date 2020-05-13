@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Head from "next/head";
 import axios from "axios";
-import { i18n, withNamespaces, Link } from "../i18n";
+import { i18n, withTranslation, Link } from "../i18n";
 import { login } from "../utils/auth";
 import { buildApiUrl } from "../utils/api";
 import { withStyles } from '@material-ui/core/styles';
@@ -357,6 +357,6 @@ Register.propTypes = {
 };
 
 Register = withStyles(styles)(Register);
-Register = withNamespaces()(Register);
+Register = withTranslation()(Register);
 
 export default Register;

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import { routerPush } from "../../utils/router";
-import { i18n, withNamespaces } from "../../i18n";
+import { i18n, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import ShowUuidDialog from "../ShowUuidDialog";
@@ -266,6 +266,6 @@ ModelsContent.propTypes = {
 };
 
 ModelsContent = withStyles(styles)(ModelsContent);
-ModelsContent = withNamespaces("me")(ModelsContent);
+ModelsContent = withTranslation("me")(ModelsContent);
 
 export default ModelsContent;

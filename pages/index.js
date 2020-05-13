@@ -1,7 +1,7 @@
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
-import { withNamespaces } from "../i18n";
+import { withTranslation } from "../i18n";
 import { withAuthSync } from "../utils/auth";
 import { withStyles } from '@material-ui/core/styles';
 
@@ -74,7 +74,7 @@ Index.propTypes = {
 };
 
 Index = withStyles(styles)(Index);
-Index = withNamespaces()(Index);
+Index = withTranslation()(Index);
 Index = withAuthSync(Index, { redirect: false });
 
 export default Index;

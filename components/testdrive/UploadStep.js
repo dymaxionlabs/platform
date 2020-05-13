@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerReplace, routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery";
@@ -49,7 +49,7 @@ for path in files:
 );
 
 APIContent = withStyles(styles)(APIContent);
-APIContent = withNamespaces("testdrive")(APIContent);
+APIContent = withTranslation("testdrive")(APIContent);
 
 class UploadStep extends React.Component {
   state = {
@@ -160,6 +160,6 @@ class UploadStep extends React.Component {
 }
 
 UploadStep = withStyles(styles)(UploadStep);
-UploadStep = withNamespaces("testdrive")(UploadStep);
+UploadStep = withTranslation("testdrive")(UploadStep);
 
 export default UploadStep;

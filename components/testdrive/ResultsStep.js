@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
-import { Link, withNamespaces } from "../../i18n";
+import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
@@ -85,6 +85,6 @@ class ResultsStep extends React.Component {
 }
 
 ResultsStep = withStyles(styles)(ResultsStep);
-ResultsStep = withNamespaces("testdrive")(ResultsStep);
+ResultsStep = withTranslation("testdrive")(ResultsStep);
 
 export default ResultsStep;
