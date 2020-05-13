@@ -184,7 +184,7 @@ let AnnotateContent = ({ t, classes, ...props }) => (
   <React.Fragment>
     <Typography variant="body2">{t("annotate_step.explanation1")}</Typography>
     <Typography variant="body2">{t("annotate_step.explanation2")}</Typography>
-    <Grid container spacing={24}>
+    <Grid container spacing={3}>
       <Grid item xs={9}>
         <div className={classes.imageTileListContainer}>
           <ImageTileList {...props} />

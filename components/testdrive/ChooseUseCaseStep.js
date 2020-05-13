@@ -71,7 +71,7 @@ class ChooseUseCaseStep extends React.Component {
           {/* {t("new.od.header")} */}
           Choose Use Case
         </Typography>
-        <Grid container spacing={8} className={classes.grid}>
+        <Grid container spacing={1} className={classes.grid}>
           {useCases.map((useCase, i) => (
             <Grid item xs={6} key={useCase}>
               <Card className={classes.card}>
