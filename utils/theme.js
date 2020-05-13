@@ -1,10 +1,10 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import { red, teal, pink } from '@material-ui/core/colors';
+import { red, blue, pink } from '@material-ui/core/colors';
 
 // Create a theme instance.
 const theme = createMuiTheme({
   palette: {
-    primary: teal,
+    primary: blue,
     secondary: pink,
     error: {
       main: red.A400,
