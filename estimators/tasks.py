@@ -245,9 +245,11 @@ def run_cloudml(job, script_name):
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                 path=os.getenv('PATH')),
             'TERRA_ESTIMATOR_UUID':
-            str(job.estimator.uuid),
+            str(job.internal_metadata["estimator"]),
             'TERRA_JOB_ID':
             str(job.pk),
+            'JOB_DIR':
+            job.job_dir,
             'REGION':
             settings.CLOUDML_REGION,
             'PROJECT':

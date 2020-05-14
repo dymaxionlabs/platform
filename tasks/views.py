@@ -38,7 +38,6 @@ class StartTrainingJobView(APIView):
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
-                external=True,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
             # Send email
@@ -83,7 +82,6 @@ class StartPredictionJobView(APIView):
                                         owner=request.user)
             job = Task.objects.create(name=Estimator.PREDICTION_JOB_TASK,
                                       project=estimator.project,
-                                      external=True,
                                       internal_metadata={
                                           'estimator': str(estimator.uuid),
                                           'training_job': last_training_job.pk,

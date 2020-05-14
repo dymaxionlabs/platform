@@ -288,7 +288,7 @@ GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
 
 # Google Cloud Pub/Sub settings
 PUBSUB_PROJECT_ID = os.getenv('PUBSUB_PROJECT_ID', 'dyma-staging')
-PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs')
+PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs-v2')
 
 # Google CloudML settings
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY', '.')

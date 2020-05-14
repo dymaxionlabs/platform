@@ -32,7 +32,11 @@ class Task(models.Model):
 
     @property
     def artifacts_url(self):
-        return 'gs://{bucket}/{project_id}/{pk}/'.format(
+        return '{job_dir}/artifacts/'.format(job_dir=self.job_dir)
+
+    @property
+    def job_dir(self):
+        return 'gs://{bucket}/{project_id}/{pk}'.format(
             bucket=settings.ESTIMATORS_BUCKET,
             project_id=self.project.id,
             pk=self.pk)
