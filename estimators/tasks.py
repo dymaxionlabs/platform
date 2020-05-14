@@ -5,6 +5,8 @@ import random
 import shutil
 import subprocess
 import tempfile
+from itertools import groupby
+from operator import itemgetter
 
 import numpy as np
 import rasterio
@@ -130,7 +132,7 @@ def build_annotations_csv_rows(annotations):
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
             row['tile_path'] = 'img/{basename}'.format(
-                basename=os.path.basename(tile.tile_file.name))
+                basename=os.path.join(tile.file.name, os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
@@ -190,12 +192,21 @@ def upload_image_tiles(job):
                                       name=t.tile_file.name)
         for t in image_tiles
     ]
+    image_file_names = [
+        os.path.dirname(t.tile_file.name).split("/")[-1]
+        for t in image_tiles
+    ]
 
-    url = os.path.join(job.artifacts_url, 'img/')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=' '.join(image_tile_urls),
-        dst=url))
+    seq = sorted(zip(image_file_names, image_tile_urls), key=itemgetter(0))
+    groups = groupby(seq, itemgetter(0))
+
+    for img_file_name, urls in groups:
+        urls = [url for _, url in urls]
+        dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+            src=' '.join(urls),
+            dst=dst_url))
 
 
 def upload_prediction_image_tiles(job):
@@ -235,6 +246,11 @@ def upload_prediction_image_tiles(job):
 
 
 def run_cloudml(job, script_name):
+    epochs = settings.CLOUDML_DEAULT_EPOCHS
+    if job.estimator.configuration is not None:
+        if 'training_hours' in job.estimator.configuration:
+            epochs = job.estimator.configuration['training_hours'] * 6
+
     p = subprocess.Popen(
         [script_name],
         env={
@@ -261,7 +277,9 @@ def run_cloudml(job, script_name):
             'SENTRY_SDK':
             os.environ['SENTRY_DNS'],
             'SENTRY_ENVIRONMENT':
-            os.environ['SENTRY_ENVIRONMENT']
+            os.environ['SENTRY_ENVIRONMENT'],
+            'EPOCHS':
+            str(round(epochs)),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)

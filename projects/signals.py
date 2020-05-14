@@ -26,7 +26,8 @@ def send_welcome_email(sender, instance, created, **kwargs):
         email.send_mail()
 
 
-@receiver(post_save, sender=File)
+# Disabled for now
+#@receiver(post_save, sender=File)
 def generate_raster_tiles_from_file(sender, instance, created, **kwargs):
     ext = os.path.splitext(instance.name)[1]
     if created:

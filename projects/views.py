@@ -7,6 +7,7 @@ import django_rq
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import FileResponse
 from django.utils.translation import ugettext_lazy as _
 from mailchimp3 import MailChimp
 from rest_auth.registration.views import RegisterView
@@ -339,18 +340,34 @@ class FileDownloadView(APIView):
         if not file:
             raise NotFound(detail=None, code=None)
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            shutil.copyfileobj(file.file, tmpfile)
-            src = tmpfile.name
+        return self.try_download_file(file)
 
-            content_disp = 'attachment; filename="{file_name}"'.format(
-                file_name=filename)
+    def try_download_file(self, file):
+        # Copy file from storage to a temporary file
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        shutil.copyfileobj(file.file, tmp)
+        tmp.close()
 
-            with open(src, 'rb') as fileresponse:
-                return Response(
-                    fileresponse.read(),
-                    headers={'Content-Disposition': content_disp},
-                    content_type=mimetypes.MimeTypes().guess_type(src)[0])
+        try:
+            # Reopen temporary file as binary for streaming download
+            stream_file = open(tmp.name, 'rb')
+
+            # Monkey patch .close method so that file is removed after closing it
+            # i.e. when response finishes
+            original_close = stream_file.close
+            def new_close():
+                original_close()
+                os.remove(tmp.name)
+            stream_file.close = new_close
+
+            return FileResponse(stream_file,
+                                as_attachment=True,
+                                filename=file.name)
+        except Exception as err:
+            # Make sure to remove temp file
+            os.remove(tmp.name)
+            raise APIException(err)
+
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):

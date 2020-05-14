@@ -294,6 +294,7 @@ PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs-v2')
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY', '.')
 CLOUDML_PROJECT = os.getenv('CLOUDML_PROJECT', 'dyma-staging')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
+CLOUDML_DEAULT_EPOCHS = 10
 
 LAYERS_FILL_COLOR = [
     '#f0251c', '#f5f518', '#4af31c', '#1fe7c5', '#1f54d6', '#9319bd', '#9c8686'
