@@ -94,7 +94,7 @@ class UploadFile(StorageAPIView):
                         status=status.HTTP_200_OK)
 
 
-class RetrieveFile(StorageAPIView):
+class FileView(StorageAPIView):
     @swagger_auto_schema(manual_parameters=[
         openapi.Parameter('path',
                           openapi.IN_QUERY,
@@ -120,3 +120,20 @@ class RetrieveFile(StorageAPIView):
             return Response(None, status=status.HTTP_404_NOT_FOUND)
         content = FileSerializer(files[0]).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
+
+    def delete(self, request, format=None):
+        """
+        Delete a file.
+        """
+        # TODO Pagination
+        project = self.get_project()
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+        client = Client(project)
+        files = list(client.list_files(path))
+        if not files:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+        files[0].delete()
+        return Response(dict(detail='File deleted.'),
+                        status=status.HTTP_200_OK)

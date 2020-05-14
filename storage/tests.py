@@ -64,7 +64,7 @@ class UploadFileTest(TestCase):
         self.assertEqual(response.data['detail'], "'path' missing")
 
 
-class RetrieveFileTest(TestCase):
+class FileView(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
@@ -94,5 +94,21 @@ class RetrieveFileTest(TestCase):
 
     def test_path_missing(self):
         response = self.client.get(f'/storage/file/')
+        self.assertEquals(400, response.status_code)
+        self.assertEqual(response.data['detail'], "'path' missing")
+
+    def test_destroy_file(self):
+        response = self.client.delete(f'/storage/file/?path={self.test_path}')
+        self.assertEquals(200, response.status_code)
+        self.assertTrue('detail' in response.data)
+        self.assertEqual(response.data['detail'], 'File deleted.')
+
+    def test_destroy_file_missing(self):
+        missing_path = self.test_path + '.1'
+        response = self.client.delete(f'/storage/file/?path={missing_path}')
+        self.assertEquals(404, response.status_code)
+
+    def test_destroy_path_missing(self):
+        response = self.client.delete(f'/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
