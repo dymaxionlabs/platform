@@ -35,6 +35,7 @@ class TaskLogEntryAdmin(admin.ModelAdmin):
         'task',
     )
     list_filter = ('task', )
+    ordering = ['-logged_at']
 
 
 admin.site.register(Task, TaskAdmin)
