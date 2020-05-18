@@ -70,9 +70,9 @@ class StartPredictionJobView(APIView):
             return Response({'training_job': _('Not found')},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        job = Task.objects.filter(internal_metadata__estimator=str(
-            estimator.uuid),
-                                  state='FINISHED',
+        job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
+                                  internal_metadata__estimator=str(
+                                      estimator.uuid),
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
         if not job:
