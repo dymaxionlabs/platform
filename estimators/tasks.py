@@ -131,8 +131,8 @@ def build_annotations_csv_rows(annotations):
             row['x2'] = constrain_and_scale(x2, w)
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
-            row['tile_path'] = 'img/{basename}'.format(
-                basename=os.path.join(tile.file.name, os.path.basename(tile.tile_file.name)))
+            row['tile_path'] = 'img/{basename}'.format(basename=os.path.join(
+                tile.file.name, os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
@@ -193,8 +193,7 @@ def upload_image_tiles(job):
         for t in image_tiles
     ]
     image_file_names = [
-        os.path.dirname(t.tile_file.name).split("/")[-1]
-        for t in image_tiles
+        os.path.dirname(t.tile_file.name).split("/")[-1] for t in image_tiles
     ]
 
     seq = sorted(zip(image_file_names, image_tile_urls), key=itemgetter(0))
@@ -210,7 +209,9 @@ def upload_image_tiles(job):
 
 
 def upload_prediction_image_tiles(job):
-    for file in job.image_files.all():
+    images_files = File.objects.filter(
+        project=job.project, name__in=job.internal_metadata['image_files'])
+    for file in images_files:
         image_tiles = ImageTile.objects.filter(file=file)
 
         image_tile_urls = []
@@ -247,9 +248,10 @@ def upload_prediction_image_tiles(job):
 
 def run_cloudml(job, script_name):
     epochs = settings.CLOUDML_DEAULT_EPOCHS
-    if job.estimator.configuration is not None:
-        if 'training_hours' in job.estimator.configuration:
-            epochs = job.estimator.configuration['training_hours'] * 6
+    estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
+    if estimator.configuration is not None:
+        if 'training_hours' in estimator.configuration:
+            epochs = estimator.configuration['training_hours'] * 6
 
     p = subprocess.Popen(
         [script_name],
@@ -286,7 +288,7 @@ def run_cloudml(job, script_name):
 
 
 def prepare_artifacts(job):
-    training_job = TrainingJob.objects.get(pk=job.metadata['training_job'])
+    training_job = Task.objects.get(pk=job.internal_metadata['training_job'])
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
     run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}classes.csv'.format(
         sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
@@ -301,8 +303,8 @@ def prepare_artifacts(job):
 
 
 @job("default")
-def start_prediction_job(prediction_job_pk):
-    job = PredictionJob.objects.get(pk=prediction_job_pk)
+def start_prediction_job(task_id):
+    job = Task.objects.get(pk=task_id)
 
     prepare_artifacts(job)
 

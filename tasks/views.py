@@ -5,6 +5,7 @@ from django.shortcuts import render
 from estimators.models import Estimator
 from estimators.permissions import HasAccessToRelatedEstimatorPermission
 from projects.mixins import ProjectRelatedModelListMixin
+from projects.models import File
 from projects.permissions import HasAccessToRelatedProjectPermission, HasUserAPIKey
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
@@ -41,14 +42,12 @@ class StartTrainingJobView(APIView):
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
             # Send email
-            #TODO: Delete this comments before merge
-            """
             user = request.user
             email = TrainingStartedEmail(estimator=estimator,
                                          recipients=[user.email],
                                          language_code='es')
             email.send_mail()
-            """
+
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
@@ -88,15 +87,13 @@ class StartPredictionJobView(APIView):
                                           'image_files':
                                           request.data.get('files')
                                       })
-
+            job.start()
             # Send email
-            #TODO: Delete this comments before merge
-            """
             user = request.user
             email = PredictionStartedEmail(estimator=estimator,
                                            recipients=[user.email],
                                            language_code='es')
             email.send_mail()
-            """
+
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
