@@ -43,10 +43,7 @@ class Task(models.Model):
 
     def start(self):
         if self.state == states.PENDING:
-            django_rq.enqueue(self.name,
-                              task_id=self.id,
-                              args=self.args,
-                              kwargs=self.kwargs)
+            django_rq.enqueue(self.name, self.id, self.args, self.kwargs)
             self.state = states.STARTED
             self.save(update_fields=['state', 'updated_at'])
             return True

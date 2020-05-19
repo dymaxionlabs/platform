@@ -89,7 +89,7 @@ def write_image(img, path):
 
 
 @job("default")
-def start_training_job(task_id):
+def start_training_job(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
     annotation_csvs = generate_annotations_csv(job)
     classes_csv = generate_classes_csv(job)
@@ -303,7 +303,7 @@ def prepare_artifacts(job):
 
 
 @job("default")
-def start_prediction_job(task_id):
+def start_prediction_job(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
 
     prepare_artifacts(job)
