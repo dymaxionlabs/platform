@@ -1,8 +1,11 @@
+import tempfile
+import mimetypes
+
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ValidationError
@@ -12,6 +15,7 @@ from projects.mixins import allowed_projects_for
 from projects.models import Project
 from projects.permissions import HasUserAPIKey
 from projects.views import RelatedProjectAPIView
+from projects.renderers import BinaryFileRenderer
 
 from .client import Client
 from .serializers import FileSerializer
@@ -137,3 +141,31 @@ class FileView(StorageAPIView):
         files[0].delete()
         return Response(dict(detail='File deleted.'),
                         status=status.HTTP_200_OK)
+
+
+class FileDownloadView(StorageAPIView):
+    renderer_classes = (BinaryFileRenderer, )
+
+    def get(self, request):
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+        project = self.get_project()
+        client = Client(project)
+        files = list(client.list_files(path))
+        if not files:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            files[0].download_to_filename(src)
+
+            content_disp = 'attachment; filename="{file_name}"'.format(
+                file_name=path)
+
+            with open(src, 'rb') as fileresponse:
+                data = fileresponse.read()
+                return Response(
+                    data,
+                    headers={'Content-Disposition': content_disp},
+                    content_type=mimetypes.MimeTypes().guess_type(src)[0])

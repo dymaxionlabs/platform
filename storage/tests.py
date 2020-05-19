@@ -64,7 +64,7 @@ class UploadFileTest(TestCase):
         self.assertEqual(response.data['detail'], "'path' missing")
 
 
-class FileView(TestCase):
+class FileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
@@ -112,3 +112,33 @@ class FileView(TestCase):
         response = self.client.delete(f'/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
+
+
+class DownloadFileTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        self.project = Project.objects.filter(owners=self.user).first()
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+        self.storage_client = Client(self.project)
+        self.test_data = io.BytesIO(b"test file content")
+        self.test_path = "foo/data.bin"
+        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+
+    def test_download_file(self):
+        response = self.client.get(f'/storage/download/?path={self.test_path}')
+        self.assertEquals(200, response.status_code)
+        self.test_data.seek(0)
+        self.assertEqual(response.data, self.test_data.read())
+
+    def test_download_path_missing(self):
+        response = self.client.get(f'/storage/download/')
+        self.assertEquals(400, response.status_code)
+        self.assertEqual(response.data['detail'], "'path' missing")
+
+    def test_download_file_missing(self):
+        missing_path = self.test_path + '.1'
+        response = self.client.get(f'/storage/download/?path={missing_path}')
+        self.assertEquals(404, response.status_code)
