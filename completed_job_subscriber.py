@@ -51,7 +51,7 @@ def sendTrainingJobCompletedEmail(job):
 def trainingJobFinished(job_id):
     job = Task.objects.get(pk=job_id)
     job.state = states.FINISHED
-    job.save()
+    job.save(update_fields=['state', 'updated_at'])
     sendTrainingJobCompletedEmail(job)
 
 
@@ -74,16 +74,20 @@ def predictionJobFinished(job_id):
     print("Prediction job finished {}".format(job_id))
     job = Task.objects.get(pk=job_id)
     job.state = states.FINISHED
-    job.save()
-    """
+    job.save(update_fields=['state', 'updated_at'])
+
     with tempfile.TemporaryDirectory() as tmpdirname:
         run_subprocess(
             '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.format(
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                predictions_url=job.predictions_url,
+                predictions_url='{job_dir}/predictions/'.format(
+                    job_dir=job.job_dir),
                 dst=tmpdirname))
 
-        for img in job.image_files.all():
+        images_files = File.objects.filter(
+            project=job.project, name__in=job.internal_metadata['image_files'])
+        job.internal_metadata['results_files'] = []
+        for img in images_files:
             result_map = Map.objects.create(
                 project=img.project,
                 name='{prediction_pk}_{img_name}'.format(prediction_pk=job.pk,
@@ -108,10 +112,11 @@ def predictionJobFinished(job_id):
             for f in files:
                 meta['map']['layer_order'] = order
                 order += 1
-                job.result_files.add(createFile(f, img, results_path, meta))
+                result_file = createFile(f, img, results_path, meta)
+                job.internal_metadata['results_files'].append(result_file.name)
 
+        job.save(update_fields=['internal_metadata', 'updated_at'])
     sendPredictionJobCompletedEmail(job, result_map)
-    """
 
 
 def subscriber():
@@ -137,6 +142,10 @@ def subscriber():
                         trainingJobFinished(data['job_id'])
                     elif data['job_type'] == 'prediction':
                         predictionJobFinished(data['job_id'])
+            if "failed" in data["payload"]:
+                task.state = states.FAILED
+                task.save(update_fields=['state', 'updated_at'])
+
         else:
             print('[Subscriptor] Unknow message: {}'.format(message.data))
 
