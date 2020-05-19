@@ -1,5 +1,6 @@
 import tempfile
 import mimetypes
+import requests
 
 from django.shortcuts import render
 from drf_yasg import openapi
@@ -8,6 +9,7 @@ from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.reverse import reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView, Response
 
@@ -75,9 +77,13 @@ class UploadFile(StorageAPIView):
 
     manual_parameters = [
         openapi.Parameter('path',
-                          openapi.IN_QUERY,
+                          openapi.IN_FORM,
                           description="File output path in storage",
-                          type=openapi.TYPE_STRING)
+                          type=openapi.TYPE_STRING),
+        openapi.Parameter('file',
+                          openapi.IN_FORM,
+                          description="File content",
+                          type=openapi.TYPE_FILE)
     ]
     responses = {
         200: FileSerializer,
@@ -87,13 +93,18 @@ class UploadFile(StorageAPIView):
     @swagger_auto_schema(manual_parameters=manual_parameters,
                          responses=responses)
     def post(self, request, format=None):
-        client = self.get_client()
         path = request.data.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        file = client.upload_from_file(request.data['file'],
+        fileobj = request.data.get('file', None)
+        if not fileobj:
+            raise ParseError("'file' missing")
+
+        client = self.get_client()
+        file = client.upload_from_file(fileobj,
                                        to=path,
-                                       content_type=request.content_type)
+                                       content_type=fileobj.content_type)
+
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -169,3 +180,48 @@ class FileDownloadView(StorageAPIView):
                     data,
                     headers={'Content-Disposition': content_disp},
                     content_type=mimetypes.MimeTypes().guess_type(src)[0])
+
+
+class CreateResumableUpload(StorageAPIView):
+    manual_parameters = [
+        openapi.Parameter('path',
+                          openapi.IN_QUERY,
+                          description="File path in storage",
+                          type=openapi.TYPE_STRING),
+        openapi.Parameter('size',
+                          openapi.IN_QUERY,
+                          description="Total file size in bytes (optional)",
+                          type=openapi.TYPE_INTEGER),
+    ]
+    responses = {
+        200: openapi.Response("Upload session URL"),
+        400: openapi.Response("Bad request"),
+    }
+
+    @swagger_auto_schema(manual_parameters=manual_parameters,
+                         responses=responses)
+    def post(self, request):
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+        size = request.query_params.get('size', None)
+        if size:
+            size = int(size)
+
+        client = self.get_client()
+        upload_id = client.create_resumable_upload_session(
+            to=path, size=size, content_type=request.content_type)
+
+        url = reverse("resumable-upload", request=request)
+        url = f'{url}?id={upload_id}'
+        return Response(dict(url=url), status=status.HTTP_200_OK)
+
+
+class ResumableUpload(StorageAPIView):
+    def put(self, request):
+        upload_id = request.query_params.get('id', None)
+        if not upload_id:
+            raise ParseError("'id' missing")
+        gcs_url = f''
+        response = requests.put(gcs_url)
+        return Response(response.data, status=response.status_code)
