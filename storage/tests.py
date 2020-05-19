@@ -159,7 +159,6 @@ class CreateResumableUploadTest(TestCase):
     def test_create_resumable_upload(self):
         path = "foo/data.bin"
         bin_data = b"12345678901234567890"
-        bin_io = io.BytesIO(bin_data)
 
         response = self.client.post(
             f'/storage/create-resumable-upload/?path={path}&size={len(bin_data)}'
