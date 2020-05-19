@@ -1,16 +1,11 @@
 from django.conf.urls import url
 
-from storage.views import ListFile, UploadFile, FileView, FileDownloadView, CreateResumableUpload, ResumableUpload
+from . import views
 
 urlpatterns = [
-    url(r'^files/?$', ListFile.as_view(), name='index'),
-    url(r'^file/?$', FileView.as_view()),
-    url(r'^upload/?$', UploadFile.as_view(), name='upload'),
-    url(r'^download/?$', FileDownloadView.as_view(), name='download'),
-    url(r'^create-resumable-upload/?$',
-        CreateResumableUpload.as_view(),
-        name='create-resumable-upload'),
-    url(r'^resumable-upload/?$',
-        ResumableUpload.as_view(),
-        name='resumable-upload')
+    url(r'^files/?$', views.ListFile.as_view()),
+    url(r'^file/?$', views.FileView.as_view()),
+    url(r'^upload/?$', views.UploadFile.as_view()),
+    url(r'^download/?$', views.FileDownloadView.as_view()),
+    url(r'^create-resumable-upload/?$', views.CreateResumableUpload.as_view())
 ]

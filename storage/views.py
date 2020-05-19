@@ -1,12 +1,12 @@
-import tempfile
 import mimetypes
-import requests
+import tempfile
 
+import requests
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.exceptions import ParseError, NotFound
+from rest_framework.exceptions import NotFound, ParseError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.reverse import reverse
@@ -16,8 +16,8 @@ from rest_framework.views import APIView, Response
 from projects.mixins import allowed_projects_for
 from projects.models import Project
 from projects.permissions import HasUserAPIKey
-from projects.views import RelatedProjectAPIView
 from projects.renderers import BinaryFileRenderer
+from projects.views import RelatedProjectAPIView
 
 from .client import Client
 from .serializers import FileSerializer
@@ -194,7 +194,7 @@ class CreateResumableUpload(StorageAPIView):
                           type=openapi.TYPE_INTEGER),
     ]
     responses = {
-        200: openapi.Response("Upload session URL"),
+        200: openapi.Response("GCS upload session URL"),
         400: openapi.Response("Bad request"),
     }
 
@@ -209,19 +209,8 @@ class CreateResumableUpload(StorageAPIView):
             size = int(size)
 
         client = self.get_client()
-        upload_id = client.create_resumable_upload_session(
+        session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
 
-        url = reverse("resumable-upload", request=request)
-        url = f'{url}?id={upload_id}'
-        return Response(dict(url=url), status=status.HTTP_200_OK)
-
-
-class ResumableUpload(StorageAPIView):
-    def put(self, request):
-        upload_id = request.query_params.get('id', None)
-        if not upload_id:
-            raise ParseError("'id' missing")
-        gcs_url = f''
-        response = requests.put(gcs_url)
-        return Response(response.data, status=response.status_code)
+        return Response(dict(session_url=session_url),
+                        status=status.HTTP_200_OK)

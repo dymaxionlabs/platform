@@ -91,6 +91,9 @@ class HasUserAPIKey(BaseHasAPIKey):
             request.project = instance.project
             # Also set on body, if not present
             if 'project' not in request.data:
+                # Sometimes request.data is a QueryDict and we have to make it mutable
+                if hasattr(request.data, '_mutable'):
+                    request.data._mutable = True
                 request.data['project'] = instance.project.uuid
         return is_valid
 

@@ -1,7 +1,6 @@
 import logging
 import os
 from fnmatch import fnmatch
-from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from google.cloud import storage as gcs
@@ -62,11 +61,7 @@ class Client:
         blob = self.bucket.blob(full_path)
         url = blob.create_resumable_upload_session(content_type=content_type,
                                                    size=size)
-        print(url)
-        parse_result = urlparse(url)
-        query_params = parse_qs(parse_result.query)
-        upload_id = query_params['upload_id'][0]
-        return upload_id
+        return url
 
     @property
     def client(self):

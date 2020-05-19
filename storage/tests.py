@@ -1,6 +1,8 @@
 import io
 import os
+from urllib.parse import parse_qs, urlparse
 
+import requests
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -122,6 +124,7 @@ class DownloadFileTest(TestCase):
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
+
         self.storage_client = Client(self.project)
         self.test_data = io.BytesIO(b"test file content")
         self.test_path = "foo/data.bin"
@@ -142,3 +145,35 @@ class DownloadFileTest(TestCase):
         missing_path = self.test_path + '.1'
         response = self.client.get(f'/storage/download/?path={missing_path}')
         self.assertEquals(404, response.status_code)
+
+
+class CreateResumableUploadTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        self.project = Project.objects.filter(owners=self.user).first()
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+
+    def test_create_resumable_upload(self):
+        path = "foo/data.bin"
+        bin_data = b"12345678901234567890"
+        bin_io = io.BytesIO(bin_data)
+
+        response = self.client.post(
+            f'/storage/create-resumable-upload/?path={path}&size={len(bin_data)}'
+        )
+
+        self.assertEquals(200, response.status_code)
+        self.assertTrue('session_url' in response.data)
+        url = response.data['session_url']
+
+        parsed_url = urlparse(url)
+        self.assertEquals(parsed_url.netloc, 'storage.googleapis.com')
+        self.assertTrue('upload_id' in parsed_url.query)
+
+    def test_path_missing(self):
+        response = self.client.post('/storage/create-resumable-upload/')
+        self.assertEquals(400, response.status_code)
+        self.assertEqual(response.data['detail'], "'path' missing")
