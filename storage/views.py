@@ -99,7 +99,7 @@ class UploadFile(StorageAPIView):
         client = self.get_client()
         file = client.upload_from_file(fileobj,
                                        to=path,
-                                       content_type=request.content_type)
+                                       content_type=fileobj.content_type)
 
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
