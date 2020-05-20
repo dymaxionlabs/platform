@@ -20,6 +20,9 @@ import fiona
 
 
 class Estimator(models.Model):
+    TRAINING_JOB_TASK = 'estimators.tasks.start_training_job'
+    PREDICTION_JOB_TASK = 'estimators.tasks.start_prediction_job'
+
     OBJECT_DETECTION = 'OD'
     CLASSIFICATION = 'C'
     TYPE_CHOICES = ((OBJECT_DETECTION, _('Object detection')),
