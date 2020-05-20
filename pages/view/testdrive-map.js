@@ -35,14 +35,14 @@ const TileLayer = dynamic(() => import("../../components/TileLayer"), {
 
 const mapData = {
   pool: {
-    vectorData: require("../../static/testdrive/pools/results.json"),
+    vectorData: require("../../public/static/testdrive/pools/results.json"),
     center: [-34.43283793934236, -58.87167763852244],
     zoom: 16,
     minZoom: 15,
     maxZoom: 18
   },
   cattle: {
-    vectorData: require("../../static/testdrive/cattle/results.json"),
+    vectorData: require("../../public/static/testdrive/cattle/results.json"),
     center: [-37.79857199410538, -57.49418322639319],
     zoom: 17,
     minZoom: 16,
@@ -239,7 +239,7 @@ class MapTestDrive extends React.Component {
     const useCase = currentModel["useCase"];
     key = useCase;
     if (useCase == "cattle") {
-      metricsData = require("../../static/testdrive/cattle/metrics_cattle.json");
+      metricsData = require("../../public/static/testdrive/cattle/metrics_cattle.json");
       console.log("loading cattle");
       initialViewport.center = mapData.cattle.center;
       initialViewport.zoom = mapData.cattle.zoom;
@@ -248,7 +248,7 @@ class MapTestDrive extends React.Component {
       lotsData = mapData.cattle.vectorData;
       selectedRasterLayer = rasterLayers[0];
     } else if (useCase == "pools") {
-      metricsData = require("../../static/testdrive/pools/metrics_pool.json");
+      metricsData = require("../../public/static/testdrive/pools/metrics_pool.json");
       console.log("loading pools");
       initialViewport.center = mapData.pool.center;
       initialViewport.zoom = mapData.pool.zoom;
