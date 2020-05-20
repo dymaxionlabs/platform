@@ -6,7 +6,7 @@ server {
     }
 
     location /static/ {
-        root /home/ubuntu/analytics;
+        root /home/ubuntu/analytics/public;
     }
 
     location /_next/static/ {
