@@ -35,6 +35,7 @@ class EstimatorViewSetTest(TestCase):
                 'name',
                 'classes',
                 'metadata',
+                'configuration',
                 'created_at',
                 'updated_at',
             ]), sorted(response.data.keys()))

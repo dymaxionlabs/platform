@@ -18,18 +18,29 @@ sudo apt-get install python3 python3-dev python3-pip \
   gettext
 ```
 
-* Create a role and database (e.g. `terra`)
+* Create a superuser role for your currently logged-in user:
 
-```
-sudo -u postgres createuser --interactive
-sudo -u postgres createdb terra
+```sh
+sudo -u postgres createuser -s $USER
 ```
 
-* Set user password for Django
+* Create the database
 
+```sh
+createdb terra
 ```
-$ psql terra
-# ALTER USER terra WITH PASSWORD 'foobar';
+
+* Set user password for the user you just created (`terra`). Please replace
+  `foobar` for a long and difficult to guess password:
+
+```sh
+psql terra -c "ALTER USER $USER WITH PASSWORD 'foobar'"
+```
+
+* Add the PostGIS extension to the database:
+
+```sh
+psql terra -c "CREATE EXTENSION IF NOT EXISTS postgis CASCADE"
 ```
 
 * Copy `env.sample` and edit it to suit your needs. You will have to set

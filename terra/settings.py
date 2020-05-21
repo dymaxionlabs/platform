@@ -55,10 +55,10 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
-    'quotations.apps.QuotationsConfig',
     'estimators.apps.EstimatorsConfig',
+    'quotations.apps.QuotationsConfig',
     'storage.apps.StorageConfig',
-    #'tasks.apps.TasksConfig',
+    'tasks.apps.TasksConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
@@ -284,12 +284,13 @@ GOOGLE_AUTH_TOKEN_FILE = os.path.join(BASE_DIR, '.google_auth_token.pkl')
 
 # Google Cloud Pub/Sub settings
 PUBSUB_PROJECT_ID = os.getenv('PUBSUB_PROJECT_ID', 'dyma-staging')
-PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs')
+PUBSUB_JOB_TOPIC_ID = os.getenv('PUBSUB_JOB_TOPIC_ID', 'jobs-v2')
 
 # Google CloudML settings
 CLOUDML_DIRECTORY = os.getenv('CLOUDML_DIRECTORY', '.')
 CLOUDML_PROJECT = os.getenv('CLOUDML_PROJECT', 'dyma-staging')
 CLOUDML_REGION = os.getenv('CLOUDML_REGION', 'us-central1')
+CLOUDML_DEAULT_EPOCHS = 10
 
 LAYERS_FILL_COLOR = [
     '#f0251c', '#f5f518', '#4af31c', '#1fe7c5', '#1f54d6', '#9319bd', '#9c8686'

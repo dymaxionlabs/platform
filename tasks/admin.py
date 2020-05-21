@@ -1,68 +1,42 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import TaskResult
-
-try:
-    ALLOW_EDITS = settings.TASKS['ALLOW_EDITS']
-except (AttributeError, KeyError) as e:
-    ALLOW_EDITS = True
-    pass
+from .models import Task, TaskLogEntry
 
 
-class TaskResultAdmin(admin.ModelAdmin):
-    """Admin-interface for results of tasks."""
+class TaskAdmin(admin.ModelAdmin):
+    """Admin-interface for tasks"""
 
-    model = TaskResult
-    date_hierarchy = 'date_done'
+    model = Task
+    date_hierarchy = 'finished_at'
     list_display = (
-        'task_id',
-        'task_name',
-        'date_done',
-        'status',
+        'id',
+        'name',
+        'state',
+        'created_at',
+        'finished_at',
     )
     list_filter = (
-        'status',
-        'date_done',
-        'task_name',
+        'state',
+        'finished_at',
+        'name',
     )
-    readonly_fields = ('date_done', 'result', 'hidden', 'meta')
-    search_fields = ('task_name', 'task_id', 'status')
-    fieldsets = (
-        (None, {
-            'fields': (
-                'task_id',
-                'task_name',
-                'status',
-                'content_type',
-                'content_encoding',
-            ),
-            'classes': ('extrapretty', 'wide')
-        }),
-        ('Parameters', {
-            'fields': (
-                'task_args',
-                'task_kwargs',
-            ),
-            'classes': ('extrapretty', 'wide')
-        }),
-        ('Result', {
-            'fields': (
-                'result',
-                'date_done',
-                'traceback',
-                'hidden',
-                'meta',
-            ),
-            'classes': ('extrapretty', 'wide')
-        }),
-    )
+    search_fields = ('name', 'id', 'status')
 
     def get_readonly_fields(self, request, obj=None):
-        if ALLOW_EDITS:
-            return self.readonly_fields
-        else:
-            return list(set([field.name for field in self.opts.local_fields]))
+        return list(set([field.name for field in self.opts.local_fields]))
 
 
-admin.site.register(TaskResult, TaskResultAdmin)
+class TaskLogEntryAdmin(admin.ModelAdmin):
+    model = TaskLogEntry
+    date_hierarchy = 'logged_at'
+    list_display = (
+        'logged_at',
+        'task',
+    )
+    list_filter = ('task', )
+    ordering = ['-logged_at']
+
+
+admin.site.register(Task, TaskAdmin)
+admin.site.register(TaskLogEntry, TaskLogEntryAdmin)

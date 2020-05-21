@@ -5,6 +5,8 @@ import random
 import shutil
 import subprocess
 import tempfile
+from itertools import groupby
+from operator import itemgetter
 
 import numpy as np
 import rasterio
@@ -19,7 +21,7 @@ from skimage.io import imsave
 from projects.models import File
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
-
+from tasks.models import Task
 IMAGE_TILE_SIZE = 500
 
 
@@ -87,8 +89,8 @@ def write_image(img, path):
 
 
 @job("default")
-def start_training_job(training_job_pk):
-    job = TrainingJob.objects.get(pk=training_job_pk)
+def start_training_job(task_id, args, kwargs):
+    job = Task.objects.get(pk=task_id)
     annotation_csvs = generate_annotations_csv(job)
     classes_csv = generate_classes_csv(job)
     upload_image_tiles(job)
@@ -129,15 +131,16 @@ def build_annotations_csv_rows(annotations):
             row['x2'] = constrain_and_scale(x2, w)
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
-            row['tile_path'] = 'img/{basename}'.format(
-                basename=os.path.basename(tile.tile_file.name))
+            row['tile_path'] = 'img/{basename}'.format(basename=os.path.join(
+                tile.file.name, os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
 
 
 def generate_annotations_csv(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator)
+    annotations = Annotation.objects.filter(
+        estimator__uuid=job.internal_metadata["estimator"])
 
     rows = build_annotations_csv_rows(annotations)
 
@@ -153,7 +156,7 @@ def generate_annotations_csv(job):
 
 
 def generate_classes_csv(job):
-    estimator = job.estimator
+    estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
     rows = [
         dict(label=label, class_id=i)
         for i, label in enumerate(estimator.classes)
@@ -180,7 +183,8 @@ def run_subprocess(cmd):
 
 
 def upload_image_tiles(job):
-    annotations = Annotation.objects.filter(estimator=job.estimator).all()
+    annotations = Annotation.objects.filter(
+        estimator__uuid=job.internal_metadata["estimator"]).all()
     image_tiles = [a.image_tile for a in annotations]
 
     image_tile_urls = [
@@ -188,16 +192,26 @@ def upload_image_tiles(job):
                                       name=t.tile_file.name)
         for t in image_tiles
     ]
+    image_file_names = [
+        os.path.dirname(t.tile_file.name).split("/")[-1] for t in image_tiles
+    ]
 
-    url = os.path.join(job.artifacts_url, 'img/')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=' '.join(image_tile_urls),
-        dst=url))
+    seq = sorted(zip(image_file_names, image_tile_urls), key=itemgetter(0))
+    groups = groupby(seq, itemgetter(0))
+
+    for img_file_name, urls in groups:
+        urls = [url for _, url in urls]
+        dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
+        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+            src=' '.join(urls),
+            dst=dst_url))
 
 
 def upload_prediction_image_tiles(job):
-    for file in job.image_files.all():
+    images_files = File.objects.filter(
+        project=job.project, name__in=job.internal_metadata['image_files'])
+    for file in images_files:
         image_tiles = ImageTile.objects.filter(file=file)
 
         image_tile_urls = []
@@ -233,6 +247,12 @@ def upload_prediction_image_tiles(job):
 
 
 def run_cloudml(job, script_name):
+    epochs = settings.CLOUDML_DEAULT_EPOCHS
+    estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
+    if estimator.configuration is not None:
+        if 'training_hours' in estimator.configuration:
+            epochs = estimator.configuration['training_hours'] * 6
+
     p = subprocess.Popen(
         [script_name],
         env={
@@ -243,9 +263,11 @@ def run_cloudml(job, script_name):
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                 path=os.getenv('PATH')),
             'TERRA_ESTIMATOR_UUID':
-            str(job.estimator.uuid),
+            str(job.internal_metadata["estimator"]),
             'TERRA_JOB_ID':
             str(job.pk),
+            'JOB_DIR':
+            job.job_dir,
             'REGION':
             settings.CLOUDML_REGION,
             'PROJECT':
@@ -257,14 +279,16 @@ def run_cloudml(job, script_name):
             'SENTRY_SDK':
             os.environ['SENTRY_DNS'],
             'SENTRY_ENVIRONMENT':
-            os.environ['SENTRY_ENVIRONMENT']
+            os.environ['SENTRY_ENVIRONMENT'],
+            'EPOCHS':
+            str(round(epochs)),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)
 
 
 def prepare_artifacts(job):
-    training_job = TrainingJob.objects.get(pk=job.metadata['training_job'])
+    training_job = Task.objects.get(pk=job.internal_metadata['training_job'])
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
     run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}classes.csv'.format(
         sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
@@ -279,8 +303,8 @@ def prepare_artifacts(job):
 
 
 @job("default")
-def start_prediction_job(prediction_job_pk):
-    job = PredictionJob.objects.get(pk=prediction_job_pk)
+def start_prediction_job(task_id, args, kwargs):
+    job = Task.objects.get(pk=task_id)
 
     prepare_artifacts(job)
 
