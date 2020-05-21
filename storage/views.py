@@ -31,7 +31,7 @@ class StorageAPIView(RelatedProjectAPIView):
         return Client(project)
 
 
-class ListFile(RelatedProjectAPIView):
+class ListFilesView(RelatedProjectAPIView):
     """
     View to list all files in the projects container
     """
@@ -68,7 +68,7 @@ class ListFile(RelatedProjectAPIView):
         return Response(files)
 
 
-class UploadFile(StorageAPIView):
+class UploadFileView(StorageAPIView):
     """
     View for uploading a file
     """
@@ -154,7 +154,7 @@ class FileView(StorageAPIView):
                         status=status.HTTP_200_OK)
 
 
-class FileDownloadView(StorageAPIView):
+class DownloadFileView(StorageAPIView):
     renderer_classes = (BinaryFileRenderer, )
 
     def get(self, request):
@@ -182,7 +182,7 @@ class FileDownloadView(StorageAPIView):
                     content_type=mimetypes.MimeTypes().guess_type(src)[0])
 
 
-class CreateResumableUpload(StorageAPIView):
+class CreateResumableUploadView(StorageAPIView):
     manual_parameters = [
         openapi.Parameter('path',
                           openapi.IN_QUERY,

@@ -14,7 +14,7 @@ from storage.client import Client
 from terra.tests import create_some_user
 
 
-class ClientListFilesTest(TestCase):
+class ListFilesTest(TestCase):
     def test_list_file(self):
         with open("/tmp/testfile1.txt", "w") as f:
             f.write("this is a test\n")
@@ -35,7 +35,7 @@ class ClientListFilesTest(TestCase):
             self.assertIn(f, uploaded_files)
 
 
-class UploadFileTest(TestCase):
+class UploadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
@@ -123,7 +123,7 @@ class FileViewTest(TestCase):
         self.assertEqual(response.data['detail'], "'path' missing")
 
 
-class DownloadFileTest(TestCase):
+class DownloadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
@@ -160,7 +160,7 @@ class DownloadFileTest(TestCase):
         files[0].delete()
 
 
-class CreateResumableUploadTest(TestCase):
+class CreateResumableUploadViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
