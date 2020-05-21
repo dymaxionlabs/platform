@@ -44,6 +44,7 @@ class Estimator(models.Model):
     classes = ArrayField(models.CharField(max_length=32), default=list)
     configuration = JSONField(null=True, blank=True)
     metadata = JSONField(null=True, blank=True)
+    # @deprecated
     _image_files = models.ManyToManyField(File,
                                           related_name='files',
                                           blank=True)
@@ -74,9 +75,12 @@ def get_random_integer_value():
 
 
 class ImageTile(models.Model):
+    # @deprecated
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
                              verbose_name=_('file'))
+    source_image_file = models.CharField(max_length=255,
+                                         verbose_name=_('source image path'))
     col_off = models.IntegerField(default=0)
     row_off = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
@@ -86,12 +90,13 @@ class ImageTile(models.Model):
     index = models.IntegerField(default=get_random_integer_value)
 
     class Meta:
-        unique_together = (('file', 'col_off', 'row_off', 'width', 'height'))
-        indexes = [models.Index(fields=['file', 'index'])]
+        unique_together = (('source_image_file', 'col_off', 'row_off', 'width',
+                            'height'))
+        indexes = [models.Index(fields=['source_image_file', 'index'])]
 
     def __str__(self):
         return '{file} ({col_off}, {row_off}, {width}, {height})'.format(
-            file=self.file,
+            file=self.source_image_file,
             col_off=self.col_off,
             row_off=self.row_off,
             width=self.width,
