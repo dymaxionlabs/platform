@@ -70,33 +70,6 @@ class HomeContent extends React.Component {
               {t(`home.api_descrip2`)}
             </Typography>
           </div>
-          <div className={classes.section}>
-            <Typography variant="h5" component="h3" className={classes.title}>
-              {t(`home.project_title`)}
-            </Typography>
-            <Typography component="p" className={classes.paragraph}>
-              {t(`home.project_descrip`)} <br />
-            </Typography>
-            <TextField
-              id="projectId"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              defaultValue={projectId}
-              InputProps={{
-                readOnly: true,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end">
-                      <CopyToClipboard text={projectId}>
-                        <FileCopyIcon />
-                      </CopyToClipboard>
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
         </Paper>
       </div>
     );
