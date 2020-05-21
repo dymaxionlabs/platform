@@ -185,6 +185,7 @@ class Annotation(models.Model):
             image_tile=self.image_tile, segments=len(self.segments))
 
 
+# @deprecated
 class TrainingJob(models.Model):
     estimator = models.ForeignKey(Estimator,
                                   on_delete=models.CASCADE,
@@ -202,6 +203,7 @@ class TrainingJob(models.Model):
             pk=self.pk)
 
 
+# @deprecated
 class PredictionJob(models.Model):
     estimator = models.ForeignKey(Estimator,
                                   on_delete=models.CASCADE,

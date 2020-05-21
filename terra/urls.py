@@ -23,17 +23,13 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from estimators.views import (AnnotationViewSet, EstimatorViewSet,
-                              ImageTileViewSet, SegmentsPerLabelView,
-                              AnnotationUpload)
 from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileUploadView, FileDownloadView, FileViewSet,
+                            FileDownloadView, FileUploadView, FileViewSet,
                             LayerViewSet, MapViewSet,
                             ProjectInvitationTokenViewSet, ProjectViewSet,
-                            SubscribeBetaView, TestAuthView, TestErrorView,
-                            TestTaskErrorView, UserProfileViewSet, UserViewSet,
-                            UserAPIKeyViewSet, SubscribeApiBetaView)
-from tasks.views import TaskViewSet, StartTrainingJobView, StartPredictionJobView
+                            SubscribeApiBetaView, SubscribeBetaView,
+                            TestAuthView, TestErrorView, TestTaskErrorView,
+                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -44,12 +40,8 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
-router.register(r'estimators', EstimatorViewSet)
-router.register(r'annotations', AnnotationViewSet)
-router.register(r'image_tiles', ImageTileViewSet)
 router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
-router.register(r'tasks', TaskViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -93,14 +85,6 @@ urlpatterns = [
     url(r'^subscribe/api_beta/?', SubscribeApiBetaView.as_view()),
     url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     url(r'^files/download/(?P<filename>[^/]+)$', FileDownloadView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/segments_per_label/?',
-        SegmentsPerLabelView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/train/?',
-        StartTrainingJobView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/predict/?',
-        StartPredictionJobView.as_view()),
-    url(r'^estimators/(?P<uuid>[^/]+)/load_labels/?',
-        AnnotationUpload.as_view()),
     url(
         r'^api_keys/(?P<prefix>[^/]+)$',
         UserAPIKeyViewSet.as_view(),
@@ -126,5 +110,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += swagger_urls
 
+urlpatterns += [path('tasks/', include('tasks.urls'))]
+urlpatterns += [path('estimators/', include('estimators.urls'))]
 urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
