@@ -217,7 +217,6 @@ class CreateResumableUploadViewTest(TestCase):
         url = response.data['session_url']
 
         parsed_url = urlparse(url)
-        self.assertEquals(parsed_url.netloc, 'storage.googleapis.com')
         self.assertTrue('upload_id' in parsed_url.query)
 
     def test_path_missing(self):
