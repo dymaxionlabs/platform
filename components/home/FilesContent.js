@@ -87,12 +87,14 @@ class FilesContent extends React.Component {
     const projectId = cookie.get("project");
 
     axios
-      .get(buildApiUrl("/files/"), {
-        params: { project: projectId },
+      .get(buildApiUrl("/storage/files/"), {
+        params: { project: projectId, path: '*' },
         headers: { Authorization: this.props.token }
       })
       .then(response => {
-        this.setState({ files: response.data.results });
+        if (response.status == 200) {
+          this.setState({ files: response.data });
+        }
       })
       .catch(err => {
         const response = err.response;
@@ -129,8 +131,8 @@ class FilesContent extends React.Component {
   handleFileURL = file => {
     const projectId = cookie.get("project");
     axios
-      .get(buildApiUrl(`/files/download/${file.name}`), {
-        params: { project: projectId },
+      .get(buildApiUrl(`/storage/download/`), {
+        params: { project: projectId, path: file.path },
         headers: { Authorization: this.props.token },
         responseType: 'blob'
       })
