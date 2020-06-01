@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 import django_rq
 from django.conf import settings
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from rasterio.transform import Affine
 from rest_framework import generics, mixins, permissions, status, viewsets
@@ -13,6 +14,7 @@ from projects.mixins import ProjectRelatedModelListMixin
 from projects.models import File
 from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
+from projects.views import RelatedProjectAPIView
 from terra.emails import PredictionStartedEmail, TrainingStartedEmail
 
 from .models import (Annotation, Estimator, ImageTile, PredictionJob,
@@ -21,6 +23,8 @@ from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, PredictionJobSerializer,
                           TrainingJobSerializer)
+from tasks.serializers import TaskSerializer
+from tasks.models import Task
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -221,6 +225,29 @@ class StartPredictionJobView(APIView):
                                            recipients=[user.email],
                                            language_code='es')
             email.send_mail()
+
+        serializer = TaskSerializer(job)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
+
+
+class StartImageTilingJobView(RelatedProjectAPIView):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated)
+
+    def post(self, request):
+        path = request.data.get('path', None)
+        if not path:
+            return Response({'path': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        project = self.get_project()
+        job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
+                                  internal_metadata__path=path,
+                                  project=project,
+                                  name=Estimator.IMAGE_TAILING_TASK).first()
+        if not job:
+            job = Task.objects.create(name=Estimator.IMAGE_TAILING_TASK,
+                                      project=project,
+                                      internal_metadata={'path': path})
+            job.start()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
