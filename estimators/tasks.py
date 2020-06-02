@@ -215,15 +215,32 @@ def upload_image_tiles(job):
 
 
 def upload_prediction_image_tiles(job):
+    client = Client(job.project)
+    images_files = []
+    for path in job.internal_metadata['image_files']:
+        images = list(client.list_files(path))
+        if images:
+            images_files.append(images[0])
     images_files = File.objects.filter(
         project=job.project, name__in=job.internal_metadata['image_files'])
     for file in images_files:
-        image_tiles = ImageTile.objects.filter(file=file)
+        image_tiles = ImageTile.objects.filter(project=job.project,
+                                               source_image_file=file.path)
 
         image_tile_urls = []
         meta_data = {}
-        if file.metadata:
-            meta_data['tiff_data'] = json.loads(file.metadata)
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            file.download_to_filename(src)
+            with rasterio.open(src) as dataset:
+                if dataset.driver == 'GTiff':
+                    meta_data['tiff_data'] = {
+                        'width': dataset.width,
+                        'heigth': dataset.height,
+                        'transform': dataset.transform,
+                        'crs': str(dataset.crs)
+                    }
+
         for t in image_tiles:
             image_tile_urls.append('gs://{bucket}/{name}'.format(
                 bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
