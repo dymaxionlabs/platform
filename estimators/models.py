@@ -65,10 +65,11 @@ class Estimator(models.Model):
 
 
 def tile_images_path(instance, filename):
-    file = instance.file
-    raster_fname = os.path.basename(file.file.name)
-    return 'user_{user_id}/tiles/{raster_fname}/{filename}'.format(
-        user_id=file.owner.id, raster_fname=raster_fname, filename=filename)
+    raster_fname = os.path.basename(instance.source_image_file)
+    return 'project_{project_id}/tiles/{raster_fname}/{filename}'.format(
+        project_id=instance.project.id,
+        raster_fname=raster_fname,
+        filename=filename)
 
 
 def get_random_integer_value():
@@ -80,9 +81,15 @@ class ImageTile(models.Model):
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
                              verbose_name=_('file'),
-                             blank=True)
+                             blank=True,
+                             null=True)
     source_image_file = models.CharField(max_length=255,
                                          verbose_name=_('source image path'))
+    project = models.ForeignKey(Project,
+                                null=True,
+                                on_delete=models.CASCADE,
+                                verbose_name=_('project'),
+                                related_name=_('tiles'))
     col_off = models.IntegerField(default=0)
     row_off = models.IntegerField(default=0)
     width = models.IntegerField(default=0)

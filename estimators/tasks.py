@@ -65,6 +65,7 @@ def generate_image_tiles(task_id, args, kwargs):
 
                     if was_image_written:
                         tile, _ = ImageTile.objects.get_or_create(
+                            project=job.project,
                             source_image_file=files[0].path,
                             col_off=window.col_off,
                             row_off=window.row_off,
