@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 from rasterio.windows import Window
 
 from projects.models import File, Project
+from storage.client import Client
 
 # Import fiona last
 import fiona
@@ -130,28 +131,29 @@ class Annotation(models.Model):
         unique_together = (('estimator', 'image_tile'))
 
     @classmethod
-    def import_from_vector_file(cls,
-                                vector_file,
-                                image_file,
-                                transform=None,
-                                *,
-                                estimator,
-                                label):
+    def import_from_vector_file(cls, project, vector_file, image_file, *,
+                                estimator, label):
         if label not in estimator.classes:
             raise ValueError("invalid label for estimator")
 
-        # If Affine transform is None, extract from image file
-        if not transform:
-            with tempfile.NamedTemporaryFile() as image_tmp:
-                shutil.copyfileobj(image_file.file, image_tmp)
-                with rasterio.open(image_tmp.name) as src:
-                    transform = src.transform
+        client = Client(project)
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            image_file.download_to_filename(src)
+            with rasterio.open(src) as ds:
+                if ds.driver == 'GTiff':
+                    transform = ds.transform
 
         res = []
-        with tempfile.NamedTemporaryFile() as vector_tmp:
-            shutil.copyfileobj(vector_file.file, vector_tmp)
-            with fiona.open(vector_tmp.name, "r") as dataset:
-                for tile in ImageTile.objects.filter(file=image_file):
+        vector_files = list(client.list_files(vector_file.path))
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            vector_files[0].download_to_filename(src)
+
+            with fiona.open(src, "r") as dataset:
+                for tile in ImageTile.objects.filter(
+                        project=project, source_image_file=image_file.path):
                     win = Window(tile.col_off, tile.row_off, tile.width,
                                  tile.height)
                     win_bounds = rasterio.windows.bounds(win, transform)

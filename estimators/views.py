@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
-from projects.models import File
+from projects.models import Project, File
 from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
 from projects.views import RelatedProjectAPIView
@@ -23,6 +23,7 @@ from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, PredictionJobSerializer,
                           TrainingJobSerializer)
+from storage.client import Client
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
 
@@ -120,32 +121,30 @@ class AnnotationUpload(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        file = File.objects.filter(owner=request.user,
-                                   project__uuid=request.data['project'],
-                                   name=request.data['related_file']).first()
-        if not file:
+        project = Project.objects.filter(uuid=request.data['project'])
+        if not project:
+            return Response({'project': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        client = Client(project.first())
+
+        files = list(client.list_files(request.data['related_file']))
+        if not files:
             return Response({'related_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        meta = json.loads(file.metadata)
-        transform = Affine(meta['transform'][0], meta['transform'][1],
-                           meta['transform'][2], meta['transform'][3],
-                           meta['transform'][4], meta['transform'][5])
-
-        vector_file = File.objects.filter(
-            owner=request.user,
-            project__uuid=request.data['project'],
-            name=request.data['vector_file']).first()
-        if not vector_file:
+        vector_files = list(client.list_files(request.data['vector_file']))
+        if not vector_files:
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
         annotations = Annotation.import_from_vector_file(
-            vector_file,
-            file,
+            project.first(),
+            vector_files[0],
+            files[0],
             estimator=estimator,
             label=request.data['label'],
-            transform=transform)
+        )
 
         return Response({'detail': {
             'annotation_created': len(annotations)
