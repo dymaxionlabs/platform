@@ -79,7 +79,8 @@ class ImageTile(models.Model):
     # @deprecated
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
-                             verbose_name=_('file'))
+                             verbose_name=_('file'),
+                             blank=True)
     source_image_file = models.CharField(max_length=255,
                                          verbose_name=_('source image path'))
     col_off = models.IntegerField(default=0)

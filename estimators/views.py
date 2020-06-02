@@ -231,7 +231,7 @@ class StartPredictionJobView(APIView):
 
 
 class StartImageTilingJobView(RelatedProjectAPIView):
-    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated)
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
 
     def post(self, request):
         path = request.data.get('path', None)

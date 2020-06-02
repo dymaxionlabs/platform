@@ -24,16 +24,21 @@ from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
 from tasks.models import Task
 IMAGE_TILE_SIZE = 500
 
+from storage.client import Client
+from rest_framework.exceptions import NotFound
+
 
 @job("default", timeout=3600)
-def generate_image_tiles(file_pk):
-    file = File.objects.get(pk=file_pk)
+def generate_image_tiles(task_id, args, kwargs):
+    job = Task.objects.get(pk=task_id)
+    client = Client(job.project)
+    files = list(client.list_files(job.internal_metadata['path']))
+    if not files:
+        raise NotFound(detail=None, code=None)
 
-    # First, download file from storage to temporary local file
     with tempfile.NamedTemporaryFile() as tmpfile:
-        shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
-
+        files[0].download_to_filename(src)
         with rasterio.open(src) as ds:
             print('Raster size:', (ds.width, ds.height))
 
@@ -60,7 +65,7 @@ def generate_image_tiles(file_pk):
 
                     if was_image_written:
                         tile, _ = ImageTile.objects.get_or_create(
-                            file=file,
+                            source_image_file=files[0].path,
                             col_off=window.col_off,
                             row_off=window.row_off,
                             width=window.width,
