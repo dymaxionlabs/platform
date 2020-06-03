@@ -274,34 +274,6 @@ class LayerViewSet(ProjectRelatedModelListMixin,
     lookup_field = 'uuid'
 
 
-class FileViewSet(ProjectRelatedModelListMixin, mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin, mixins.DestroyModelMixin,
-                  mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = File.objects.all().order_by('-created_at')
-    serializer_class = FileSerializer
-    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
-                          HasAccessToRelatedProjectFilesPermission)
-    lookup_field = 'name'
-    lookup_value_regex = r'[\w\-.]+'
-
-    def get_queryset(self):
-        # Also return files from user that are not associated with a project
-        # (backwards-compatibility)
-        user = self.request.user
-        projects_qs = allowed_projects_for(Project.objects, user)
-
-        # Filter by uuid, if present
-        project_uuid = self.request.query_params.get('project', None)
-        if project_uuid is not None:
-            project = projects_qs.filter(uuid=project_uuid).first()
-            return self.queryset.filter(
-                Q(project=project) | Q(owner=user, project=None)).all()
-
-        return self.queryset.filter(
-            Q(project__in=projects_qs)
-            | Q(owner=user, project=None)).distinct().all()
-
-
 # FIXME Use CreateAPIView and a serializer for consistent validation
 class FileUploadView(APIView):
     parser_classes = (FileUploadParser, )
@@ -376,9 +348,11 @@ class FileDownloadView(APIView):
             # Monkey patch .close method so that file is removed after closing it
             # i.e. when response finishes
             original_close = stream_file.close
+
             def new_close():
                 original_close()
                 os.remove(tmp.name)
+
             stream_file.close = new_close
 
             return FileResponse(stream_file,
@@ -388,7 +362,6 @@ class FileDownloadView(APIView):
             # Make sure to remove temp file
             os.remove(tmp.name)
             raise APIException(err)
-
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
