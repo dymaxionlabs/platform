@@ -30,6 +30,7 @@ class EstimatorViewSetTest(TestCase):
             sorted([
                 'project',
                 'image_files',
+                '_image_files',
                 'uuid',
                 'estimator_type',
                 'name',
