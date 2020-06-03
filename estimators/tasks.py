@@ -137,8 +137,9 @@ def build_annotations_csv_rows(annotations):
             row['x2'] = constrain_and_scale(x2, w)
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
-            row['tile_path'] = 'img/{basename}'.format(basename=os.path.join(
-                tile.file.name, os.path.basename(tile.tile_file.name)))
+            row['tile_path'] = 'img/{basename}'.format(
+                basename=os.path.join(os.path.basename(tile.source_image_file),
+                                      os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
