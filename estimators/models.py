@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 from rasterio.windows import Window
 
 from projects.models import File, Project
+from storage.client import Client
 
 # Import fiona last
 import fiona
@@ -22,6 +23,7 @@ import fiona
 class Estimator(models.Model):
     TRAINING_JOB_TASK = 'estimators.tasks.start_training_job'
     PREDICTION_JOB_TASK = 'estimators.tasks.start_prediction_job'
+    IMAGE_TILING_TASK = 'estimators.tasks.generate_image_tiles'
 
     OBJECT_DETECTION = 'OD'
     CLASSIFICATION = 'C'
@@ -44,9 +46,13 @@ class Estimator(models.Model):
     classes = ArrayField(models.CharField(max_length=32), default=list)
     configuration = JSONField(null=True, blank=True)
     metadata = JSONField(null=True, blank=True)
-    image_files = models.ManyToManyField(File,
-                                         related_name='files',
-                                         blank=True)
+    # @deprecated
+    _image_files = models.ManyToManyField(File,
+                                          related_name='files',
+                                          blank=True)
+    image_files = ArrayField(models.CharField(max_length=512),
+                             default=list,
+                             blank=True)
 
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
@@ -60,10 +66,11 @@ class Estimator(models.Model):
 
 
 def tile_images_path(instance, filename):
-    file = instance.file
-    raster_fname = os.path.basename(file.file.name)
-    return 'user_{user_id}/tiles/{raster_fname}/{filename}'.format(
-        user_id=file.owner.id, raster_fname=raster_fname, filename=filename)
+    raster_fname = os.path.basename(instance.source_image_file)
+    return 'project_{project_id}/tiles/{raster_fname}/{filename}'.format(
+        project_id=instance.project.id,
+        raster_fname=raster_fname,
+        filename=filename)
 
 
 def get_random_integer_value():
@@ -71,9 +78,19 @@ def get_random_integer_value():
 
 
 class ImageTile(models.Model):
+    # @deprecated
     file = models.ForeignKey(File,
                              on_delete=models.CASCADE,
-                             verbose_name=_('file'))
+                             verbose_name=_('file'),
+                             blank=True,
+                             null=True)
+    source_image_file = models.CharField(max_length=255,
+                                         verbose_name=_('source image path'))
+    project = models.ForeignKey(Project,
+                                null=True,
+                                on_delete=models.CASCADE,
+                                verbose_name=_('project'),
+                                related_name=_('tiles'))
     col_off = models.IntegerField(default=0)
     row_off = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
@@ -83,12 +100,13 @@ class ImageTile(models.Model):
     index = models.IntegerField(default=get_random_integer_value)
 
     class Meta:
-        unique_together = (('file', 'col_off', 'row_off', 'width', 'height'))
-        indexes = [models.Index(fields=['file', 'index'])]
+        unique_together = (('source_image_file', 'col_off', 'row_off', 'width',
+                            'height'))
+        indexes = [models.Index(fields=['source_image_file', 'index'])]
 
     def __str__(self):
         return '{file} ({col_off}, {row_off}, {width}, {height})'.format(
-            file=self.file,
+            file=self.source_image_file,
             col_off=self.col_off,
             row_off=self.row_off,
             width=self.width,
@@ -113,28 +131,29 @@ class Annotation(models.Model):
         unique_together = (('estimator', 'image_tile'))
 
     @classmethod
-    def import_from_vector_file(cls,
-                                vector_file,
-                                image_file,
-                                transform=None,
-                                *,
-                                estimator,
-                                label):
+    def import_from_vector_file(cls, project, vector_file, image_file, *,
+                                estimator, label):
         if label not in estimator.classes:
             raise ValueError("invalid label for estimator")
 
-        # If Affine transform is None, extract from image file
-        if not transform:
-            with tempfile.NamedTemporaryFile() as image_tmp:
-                shutil.copyfileobj(image_file.file, image_tmp)
-                with rasterio.open(image_tmp.name) as src:
-                    transform = src.transform
+        client = Client(project)
+
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            image_file.download_to_filename(src)
+            with rasterio.open(src) as ds:
+                if ds.driver == 'GTiff':
+                    transform = ds.transform
 
         res = []
-        with tempfile.NamedTemporaryFile() as vector_tmp:
-            shutil.copyfileobj(vector_file.file, vector_tmp)
-            with fiona.open(vector_tmp.name, "r") as dataset:
-                for tile in ImageTile.objects.filter(file=image_file):
+        vector_files = list(client.list_files(vector_file.path))
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            vector_files[0].download_to_filename(src)
+
+            with fiona.open(src, "r") as dataset:
+                for tile in ImageTile.objects.filter(
+                        project=project, source_image_file=image_file.path):
                     win = Window(tile.col_off, tile.row_off, tile.width,
                                  tile.height)
                     win_bounds = rasterio.windows.bounds(win, transform)

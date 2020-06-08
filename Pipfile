@@ -34,6 +34,8 @@ google-cloud-pubsub = "*"
 djangorestframework-api-key = "*"
 filetype = "*"
 fiona = "*"
+google-cloud-storage = "*"
+google-resumable-media = "*"
 
 [dev-packages]
 yapf = "*"

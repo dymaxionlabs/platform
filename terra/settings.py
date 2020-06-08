@@ -55,8 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
-    'quotations.apps.QuotationsConfig',
     'estimators.apps.EstimatorsConfig',
+    'quotations.apps.QuotationsConfig',
+    'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
     'rest_framework',
     'rest_framework_gis',
@@ -209,14 +210,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
-        'User token': {
+        'User token or Api-Key': {
             'type': 'apiKey',
             'name': 'Authorization',
-            'in': 'header'
-        },
-        'API key': {
-            'type': 'apiKey',
-            'name': 'Api-Key',
             'in': 'header'
         }
     }

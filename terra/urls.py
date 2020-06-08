@@ -24,12 +24,12 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
 from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileDownloadView, FileUploadView, FileViewSet,
-                            LayerViewSet, MapViewSet,
-                            ProjectInvitationTokenViewSet, ProjectViewSet,
-                            SubscribeApiBetaView, SubscribeBetaView,
-                            TestAuthView, TestErrorView, TestTaskErrorView,
-                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
+                            FileDownloadView, FileUploadView, LayerViewSet,
+                            MapViewSet, ProjectInvitationTokenViewSet,
+                            ProjectViewSet, SubscribeApiBetaView,
+                            SubscribeBetaView, TestAuthView, TestErrorView,
+                            TestTaskErrorView, UserAPIKeyViewSet,
+                            UserProfileViewSet, UserViewSet)
 from quotations.views import RequestViewSet
 from stac.views import SearchView
 
@@ -37,7 +37,6 @@ router = SimpleRouter()
 router.register(r'users', UserViewSet)
 router.register(r'user_profiles', UserProfileViewSet)
 router.register(r'projects', ProjectViewSet)
-router.register(r'files', FileViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
 router.register(r'requests', RequestViewSet)
@@ -110,6 +109,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += swagger_urls
 
+urlpatterns += [path('storage/', include('storage.urls'))]
 urlpatterns += [path('tasks/', include('tasks.urls'))]
 urlpatterns += [path('estimators/', include('estimators.urls'))]
 urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
