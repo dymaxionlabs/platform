@@ -241,9 +241,9 @@ class StartImageTilingJobView(RelatedProjectAPIView):
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
                                   internal_metadata__path=path,
                                   project=project,
-                                  name=Estimator.IMAGE_TAILING_TASK).first()
+                                  name=Estimator.IMAGE_TILING_TASK).first()
         if not job:
-            job = Task.objects.create(name=Estimator.IMAGE_TAILING_TASK,
+            job = Task.objects.create(name=Estimator.IMAGE_TILING_TASK,
                                       project=project,
                                       internal_metadata={'path': path})
             job.start()
