@@ -24,16 +24,21 @@ from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
 from tasks.models import Task
 IMAGE_TILE_SIZE = 500
 
+from storage.client import Client
+from rest_framework.exceptions import NotFound
+
 
 @job("default", timeout=3600)
-def generate_image_tiles(file_pk):
-    file = File.objects.get(pk=file_pk)
+def generate_image_tiles(task_id, args, kwargs):
+    job = Task.objects.get(pk=task_id)
+    client = Client(job.project)
+    files = list(client.list_files(job.internal_metadata['path']))
+    if not files:
+        raise NotFound(detail=None, code=None)
 
-    # First, download file from storage to temporary local file
     with tempfile.NamedTemporaryFile() as tmpfile:
-        shutil.copyfileobj(file.file, tmpfile)
         src = tmpfile.name
-
+        files[0].download_to_filename(src)
         with rasterio.open(src) as ds:
             print('Raster size:', (ds.width, ds.height))
 
@@ -60,7 +65,8 @@ def generate_image_tiles(file_pk):
 
                     if was_image_written:
                         tile, _ = ImageTile.objects.get_or_create(
-                            file=file,
+                            project=job.project,
+                            source_image_file=files[0].path,
                             col_off=window.col_off,
                             row_off=window.row_off,
                             width=window.width,
@@ -131,8 +137,9 @@ def build_annotations_csv_rows(annotations):
             row['x2'] = constrain_and_scale(x2, w)
             row['y1'] = constrain_and_scale(y1, h)
             row['y2'] = constrain_and_scale(y2, h)
-            row['tile_path'] = 'img/{basename}'.format(basename=os.path.join(
-                tile.file.name, os.path.basename(tile.tile_file.name)))
+            row['tile_path'] = 'img/{basename}'.format(
+                basename=os.path.join(os.path.basename(tile.source_image_file),
+                                      os.path.basename(tile.tile_file.name)))
             row['label'] = s['label']
             rows.append(row)
     return rows
@@ -209,15 +216,32 @@ def upload_image_tiles(job):
 
 
 def upload_prediction_image_tiles(job):
+    client = Client(job.project)
+    images_files = []
+    for path in job.internal_metadata['image_files']:
+        images = list(client.list_files(path))
+        if images:
+            images_files.append(images[0])
     images_files = File.objects.filter(
         project=job.project, name__in=job.internal_metadata['image_files'])
     for file in images_files:
-        image_tiles = ImageTile.objects.filter(file=file)
+        image_tiles = ImageTile.objects.filter(project=job.project,
+                                               source_image_file=file.path)
 
         image_tile_urls = []
         meta_data = {}
-        if file.metadata:
-            meta_data['tiff_data'] = json.loads(file.metadata)
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            file.download_to_filename(src)
+            with rasterio.open(src) as dataset:
+                if dataset.driver == 'GTiff':
+                    meta_data['tiff_data'] = {
+                        'width': dataset.width,
+                        'heigth': dataset.height,
+                        'transform': dataset.transform,
+                        'crs': str(dataset.crs)
+                    }
+
         for t in image_tiles:
             image_tile_urls.append('gs://{bucket}/{name}'.format(
                 bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
