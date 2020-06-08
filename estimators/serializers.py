@@ -38,7 +38,7 @@ class EstimatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Estimator
-        exclude = ('id', )
+        exclude = ('id', '_image_files')
 
 
 class ImageTileSerializer(serializers.ModelSerializer):
