@@ -39,6 +39,7 @@ def generate_image_tiles(task_id, args, kwargs):
         if not files:
             raise NotFound(detail=None, code=None)
 
+        output_path = job.internal_metadata['output_path']
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
             files[0].download_to_filename(src)
@@ -70,6 +71,7 @@ def generate_image_tiles(task_id, args, kwargs):
 
                         if was_image_written:
                             tile, _ = ImageTile.objects.get_or_create(
+                                source_tile_path=output_path,
                                 project=job.project,
                                 source_image_file=files[0].path,
                                 col_off=window.col_off,
