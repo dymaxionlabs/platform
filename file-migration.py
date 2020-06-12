@@ -36,9 +36,9 @@ def migrate_to_storage(file):
                 sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                 src=src,
                 dst='gs://{bucket}/project_{project_id}/{filename}'.format(
-                    bucket=settings.ESTIMATORS_BUCKET,
-                    project_id='X',
-                    filename=file.file.name)))
+                    bucket=settings.FILES_BUCKET,
+                    project_id=file.project.pk,
+                    filename=file.name)))
         return True
 
     except Exception as e:
