@@ -212,10 +212,14 @@ class StartPredictionJobView(APIView):
             job = Task.objects.create(name=Estimator.PREDICTION_JOB_TASK,
                                       project=estimator.project,
                                       internal_metadata={
-                                          'estimator': str(estimator.uuid),
-                                          'training_job': last_training_job.pk,
+                                          'estimator':
+                                          str(estimator.uuid),
+                                          'training_job':
+                                          last_training_job.pk,
                                           'image_files':
-                                          request.data.get('files')
+                                          request.data.get('files'),
+                                          'output_path':
+                                          request.data.get('output_path')
                                       })
             job.start()
             # Send email
