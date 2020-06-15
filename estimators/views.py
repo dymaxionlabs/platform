@@ -212,10 +212,14 @@ class StartPredictionJobView(APIView):
             job = Task.objects.create(name=Estimator.PREDICTION_JOB_TASK,
                                       project=estimator.project,
                                       internal_metadata={
-                                          'estimator': str(estimator.uuid),
-                                          'training_job': last_training_job.pk,
+                                          'estimator':
+                                          str(estimator.uuid),
+                                          'training_job':
+                                          last_training_job.pk,
                                           'image_files':
-                                          request.data.get('files')
+                                          request.data.get('files'),
+                                          'output_path':
+                                          request.data.get('output_path')
                                       })
             job.start()
             # Send email
@@ -237,6 +241,10 @@ class StartImageTilingJobView(RelatedProjectAPIView):
         if not path:
             return Response({'path': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
+        output_path = request.data.get('output_path', None)
+        if not output_path:
+            return Response({'output_path': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
         project = self.get_project()
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
                                   internal_metadata__path=path,
@@ -245,7 +253,10 @@ class StartImageTilingJobView(RelatedProjectAPIView):
         if not job:
             job = Task.objects.create(name=Estimator.IMAGE_TILING_TASK,
                                       project=project,
-                                      internal_metadata={'path': path})
+                                      internal_metadata={
+                                          'path': path,
+                                          'output_path': output_path
+                                      })
             job.start()
 
         serializer = TaskSerializer(job)

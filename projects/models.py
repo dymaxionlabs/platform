@@ -111,7 +111,6 @@ class File(models.Model):
     file = models.FileField(upload_to=user_images_path)
     name = models.CharField(max_length=255)
     metadata = JSONField(null=True, blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

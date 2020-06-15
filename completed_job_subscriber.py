@@ -22,6 +22,7 @@ from terra.emails import TrainingCompletedEmail
 from terra.emails import PredictionCompletedEmail
 from tasks.models import Task, TaskLogEntry
 from tasks import states
+from storage.client import Client
 
 
 def run_subprocess(cmd):
@@ -76,6 +77,8 @@ def predictionJobFinished(job_id):
     job.state = states.FINISHED
     job.save(update_fields=['state', 'updated_at'])
 
+    client = Client(job.project)
+
     with tempfile.TemporaryDirectory() as tmpdirname:
         run_subprocess(
             '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.format(
@@ -84,10 +87,25 @@ def predictionJobFinished(job_id):
                     job_dir=job.job_dir),
                 dst=tmpdirname))
 
-        images_files = File.objects.filter(
-            project=job.project, name__in=job.internal_metadata['image_files'])
+        images_files = []
+        for file_path in job.internal_metadata['image_files']:
+            files = list(client.list_files(file_path))
+            if files:
+                images_files.append(files[0])
         job.internal_metadata['results_files'] = []
         for img in images_files:
+            predictions_url = '{job_dir}/predictions/{img_folder}/'.format(
+                job_dir=job.job_dir, img_folder=img.name)
+            results_dst = 'gs://{bucket}/project_{project_id}/{output_path}/'.format(
+                bucket=settings.FILES_BUCKET,
+                project_id=job.project.pk,
+                img_path=output_path)
+            run_subprocess(
+                '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.
+                format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+                       predictions_url=predictions_url,
+                       dst=results_dst))
+            """
             result_map = Map.objects.create(
                 project=img.project,
                 name='{prediction_pk}_{img_name}'.format(prediction_pk=job.pk,
@@ -106,17 +124,22 @@ def predictionJobFinished(job_id):
                     'uuid': str(result_map.uuid)
                 }
             }
+            """
             results_path = os.path.sep.join([tmpdirname, img.name])
             files = os.listdir(results_path)
-            order = 2
+            #order = 2
             for f in files:
-                meta['map']['layer_order'] = order
-                order += 1
-                result_file = createFile(f, img, results_path, meta)
-                job.internal_metadata['results_files'].append(result_file.name)
+                #meta['map']['layer_order'] = order
+                #order += 1
+                print("f")
+                print(f)
+                path, name = os.path.split(img.path)
+                #result_file = createFile(f, img, results_path, meta)
+                job.internal_metadata['results_files'].append('{}/{}'.format(
+                    results_dst, f))
 
         job.save(update_fields=['internal_metadata', 'updated_at'])
-    sendPredictionJobCompletedEmail(job, result_map)
+    #sendPredictionJobCompletedEmail(job, result_map)
 
 
 def subscriber():

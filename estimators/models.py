@@ -73,6 +73,13 @@ def tile_images_path(instance, filename):
         filename=filename)
 
 
+def tile_images_storage_path(instance, filename):
+    return 'project_{project_id}/{source_tile_path}/{filename}'.format(
+        project_id=instance.project.id,
+        source_tile_path=instance.source_tile_path,
+        filename=filename)
+
+
 def get_random_integer_value():
     return random.randint(-2147483648, 2147483647)
 
@@ -86,6 +93,7 @@ class ImageTile(models.Model):
                              null=True)
     source_image_file = models.CharField(max_length=255,
                                          verbose_name=_('source image path'))
+    source_tile_path = models.CharField(max_length=512, default="")
     project = models.ForeignKey(Project,
                                 null=True,
                                 on_delete=models.CASCADE,
@@ -95,13 +103,13 @@ class ImageTile(models.Model):
     row_off = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
-    tile_file = models.FileField(upload_to=tile_images_path,
+    tile_file = models.FileField(upload_to=tile_images_storage_path,
                                  verbose_name=_('image'))
     index = models.IntegerField(default=get_random_integer_value)
 
     class Meta:
-        unique_together = (('source_image_file', 'col_off', 'row_off', 'width',
-                            'height'))
+        unique_together = (('source_tile_path', 'source_image_file', 'col_off',
+                            'row_off', 'width', 'height'))
         indexes = [models.Index(fields=['source_image_file', 'index'])]
 
     def __str__(self):

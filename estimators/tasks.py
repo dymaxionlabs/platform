@@ -5,6 +5,7 @@ import random
 import shutil
 import subprocess
 import tempfile
+from datetime import datetime
 from itertools import groupby
 from operator import itemgetter
 
@@ -21,59 +22,75 @@ from skimage.io import imsave
 from projects.models import File
 
 from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
-from tasks.models import Task
+from tasks.models import Task, TaskLogEntry
 IMAGE_TILE_SIZE = 500
 
 from storage.client import Client
 from rest_framework.exceptions import NotFound
+from tasks import states
 
 
 @job("default", timeout=3600)
 def generate_image_tiles(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
-    client = Client(job.project)
-    files = list(client.list_files(job.internal_metadata['path']))
-    if not files:
-        raise NotFound(detail=None, code=None)
+    try:
+        client = Client(job.project)
+        files = list(client.list_files(job.internal_metadata['path']))
+        if not files:
+            raise NotFound(detail=None, code=None)
 
-    with tempfile.NamedTemporaryFile() as tmpfile:
-        src = tmpfile.name
-        files[0].download_to_filename(src)
-        with rasterio.open(src) as ds:
-            print('Raster size:', (ds.width, ds.height))
+        output_path = job.internal_metadata['output_path']
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            src = tmpfile.name
+            files[0].download_to_filename(src)
+            with rasterio.open(src) as ds:
+                print('Raster size:', (ds.width, ds.height))
 
-            if ds.count < 3:
-                raise RuntimeError(
-                    "Raster must have 3 bands corresponding to RGB channels")
+                if ds.count < 3:
+                    raise RuntimeError(
+                        "Raster must have 3 bands corresponding to RGB channels"
+                    )
 
-            if ds.count > 3:
-                print("WARNING: Raster has {} bands. " \
-                    "Going to assume first 3 bands are RGB...".format(ds.count))
+                if ds.count > 3:
+                    print("WARNING: Raster has {} bands. " \
+                        "Going to assume first 3 bands are RGB...".format(ds.count))
 
-            size = (IMAGE_TILE_SIZE, IMAGE_TILE_SIZE)
-            windows = list(sliding_windows(size, size, ds.width, ds.height))
+                size = (IMAGE_TILE_SIZE, IMAGE_TILE_SIZE)
+                windows = list(sliding_windows(size, size, ds.width,
+                                               ds.height))
 
-            with tempfile.TemporaryDirectory() as tmpdir:
-                for window, (i, j) in windows:
-                    print(window, (i, j))
-                    img = ds.read(window=window)
-                    img = img[:3, :, :]
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    for window, (i, j) in windows:
+                        print(window, (i, j))
+                        img = ds.read(window=window)
+                        img = img[:3, :, :]
 
-                    img_fname = '{i}_{j}.jpg'.format(i=i, j=j)
-                    img_path = os.path.join(tmpdir, img_fname)
-                    was_image_written = write_image(img, img_path)
+                        img_fname = '{i}_{j}.jpg'.format(i=i, j=j)
+                        img_path = os.path.join(tmpdir, img_fname)
+                        was_image_written = write_image(img, img_path)
 
-                    if was_image_written:
-                        tile, _ = ImageTile.objects.get_or_create(
-                            project=job.project,
-                            source_image_file=files[0].path,
-                            col_off=window.col_off,
-                            row_off=window.row_off,
-                            width=window.width,
-                            height=window.height)
-                        with open(img_path, 'rb') as f:
-                            tile.tile_file = DjangoFile(f, name=img_fname)
-                            tile.save()
+                        if was_image_written:
+                            tile, _ = ImageTile.objects.get_or_create(
+                                source_tile_path=output_path,
+                                project=job.project,
+                                source_image_file=files[0].path,
+                                col_off=window.col_off,
+                                row_off=window.row_off,
+                                width=window.width,
+                                height=window.height)
+                            with open(img_path, 'rb') as f:
+                                tile.tile_file = DjangoFile(f, name=img_fname)
+                                tile.save()
+        job.state = states.FINISHED
+    except Exception as e:
+        TaskLogEntry.objects.create(task=job,
+                                    log=str(e),
+                                    logged_at=datetime.now())
+        print("Error: {}".format(e))
+        job.state = states.FAILED
+    finally:
+        job.finished_at = datetime.now()
+        job.save(update_fields=['state', 'updated_at', 'finished_at'])
 
 
 def sliding_windows(size, step_size, width, height):
@@ -222,8 +239,6 @@ def upload_prediction_image_tiles(job):
         images = list(client.list_files(path))
         if images:
             images_files.append(images[0])
-    images_files = File.objects.filter(
-        project=job.project, name__in=job.internal_metadata['image_files'])
     for file in images_files:
         image_tiles = ImageTile.objects.filter(project=job.project,
                                                source_image_file=file.path)
