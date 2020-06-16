@@ -78,7 +78,8 @@ def predictionJobFinished(job_id):
     job.save(update_fields=['state', 'updated_at'])
 
     client = Client(job.project)
-
+    if job.metadata is None:
+        job.metadata = {}
     with tempfile.TemporaryDirectory() as tmpdirname:
         run_subprocess(
             '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.format(
@@ -92,14 +93,14 @@ def predictionJobFinished(job_id):
             files = list(client.list_files(file_path))
             if files:
                 images_files.append(files[0])
-        job.internal_metadata['results_files'] = []
+        job.metadata['results_files'] = []
         for img in images_files:
             predictions_url = '{job_dir}/predictions/{img_folder}/'.format(
                 job_dir=job.job_dir, img_folder=img.name)
             results_dst = 'gs://{bucket}/project_{project_id}/{output_path}/'.format(
                 bucket=settings.FILES_BUCKET,
                 project_id=job.project.pk,
-                img_path=output_path)
+                output_path=job.internal_metadata['output_path'].rstrip('/'))
             run_subprocess(
                 '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.
                 format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
@@ -135,10 +136,10 @@ def predictionJobFinished(job_id):
                 print(f)
                 path, name = os.path.split(img.path)
                 #result_file = createFile(f, img, results_path, meta)
-                job.internal_metadata['results_files'].append('{}/{}'.format(
-                    results_dst, f))
+                job.metadata['results_files'].append('{}/{}'.format(
+                    job.internal_metadata['output_path'].rstrip('/'), f))
 
-        job.save(update_fields=['internal_metadata', 'updated_at'])
+        job.save(update_fields=['internal_metadata', 'metadata', 'updated_at'])
     #sendPredictionJobCompletedEmail(job, result_map)
 
 
