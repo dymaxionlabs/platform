@@ -254,8 +254,12 @@ class StartImageTilingJobView(RelatedProjectAPIView):
             job = Task.objects.create(name=Estimator.IMAGE_TILING_TASK,
                                       project=project,
                                       internal_metadata={
-                                          'path': path,
-                                          'output_path': output_path
+                                          'path':
+                                          path,
+                                          'output_path':
+                                          output_path,
+                                          'tile_size':
+                                          request.data.get('tile_size', None),
                                       })
             job.start()
 
