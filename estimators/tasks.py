@@ -40,6 +40,8 @@ def generate_image_tiles(task_id, args, kwargs):
             raise NotFound(detail=None, code=None)
 
         output_path = job.internal_metadata['output_path']
+        tile_size = job.internal_metadata['tile_size'] if job.internal_metadata[
+            'tile_size'] is not None else IMAGE_TILE_SIZE
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
             files[0].download_to_filename(src)
@@ -55,7 +57,7 @@ def generate_image_tiles(task_id, args, kwargs):
                     print("WARNING: Raster has {} bands. " \
                         "Going to assume first 3 bands are RGB...".format(ds.count))
 
-                size = (IMAGE_TILE_SIZE, IMAGE_TILE_SIZE)
+                size = (tile_size, tile_size)
                 windows = list(sliding_windows(size, size, ds.width,
                                                ds.height))
 
@@ -136,8 +138,7 @@ def constrain_and_scale(coord, max_value):
     #     import pdb
     #     pdb.set_trace()
     #     pass
-    return round(
-        (min(max(coord, 0), IMAGE_TILE_SIZE) / IMAGE_TILE_SIZE) * max_value)
+    return round(min(max(coord, 0), max_value))
 
 
 def build_annotations_csv_rows(annotations):
