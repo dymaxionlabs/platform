@@ -138,7 +138,7 @@ def constrain_and_scale(coord, max_value):
     #     import pdb
     #     pdb.set_trace()
     #     pass
-    return round((min(max(coord, 0), max_value) / max_value) * max_value)
+    return round(min(max(coord, 0), max_value))
 
 
 def build_annotations_csv_rows(annotations):
