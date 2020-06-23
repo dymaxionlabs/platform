@@ -286,7 +286,7 @@ def upload_prediction_image_tiles(job):
 
 
 def run_cloudml(job, script_name):
-    epochs = settings.CLOUDML_DEAULT_EPOCHS
+    epochs = settings.CLOUDML_DEFAULT_EPOCHS
     estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
     if estimator.configuration is not None:
         if 'training_hours' in estimator.configuration:
