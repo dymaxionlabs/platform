@@ -30,6 +30,16 @@ from rest_framework.exceptions import NotFound
 from tasks import states
 
 
+def gsutilCopy(src, dst, canned_acl="", recursive=True):
+    r = "" if recursive else "-r"
+    src = ["'{}'".format(s) for s in src.split(" ")]
+    run_subprocess("{sdk_bin_path}/gsutil -m cp {r} {src} '{dst}'".format(
+        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+        r=r,
+        src=' '.join(src),
+        dst=dst))
+
+
 @job("default", timeout=3600)
 def generate_image_tiles(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
@@ -196,10 +206,7 @@ def upload_csv(url, rows, fieldnames):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             for row in rows:
                 writer.writerow(row)
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=tmpfile.name,
-            dst=url))
+        gsutilCopy(tmpfile.name, url)
 
 
 def run_subprocess(cmd):
@@ -227,10 +234,7 @@ def upload_image_tiles(job):
     for img_file_name, urls in groups:
         urls = [url for _, url in urls]
         dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=' '.join(urls),
-            dst=dst_url))
+        gsutilCopy(' '.join(urls), dst_url)
 
 
 def upload_prediction_image_tiles(job):
@@ -275,15 +279,10 @@ def upload_prediction_image_tiles(job):
             tmpfile.name = '{}_tiles_meta.json'.format(file.name)
             with open(tmpfile.name, 'w') as json_file:
                 json.dump(meta_data, json_file, indent=4)
-            run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                src=tmpfile.name,
-                dst="{url}{file}".format(url=url, file=tmpfile.name)))
+            gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
+                                                          file=tmpfile.name))
 
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=' '.join(image_tile_urls),
-            dst=url))
+        gsutilCopy(' '.join(image_tile_urls), url)
 
 
 def run_cloudml(job, script_name):
@@ -330,16 +329,10 @@ def run_cloudml(job, script_name):
 def prepare_artifacts(job):
     training_job = Task.objects.get(pk=job.internal_metadata['training_job'])
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}classes.csv'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=csv_url,
-        dst=job.artifacts_url))
+    gsutilCopy(csv_url, job.artifacts_url, recursive=False)
 
     snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=snapshots_path,
-        dst=job.artifacts_url))
+    gsutilCopy(snapshots_path, job.artifacts_url)
 
 
 @job("default")

@@ -24,6 +24,16 @@ GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
 EPSG_4326 = dict(init='epsg:4326')
 
 
+def gsutilCopy(src, dst, canned_acl="", recursive=True):
+    r = "" if recursive else "-r"
+    src = ["'{}'".format(s) for s in src.split(" ")]
+    run_subprocess("{sdk_bin_path}/gsutil -m cp {r} {src} '{dst}'".format(
+        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
+        r=r,
+        src=' '.join(src),
+        dst=dst))
+
+
 def update_progress(step, total, **meta):
     job = get_current_job()
     if 'progress' not in job.meta:
@@ -59,10 +69,9 @@ def upload_directory_to_gs_bucket(src, dst):
     if settings.DEBUG:
         print("Fake upload directory to GS bucket")
     else:
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src, dst=dst))
+        gsutilCopy(src, dst)
         run_subprocess(
-            '{sdk_bin_path}/gsutil -m cp -a public-read -r {src}/* {dst}'.
+            "{sdk_bin_path}/gsutil -m cp -a public-read -r '{src}/*' '{dst}'".
             format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src,
                    dst=dst))
 
@@ -224,13 +233,13 @@ def generate_vector_tiles(file_pk):
             # Upload tiles to corresponding Tiles bucket
             dst = layer.tiles_bucket_url()
             run_subprocess(
-                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'
+                "{sdk_bin_path}/gsutil -m -h 'Content-Type: application/octet-stream' -h 'Content-Encoding: gzip' cp -a public-read -r '{src}/' '{dst}'"
                 .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                         src=tiles_output_dir,
                         dst=dst))
 
             run_subprocess(
-                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'
+                "{sdk_bin_path}/gsutil -m -h 'Content-Type: application/json' cp -a public-read '{src}/metadata.json' '{dst}'"
                 .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                         src=tiles_output_dir,
                         dst=dst))
