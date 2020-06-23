@@ -25,7 +25,7 @@ EPSG_4326 = dict(init='epsg:4326')
 
 
 def gsutilCopy(src, dst, canned_acl="", recursive=True):
-    r = "" if recursive else "-r"
+    r = "-r" if recursive else ""
     src = ["'{}'".format(s) for s in src.split(" ")]
     run_subprocess("{sdk_bin_path}/gsutil -m cp {r} {src} '{dst}'".format(
         sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
