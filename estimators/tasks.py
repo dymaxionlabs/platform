@@ -291,6 +291,9 @@ def run_cloudml(job, script_name):
     if estimator.configuration is not None:
         if 'training_hours' in estimator.configuration:
             epochs = estimator.configuration['training_hours'] * 6
+    confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
+    if 'confidence' in job.internal_metadata:
+        confidence = job.internal_metadata['confidence']
 
     p = subprocess.Popen(
         [script_name],
@@ -321,6 +324,8 @@ def run_cloudml(job, script_name):
             os.environ['SENTRY_ENVIRONMENT'],
             'EPOCHS':
             str(round(epochs)),
+            'CONFIDENCE':
+            str(confidence),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)
