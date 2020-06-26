@@ -28,6 +28,7 @@ IMAGE_TILE_SIZE = 500
 from storage.client import Client
 from rest_framework.exceptions import NotFound
 from tasks import states
+from common.utils import gsutilCopy
 
 
 @job("default", timeout=3600)
@@ -196,15 +197,7 @@ def upload_csv(url, rows, fieldnames):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             for row in rows:
                 writer.writerow(row)
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=tmpfile.name,
-            dst=url))
-
-
-def run_subprocess(cmd):
-    print(cmd)
-    subprocess.run(cmd, shell=True, check=True)
+        gsutilCopy(tmpfile.name, url)
 
 
 def upload_image_tiles(job):
@@ -227,10 +220,7 @@ def upload_image_tiles(job):
     for img_file_name, urls in groups:
         urls = [url for _, url in urls]
         dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=' '.join(urls),
-            dst=dst_url))
+        gsutilCopy(' '.join(urls), dst_url)
 
 
 def upload_prediction_image_tiles(job):
@@ -275,23 +265,21 @@ def upload_prediction_image_tiles(job):
             tmpfile.name = '{}_tiles_meta.json'.format(file.name)
             with open(tmpfile.name, 'w') as json_file:
                 json.dump(meta_data, json_file, indent=4)
-            run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                src=tmpfile.name,
-                dst="{url}{file}".format(url=url, file=tmpfile.name)))
+            gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
+                                                          file=tmpfile.name))
 
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-            src=' '.join(image_tile_urls),
-            dst=url))
+        gsutilCopy(' '.join(image_tile_urls), url)
 
 
 def run_cloudml(job, script_name):
-    epochs = settings.CLOUDML_DEAULT_EPOCHS
+    epochs = settings.CLOUDML_DEFAULT_EPOCHS
     estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
     if estimator.configuration is not None:
         if 'training_hours' in estimator.configuration:
             epochs = estimator.configuration['training_hours'] * 6
+    confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
+    if 'confidence' in job.internal_metadata:
+        confidence = job.internal_metadata['confidence']
 
     p = subprocess.Popen(
         [script_name],
@@ -322,6 +310,8 @@ def run_cloudml(job, script_name):
             os.environ['SENTRY_ENVIRONMENT'],
             'EPOCHS':
             str(round(epochs)),
+            'CONFIDENCE':
+            str(confidence),
         },
         cwd=settings.CLOUDML_DIRECTORY,
         shell=True)
@@ -330,16 +320,10 @@ def run_cloudml(job, script_name):
 def prepare_artifacts(job):
     training_job = Task.objects.get(pk=job.internal_metadata['training_job'])
     csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp {src} {dst}classes.csv'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=csv_url,
-        dst=job.artifacts_url))
+    gsutilCopy(csv_url, job.artifacts_url, recursive=False)
 
     snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
-    run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        src=snapshots_path,
-        dst=job.artifacts_url))
+    gsutilCopy(snapshots_path, job.artifacts_url)
 
 
 @job("default")

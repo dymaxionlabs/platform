@@ -19,11 +19,7 @@ django.setup()
 from django.conf import settings
 from projects.models import File
 from storage.client import Client
-
-
-def run_subprocess(cmd):
-    print(cmd)
-    subprocess.run(cmd, shell=True, check=True)
+from common.utils import gsutilCopy
 
 
 def migrate_to_storage(file):
@@ -32,13 +28,11 @@ def migrate_to_storage(file):
         with tempfile.NamedTemporaryFile() as tmpfile:
             shutil.copyfileobj(file.file, tmpfile)
             src = tmpfile.name
-            run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                src=src,
-                dst='gs://{bucket}/project_{project_id}/{filename}'.format(
+            gsutilCopy(
+                src, 'gs://{bucket}/project_{project_id}/{filename}'.format(
                     bucket=settings.FILES_BUCKET,
                     project_id=file.project.pk,
-                    filename=file.name)))
+                    filename=file.name))
         return True
 
     except Exception as e:

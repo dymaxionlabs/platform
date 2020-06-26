@@ -209,18 +209,23 @@ class StartPredictionJobView(APIView):
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
-            job = Task.objects.create(name=Estimator.PREDICTION_JOB_TASK,
-                                      project=estimator.project,
-                                      internal_metadata={
-                                          'estimator':
-                                          str(estimator.uuid),
-                                          'training_job':
-                                          last_training_job.pk,
-                                          'image_files':
-                                          request.data.get('files'),
-                                          'output_path':
-                                          request.data.get('output_path')
-                                      })
+            job = Task.objects.create(
+                name=Estimator.PREDICTION_JOB_TASK,
+                project=estimator.project,
+                internal_metadata={
+                    'estimator':
+                    str(estimator.uuid),
+                    'training_job':
+                    last_training_job.pk,
+                    'image_files':
+                    request.data.get('files'),
+                    'output_path':
+                    request.data.get('output_path'),
+                    'confidence':
+                    request.data.get(
+                        'confidence',
+                        settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)
+                })
             job.start()
             # Send email
             user = request.user

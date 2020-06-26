@@ -23,11 +23,7 @@ from terra.emails import PredictionCompletedEmail
 from tasks.models import Task, TaskLogEntry
 from tasks import states
 from storage.client import Client
-
-
-def run_subprocess(cmd):
-    print(cmd)
-    subprocess.run(cmd, shell=True, check=True)
+from common.utils import gsutilCopy
 
 
 def sendPredictionJobCompletedEmail(job, map):
@@ -81,13 +77,8 @@ def predictionJobFinished(job_id):
     if job.metadata is None:
         job.metadata = {}
     with tempfile.TemporaryDirectory() as tmpdirname:
-        run_subprocess(
-            '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.format(
-                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                predictions_url='{job_dir}/predictions/'.format(
-                    job_dir=job.job_dir),
-                dst=tmpdirname))
-
+        gsutilCopy('{job_dir}/predictions/*'.format(job_dir=job.job_dir),
+                   tmpdirname)
         images_files = []
         for file_path in job.internal_metadata['image_files']:
             files = list(client.list_files(file_path))
@@ -101,11 +92,7 @@ def predictionJobFinished(job_id):
                 bucket=settings.FILES_BUCKET,
                 project_id=job.project.pk,
                 output_path=job.internal_metadata['output_path'].rstrip('/'))
-            run_subprocess(
-                '{sdk_bin_path}/gsutil -m cp -r {predictions_url}* {dst}'.
-                format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                       predictions_url=predictions_url,
-                       dst=results_dst))
+            gsutilCopy("{}*".format(predictions_url), results_dst)
             """
             result_map = Map.objects.create(
                 project=img.project,

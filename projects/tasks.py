@@ -16,7 +16,7 @@ from django_rq import job
 from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
-
+from common.utils import gsutilCopy, run_subprocess
 from .models import File, Layer, Map, MapLayer
 
 GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
@@ -59,10 +59,9 @@ def upload_directory_to_gs_bucket(src, dst):
     if settings.DEBUG:
         print("Fake upload directory to GS bucket")
     else:
-        run_subprocess('{sdk_bin_path}/gsutil -m cp -r {src} {dst}'.format(
-            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src, dst=dst))
+        gsutilCopy(src, dst)
         run_subprocess(
-            '{sdk_bin_path}/gsutil -m cp -a public-read -r {src}/* {dst}'.
+            "{sdk_bin_path}/gsutil -m cp -a public-read -r '{src}/*' '{dst}'".
             format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, src=src,
                    dst=dst))
 
@@ -224,13 +223,13 @@ def generate_vector_tiles(file_pk):
             # Upload tiles to corresponding Tiles bucket
             dst = layer.tiles_bucket_url()
             run_subprocess(
-                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/octet-stream" -h "Content-Encoding: gzip" cp -a public-read -r {src}/ {dst}'
+                "{sdk_bin_path}/gsutil -m -h 'Content-Type: application/octet-stream' -h 'Content-Encoding: gzip' cp -a public-read -r '{src}/' '{dst}'"
                 .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                         src=tiles_output_dir,
                         dst=dst))
 
             run_subprocess(
-                '{sdk_bin_path}/gsutil -m -h "Content-Type: application/json" cp -a public-read {src}/metadata.json {dst}'
+                "{sdk_bin_path}/gsutil -m -h 'Content-Type: application/json' cp -a public-read '{src}/metadata.json' '{dst}'"
                 .format(sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
                         src=tiles_output_dir,
                         dst=dst))
