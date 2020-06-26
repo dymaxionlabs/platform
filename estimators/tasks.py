@@ -28,16 +28,7 @@ IMAGE_TILE_SIZE = 500
 from storage.client import Client
 from rest_framework.exceptions import NotFound
 from tasks import states
-
-
-def gsutilCopy(src, dst, canned_acl="", recursive=True):
-    r = "-r" if recursive else ""
-    src = ["'{}'".format(s) for s in src.split(" ")]
-    run_subprocess("{sdk_bin_path}/gsutil -m cp {r} {src} '{dst}'".format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        r=r,
-        src=' '.join(src),
-        dst=dst))
+from common.utils import gsutilCopy
 
 
 @job("default", timeout=3600)
@@ -207,11 +198,6 @@ def upload_csv(url, rows, fieldnames):
             for row in rows:
                 writer.writerow(row)
         gsutilCopy(tmpfile.name, url)
-
-
-def run_subprocess(cmd):
-    print(cmd)
-    subprocess.run(cmd, shell=True, check=True)
 
 
 def upload_image_tiles(job):

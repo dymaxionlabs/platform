@@ -16,22 +16,12 @@ from django_rq import job
 from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
-
+from common.utils import gsutilCopy, run_subprocess
 from .models import File, Layer, Map, MapLayer
 
 GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',
                                'gdal2tilesp.py')
 EPSG_4326 = dict(init='epsg:4326')
-
-
-def gsutilCopy(src, dst, canned_acl="", recursive=True):
-    r = "-r" if recursive else ""
-    src = ["'{}'".format(s) for s in src.split(" ")]
-    run_subprocess("{sdk_bin_path}/gsutil -m cp {r} {src} '{dst}'".format(
-        sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-        r=r,
-        src=' '.join(src),
-        dst=dst))
 
 
 def update_progress(step, total, **meta):
