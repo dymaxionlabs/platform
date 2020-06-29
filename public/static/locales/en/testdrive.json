@@ -1,0 +1,104 @@
+{
+  "annotate_step": {
+    "annotations_per_class": "Annotations per class",
+    "cancel": "Cancel",
+    "continue_btn": "Continue",
+    "delete": "Delete",
+    "explanation1": "The model learns by example. It needs you to annotate a few samples of the object of interest so that it can learn their patterns in the images.",
+    "explanation2": "A good number to annotate is 50 samples of each class. When you are done, click Continue.",
+    "explanation3": "For the model to learn, we ask you to mark at least 50 examples of each class. When you're done, click Continue.",
+    "loading": "Processing uploaded images. Please wait a few minutes...",
+    "remaining": "Remaining",
+    "save_btn": "Save",
+    "title": "Annotate images"
+  },
+  "btn_contact_modal": "Contact sales",
+  "btn_use_api": "Use API",
+  "btn_use_web_ui": "Use Web UI",
+  "create_step": {
+    "classes_helper_1": "Enter the name of a class and press the",
+    "classes_helper_2": "key. You can enter several classes in this way.",
+    "classes_label": "Object classes",
+    "error_msg_cattle": "Cattle must have these fields: red, black.",
+    "error_msg_classes": "Please add at least one object class.",
+    "error_msg_duplicate": "Model already exists, please enter another name.",
+    "error_msg_internal": "An error has ocurred. Please retry.",
+    "error_msg_pools": "Pools must have this field: pool",
+    "error_msg_wrong_classes": "For the chosen use case you must enter exactly these classes:",
+    "explanation": "Choose a name and labels to setup your model.",
+    "name_helper": "Enter a name for your model.",
+    "name_label": "Name",
+    "submit_btn": "Create",
+    "title": "Create new model"
+  },
+  "header": "DYMAX TEST DRIVE",
+  "metrics_title_area": "Area (km\u00b2)",
+  "metrics_title_class": "Objects per class",
+  "metrics_title_object": "Detected objects",
+  "metrics_title_result": "Results",
+  "new_btn": "New",
+  "new_title": "New Model",
+  "next_btn": "Next",
+  "predict_step": {
+    "back": "Go back",
+    "continue": "continue",
+    "explanation": "At this time your full set of images are being analyzed. This process may take a few hours, but in our test drive is just a matter of seconds. You are almost done!",
+    "finished_explanation": "Hey, you are done! You've finally trained an ML model and used it to detect your object of interest over a specific geographical area. Click Continue to view a map with the results.",
+    "title": "Predict model",
+    "undefined_explanation": "The remaining time is undefined",
+    "view": "View results"
+  },
+  "results_step": {
+    "download_btn": "Download",
+    "download_csv": "CSV file",
+    "download_geojson": "GeoJSON file",
+    "explanation": "If you want to see the results of the object detection prediction in our online viewer, click on View Map. If you want to download the results (in GeoJSON or CSV format) to work with them in another tool, click Download Results.",
+    "title": "Results",
+    "view_map": "View Map"
+  },
+  "select_layer_results": "Results",
+  "select_layer_tiles": "Tiles",
+  "select_step": {
+    "dropzone": "Drag and drop your images here, or click.",
+    "explanation": "Select pre-existing images or upload new ones and then click Predict",
+    "submit_btn": "Predict",
+    "text": "Now that the model was trained, you can apply it to predict images. In this step you must choose one or more images. Images can be uploaded manually or in batch using our API.",
+    "title": "Select images"
+  },
+  "start": "Start",
+  "steps": {
+    "annotate": "Annotate",
+    "choose-usecase": "Choose use case",
+    "create": "Create",
+    "initial": "Initial",
+    "predict": "Predict",
+    "results": "Results",
+    "select": "Select",
+    "train": "Train",
+    "upload": "Upload"
+  },
+  "subscribe": {
+    "body": "Please leave us your email",
+    "cancel_btn": "Cancel",
+    "error_msg": "An error occurred when sending the message. Please try again or contact us at {{contactLink}}.",
+    "submit_btn": "Subscribe",
+    "success_msg": "Thanks for sending your message. We will write to you shortly with more information.",
+    "title": "Beta Subscription"
+  },
+  "text_metrics_map_view": "In our world, there is a myriad of objects that can be trained and detected using our DYMA platform, like roofs, solar panels and cars. Let's connect to discuss today your personal business needs.",
+  "train_step": {
+    "back": "Go back",
+    "continue": "Continue",
+    "explanation": "Your model is currently being trained. This process may take a few hours. We will notify you by mail when it is ready to be used.",
+    "finished_explanation": "The training process is over. Click continue to make a prediction",
+    "title": "Train model",
+    "undefined_explanation": "The remaining time is undefined"
+  },
+  "upload_step": {
+    "dropzone": "Drag and drop your images here, or click.",
+    "explanation": "Select one or more images and then click select images.",
+    "select_btn": "Select images",
+    "text": "Choose images of your area of interest. Images can be uploaded manually or in batches using our API.",
+    "title": "Choose or upload images"
+  }
+}
