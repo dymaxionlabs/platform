@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 User=ubuntu
-Group=www-data
-WorkingDirectory=/home/ubuntu/terra
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/dymaxionlabs-platform/terra
 ExecStart=/home/ubuntu/.local/share/virtualenvs/terra-XVGhZdP0/bin/gunicorn \
           --access-logfile - \
 	  --timeout 600 \
