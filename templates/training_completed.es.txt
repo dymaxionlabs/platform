@@ -1,0 +1,7 @@
+Hola,
+
+El entrenamiento de tu modelo a medida {{name}} para detectar {{num_classes}} clases ha finalizado.
+Ingrese al siguiente enlace {{link}} para continuar con la predicción.
+
+Saludos,
+Federico y el equipo de Dymaxion Labs.

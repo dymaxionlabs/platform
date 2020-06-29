@@ -1,0 +1,7 @@
+Hi,
+
+The training of your custom model {{name}} for {{num_classes}} classes has finished.
+Enter to the following link {{link}} to continue the prediction.
+
+Best,
+Federico & the Dymaxion Labs team.

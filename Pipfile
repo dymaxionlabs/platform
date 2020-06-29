@@ -1,0 +1,47 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "==3.0.5"
+djangorestframework = "==3.11"
+python-dotenv = "*"
+django-anymail = {version = "*",extras = ["mailgun"]}
+"psycopg2-binary" = "*"
+gunicorn = "*"
+django-rest-auth = {version = "*",extras = ["with_social"]}
+django-cors-headers = "*"
+drf-yasg = "*"
+djangorestframework-gis = "*"
+django-jsoneditor = "*"
+django-guardian = "*"
+django-storages = {version = "*",extras = ["google"]}
+sentry-sdk = "==0.12.3"
+honcho = "*"
+rasterio = "*"
+shapely = "*"
+rq = "*"
+django-rq = "*"
+pyproj = "*"
+mercadopago = "*"
+mailchimp3 = "*"
+scikit-image = "*"
+google-api-python-client = "*"
+google-auth-oauthlib = "*"
+google-auth-httplib2 = "*"
+google-cloud-pubsub = "*"
+djangorestframework-api-key = "*"
+filetype = "*"
+fiona = "*"
+google-cloud-storage = "*"
+google-resumable-media = "*"
+
+[dev-packages]
+yapf = "*"
+pylint = "*"
+ipython = "*"
+pre-commit = "*"
+
+[requires]
+python_version = "3"

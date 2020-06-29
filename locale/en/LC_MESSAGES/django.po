@@ -1,0 +1,371 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-18 11:33-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: estimators/models.py:18
+msgid "Object detection"
+msgstr ""
+
+#: estimators/models.py:26
+msgid "project"
+msgstr ""
+
+#: estimators/models.py:27
+msgid "estimators"
+msgstr ""
+
+#: estimators/models.py:29
+msgid "estimator type"
+msgstr ""
+
+#: estimators/models.py:33
+msgid "name"
+msgstr ""
+
+#: estimators/models.py:40 estimators/models.py:113 estimators/models.py:132
+msgid "created at"
+msgstr ""
+
+#: estimators/models.py:41 estimators/models.py:114 estimators/models.py:133
+msgid "updated at"
+msgstr ""
+
+#: estimators/models.py:65
+msgid "file"
+msgstr ""
+
+#: estimators/models.py:71
+msgid "image"
+msgstr ""
+
+#: estimators/models.py:95 estimators/models.py:112 estimators/models.py:129
+msgid "estimator"
+msgstr ""
+
+#: estimators/models.py:98
+msgid "image tile"
+msgstr ""
+
+#: estimators/models.py:99
+msgid "segments"
+msgstr ""
+
+#: estimators/views.py:61
+msgid "Annotations updated"
+msgstr ""
+
+#: estimators/views.py:63
+msgid "Annotations created"
+msgstr ""
+
+#: estimators/views.py:111 estimators/views.py:137 estimators/views.py:158
+#: estimators/views.py:164 estimators/views.py:197
+msgid "Not found"
+msgstr ""
+
+#: projects/models.py:24
+msgid "In Beta"
+msgstr ""
+
+#: projects/models.py:38
+msgid "Name"
+msgstr ""
+
+#: projects/models.py:39
+msgid "Description"
+msgstr ""
+
+#: projects/models.py:42
+msgid "No images"
+msgstr ""
+
+#: projects/models.py:44 projects/models.py:68
+msgid "Created at"
+msgstr ""
+
+#: projects/models.py:45 projects/models.py:69
+msgid "Updated at"
+msgstr ""
+
+#: projects/models.py:48 projects/models.py:60 projects/models.py:102
+msgid "Project"
+msgstr ""
+
+#: projects/models.py:49
+msgid "Projects"
+msgstr ""
+
+#: projects/models.py:56
+msgid "Key"
+msgstr ""
+
+#: projects/models.py:61
+msgid "Email"
+msgstr ""
+
+#: projects/models.py:66
+msgid "Confirmed"
+msgstr ""
+
+#: projects/models.py:73
+msgid "Project invitation token"
+msgstr ""
+
+#: projects/models.py:74
+msgid "Project invitation tokens"
+msgstr ""
+
+#: projects/models.py:237
+msgid "Cannot set order to 0"
+msgstr ""
+
+#: projects/views.py:91
+msgid "ok"
+msgstr ""
+
+#: projects/views.py:96 projects/views.py:111
+msgid "Nothing"
+msgstr ""
+
+#: projects/views.py:136 projects/views.py:143 projects/views.py:169
+#: projects/views.py:175
+msgid "User subscribed"
+msgstr ""
+
+#: projects/views.py:140 projects/views.py:172
+msgid "Error subscribing user"
+msgstr ""
+
+#: quotations/models.py:80
+msgid "pending"
+msgstr ""
+
+#: quotations/models.py:81
+msgid "evaluating"
+msgstr ""
+
+#: quotations/models.py:82
+msgid "awaiting payment"
+msgstr ""
+
+#: quotations/models.py:83
+msgid "processing"
+msgstr ""
+
+#: quotations/models.py:84
+msgid "finished"
+msgstr ""
+
+#: quotations/models.py:85
+msgid "canceled"
+msgstr ""
+
+#: quotations/views.py:12
+msgid "Analytics service"
+msgstr ""
+
+#: tasks/models.py:18
+msgid "task id"
+msgstr ""
+
+#: tasks/models.py:21
+msgid "task name"
+msgstr ""
+
+#: tasks/models.py:22
+msgid "task arguments"
+msgstr ""
+
+#: tasks/models.py:23
+msgid "task kwargs"
+msgstr ""
+
+#: tasks/models.py:25
+msgid "state"
+msgstr ""
+
+#: tasks/models.py:29
+msgid "content type"
+msgstr ""
+
+#: tasks/models.py:30
+msgid "content encoding"
+msgstr ""
+
+#: tasks/models.py:32
+msgid "done at"
+msgstr ""
+
+#: tasks/models.py:33
+msgid "traceback"
+msgstr ""
+
+#: tasks/models.py:51
+msgid "task result"
+msgstr ""
+
+#: tasks/models.py:52
+msgid "task results"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:581
+msgid "Hi"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:615
+#, python-format
+msgid ""
+"You're receiving this e-mail because user %(user_display)s&nbsp;has given "
+"yours as an e-mail address to connect their account<br>\n"
+"<br>\n"
+"To confirm this is correct, click the following button."
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:642
+msgid "VERIFY EMAIL"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:668
+#: templates/registration/password_reset_message.html:669
+msgid "Best,"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:669
+#: templates/registration/password_reset_message.html:670
+msgid "The Dymaxion Labs Team."
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:937
+#: templates/registration/password_reset_message.html:937
+msgid "Our mailing address is:"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.html:940
+#: templates/registration/password_reset_message.html:940
+#, python-format
+msgid ""
+"Want to change how you receive these emails?<br>\n"
+"You can </span><a href=\"%%unsubscribe_url%%\"><span style=\"color:"
+"#2f32b3\">unsubscribe from this list</span></a><span style=\"color:"
+"#2f32b3\">.</span>"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:1
+#, python-format
+msgid ""
+"Hi %(user.get_first_name or user.get_username)s!\n"
+"\n"
+"You're receiving this e-mail because user %(user_display)s has given yours "
+"as an e-mail address to connect their account.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s\n"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:8
+#: templates/registration/password_reset_message.txt:12
+msgid ""
+"Best,\n"
+"The Dymaxion Labs Team."
+msgstr ""
+
+#: templates/account/email/email_confirmation_subject.txt:3
+msgid "Confirm your e-mail address"
+msgstr ""
+
+#: templates/admin/base_site.html:4
+msgid "Django site admin"
+msgstr ""
+
+#: templates/admin/base_site.html:10
+msgid "Terra Admininistration"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:581
+msgid "Hi,"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:615
+msgid ""
+"We heard you need a password reset. Click the link below and you’ll be "
+"redirected to a secure site from which you can set a new password."
+msgstr ""
+
+#: templates/registration/password_reset_message.html:640
+msgid "CHANGE PASSWORD"
+msgstr ""
+
+#: templates/registration/password_reset_message.html:666
+msgid "If you didn’t try to reset your password, please forget this email."
+msgstr ""
+
+#: templates/registration/password_reset_message.txt:2
+#, python-format
+msgid "Hi %(user.get_first_name or user.get_username)s!"
+msgstr ""
+
+#: templates/registration/password_reset_message.txt:4
+msgid ""
+"We heard you need a password reset.  Click the link below and you’ll be "
+"redirected to a secure site from which you can set a new password."
+msgstr ""
+
+#: templates/registration/password_reset_message.txt:8
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+
+#: templates/registration/password_reset_message.txt:10
+msgid "It can be safely ignored if you did not request a password reset."
+msgstr ""
+
+#: templates/registration/password_reset_subject.txt:3
+msgid "Change your password"
+msgstr ""
+
+#: terra/authentication.py:16
+msgid "Invalid token header. Token string should not contain spaces."
+msgstr ""
+
+#: terra/authentication.py:27
+msgid ""
+"Invalid token header. Token string should not contain invalid characters."
+msgstr ""
+
+#: terra/emails.py:95
+msgid "validate your email"
+msgstr "Validate your email"
+
+#: terra/emails.py:118
+msgid "your account is ready"
+msgstr "Your account is ready, %(name)s 🚀"
+
+#: terra/emails.py:151
+msgid "training of your model started"
+msgstr "The training of your model started"
+
+#: terra/emails.py:188
+msgid "prediction of your model started"
+msgstr "The prediction of your model started"
+
+#: terra/emails.py:227
+msgid "training of your model completed"
+msgstr "The training of your model ended"
+
+#: terra/emails.py:270
+msgid "prediction of your model completed"
+msgstr "The prediction of your model ended"

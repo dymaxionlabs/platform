@@ -1,0 +1,8 @@
+Hola,
+
+El entrenamiento de tu modelo a medida {{name}} para detectar {{num_classes}} clases ha comenzado.
+
+Te enviaremos un correo cuando el modelo esté listo.
+
+Saludos,
+Federico y el equipo de Dymaxion Labs.

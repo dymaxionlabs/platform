@@ -1,0 +1,13 @@
+Hola,
+
+Ya podés comenzar a usar DYMA.
+
+Con esta herramienta podrás crear tus algoritmos predictivos a medida sin tener conocimientos de inteligencia artificial.
+
+{signup_url}
+
+¡Estamos muy contentos de tenerte aquí!
+
+Saludos,
+
+El equipo de Dymaxion Labs.

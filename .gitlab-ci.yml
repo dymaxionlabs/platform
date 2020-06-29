@@ -1,0 +1,36 @@
+test:
+  image: python:3.6
+
+  services:
+    - mdillon/postgis
+
+  variables:
+    LC_ALL: C.UTF-8
+    LANG: C.UTF-8
+
+    POSTGRES_DB: test_myapp
+    POSTGRES_USER: testuser
+    POSTGRES_PASSWORD: ""
+
+    DB_NAME: terra
+    DB_HOST: mdillon__postgis
+    DB_USER: testuser
+    DB_PASSWORD: ""
+
+    RQ_REDIS_URL: redis://localhost:6379/0
+    RQ_TIMEOUT: 360
+
+    SECRET_KEY: "foobar"
+    SENTRY_DNS: ""
+
+    WEBCLIENT_URL: http://localhost:3000
+
+    FILES_BUCKET: dyma-test-files
+
+  script:
+    - apt-get update -qy
+    - apt-get install -y python3-dev python3-pip libgdal-dev libproj-dev postgresql postgis
+    - pip install pipenv
+    - pipenv install
+    - pipenv install django-anymail[mailgun] django-rest-auth[with_social] django-storages[google]
+    - pipenv run ./manage.py test

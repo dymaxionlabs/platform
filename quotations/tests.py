@@ -1,0 +1,170 @@
+from django.test import TestCase
+from rest_framework.test import APIClient
+
+from terra.tests import create_some_admin_user, create_some_user, loginWithAPI
+
+from .models import Request
+
+
+class RequestViewSetTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_create_ok(self):
+        response = self.client.post('/requests/', {
+            'name': 'John',
+            'email': 'john@doe.com',
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
+
+        self.assertEquals(201, response.status_code)
+        self.assertEquals(
+            sorted([
+                'id', 'name', 'email', 'message', 'areas', 'layers',
+                'last_state_update', 'extra_fields', 'created_at',
+                'updated_at', 'user', 'payment_id', 'total_area_km2'
+            ]), sorted(response.data.keys()))
+        self.assertEquals('John', response.data['name'])
+        self.assertEquals('john@doe.com', response.data['email'])
+        self.assertEquals('This is a test message', response.data['message'])
+        # FIXME set area and layers, so that payment is created
+        #self.assertIsNotNone(response.data['payment_id'])
+
+    def test_create_with_user(self):
+        user = create_some_user()
+        loginWithAPI(self.client, user.username, 'secret')
+
+        response = self.client.post('/requests/', {
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
+
+        self.assertEquals(201, response.status_code)
+        self.assertEquals(
+            sorted([
+                'id', 'name', 'email', 'message', 'areas', 'layers',
+                'last_state_update', 'extra_fields', 'created_at',
+                'updated_at', 'user', 'payment_id', 'total_area_km2'
+            ]), sorted(response.data.keys()))
+        self.assertEqual(user.username, response.data['user'])
+        self.assertIsNone(response.data['name'])
+        self.assertIsNone(response.data['email'])
+        self.assertEquals('This is a test message', response.data['message'])
+        # FIXME set area and layers, so that payment is created
+        #self.assertIsNotNone(response.data['payment_id'])
+
+    def test_create_only_request(self):
+        user = create_some_user()
+        loginWithAPI(self.client, user.username, 'secret')
+
+        response = self.client.post('/requests/?only_request=1', {
+            'message': 'This is a test message',
+            'areas': [],
+        },
+                                    format='json')
+
+        self.assertEquals(201, response.status_code)
+        self.assertIsNone(response.data['payment_id'])
+
+    def test_retrieve_ok_if_admin(self):
+        request = self.create_some_request()
+        admin_user = create_some_admin_user(password='secret')
+
+        loginWithAPI(self.client, admin_user.username, 'secret')
+
+        response = self.client.get('/requests/{}/'.format(request.id))
+        self.assertEquals(200, response.status_code)
+        self.assertRequestDetail(request, response.data)
+
+    def test_retrieve_ok_if_owner(self):
+        user = create_some_user()
+        request = self.create_some_request(user=user)
+
+        loginWithAPI(self.client, user.username, 'secret')
+
+        response = self.client.get('/requests/{}/'.format(request.id))
+        self.assertEquals(200, response.status_code)
+        self.assertRequestDetail(request, response.data)
+
+    def test_retrieve_fail_if_not_owner_nor_admin(self):
+        # User 1 creates a request
+        user = create_some_user()
+        request = self.create_some_request(user=user)
+
+        # User 2 authenticates
+        user2 = create_some_user(username='jane')
+        loginWithAPI(self.client, user2.username, 'secret')
+
+        # User 2 tries to get request from User 1, but fails
+        response = self.client.get('/requests/{}/'.format(request.id))
+        self.assertEquals(404, response.status_code)
+
+    def test_list_all_if_admin(self):
+        # User 1 creates a request
+        user = create_some_user()
+        request = self.create_some_request(user=user)
+
+        # User 2 creates a request
+        user2 = create_some_user(username='jane')
+        request2 = self.create_some_request(user=user2)
+
+        # An admin user authenticates
+        admin_user = create_some_admin_user(password='secret')
+        loginWithAPI(self.client, admin_user.username, 'secret')
+
+        response = self.client.get('/requests/')
+        self.assertEquals(200, response.status_code)
+        data = response.data
+        self.assertEquals(2, data['count'])
+        self.assertRequestDetail(request, data['results'][0])
+        self.assertRequestDetail(request2, data['results'][1])
+
+    def test_list_none_if_not_authenticated(self):
+        # Some user creates a request
+        user = create_some_user()
+        request = self.create_some_request(user=user)
+
+        response = self.client.get('/requests/')
+        self.assertEquals(200, response.status_code)
+        data = response.data
+        self.assertEquals(0, data['count'])
+        self.assertEquals([], data['results'])
+
+    def test_list_requests_from_user(self):
+        # User 1 creates a request
+        user = create_some_user()
+        request = self.create_some_request(user=user)
+
+        # User 2 creates a request
+        user2 = create_some_user(username='jane')
+        request2 = self.create_some_request(user=user2)
+
+        loginWithAPI(self.client, user2.username, 'secret')
+
+        response = self.client.get('/requests/')
+        self.assertEquals(200, response.status_code)
+        data = response.data
+        self.assertEquals(1, data['count'])
+        self.assertRequestDetail(request2, data['results'][0])
+
+    def create_some_request(self, user=None):
+        request = Request.objects.create(name='John',
+                                         email='john@doe.com',
+                                         user=user)
+        request.save()
+        return request
+
+    def assertRequestDetail(self, request, response_data):
+        self.assertEquals(
+            sorted([
+                'id', 'name', 'email', 'message', 'areas', 'layers',
+                'last_state_update', 'extra_fields', 'created_at',
+                'updated_at', 'user', 'payment_id', 'total_area_km2'
+            ]), sorted(response_data.keys()))
+        self.assertEquals(request.name, response_data['name'])
+        self.assertEquals(request.email, response_data['email'])
+        self.assertEquals(request.message, response_data['message'])
+        self.assertEquals(request.payment_id, response_data['payment_id'])
