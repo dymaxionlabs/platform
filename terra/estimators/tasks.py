@@ -226,49 +226,46 @@ def upload_image_tiles(job):
 def upload_prediction_image_tiles(job):
     client = Client(job.project)
     images_files = []
-    for path in job.internal_metadata['image_files']:
-        images = list(client.list_files(path))
-        if images:
-            images_files.append(images[0])
-    for file in images_files:
+    for path in job.internal_metadata['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=job.project,
-                                               source_image_file=file.path)
+                                        source_tile_path=path)
+        if image_tiles is not None:
+            files = list(client.list_files(image_tiles.first().source_image_file))
+            image_tile_urls = []
+            meta_data = {}
+            with tempfile.NamedTemporaryFile() as tmpfile:
+                src = tmpfile.name
+                files[0].download_to_filename(src)
+                with rasterio.open(src) as dataset:
+                    if dataset.driver == 'GTiff':
+                        meta_data['tiff_data'] = {
+                            'width': dataset.width,
+                            'heigth': dataset.height,
+                            'transform': dataset.transform,
+                            'crs': str(dataset.crs)
+                        }
 
-        image_tile_urls = []
-        meta_data = {}
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            src = tmpfile.name
-            file.download_to_filename(src)
-            with rasterio.open(src) as dataset:
-                if dataset.driver == 'GTiff':
-                    meta_data['tiff_data'] = {
-                        'width': dataset.width,
-                        'heigth': dataset.height,
-                        'transform': dataset.transform,
-                        'crs': str(dataset.crs)
-                    }
+            for t in image_tiles:
+                image_tile_urls.append('gs://{bucket}/{name}'.format(
+                    bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
+                meta_data[os.path.basename(t.tile_file.name)] = {
+                    'col_off': t.col_off,
+                    'row_off': t.row_off,
+                    'width': t.width,
+                    'height': t.height,
+                }
 
-        for t in image_tiles:
-            image_tile_urls.append('gs://{bucket}/{name}'.format(
-                bucket=settings.GS_BUCKET_NAME, name=t.tile_file.name))
-            meta_data[os.path.basename(t.tile_file.name)] = {
-                'col_off': t.col_off,
-                'row_off': t.row_off,
-                'width': t.width,
-                'height': t.height,
-            }
+            url = os.path.join(job.artifacts_url,
+                            'img/{file_name}/'.format(file_name=files[0].name))
 
-        url = os.path.join(job.artifacts_url,
-                           'img/{file_name}/'.format(file_name=file.name))
+            with tempfile.NamedTemporaryFile() as tmpfile:
+                tmpfile.name = '{}_tiles_meta.json'.format(files[0].name)
+                with open(tmpfile.name, 'w') as json_file:
+                    json.dump(meta_data, json_file, indent=4)
+                gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
+                                                            file=tmpfile.name))
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            tmpfile.name = '{}_tiles_meta.json'.format(file.name)
-            with open(tmpfile.name, 'w') as json_file:
-                json.dump(meta_data, json_file, indent=4)
-            gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
-                                                          file=tmpfile.name))
-
-        gsutilCopy(' '.join(image_tile_urls), url)
+            gsutilCopy(' '.join(image_tile_urls), url)
 
 
 def run_cloudml(job, script_name):
