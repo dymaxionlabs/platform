@@ -217,7 +217,7 @@ class StartPredictionJobView(APIView):
                     str(estimator.uuid),
                     'training_job':
                     last_training_job.pk,
-                    'image_files':
+                    'tiles_folders':
                     request.data.get('files'),
                     'output_path':
                     request.data.get('output_path'),
