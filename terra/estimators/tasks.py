@@ -28,7 +28,7 @@ IMAGE_TILE_SIZE = 500
 from storage.client import Client
 from rest_framework.exceptions import NotFound
 from tasks import states
-from common.utils import gsutilCopy
+from common.utils import gsutilCopy, list_chunks
 
 
 @job("default", timeout=3600)
@@ -66,6 +66,7 @@ def generate_image_tiles(task_id, args, kwargs):
                     for window, (i, j) in windows:
                         print(window, (i, j))
                         img = ds.read(window=window)
+                        img[np.isnan(img)] = 0
                         img = img[:3, :, :]
 
                         img_fname = '{i}_{j}.jpg'.format(i=i, j=j)
@@ -265,7 +266,8 @@ def upload_prediction_image_tiles(job):
                 gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
                                                             file=tmpfile.name))
 
-            gsutilCopy(' '.join(image_tile_urls), url)
+            for urls in list_chunks(image_tile_urls, 500):
+                gsutilCopy(' '.join(urls), url)
 
 
 def run_cloudml(job, script_name):
