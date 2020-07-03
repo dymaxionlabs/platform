@@ -271,6 +271,7 @@ def upload_prediction_image_tiles(job):
 
             for urls in list_chunks(image_tile_urls, 500):
                 gsutilCopy(' '.join(urls), url)
+    job.save()
 
 
 def run_cloudml(job, script_name):
