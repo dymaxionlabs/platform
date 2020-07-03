@@ -226,12 +226,15 @@ def upload_image_tiles(job):
 
 def upload_prediction_image_tiles(job):
     client = Client(job.project)
-    images_files = []
+    job.internal_metadata["image_files"] = []
     for path in job.internal_metadata['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=job.project,
                                         source_tile_path=path)
         if image_tiles.first() is not None:
-            files = list(client.list_files(image_tiles.first().source_image_file))
+            source_file = image_tiles.first().source_image_file
+            if source_file not in job.internal_metadata["image_files"]:
+                job.internal_metadata["image_files"].append(source_file)
+            files = list(client.list_files(source_file))
             image_tile_urls = []
             meta_data = {}
             with tempfile.NamedTemporaryFile() as tmpfile:
