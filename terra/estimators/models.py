@@ -91,7 +91,7 @@ class ImageTile(models.Model):
                              verbose_name=_('file'),
                              blank=True,
                              null=True)
-    source_image_file = models.CharField(max_length=255,
+    source_image_file = models.CharField(max_length=512,
                                          verbose_name=_('source image path'))
     source_tile_path = models.CharField(max_length=512, default="")
     project = models.ForeignKey(Project,
@@ -104,7 +104,8 @@ class ImageTile(models.Model):
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     tile_file = models.FileField(upload_to=tile_images_storage_path,
-                                 verbose_name=_('image'))
+                                 verbose_name=_('image'),
+                                 max_length=512)
     index = models.IntegerField(default=get_random_integer_value)
 
     class Meta:
