@@ -28,7 +28,7 @@ IMAGE_TILE_SIZE = 500
 from storage.client import Client
 from rest_framework.exceptions import NotFound
 from tasks import states
-from common.utils import gsutilCopy
+from common.utils import gsutilCopy, list_chunks
 
 
 @job("default", timeout=3600)
@@ -66,6 +66,7 @@ def generate_image_tiles(task_id, args, kwargs):
                     for window, (i, j) in windows:
                         print(window, (i, j))
                         img = ds.read(window=window)
+                        img[np.isnan(img)] = 0
                         img = img[:3, :, :]
 
                         img_fname = '{i}_{j}.jpg'.format(i=i, j=j)
@@ -225,12 +226,15 @@ def upload_image_tiles(job):
 
 def upload_prediction_image_tiles(job):
     client = Client(job.project)
-    images_files = []
+    job.internal_metadata["image_files"] = []
     for path in job.internal_metadata['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=job.project,
                                         source_tile_path=path)
-        if image_tiles is not None:
-            files = list(client.list_files(image_tiles.first().source_image_file))
+        if image_tiles.first() is not None:
+            source_file = image_tiles.first().source_image_file
+            if source_file not in job.internal_metadata["image_files"]:
+                job.internal_metadata["image_files"].append(source_file)
+            files = list(client.list_files(source_file))
             image_tile_urls = []
             meta_data = {}
             with tempfile.NamedTemporaryFile() as tmpfile:
@@ -265,7 +269,9 @@ def upload_prediction_image_tiles(job):
                 gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
                                                             file=tmpfile.name))
 
-            gsutilCopy(' '.join(image_tile_urls), url)
+            for urls in list_chunks(image_tile_urls, 500):
+                gsutilCopy(' '.join(urls), url, recursive=False)
+    job.save()
 
 
 def run_cloudml(job, script_name):
