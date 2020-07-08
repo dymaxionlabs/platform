@@ -270,7 +270,7 @@ def upload_prediction_image_tiles(job):
                                                             file=tmpfile.name))
 
             for urls in list_chunks(image_tile_urls, 500):
-                gsutilCopy(' '.join(urls), url)
+                gsutilCopy(' '.join(urls), url, recursive=False)
     job.save()
 
 
