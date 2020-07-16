@@ -36,6 +36,7 @@ filetype = "*"
 fiona = "*"
 google-cloud-storage = "*"
 google-resumable-media = "*"
+google-cloud-bigquery = "*"
 
 [dev-packages]
 yapf = "*"
