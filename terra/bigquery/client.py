@@ -2,6 +2,8 @@ import logging
 
 from django.conf import settings
 from google.cloud import bigquery
+from google.cloud.bigquery import Row
+from google.cloud.bigquery.job import QueryJob
 
 logger = logging.getLogger(__name__)
 
