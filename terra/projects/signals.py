@@ -8,12 +8,14 @@ from terra.emails import WelcomeEmail
 from terra.utils import slack_notify
 
 from .models import File, UserProfile, Project
+from quotas.models import UserQuota
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+        UserQuota.objects.create(user=instance)
         project = Project.objects.create(name='Default', owner=instance)
         project.collaborators.set([instance])
 
