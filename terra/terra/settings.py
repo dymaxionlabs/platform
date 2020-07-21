@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'jsoneditor',
     'guardian',
     'django_rq',
+    'quotas',
 ]
 
 MIDDLEWARE = [
