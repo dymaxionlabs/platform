@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'quotations.apps.QuotationsConfig',
     'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
+    'credits.apps.CreditsConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
