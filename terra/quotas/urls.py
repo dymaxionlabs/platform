@@ -6,5 +6,6 @@ from . import views
 
 
 urlpatterns = [
+    url(r'^usage/?', views.UserQuotaUsageView.as_view()),
     url(r'^', views.UserQuotaView.as_view()),
 ]
