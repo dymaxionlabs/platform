@@ -123,7 +123,7 @@ class UserViewSetTest(APITestCase):
                 'last_name': '',
             },
         ]
-        self.assertEqual(expectedUsers, response.data['results'])
+        self.assertCountEqual(expectedUsers, response.data['results'])
 
     def test_user_create_fail(self):
         pass
