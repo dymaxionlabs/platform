@@ -5,7 +5,7 @@ import requests
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import NotFound, ParseError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -21,6 +21,7 @@ from projects.views import RelatedProjectAPIView
 
 from .client import Client
 from .serializers import FileSerializer
+from .models import File
 
 
 class StorageAPIView(RelatedProjectAPIView):
@@ -29,6 +30,38 @@ class StorageAPIView(RelatedProjectAPIView):
     def get_client(self):
         project = self.get_project()
         return Client(project)
+
+
+class FileViewSet(viewsets.ReadOnlyModelViewSet, mixins.RetrieveModelMixin, RelatedProjectAPIView):
+    queryset = File.objects.filter(complete=True)
+    serializer_class = FileSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        project = self.get_project()
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+        file = self.queryset.filter(path=path, project=project)
+        if file is None:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+        content = FileSerializer(files.first()).data
+        return Response(dict(detail=content), status=status.HTTP_200_OK)
+    
+    def list(self, request, *args, **kwargs):
+        project = self.get_project()
+        path = request.query_params.get('path', '*')
+
+        path = path.replace("*","%")
+        files = self.queryset.filter(project=project).raw(
+            'SELECT * FROM {db_table} WHERE path LIKE {path}'.format(
+                db_table=File._meta.db_table,
+                path=path
+            ))
+        if files is None:
+            return Response(files, status=status.HTTP_204_NO_CONTENT)
+        return Response(FileSerializer(files, many=True).data)
+        
+    #TODO: sobre escribir delete, y crear un signal que ejecute lo que ahora hace FileView.delete
 
 
 class ListFilesView(RelatedProjectAPIView):
@@ -51,6 +84,7 @@ class ListFilesView(RelatedProjectAPIView):
                              400:
                              openapi.Response('Invalid project or not found')
                          })
+    #TODO: Esta funcionalidad debe quedar en FileViewSet
     def get(self, request, format=None):
         """
         Return a list of all files
@@ -105,10 +139,15 @@ class UploadFileView(StorageAPIView):
             raise ParseError("'file' missing")
 
         client = self.get_client()
-        file = client.upload_from_file(fileobj,
+        storage_file = client.upload_from_file(fileobj,
                                        to=path,
                                        content_type=fileobj.content_type)
-
+        file = File.objects.create(
+            project=self.get_project(),
+            path=storage_file.path,
+            size=fileobj.size,
+            metadata=storage_file.metadata
+        )      
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -124,6 +163,7 @@ class FileView(StorageAPIView):
                              200: FileSerializer(many=False),
                              404: openapi.Response('File not found'),
                          })
+    #TODO: Esta funcionalidad debe quedar en FileViewSet
     def get(self, request, format=None):
         """
         Return the content of a file
@@ -140,6 +180,7 @@ class FileView(StorageAPIView):
         content = FileSerializer(files[0]).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
 
+    #TODO: Esta funcionalidad debe quedar en FileViewSet
     def delete(self, request, format=None):
         """
         Delete a file.
