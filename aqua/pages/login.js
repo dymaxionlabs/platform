@@ -6,7 +6,7 @@ import React from "react";
 import { i18n, Link, withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { login } from "../utils/auth";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 import {
   Avatar,
@@ -19,9 +19,9 @@ import {
   LinearProgress,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -30,33 +30,35 @@ const styles = theme => ({
     [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
       width: 400,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   passwordReset: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   signup: {
-    marginTop: theme.spacing(1)
-  }
+    marginTop: theme.spacing(1),
+  },
 });
 
 class Login extends React.Component {
@@ -65,13 +67,13 @@ class Login extends React.Component {
     password: "",
     beta: false,
     remember: false,
-    isSubmitting: false
+    isSubmitting: false,
   };
 
   static async getInitialProps({ query }) {
     return {
       namespacesRequired: ["common"],
-      query
+      query,
     };
   }
 
@@ -85,20 +87,20 @@ class Login extends React.Component {
     }
   }
 
-  onUsernameChange = e => {
+  onUsernameChange = (e) => {
     var uname = e.target.value.toLowerCase();
     this.setState({ username: uname });
   };
 
-  onPasswordChange = e => {
+  onPasswordChange = (e) => {
     this.setState({ password: e.target.value });
   };
 
-  onRememberClick = e => {
+  onRememberClick = (e) => {
     this.setState({ remember: !this.state.remember });
   };
 
-  onSubmit = async event => {
+  onSubmit = async (event) => {
     event.preventDefault();
 
     const { t } = this.props;
@@ -106,14 +108,14 @@ class Login extends React.Component {
 
     const dataSend = {
       username: username,
-      password: password
+      password: password,
     };
 
     // Reset messages
     this.setState({
       errorMsg: "",
       successMsg: "",
-      isSubmitting: true
+      isSubmitting: true,
     });
 
     try {
@@ -126,7 +128,7 @@ class Login extends React.Component {
           buildApiUrl(`/user_profiles/${username}/`),
           { beta: true },
           {
-            headers: { "Accept-Language": i18n.language, Authorization: token }
+            headers: { "Accept-Language": i18n.language, Authorization: token },
           }
         );
       }
@@ -134,7 +136,7 @@ class Login extends React.Component {
       const expires = this.state.remember ? 30 : null;
       if (token) {
         const { redirect } = this.props.query;
-        login({ token, expires, redirectTo: redirect });
+        login({ username, token, expires, redirectTo: redirect });
       }
     } catch (error) {
       console.error(error);
@@ -142,7 +144,7 @@ class Login extends React.Component {
       this.setState({
         errorMsg: t("login.error_msg"),
         isSubmitting: false,
-        successMsg: ""
+        successMsg: "",
       });
     }
   };
@@ -213,7 +215,7 @@ class Login extends React.Component {
             <Link
               href={{
                 pathname: "/password/reset",
-                query: { redirect, beta, email }
+                query: { redirect, beta, email },
               }}
             >
               <a>{t("login.request_new_password")}</a>
@@ -224,7 +226,7 @@ class Login extends React.Component {
             <Link
               href={{
                 pathname: "/signup",
-                query: { redirect, beta, email }
+                query: { redirect, beta, email },
               }}
             >
               <a>{t("login.signup")}</a>
@@ -238,7 +240,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 Login = withStyles(styles)(Login);

@@ -228,9 +228,12 @@ class OpenProjectList extends React.Component {
               <ListItemText
                 primary={project.name}
                 secondary={
-                  <Moment locale={locale} fromNow>
-                    {project.updated_at}
-                  </Moment>
+                  <>
+                    <Moment locale={locale} fromNow>
+                      {project.updated_at}
+                    </Moment>{" "}
+                    - {project.owners.join(", ")}
+                  </>
                 }
               />
             </ListItem>
