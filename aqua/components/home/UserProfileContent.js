@@ -4,7 +4,6 @@ import React from "react";
 import { i18n, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { withStyles } from "@material-ui/core/styles";
-import cookie from "js-cookie";
 import { routerPush } from "../../utils/router";
 import { withSnackbar } from "notistack";
 
@@ -49,6 +48,7 @@ const styles = (theme) => ({
 
 class UserProfileContent extends React.Component {
   state = {
+    loading: true,
     username: "",
     email: "",
     sendNotificationEmails: true,
@@ -94,6 +94,8 @@ class UserProfileContent extends React.Component {
         variant: "error",
       });
     }
+
+    this.setState({ loading: false });
   }
 
   onSendNotificationEmailsClick = (e) => {
@@ -157,24 +159,24 @@ class UserProfileContent extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { isSubmitting, email, sendNotificationEmails } = this.state;
+    const { loading, isSubmitting, email, sendNotificationEmails } = this.state;
 
     return (
       <main className={classes.main}>
         <Typography component="h1" variant="h5">
           {"User Profile"}
         </Typography>
-        <Typography style={{ color: "red" }}>{this.state.errorMsg}</Typography>
 
         <form className={classes.form}>
           <FormControl margin="normal" fullWidth className={classes.input}>
             <InputLabel htmlFor="email">{"email"}</InputLabel>
             <Input
               id="email"
-              name="email"
+              name="Email address"
               autoComplete="Type your e-mail address"
               value={email}
               onChange={this.onEmailChange}
+              disabled={loading}
             />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
@@ -184,6 +186,7 @@ class UserProfileContent extends React.Component {
                   checked={sendNotificationEmails}
                   color="primary"
                   onClick={this.onSendNotificationEmailsClick}
+                  disabled={loading}
                 />
               }
               label={
@@ -198,6 +201,7 @@ class UserProfileContent extends React.Component {
             disabled={isSubmitting}
             className={classes.submit}
             onClick={this.onSubmit}
+            disabled={loading}
           >
             {"Save"}
           </Button>
