@@ -154,7 +154,7 @@ me,sidebar.keys,API Keys,API Keys
 me,sidebar.profile,Perfil,Profile
 me,download,Descargar,Download
 me,view,Ver,View
-me,models.title,Tus Modelos,Your Models
+me,models.title,Modelos,Models
 me,models.name,Nombre,Name
 me,models.estimator_type,Tipo,Type
 me,models.classes,Clases,Classes
@@ -166,7 +166,7 @@ me,models.add_imgs,Agregar imágenes,Add images
 me,models.add_annot,Agregar anotaciones,Add annotations
 me,models.delete_models,Borrar Modelo,Delete Model
 me,models.uuid,Mostrar UUID,Show UUID
-me,layers.title,Tus capas,Your layers
+me,layers.title,Capas,Layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name
 me,layers.description,Descripción,Description
@@ -174,19 +174,19 @@ me,layers.type,Tipo,Type
 me,layers.date,Fecha de adquisición,Acquisition date
 me,layers.layer_type_R,Ráster,Raster
 me,layers.layer_type_V,Vector,Vector
-me,maps.title,Tus mapas,Your maps
+me,maps.title,Mapas,Maps
 me,maps.name,Nombre,Name
 me,maps.description,Descripción,Description
 me,maps.created_at,Fecha de creación,Creation date
-me,files.title,Tus archivos,Your files
+me,files.title,Archivos,Files
 me,files.name,Nombre del archivo,File name
 me,files.created_at,Fecha de subida,Upload date
-me,requests.title,Tus pedidos,Your requests
+me,requests.title,Pedidos,Requests
 me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
 me,requests.area_km2,Área (km²),Area (km²)
 me,requests.state,Estado actual,Current state
-me,keys.title,Tus API Keys,Your API Keys
+me,keys.title,API keys,API keys
 me,keys.name,Nombre,Name
 me,keys.prefix,Prefijo,Prefix
 me,keys.state,Estado,State
