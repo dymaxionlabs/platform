@@ -52,7 +52,6 @@ class ListFilesView(RelatedProjectAPIView):
                              400:
                              openapi.Response('Invalid project or not found')
                          })
-    #TODO: Esta funcionalidad debe quedar en FileViewSet
     def get(self, request, format=None):
         """
         Return a list of all files
@@ -156,7 +155,6 @@ class FileView(StorageAPIView):
         content = FileSerializer(file.first()).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
 
-    #TODO: Esta funcionalidad debe quedar en FileViewSet
     def delete(self, request, format=None):
         """
         Delete a file.
