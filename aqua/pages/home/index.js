@@ -2,6 +2,7 @@ import { withStyles } from "@material-ui/core/styles";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import MapIcon from "@material-ui/icons/Map";
 import MemoryIcon from "@material-ui/icons/Memory";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -139,8 +140,14 @@ const styles = (theme) => ({
   },
 });
 
-const sortedSections = ["files", "models", "viewer", "keys", "profile"];
-const sortedSectionsBeta = ["files", "models", "viewer", "keys", "profile"];
+const sortedSections = [
+  "files",
+  "models",
+  "viewer",
+  "_divider",
+  "keys",
+  "profile",
+];
 
 const sections = {
   viewer: {
@@ -273,7 +280,7 @@ class Home extends React.Component {
     const { t, classes, token } = this.props;
     const { section, open, beta, contextualMenuOpen, username } = this.state;
 
-    const sectionList = beta ? sortedSectionsBeta : sortedSections;
+    const sectionList = sortedSections;
     const { contactModalOpen } = this.state;
 
     const originalContent = section && sections[section].content;
@@ -380,25 +387,41 @@ class Home extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <List>
-            {sectionList.map((key) => (
-              <Link
-                key={key}
-                href={`/home?section=${key}`}
-                as={`/home${sections[key].path}`}
-              >
-                <ListItem
-                  button
-                  onClick={() => this.handleSectionChange(key)}
-                  selected={section === key}
-                >
-                  <ListItemIcon>{sections[key].icon}</ListItemIcon>
-                  <ListItemText primary={t(`sidebar.${key}`)} />
-                </ListItem>
-              </Link>
-            ))}
-          </List>
+          <Link href={`/home`}>
+            <ListItem
+              button
+              onClick={() => this.handleSectionChange(null)}
+              selected={!section}
+            >
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={t(`sidebar.dashboard`)} />
+            </ListItem>
+          </Link>
           <Divider />
+          <List>
+            {sectionList.map((key, i) =>
+              key === "_divider" ? (
+                <Divider key={`divider-${i}`} />
+              ) : (
+                <Link
+                  key={key}
+                  href={`/home?section=${key}`}
+                  as={`/home${sections[key].path}`}
+                >
+                  <ListItem
+                    button
+                    onClick={() => this.handleSectionChange(key)}
+                    selected={section === key}
+                  >
+                    <ListItemIcon>{sections[key].icon}</ListItemIcon>
+                    <ListItemText primary={t(`sidebar.${key}`)} />
+                  </ListItem>
+                </Link>
+              )
+            )}
+          </List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
