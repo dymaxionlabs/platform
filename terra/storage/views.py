@@ -2,6 +2,7 @@ import mimetypes
 import tempfile
 
 import requests
+from django.db.models import Sum
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -13,6 +14,7 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView, Response
 
+from quotas.models import UserQuota
 from projects.mixins import allowed_projects_for
 from projects.models import Project
 from projects.permissions import HasUserAPIKey
@@ -110,6 +112,11 @@ class UploadFileView(StorageAPIView):
         fileobj = request.data.get('file', None)
         if not fileobj:
             raise ParseError("'file' missing")
+
+        quota = UserQuota.objects.get(user=request.user)
+        usage = File.objects.filter(project=self.get_project()).aggregate(total=Sum('size'))
+        if not quota.check_total_space_per_project(usage['total'] + fileobj.size):
+            raise ParseError("insufficient storage")
 
         client = self.get_client()
         storage_file = client.upload_from_file(fileobj,
