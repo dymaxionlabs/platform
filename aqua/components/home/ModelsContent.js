@@ -1,31 +1,31 @@
-import { withStyles } from "@material-ui/core/styles";
-import EditIcon from "@material-ui/icons/Edit";
-import axios from "axios";
-import cookie from "js-cookie";
-import PropTypes from "prop-types";
-import React from "react";
-import Moment from "react-moment";
-import { routerPush } from "../../utils/router";
-import { i18n, withTranslation } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { logout } from "../../utils/auth";
-import { withSnackbar } from "notistack";
-import ShowUuidDialog from "../ShowUuidDialog";
-import ConfirmationDialog from "../ConfirmationDialog";
-
 import {
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
-  IconButton,
-  Chip,
-  Menu,
-  MenuItem,
   TableCell,
   TableHead,
   TableRow,
   Typography,
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import EditIcon from "@material-ui/icons/Edit";
+import axios from "axios";
+import cookie from "js-cookie";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import TableRowSkeleton from "../../components/TableRowSkeleton";
+import { i18n, withTranslation } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { logout } from "../../utils/auth";
+import { routerPush } from "../../utils/router";
+import ConfirmationDialog from "../ConfirmationDialog";
+import ShowUuidDialog from "../ShowUuidDialog";
 
 const styles = (theme) => ({
   root: {
@@ -177,6 +177,7 @@ class ModelsContent extends React.Component {
   render() {
     const { t, classes } = this.props;
     const {
+      loading,
       models: models,
       contextualMenuOpen,
       showUuidDialogOpen,
@@ -208,6 +209,7 @@ class ModelsContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && <TableRowSkeleton cols={4} />}
               {models.map((model, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
