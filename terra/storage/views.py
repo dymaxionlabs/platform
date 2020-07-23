@@ -32,43 +32,11 @@ class StorageAPIView(RelatedProjectAPIView):
         return Client(project)
 
 
-class FileViewSet(viewsets.ReadOnlyModelViewSet, mixins.RetrieveModelMixin, RelatedProjectAPIView):
-    queryset = File.objects.filter(complete=True)
-    serializer_class = FileSerializer
-
-    def retrieve(self, request, *args, **kwargs):
-        project = self.get_project()
-        path = request.query_params.get('path', None)
-        if not path:
-            raise ParseError("'path' missing")
-        file = self.queryset.filter(path=path, project=project)
-        if file is None:
-            return Response(None, status=status.HTTP_404_NOT_FOUND)
-        content = FileSerializer(files.first()).data
-        return Response(dict(detail=content), status=status.HTTP_200_OK)
-    
-    def list(self, request, *args, **kwargs):
-        project = self.get_project()
-        path = request.query_params.get('path', '*')
-
-        path = path.replace("*","%")
-        files = self.queryset.filter(project=project).raw(
-            'SELECT * FROM {db_table} WHERE path LIKE {path}'.format(
-                db_table=File._meta.db_table,
-                path=path
-            ))
-        if files is None:
-            return Response(files, status=status.HTTP_204_NO_CONTENT)
-        return Response(FileSerializer(files, many=True).data)
-        
-    #TODO: sobre escribir delete, y crear un signal que ejecute lo que ahora hace FileView.delete
-
-
 class ListFilesView(RelatedProjectAPIView):
     """
     View to list all files in the projects container
     """
-
+    queryset = File.objects.filter(complete=True)
     permission_classes = [HasUserAPIKey | IsAuthenticated]
 
     @swagger_auto_schema(manual_parameters=[
@@ -93,13 +61,19 @@ class ListFilesView(RelatedProjectAPIView):
         project = self.get_project()
         path = request.query_params.get('path', '*')
 
-        client = Client(project)
-        files = client.list_files(path)
-
-        files = [FileSerializer(f).data for f in files]
-        if not files:
+        #client = Client(project)
+        #files = client.list_files(path)
+        path = path.replace("*","%")
+        print(path)
+        files = self.queryset.filter(project=project).raw(
+            'SELECT * FROM {db_table} WHERE path LIKE {path}'.format(
+                db_table=File._meta.db_table,
+                path=path
+            ))
+        print(files)
+        if files is None:
             return Response(files, status=status.HTTP_204_NO_CONTENT)
-        return Response(files)
+        return Response(FileSerializer(files, many=True).data)
 
 
 class UploadFileView(StorageAPIView):
@@ -153,6 +127,9 @@ class UploadFileView(StorageAPIView):
 
 
 class FileView(StorageAPIView):
+
+    queryset = File.objects.filter(complete=True)
+
     @swagger_auto_schema(manual_parameters=[
         openapi.Parameter('path',
                           openapi.IN_QUERY,
@@ -163,21 +140,20 @@ class FileView(StorageAPIView):
                              200: FileSerializer(many=False),
                              404: openapi.Response('File not found'),
                          })
-    #TODO: Esta funcionalidad debe quedar en FileViewSet
+    
     def get(self, request, format=None):
         """
         Return the content of a file
         """
-        # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        client = Client(project)
-        files = list(client.list_files(path))
-        if not files:
+
+        file = self.queryset.filter(path=path, project=project)
+        if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-        content = FileSerializer(files[0]).data
+        content = FileSerializer(file.first()).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
 
     #TODO: Esta funcionalidad debe quedar en FileViewSet
@@ -185,18 +161,16 @@ class FileView(StorageAPIView):
         """
         Delete a file.
         """
-        # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        client = Client(project)
-        files = list(client.list_files(path))
-        if not files:
+        file = self.queryset.filter(path=path, project=project)
+        if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-        files[0].delete()
+        file.delete()
         return Response(dict(detail='File deleted.'),
-                        status=status.HTTP_200_OK)
+                status=status.HTTP_200_OK)
 
 
 class DownloadFileView(StorageAPIView):

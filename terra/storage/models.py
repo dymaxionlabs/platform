@@ -14,5 +14,4 @@ class File(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{name} ({project})'.format(name=self.name,
-                                        type=self.project)
+        return '{path} ({project})'.format(path=self.path, project=self.project)
