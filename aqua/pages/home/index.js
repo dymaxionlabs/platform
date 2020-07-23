@@ -41,57 +41,57 @@ import {
   MenuItem,
   Toolbar,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 const drawerWidth = 200;
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   toolbar: {
-    paddingRight: 24 // keep right padding when drawer closed
+    paddingRight: 24, // keep right padding when drawer closed
   },
   toolbarIcon: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: "0 8px",
-    ...theme.mixins.toolbar
+    ...theme.mixins.toolbar,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   menuItem: {
     minWidth: 150,
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 36
+    marginRight: 36,
   },
   menuButtonHidden: {
-    display: "none"
+    display: "none",
   },
   title: {
     display: "flex",
     flexGrow: 1,
     alignItems: "center",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   titleLogo: {
-    marginRight: 5
+    marginRight: 5,
   },
   drawerPaper: {
     position: "relative",
@@ -99,42 +99,42 @@ const styles = theme => ({
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   drawerPaperClose: {
     overflowX: "hidden",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7),
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9)
-    }
+      width: theme.spacing(9),
+    },
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
     height: "100vh",
-    overflow: "auto"
+    overflow: "auto",
   },
   chartContainer: {
-    marginLeft: -22
+    marginLeft: -22,
   },
   tableContainer: {
-    height: 320
+    height: 320,
   },
   h5: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   button: {
-    color: "white"
+    color: "white",
   },
   anchorButton: {
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 const sortedSections = ["files", "models", "viewer", "keys"];
@@ -145,26 +145,26 @@ const sections = {
     key: "viewer",
     path: "/maps",
     icon: <MapIcon />,
-    content: <MapsContent />
+    content: <MapsContent />,
   },
   models: {
     key: "models",
     path: "/models",
     icon: <MemoryIcon />,
-    content: <ModelsContent />
+    content: <ModelsContent />,
   },
   files: {
     key: "files",
     path: "/files",
     icon: <CollectionsIcon />,
-    content: <FilesContent />
+    content: <FilesContent />,
   },
   keys: {
     key: "keys",
     path: "/keys",
     icon: <VpnKeyIcon />,
-    content: <KeysContent />
-  }
+    content: <KeysContent />,
+  },
 };
 
 class Home extends React.Component {
@@ -174,13 +174,13 @@ class Home extends React.Component {
     beta: false,
     contextualMenuOpen: null,
     username: "",
-    contactModalOpen: false
+    contactModalOpen: false,
   };
 
   static async getInitialProps({ query }) {
     return {
       namespacesRequired: ["me", "common"],
-      query: query
+      query: query,
     };
   }
 
@@ -212,13 +212,13 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/auth/user/`), {
         headers: {
           "Accept-Language": i18n.language,
-          Authorization: token
-        }
+          Authorization: token,
+        },
       });
 
       const {
         username,
-        profile: { beta }
+        profile: { beta },
       } = response.data;
 
       this.setState({ username, beta });
@@ -237,11 +237,11 @@ class Home extends React.Component {
     this.setState({ open: false });
   };
 
-  handleSectionChange = section => {
+  handleSectionChange = (section) => {
     this.setState({ section });
   };
 
-  handleContextualMenuClick = event => {
+  handleContextualMenuClick = (event) => {
     this.setState({ contextualMenuOpen: event.currentTarget });
   };
 
@@ -273,7 +273,7 @@ class Home extends React.Component {
       originalContent &&
       React.cloneElement(originalContent, {
         token,
-        beta
+        beta,
       });
 
     return (
@@ -313,7 +313,6 @@ class Home extends React.Component {
                 noWrap
                 className={classes.title}
               >
-                
                 Dymaxion Labs Platform
               </Typography>
             </Link>
@@ -341,11 +340,9 @@ class Home extends React.Component {
               open={Boolean(contextualMenuOpen)}
               onClose={this.handleContextualMenuClose}
             >
-              <MenuItem className={classes.menuItem}>
-                {username}
-              </MenuItem>
-              <MenuItem 
-                className={classes.menuItem} 
+              <MenuItem className={classes.menuItem}>{username}</MenuItem>
+              <MenuItem
+                className={classes.menuItem}
                 onClick={this.profileLogout}
               >
                 {t("common:logout_btn")}
@@ -364,7 +361,7 @@ class Home extends React.Component {
             paper: classNames(
               classes.drawerPaper,
               !open && classes.drawerPaperClose
-            )
+            ),
           }}
           open={open}
         >
@@ -375,7 +372,7 @@ class Home extends React.Component {
           </div>
           <Divider />
           <List>
-            {sectionList.map(key => (
+            {sectionList.map((key) => (
               <Link
                 key={key}
                 href={`/home?section=${key}`}
@@ -408,7 +405,7 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 Home = withStyles(styles)(Home);
