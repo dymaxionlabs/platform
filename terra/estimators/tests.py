@@ -9,7 +9,7 @@ from projects.tests import create_some_project
 from storage.client import Client
 
 from .models import Estimator, File
-from .views import AnnotationUpload
+from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView
 
 
 class EstimatorViewSetTest(TestCase):
@@ -169,3 +169,36 @@ class EstimatorAnnotationUploadTest(TestCase):
         self.assertEquals(rv.data['vector_file'], "Not found")
         mock_import_from_vector_file.assert_not_called()
 
+
+class StartTrainingJobViewTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        loginWithAPI(self.client, self.user.username, 'secret')
+        self.project = create_some_project(name="Some project",
+                                           owners=[self.user])
+
+    @patch("estimators.views.TrainingStartedEmail.send_mail")
+    @patch("estimators.views.Task.start")
+    def test_post_ok(self, mock_start, mock_send_mail):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        request = Object()
+        setattr(request, 'user', self.user)
+        rv = StartTrainingJobView().post(request, estimator.uuid)
+        mock_send_mail.assert_called_once()
+        mock_start.assert_called_once()
+        self.assertEquals(rv.status_code, 200)
+
+    def test_post_not_found(self):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        uuid = estimator.uuid
+        estimator.delete()
+        request = Object()
+        setattr(request, 'user', self.user)
+        with self.assertRaises(Estimator.DoesNotExist):
+            StartTrainingJobView().post(request, uuid)
