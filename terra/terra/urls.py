@@ -35,7 +35,7 @@ from stac.views import SearchView
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
-router.register(r'user_profiles', UserProfileViewSet)
+router.register(r'user-profiles', UserProfileViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)

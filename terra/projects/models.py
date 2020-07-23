@@ -22,6 +22,7 @@ class UserProfile(models.Model):
     city = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=60, blank=True)
     beta = models.BooleanField(default=False)
+    send_notification_emails = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
