@@ -108,8 +108,10 @@ class UserProfileContent extends React.Component {
     this.setState({ email: e.target.value });
   };
 
-  onChangePasswordClick = () => {
-    routerPush("/password/reset");
+  onResetPasswordClick = () => {
+    routerPush(
+      `/password/reset?redirect=${encodeURIComponent("/home/profile")}`
+    );
   };
 
   onSubmit = async () => {
@@ -126,11 +128,11 @@ class UserProfileContent extends React.Component {
   };
 
   async saveUser() {
-    const { token } = this.props;
+    const { username, token } = this.props;
     const { email } = this.state;
 
     return await axios.patch(
-      buildApiUrl(`/auth/user/`),
+      buildApiUrl(`/users/${username}/`),
       { email },
       {
         headers: {
@@ -208,9 +210,9 @@ class UserProfileContent extends React.Component {
           <Button
             fullWidth
             variant="contained"
-            color="primary"
+            color="secondary"
             className={classes.passwordSubmit}
-            onClick={this.onChangePasswordClick}
+            onClick={this.onResetPasswordClick}
           >
             {"Reset password"}
           </Button>
