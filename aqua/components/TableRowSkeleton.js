@@ -3,8 +3,8 @@ import { Skeleton } from "@material-ui/lab";
 
 const TableRowSkeleton = ({ cols }) => (
   <TableRow>
-    {[...Array(cols).keys()].map(() => (
-      <TableCell>
+    {[...Array(cols).keys()].map((i) => (
+      <TableCell key={i}>
         <Skeleton animation="wave" />
       </TableCell>
     ))}
