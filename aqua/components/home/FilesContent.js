@@ -1,43 +1,41 @@
-import React from "react";
-import PropTypes from "prop-types";
-
-import { withStyles } from "@material-ui/core/styles";
-
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import CloseIcon from "@material-ui/icons/Close";
-
-import { i18n, withTranslation } from "../../i18n";
-import { logout } from "../../utils/auth";
-import axios from "axios";
-import { buildApiUrl } from "../../utils/api";
-import Moment from "react-moment";
-import cookie from "js-cookie";
-import FileDownload from "../../utils/file-download";
-
 import {
-  Typography,
+  IconButton,
+  Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Snackbar,
   Tooltip,
-} from '@material-ui/core';
+  Typography,
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import CloseIcon from "@material-ui/icons/Close";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import axios from "axios";
+import cookie from "js-cookie";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import TableRowSkeleton from "../../components/TableRowSkeleton";
+import { i18n, withTranslation } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { logout } from "../../utils/auth";
+import FileDownload from "../../utils/file-download";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.units * 10
-  }
+    marginBottom: theme.spacing.units * 10,
+  },
 });
 
 class NotImplementedSnackbar extends React.Component {
@@ -48,13 +46,13 @@ class NotImplementedSnackbar extends React.Component {
       <Snackbar
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right"
+          horizontal: "right",
         }}
         open={open}
         autoHideDuration={2000}
         onClose={onClose}
         ContentProps={{
-          "aria-describedby": "message-id"
+          "aria-describedby": "message-id",
         }}
         message={<span id="message-id">Disponible pronto</span>}
         action={[
@@ -66,7 +64,7 @@ class NotImplementedSnackbar extends React.Component {
             onClick={onClose}
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton>,
         ]}
       />
     );
@@ -77,35 +75,42 @@ NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 
 class FilesContent extends React.Component {
   state = {
+    loading: true,
     files: [],
     notImplementedOpen: false,
     showFileDialogOpen: false,
-    beta: false
+    beta: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.getFiles();
+    await this.getBetaFlag();
+
+    this.setState({ loading: false });
+  }
+
+  async getFiles() {
     const projectId = cookie.get("project");
 
-    axios
-      .get(buildApiUrl("/storage/files/"), {
-        params: { project: projectId, path: '*' },
-        headers: { Authorization: this.props.token }
-      })
-      .then(response => {
-        if (response.status == 200) {
-          this.setState({ files: response.data });
-        }
-      })
-      .catch(err => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
+    try {
+      const response = await axios.get(buildApiUrl("/storage/files/"), {
+        params: { project: projectId, path: "*" },
+        headers: { Authorization: this.props.token },
       });
-
-    this.getBetaFlag();
+      if (response.status == 200) {
+        this.setState({ files: response.data });
+      }
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get files", {
+          variant: "error",
+        });
+      }
+    }
   }
 
   async getBetaFlag() {
@@ -114,8 +119,8 @@ class FilesContent extends React.Component {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
         headers: {
           "Accept-Language": i18n.language,
-          Authorization: token
-        }
+          Authorization: token,
+        },
       });
       const userData = response.data;
       this.setState({ beta: userData.profile.beta });
@@ -128,35 +133,38 @@ class FilesContent extends React.Component {
     this.setState({ notImplementedOpen: false });
   };
 
-  handleFileURL = file => {
+  handleFileURL = (file) => {
     const projectId = cookie.get("project");
     axios
       .get(buildApiUrl(`/storage/download/`), {
         params: { project: projectId, path: file.path },
         headers: { Authorization: this.props.token },
-        responseType: 'blob'
+        responseType: "blob",
       })
-      .then(response => {
+      .then((response) => {
         FileDownload(response.data, file.name);
+        this.props.enqueueSnackbar(
+          "Preparing download. Please wait a few seconds..."
+        );
       });
   };
 
-  onDialogResult = async action => {
+  onDialogResult = async (action) => {
     this.setState({
-      showFileDialogOpen: false
+      showFileDialogOpen: false,
     });
     this.componentDidMount();
   };
 
   UploadImages = () => {
     this.setState({
-      showFileDialogOpen: true
+      showFileDialogOpen: true,
     });
   };
 
   render() {
     const { t, classes } = this.props;
-    const { files, notImplementedOpen } = this.state;
+    const { loading, files, notImplementedOpen } = this.state;
 
     const locale = i18n.language;
 
@@ -180,6 +188,7 @@ class FilesContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && <TableRowSkeleton cols={2} />}
               {files.map((file, i) => (
                 <TableRow key={i}>
                   <TableCell>
@@ -225,10 +234,11 @@ class FilesContent extends React.Component {
 }
 
 FilesContent.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 FilesContent = withStyles(styles)(FilesContent);
 FilesContent = withTranslation("me")(FilesContent);
+FilesContent = withSnackbar(FilesContent);
 
 export default FilesContent;
