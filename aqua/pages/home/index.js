@@ -5,6 +5,7 @@ import CollectionsIcon from "@material-ui/icons/Collections";
 import MapIcon from "@material-ui/icons/Map";
 import MemoryIcon from "@material-ui/icons/Memory";
 import MenuIcon from "@material-ui/icons/Menu";
+import PersonIcon from "@material-ui/icons/Person";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import axios from "axios";
@@ -20,6 +21,7 @@ import KeysContent from "../../components/home/KeysContent";
 import MapsContent from "../../components/home/MapsContent";
 import ModalContactContent from "../../components/home/ModalContactContent";
 import ModelsContent from "../../components/home/ModelsContent";
+import UserProfileContent from "../../components/home/UserProfileContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { i18n, Link, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
@@ -137,8 +139,8 @@ const styles = (theme) => ({
   },
 });
 
-const sortedSections = ["files", "models", "viewer", "keys"];
-const sortedSectionsBeta = ["files", "models", "viewer", "keys"];
+const sortedSections = ["files", "models", "viewer", "keys", "profile"];
+const sortedSectionsBeta = ["files", "models", "viewer", "keys", "profile"];
 
 const sections = {
   viewer: {
@@ -164,6 +166,12 @@ const sections = {
     path: "/keys",
     icon: <VpnKeyIcon />,
     content: <KeysContent />,
+  },
+  profile: {
+    key: "profile",
+    path: "/profile",
+    icon: <PersonIcon />,
+    content: <UserProfileContent />,
   },
 };
 
@@ -273,6 +281,7 @@ class Home extends React.Component {
       originalContent &&
       React.cloneElement(originalContent, {
         token,
+        username,
         beta,
       });
 
