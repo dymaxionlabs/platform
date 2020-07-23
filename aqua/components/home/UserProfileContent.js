@@ -1,7 +1,7 @@
 import axios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
-import { i18n, withTranslation } from "../../i18n";
+import { i18n } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { withStyles } from "@material-ui/core/styles";
 import { routerPush } from "../../utils/router";
@@ -230,7 +230,6 @@ UserProfileContent.propTypes = {
 };
 
 UserProfileContent = withStyles(styles)(UserProfileContent);
-UserProfileContent = withTranslation()(UserProfileContent);
 UserProfileContent = withSnackbar(UserProfileContent);
 
 export default UserProfileContent;
