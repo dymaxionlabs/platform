@@ -6,6 +6,7 @@ from django.db.models import Sum
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from fnmatch import fnmatch
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import NotFound, ParseError
 from rest_framework.parsers import MultiPartParser
@@ -62,19 +63,20 @@ class ListFilesView(RelatedProjectAPIView):
         project = self.get_project()
         path = request.query_params.get('path', '*')
 
-        #client = Client(project)
-        #files = client.list_files(path)
-        path = path.replace("*","%")
-        print(path)
+        """
+        path = path.replace("*","%%")
         files = self.queryset.filter(project=project).raw(
-            'SELECT * FROM {db_table} WHERE path LIKE {path}'.format(
+            "SELECT * FROM {db_table} WHERE path LIKE '{path}'".format(
                 db_table=File._meta.db_table,
                 path=path
             ))
-        print(files)
-        if files is None:
-            return Response(files, status=status.HTTP_204_NO_CONTENT)
-        return Response(FileSerializer(files, many=True).data)
+        """
+
+        clean_path = path.lstrip(" /").rstrip()
+        prefix = clean_path.split("*")[0]
+        files = self.queryset.filter(project=project, path__startswith=prefix)
+        match_files = (f for f in files if fnmatch(f.path, clean_path))
+        return Response(FileSerializer(match_files, many=True).data)
 
 
 class UploadFileView(StorageAPIView):
