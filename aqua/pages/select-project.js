@@ -10,7 +10,7 @@ import { i18n, withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 import { routerPush } from "../utils/router";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 import {
   Avatar,
@@ -22,11 +22,12 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemAvatar,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -35,48 +36,50 @@ const styles = theme => ({
     [theme.breakpoints.up(500 + theme.spacing(2) * 2)]: {
       width: 500,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   subheader: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   subsubheader: {
-    fontWeight: 500
+    fontWeight: 500,
   },
   grid: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   list: {
     overflow: "auto",
-    maxHeight: 320
+    maxHeight: 320,
   },
   inlineFormContainer: {
-    display: "flex"
+    display: "flex",
   },
   inlineFormControl: {
     flexGrow: 1,
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 });
 
 class NewProjectForm extends React.Component {
   state = {
-    name: ""
+    name: "",
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const { token } = this.props;
@@ -89,16 +92,16 @@ class NewProjectForm extends React.Component {
         {
           headers: {
             "Accept-Language": i18n.language,
-            Authorization: token
-          }
+            Authorization: token,
+          },
         }
       )
-      .then(response => {
+      .then((response) => {
         const { uuid } = response.data;
         cookie.set("project", uuid);
         routerPush("/home/");
       })
-      .catch(err => {
+      .catch((err) => {
         const response = err.response;
         if (response && response.status === 401) {
           logout();
@@ -146,7 +149,7 @@ class NewProjectForm extends React.Component {
 
 NewProjectForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 NewProjectForm = withStyles(styles)(NewProjectForm);
@@ -158,7 +161,7 @@ class OpenProjectList extends React.Component {
   state = {
     loading: true,
     results: [],
-    count: 0
+    count: 0,
   };
 
   // pages() {
@@ -173,17 +176,17 @@ class OpenProjectList extends React.Component {
       .get(buildApiUrl(`/projects/`), {
         headers: {
           "Accept-Language": i18n.language,
-          Authorization: token
-        }
+          Authorization: token,
+        },
       })
-      .then(response => {
+      .then((response) => {
         const { count, results } = response.data;
         this.setState({ count, results });
-        if((count == 1) && (!cookie.get("project"))) {
+        if (count == 1 && !cookie.get("project")) {
           this.handleSelectProject(results[0].uuid);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         const response = err.response;
         if (response && response.status === 401) {
           logout();
@@ -196,7 +199,7 @@ class OpenProjectList extends React.Component {
       });
   }
 
-  handleSelectProject = uuid => {
+  handleSelectProject = (uuid) => {
     cookie.set("project", uuid);
     routerPush("/home/");
   };
@@ -211,15 +214,17 @@ class OpenProjectList extends React.Component {
     } else if (results.length > 0) {
       return (
         <List className={classes.list}>
-          {results.map(project => (
+          {results.map((project) => (
             <ListItem
               button
               key={project.uuid}
               onClick={() => this.handleSelectProject(project.uuid)}
             >
-              <Avatar>
-                <FolderIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <FolderIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText
                 primary={project.name}
                 secondary={
@@ -241,7 +246,7 @@ class OpenProjectList extends React.Component {
 OpenProjectList.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired
+  token: PropTypes.string.isRequired,
 };
 
 OpenProjectList = withStyles(styles)(OpenProjectList);
@@ -250,7 +255,7 @@ OpenProjectList = withTranslation("select_project")(OpenProjectList);
 class SelectProject extends React.Component {
   static async getInitialProps(ctx) {
     return {
-      namespacesRequired: ["select_project"]
+      namespacesRequired: ["select_project"],
     };
   }
 
@@ -274,7 +279,7 @@ class SelectProject extends React.Component {
             <Grid
               container
               direction="column"
-              spacing={24}
+              spacing={3}
               className={classes.grid}
             >
               <Grid item xs>
@@ -299,7 +304,7 @@ class SelectProject extends React.Component {
 
 SelectProject.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 SelectProject = withStyles(styles)(SelectProject);
