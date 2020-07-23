@@ -171,12 +171,14 @@ class StartTrainingJobView(APIView):
                 project=estimator.project,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
-            # Send email
+
+            # Send notification email
             user = request.user
-            email = TrainingStartedEmail(estimator=estimator,
-                                         recipients=[user.email],
-                                         language_code='es')
-            email.send_mail()
+            if user.userprofile.send_notifications_emails:
+                email = TrainingStartedEmail(estimator=estimator,
+                                             recipients=[user.email],
+                                             language_code='es')
+                email.send_mail()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
@@ -227,12 +229,14 @@ class StartPredictionJobView(APIView):
                         settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)
                 })
             job.start()
-            # Send email
+
+            # Send notification email
             user = request.user
-            email = PredictionStartedEmail(estimator=estimator,
-                                           recipients=[user.email],
-                                           language_code='es')
-            email.send_mail()
+            if user.userprofile.send_notifications_emails:
+                email = PredictionStartedEmail(estimator=estimator,
+                                               recipients=[user.email],
+                                               language_code='es')
+                email.send_mail()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
