@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,19 +29,23 @@ class UserQuotaUsageView(APIView):
 
     def get(self, request, format=None):
         quota = UserQuota.objects.get(user=request.user)
-        projects = Project.objects.filter(owners=request.user)
+        projects = Project.objects.filter(owner=request.user)
         projects_data = []
         for p in projects:
             project_quota = {
                 'name': p.name,
-                'total_storage': quota.total_space_per_project,
-                'used_storage': File.objects.filter(project=p).aggregate(Sum('size')),
-                'total_estimators': quota.max_estimator_per_project,
-                'created_estimators': Estimator.objects.filter(project=p).count()
+                'storage': {
+                    'used': File.objects.filter(project=p).aggregate(used=Coalesce(Sum('size'),0))['used'],
+                    'total': quota.total_space_per_project  * 1024 * 1024 * 1024
+                },
+                'estimators': {
+                    'created': Estimator.objects.filter(project=p).count(),
+                    'total': quota.max_estimator_per_project,
+                }
             }
             projects_data.append(project_quota)
         usage = {
-            'user': request.user,
+            'user': str(request.user),
             'projects': projects_data,
         }
         return Response(usage)
