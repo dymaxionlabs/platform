@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 import django_rq
 from django.conf import settings
@@ -29,6 +29,11 @@ class Task(models.Model):
     metadata = JSONField(null=True, blank=True)
     traceback = models.TextField(_('traceback'), blank=True, null=True)
     internal_metadata = JSONField(null=True, blank=True)
+
+    @property
+    def status(self):
+        return self.metadata and 'status' in self.metadata and self.metadata[
+            'status']
 
     @property
     def artifacts_url(self):
@@ -84,7 +89,7 @@ class Task(models.Model):
         if self.metadata is None:
             self.metadata = {}
         self.metadata['status'] = str(status)
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=['metadata', 'updated_at'])
 
     def mark_as_finished(self):
         self._mark_as(states.FINISHED)
@@ -101,7 +106,7 @@ class Task(models.Model):
     def _mark_as(self, state):
         """Mark a Task as stopped with a state (FINISHED, FAILED, CANCELED)"""
         self.state = state
-        self.finished_at = datetime.now()
+        self.finished_at = timezone.now()
         self.save(update_fields=['state', 'finished_at', 'updated_at'])
 
 
