@@ -11,8 +11,10 @@ from terra.tests import create_some_user, loginWithAPI
 from .models import Project, ProjectInvitationToken, UserAPIKey
 
 
-def create_some_project(*, collaborators, **data):
-    project = Project.objects.create(**data, owner=collaborators[0])
+def create_some_project(*, owner, collaborators=[], **data):
+    if not collaborators:
+        collaborators = [owner]
+    project = Project.objects.create(**data, owner=owner)
     project.collaborators.set(collaborators)
     return project
 
@@ -111,7 +113,8 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
     def test_create_public_token(self):
         # Create a project
-        project = Project.objects.create(name='testproject', owner=self.test_user)
+        project = Project.objects.create(name='testproject',
+                                         owner=self.test_user)
 
         # Create a project invitation token (without email)
         invite_token = ProjectInvitationToken.objects.create(project=project)
@@ -129,7 +132,8 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
     def test_create_public_token_new_user(self):
         # Create a project
-        project = Project.objects.create(name='testproject', owner=self.test_user)
+        project = Project.objects.create(name='testproject',
+                                         owner=self.test_user)
 
         # Create a project invitation token (without email)
         invite_token = ProjectInvitationToken.objects.create(project=project)
@@ -165,7 +169,7 @@ class UserAPIKeyViewTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name='Some project',
-                                           collaborators=[self.user])
+                                           owner=self.user)
 
     def test_create_user_api_key(self):
         params = {'name': 'default', 'project': self.project.uuid}
@@ -217,7 +221,7 @@ class UserAPIKeyViewTest(TestCase):
 
         # Create a second project with an API key
         second_project = create_some_project(name='Second project',
-                                             collaborators=[self.user])
+                                             owner=self.user)
         second_project_api_key, _ = self.create_some_api_key(
             name='second', project=second_project)
 
@@ -233,7 +237,7 @@ class UserAPIKeyViewTest(TestCase):
     def test_list_no_user_api_keys_from_other_user(self):
         # Create an API key of another user and project
         another_user = create_some_user(username='ana')
-        create_some_project(name='Another project', collaborators=[another_user])
+        create_some_project(name='Another project', owner=another_user)
         self.create_some_api_key(name='first', user=another_user)
 
         response = self.client.get('/api_keys/',
