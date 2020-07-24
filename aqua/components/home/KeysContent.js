@@ -1,45 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-
-import { withStyles } from "@material-ui/core/styles";
-
-import BlockIcon from "@material-ui/icons/Block";
-import CloseIcon from "@material-ui/icons/Close";
-
-import NewKeyDialogForm from "../NewKeyDialog";
-import ConfirmationDialog from "../ConfirmationDialog";
-import { withTranslation } from "../../i18n";
-import axios from "axios";
-import cookie from "js-cookie";
-import { buildApiUrl } from "../../utils/api";
-
 import {
-  Typography,
+  IconButton,
+  Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Snackbar,
   Tooltip,
-} from '@material-ui/core';
+  Typography,
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import BlockIcon from "@material-ui/icons/Block";
+import CloseIcon from "@material-ui/icons/Close";
+import axios from "axios";
+import cookie from "js-cookie";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import TableRowSkeleton from "../../components/TableRowSkeleton";
+import { withTranslation } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import ConfirmationDialog from "../ConfirmationDialog";
+import NewKeyDialogForm from "../NewKeyDialog";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.units * 10
+    marginBottom: theme.spacing.units * 10,
   },
   btnRight: {
-    float: "right"
-  }
+    float: "right",
+  },
 });
 
 class NotImplementedSnackbar extends React.Component {
@@ -50,13 +48,13 @@ class NotImplementedSnackbar extends React.Component {
       <Snackbar
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right"
+          horizontal: "right",
         }}
         open={open}
         autoHideDuration={2000}
         onClose={onClose}
         ContentProps={{
-          "aria-describedby": "message-id"
+          "aria-describedby": "message-id",
         }}
         message={<span id="message-id">Disponible pronto</span>}
         action={[
@@ -68,7 +66,7 @@ class NotImplementedSnackbar extends React.Component {
             onClick={onClose}
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton>,
         ]}
       />
     );
@@ -79,57 +77,62 @@ NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
 
 class KeysContent extends React.Component {
   state = {
+    loading: true,
     keys: [],
     openConfirmationDialog: false,
-    keyToRevoke: null
+    keyToRevoke: null,
   };
 
-  componentDidMount() {
-    this.getApiKeys();
+  async componentDidMount() {
+    await this.getApiKeys();
+    this.setState({ loading: false });
   }
 
   getApiKeys = async () => {
     const project = cookie.get("project");
 
-    await axios
-      .get(buildApiUrl(`/api_keys/`), {
+    try {
+      const response = await axios.get(buildApiUrl(`/api_keys/`), {
         params: { project },
-        headers: { Authorization: this.props.token }
-      })
-      .then(response => {
-        this.setState({ keys: response.data });
+        headers: { Authorization: this.props.token },
       });
+
+      this.setState({ keys: response.data });
+    } catch (err) {
+      console.error(err);
+      this.props.enqueueSnackbar("Failed to get keys", {
+        variant: "error",
+      });
+    }
   };
 
-  revoke = async prefix => {
+  revoke = async (prefix) => {
     this.setState({
       keyToRevoke: prefix,
-      openConfirmationDialog: true
+      openConfirmationDialog: true,
     });
   };
 
-  onDialogResult = async action => {
+  onDialogResult = async (action) => {
     if (action) {
       const { keyToRevoke } = this.state;
-      await axios
-        .patch(
-          buildApiUrl(`/api_keys/${keyToRevoke}`),
-          { revoked: true },
-          { headers: { Authorization: this.props.token } }
-        )
-        .then(() => {
-          this.getApiKeys();
-        });
+      await axios.patch(
+        buildApiUrl(`/api_keys/${keyToRevoke}`),
+        { revoked: true },
+        { headers: { Authorization: this.props.token } }
+      );
+      this.getApiKeys();
     }
+
     this.setState({
       keyToRevoke: null,
-      openConfirmationDialog: false
+      openConfirmationDialog: false,
     });
   };
 
   render() {
     const { t, classes, token } = this.props;
-    const { keys, openConfirmationDialog } = this.state;
+    const { loading, keys, openConfirmationDialog } = this.state;
 
     return (
       <div>
@@ -156,6 +159,12 @@ class KeysContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && <TableRowSkeleton cols={3} />}
+              {!loading && keys.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no API keys defined.</TableCell>
+                </TableRow>
+              )}
               {keys.map((key, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
@@ -197,10 +206,11 @@ class KeysContent extends React.Component {
 }
 
 KeysContent.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 KeysContent = withStyles(styles)(KeysContent);
 KeysContent = withTranslation("me")(KeysContent);
+KeysContent = withSnackbar(KeysContent);
 
 export default KeysContent;

@@ -1,82 +1,86 @@
-import { withStyles } from "@material-ui/core/styles";
-import EditIcon from "@material-ui/icons/Edit";
-import axios from "axios";
-import cookie from "js-cookie";
-import PropTypes from "prop-types";
-import React from "react";
-import Moment from "react-moment";
-import { routerPush } from "../../utils/router";
-import { i18n, withTranslation } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { logout } from "../../utils/auth";
-import ShowUuidDialog from "../ShowUuidDialog";
-import ConfirmationDialog from "../ConfirmationDialog";
-
 import {
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
-  IconButton,
-  Chip,
-  Menu,
-  MenuItem,
   TableCell,
   TableHead,
   TableRow,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import EditIcon from "@material-ui/icons/Edit";
+import axios from "axios";
+import cookie from "js-cookie";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import TableRowSkeleton from "../../components/TableRowSkeleton";
+import { i18n, withTranslation } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { logout } from "../../utils/auth";
+import { routerPush } from "../../utils/router";
+import ConfirmationDialog from "../ConfirmationDialog";
+import ShowUuidDialog from "../ShowUuidDialog";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
   },
   title: {
-    marginBottom: theme.spacing.units * 10
+    marginBottom: theme.spacing.units * 10,
   },
   modelBtn: {
-    float: "right"
+    float: "right",
   },
   chip: {
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 });
 
 class ModelsContent extends React.Component {
   state = {
+    loading: true,
     models: [],
     contextualMenuOpen: null,
     showUuidDialogOpen: false,
     deleteDialogOpen: false,
     currentUUID: "",
-    beta: false
+    beta: false,
   };
 
-  getModels = async () => {
+  async getModels() {
     const projectId = cookie.get("project");
-    axios
-      .get(buildApiUrl("/estimators/"), {
+
+    try {
+      const response = await axios.get(buildApiUrl("/estimators/"), {
         params: { project: projectId },
-        headers: { Authorization: this.props.token }
-      })
-      .then(response => {
-        this.setState({
-          models: response.data.results,
-          deleteDialogOpen: false
-        });
-      })
-      .catch(err => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
+        headers: { Authorization: this.props.token },
       });
-  };
+      this.setState({
+        models: response.data.results,
+        deleteDialogOpen: false,
+      });
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get models", {
+          variant: "error",
+        });
+      }
+    }
+  }
 
   async getBetaFlag() {
     const { token } = this.props;
@@ -84,8 +88,8 @@ class ModelsContent extends React.Component {
       const response = await axios.get(buildApiUrl("/auth/user/"), {
         headers: {
           "Accept-Language": i18n.language,
-          Authorization: token
-        }
+          Authorization: token,
+        },
       });
       const userData = response.data;
       this.setState({ beta: userData.profile.beta });
@@ -94,9 +98,10 @@ class ModelsContent extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.getModels();
-    this.getBetaFlag();
+  async componentDidMount() {
+    await this.getModels();
+    await this.getBetaFlag();
+    this.setState({ loading: false });
   }
 
   estimatorTypeName(model) {
@@ -104,7 +109,7 @@ class ModelsContent extends React.Component {
     return t(`models.types.${model.estimator_type}`);
   }
 
-  handleContextualMenuClick = event => {
+  handleContextualMenuClick = (event) => {
     this.setState({ contextualMenuOpen: event.currentTarget });
   };
 
@@ -112,59 +117,72 @@ class ModelsContent extends React.Component {
     this.setState({ contextualMenuOpen: null });
   };
 
-  onDialogResult = async action => {
+  onDialogResult = async (action) => {
     this.setState({
       showUuidDialogOpen: false,
       deleteDialogOpen: false,
-      currentUUID: ""
+      currentUUID: "",
     });
   };
 
-  estimatorViewUUID = model => {
+  estimatorViewUUID = (model) => {
     this.setState({
       currentUUID: model.uuid,
-      showUuidDialogOpen: true
+      showUuidDialogOpen: true,
     });
   };
 
-  estimatorDelete = model => {
+  estimatorDelete = (model) => {
     this.setState({
       currentUUID: model.uuid,
-      deleteDialogOpen: true
+      deleteDialogOpen: true,
     });
   };
 
-  onDeleteDialogResult = async action => {
+  onDeleteDialogResult = async (action) => {
     if (action) {
       const currentUUID = this.state.currentUUID;
-      await axios
-        .delete(buildApiUrl(`/estimators/${currentUUID}`), {
-          headers: { Authorization: this.props.token }
-        })
-        .then(() => {
-          this.getModels();
+
+      try {
+        await axios.delete(buildApiUrl(`/estimators/${currentUUID}`), {
+          headers: { Authorization: this.props.token },
         });
+        this.props.enqueueSnackbar(`Model deleted`, {
+          variant: "success",
+        });
+        this.getModels();
+      } catch (error) {
+        console.error(error);
+        this.props.enqueueSnackbar(
+          `Failed to delete model: ${JSON.stringify(error)}`,
+          {
+            variant: "error",
+          }
+        );
+      }
     }
     this.setState({
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
     });
   };
 
-  estimatorAddImages = model => {
+  estimatorAddImages = (model) => {
     routerPush(`/models/new/od/upload?id=${model.uuid}`);
   };
-  estimatorAddAnnotations = model => {
+
+  estimatorAddAnnotations = (model) => {
     routerPush(`/models/new/od/annotate?id=${model.uuid}`);
   };
 
   render() {
     const { t, classes } = this.props;
     const {
+      loading,
       models: models,
       contextualMenuOpen,
       showUuidDialogOpen,
       currentUUID,
-      deleteDialogOpen
+      deleteDialogOpen,
     } = this.state;
 
     const locale = i18n.language;
@@ -191,6 +209,12 @@ class ModelsContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && <TableRowSkeleton cols={4} />}
+              {!loading && models.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no models.</TableCell>
+                </TableRow>
+              )}
               {models.map((model, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
@@ -198,7 +222,7 @@ class ModelsContent extends React.Component {
                   </TableCell>
                   <TableCell>{this.estimatorTypeName(model)}</TableCell>
                   <TableCell>
-                    {model.classes.map(cls => (
+                    {model.classes.map((cls) => (
                       <Chip className={classes.chip} key={cls} label={cls} />
                     ))}
                   </TableCell>
@@ -262,10 +286,11 @@ class ModelsContent extends React.Component {
 }
 
 ModelsContent.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 ModelsContent = withStyles(styles)(ModelsContent);
 ModelsContent = withTranslation("me")(ModelsContent);
+ModelsContent = withSnackbar(ModelsContent);
 
 export default ModelsContent;

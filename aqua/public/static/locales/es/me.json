@@ -3,7 +3,7 @@
   "files": {
     "created_at": "Fecha de subida",
     "name": "Nombre del archivo",
-    "title": "Tus archivos"
+    "title": "Archivos"
   },
   "home": {
     "api_descrip1": "Genera tu API Key desde este",
@@ -23,7 +23,7 @@
     "revoke": "Revocar",
     "revoked": "Revocada",
     "state": "Estado",
-    "title": "Tus API Keys"
+    "title": "API keys"
   },
   "keys_new": {
     "button": "Nueva",
@@ -43,14 +43,14 @@
     "layer_type_R": "R\u00e1ster",
     "layer_type_V": "Vector",
     "name": "Nombre",
-    "title": "Tus capas",
+    "title": "Capas",
     "type": "Tipo"
   },
   "maps": {
     "created_at": "Fecha de creaci\u00f3n",
     "description": "Descripci\u00f3n",
     "name": "Nombre",
-    "title": "Tus mapas"
+    "title": "Mapas"
   },
   "models": {
     "add_annot": "Agregar anotaciones",
@@ -62,7 +62,7 @@
     "more_info": "M\u00e1s informaci\u00f3n",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
-    "title": "Tus Modelos",
+    "title": "Modelos",
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     },
@@ -73,7 +73,7 @@
     "created_at": "Fecha",
     "layers": "Capas",
     "state": "Estado actual",
-    "title": "Tus pedidos"
+    "title": "Pedidos"
   },
   "sidebar": {
     "dashboard": "Dashboard",

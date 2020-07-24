@@ -1,17 +1,3 @@
-import FolderIcon from "@material-ui/icons/Folder";
-import axios from "axios";
-import cookie from "js-cookie";
-import Head from "next/head";
-import PropTypes from "prop-types";
-import React from "react";
-import Moment from "react-moment";
-import BasicAppbar from "../components/BasicAppbar";
-import { i18n, withTranslation } from "../i18n";
-import { buildApiUrl } from "../utils/api";
-import { logout, withAuthSync } from "../utils/auth";
-import { routerPush } from "../utils/router";
-import { withStyles } from "@material-ui/core/styles";
-
 import {
   Avatar,
   Button,
@@ -21,11 +7,25 @@ import {
   LinearProgress,
   List,
   ListItem,
-  ListItemText,
   ListItemAvatar,
+  ListItemText,
   Paper,
   Typography,
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import FolderIcon from "@material-ui/icons/Folder";
+import axios from "axios";
+import cookie from "js-cookie";
+import Head from "next/head";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import BasicAppbar from "../components/BasicAppbar";
+import { i18n, withTranslation } from "../i18n";
+import { buildApiUrl } from "../utils/api";
+import { logout, withAuthSync } from "../utils/auth";
+import { routerPush } from "../utils/router";
 
 const styles = (theme) => ({
   main: {
@@ -72,6 +72,7 @@ const styles = (theme) => ({
 
 class NewProjectForm extends React.Component {
   state = {
+    submitting: false,
     name: "",
   };
 
@@ -79,14 +80,16 @@ class NewProjectForm extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
 
     const { token } = this.props;
     const { name } = this.state;
 
-    axios
-      .post(
+    this.setState({ submitting: true });
+
+    try {
+      const response = await axios.post(
         buildApiUrl(`/projects/`),
         { name: name },
         {
@@ -95,28 +98,27 @@ class NewProjectForm extends React.Component {
             Authorization: token,
           },
         }
-      )
-      .then((response) => {
-        const { uuid } = response.data;
-        cookie.set("project", uuid);
-        routerPush("/home/");
-      })
-      .catch((err) => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
-      })
-      .then(() => {
-        this.setState({ loading: false });
-      });
+      );
+      const { uuid } = response.data;
+      cookie.set("project", uuid);
+      routerPush("/home/");
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(err);
+        this.props.enqueueSnackbar("Failed to create new project", {
+          variant: "error",
+        });
+        this.setState({ submitting: false });
+      }
+    }
   };
 
   render() {
     const { t, classes } = this.props;
-    const { name } = this.state;
+    const { submitting, name } = this.state;
 
     return (
       <form
@@ -136,9 +138,15 @@ class NewProjectForm extends React.Component {
               placeholder={t("new.name_placeholder")}
               value={name}
               onChange={this.handleChange}
+              disabled={submitting}
             />
           </FormControl>
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={submitting}
+          >
             {t("new.submit_btn")}
           </Button>
         </div>
@@ -154,6 +162,7 @@ NewProjectForm.propTypes = {
 
 NewProjectForm = withStyles(styles)(NewProjectForm);
 NewProjectForm = withTranslation("select_project")(NewProjectForm);
+NewProjectForm = withSnackbar(NewProjectForm);
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -164,39 +173,37 @@ class OpenProjectList extends React.Component {
     count: 0,
   };
 
-  // pages() {
-  //   const { count } = this.props;
-  //   return Math.ceil(count / PROJECTS_PER_PAGE);
-  // }
+  async componentDidMount() {
+    await this.getProjects();
+    this.setState({ loading: false });
+  }
 
-  componentDidMount() {
+  async getProjects() {
     const { token } = this.props;
 
-    axios
-      .get(buildApiUrl(`/projects/`), {
+    try {
+      const response = await axios.get(buildApiUrl(`/projects/`), {
         headers: {
           "Accept-Language": i18n.language,
           Authorization: token,
         },
-      })
-      .then((response) => {
-        const { count, results } = response.data;
-        this.setState({ count, results });
-        if (count == 1 && !cookie.get("project")) {
-          this.handleSelectProject(results[0].uuid);
-        }
-      })
-      .catch((err) => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
-      })
-      .then(() => {
-        this.setState({ loading: false });
       });
+      const { count, results } = response.data;
+      this.setState({ count, results });
+      if (count == 1 && !cookie.get("project")) {
+        this.handleSelectProject(results[0].uuid);
+      }
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(err);
+        this.props.enqueueSnackbar("Failed to get projects", {
+          variant: "error",
+        });
+      }
+    }
   }
 
   handleSelectProject = (uuid) => {
@@ -254,6 +261,7 @@ OpenProjectList.propTypes = {
 
 OpenProjectList = withStyles(styles)(OpenProjectList);
 OpenProjectList = withTranslation("select_project")(OpenProjectList);
+OpenProjectList = withSnackbar(OpenProjectList);
 
 class SelectProject extends React.Component {
   static async getInitialProps(ctx) {

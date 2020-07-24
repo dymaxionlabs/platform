@@ -3,7 +3,7 @@
   "files": {
     "created_at": "Upload date",
     "name": "File name",
-    "title": "Your files"
+    "title": "Files"
   },
   "home": {
     "api_descrip1": "Generate your API Key from this",
@@ -23,7 +23,7 @@
     "revoke": "Revoke",
     "revoked": "Revoked",
     "state": "State",
-    "title": "Your API Keys"
+    "title": "API keys"
   },
   "keys_new": {
     "button": "New",
@@ -43,14 +43,14 @@
     "layer_type_R": "Raster",
     "layer_type_V": "Vector",
     "name": "Name",
-    "title": "Your layers",
+    "title": "Layers",
     "type": "Type"
   },
   "maps": {
     "created_at": "Creation date",
     "description": "Description",
     "name": "Name",
-    "title": "Your maps"
+    "title": "Maps"
   },
   "models": {
     "add_annot": "Add annotations",
@@ -62,7 +62,7 @@
     "more_info": "More information",
     "name": "Name",
     "new_btn": "New Model",
-    "title": "Your Models",
+    "title": "Models",
     "types": {
       "OD": "Object Detection"
     },
@@ -73,7 +73,7 @@
     "created_at": "Date",
     "layers": "Layers",
     "state": "Current state",
-    "title": "Your requests"
+    "title": "Requests"
   },
   "sidebar": {
     "dashboard": "Dashboard",

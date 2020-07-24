@@ -23,7 +23,7 @@ class ProjectRelatedModelListMixin:
             return self.queryset.none()
 
         # Filter by request project (i.e. when using API keys)
-        if self.request.project:
+        if hasattr(self.request, 'project'):
             return self.queryset.filter(project=self.request.project).all()
 
         # Filter by project uuid, if present

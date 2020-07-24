@@ -6,17 +6,17 @@ import React from "react";
 import { Link } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import { Button } from '@material-ui/core';
+import { Button } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    color: "white"
-  }
+    color: "white",
+  },
 });
 
 class SelectProjectButton extends React.Component {
   state = {
-    name: null
+    name: null,
   };
 
   componentDidMount() {
@@ -25,13 +25,12 @@ class SelectProjectButton extends React.Component {
 
     axios
       .get(buildApiUrl(`/projects/${id}/`), {
-        headers: { Authorization: token }
+        headers: { Authorization: token },
       })
-      .then(response => {
-        console.log(response.data);
+      .then((response) => {
         this.setState({ name: response.data.name });
       })
-      .catch(err => {
+      .catch((err) => {
         const response = err.response;
         if (response) {
           console.error(response);
@@ -60,7 +59,7 @@ class SelectProjectButton extends React.Component {
 
 SelectProjectButton.propTypes = {
   token: PropTypes.string.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 SelectProjectButton = withStyles(styles)(SelectProjectButton);
