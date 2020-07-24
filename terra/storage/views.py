@@ -247,3 +247,21 @@ class CreateResumableUploadView(StorageAPIView):
         )
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)
+
+
+class CheckCompletedFileView(StorageAPIView):
+
+    def post(self, request):
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+
+        file = File.objects.filter(project=self.get_project(), path=path).first()
+        if not file:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+        file.complete = True
+        file.save()        
+        
+        content = FileSerializer(file).data
+        return Response(dict(detail=content), status=status.HTTP_200_OK)
