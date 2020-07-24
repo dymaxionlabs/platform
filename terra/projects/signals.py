@@ -13,8 +13,8 @@ from .models import File, UserProfile, Project
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-        project = Project.objects.create(name='Default')
-        project.owners.set([instance])
+        project = Project.objects.create(name='Default', owner=instance)
+        project.collaborators.set([instance])
 
 
 @receiver(post_save, sender=User)

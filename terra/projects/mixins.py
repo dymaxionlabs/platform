@@ -9,7 +9,7 @@ def allowed_projects_for(project_queryset, user):
         return project_queryset.all()
     elif not user.is_anonymous:
         # NOTE groups condition is deprecated
-        cond = Q(owners=user) | Q(groups__user=user)
+        cond = Q(collaborators=user) | Q(groups__user=user) | Q(owner=user)
         return (project_queryset.filter(cond)
                 | get_objects_for_user(
                     user, 'projects.view_project')).distinct().all()

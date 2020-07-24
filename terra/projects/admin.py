@@ -37,7 +37,7 @@ class ProjectInvitationTokenAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(GuardedModelAdmin):
-    list_filter = ('owners', )
+    list_filter = ('collaborators', )
     list_display = (
         'id',
         'uuid',
@@ -53,7 +53,7 @@ class ProjectAdmin(GuardedModelAdmin):
     )
 
     def owner_names(self, obj):
-        return ", ".join([u.username for u in obj.owners.all()])
+        return ", ".join([u.username for u in obj.collaborators.all()])
 
 
 class LayerForm(forms.ModelForm):

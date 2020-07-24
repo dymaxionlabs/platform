@@ -18,7 +18,7 @@ class ListFilesTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -74,7 +74,7 @@ class UploadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -105,7 +105,7 @@ class FileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -162,7 +162,7 @@ class DownloadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -199,7 +199,7 @@ class CreateResumableUploadViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)

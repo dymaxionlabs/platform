@@ -153,7 +153,7 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    owners = serializers.SlugRelatedField(many=True,
+    collaborators = serializers.SlugRelatedField(many=True,
                                           read_only=True,
                                           slug_field='username')
     estimators = serializers.SlugRelatedField(many=True,
@@ -165,9 +165,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         exclude = ('id', 'groups')
 
     def create(self, validated_data):
-        validated_data['owners'] = [self.context['request'].user]
+        user = self.context['request'].user
+        validated_data['collaborators'] = [user]
+        validated_data['owner'] = user
         return super().create(validated_data)
-
 
 class LayerSerializer(serializers.ModelSerializer):
     tiles_url = serializers.ReadOnlyField()
