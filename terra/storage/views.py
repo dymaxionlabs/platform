@@ -63,15 +63,6 @@ class ListFilesView(RelatedProjectAPIView):
         project = self.get_project()
         path = request.query_params.get('path', '*')
 
-        """
-        path = path.replace("*","%%")
-        files = self.queryset.filter(project=project).raw(
-            "SELECT * FROM {db_table} WHERE path LIKE '{path}'".format(
-                db_table=File._meta.db_table,
-                path=path
-            ))
-        """
-
         clean_path = path.lstrip(" /").rstrip()
         prefix = clean_path.split("*")[0]
         files = self.queryset.filter(project=project, path__startswith=prefix)
