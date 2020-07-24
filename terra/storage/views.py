@@ -3,6 +3,7 @@ import tempfile
 
 import requests
 from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -110,7 +111,7 @@ class UploadFileView(StorageAPIView):
         if not quota.check_max_file_size(fileobj.size):
             raise ParseError("the file size exceeds the allowed limit")
 
-        usage = File.objects.filter(project=self.get_project()).aggregate(total=Sum('size'))
+        usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
         if not quota.check_total_space_per_project(usage['total'] + fileobj.size):
             raise ParseError("insufficient storage")
 
@@ -232,7 +233,8 @@ class CreateResumableUploadView(StorageAPIView):
         if not quota.check_max_file_size(size):
             raise ParseError("the file size exceeds the allowed limit")
 
-        usage = File.objects.filter(project=self.get_project()).aggregate(total=Sum('size'))
+        usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
+
         if not quota.check_total_space_per_project(usage['total'] + size):
             raise ParseError("insufficient storage")
 
