@@ -49,8 +49,7 @@ def sendTrainingJobCompletedEmail(job):
 
 def trainingJobFinished(job_id):
     job = Task.objects.get(pk=job_id)
-    job.state = states.FINISHED
-    job.save(update_fields=['state', 'updated_at'])
+    job.mark_as_finished()
     sendTrainingJobCompletedEmail(job)
 
 
@@ -72,8 +71,7 @@ def createFile(name, image, tmpdirname, metadata):
 def predictionJobFinished(job_id):
     print("Prediction job finished {}".format(job_id))
     job = Task.objects.get(pk=job_id)
-    job.state = states.FINISHED
-    job.save(update_fields=['state', 'updated_at'])
+    job.mark_as_finished()
 
     client = Client(job.project)
     if job.metadata is None:

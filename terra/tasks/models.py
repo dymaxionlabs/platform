@@ -72,6 +72,11 @@ class Task(models.Model):
         self.metadata['status'] = str(status)
         self.save(update_fields=['status', 'updated_at'])
 
+    def mark_as_finished(self):
+        self.state = states.FINISHED
+        self.finished_at = datetime.now()
+        self.save(update_fields=['state', 'updated_at'])
+
 
 class TaskLogEntry(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)

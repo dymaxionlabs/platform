@@ -24,6 +24,7 @@ from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, PredictionJobSerializer,
                           TrainingJobSerializer)
 from storage.client import Client
+from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
 
@@ -196,7 +197,7 @@ class StartPredictionJobView(APIView):
 
         last_training_job = Task.objects.filter(
             internal_metadata__estimator=str(estimator.uuid),
-            state='FINISHED',
+            state=states.FINISHED,
             name=Estimator.TRAINING_JOB_TASK).last()
         if not last_training_job:
             return Response({'training_job': _('Not found')},
