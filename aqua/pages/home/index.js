@@ -1,34 +1,3 @@
-import { withStyles } from "@material-ui/core/styles";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import CollectionsIcon from "@material-ui/icons/Collections";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import MapIcon from "@material-ui/icons/Map";
-import MemoryIcon from "@material-ui/icons/Memory";
-import MenuIcon from "@material-ui/icons/Menu";
-import PersonIcon from "@material-ui/icons/Person";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import axios from "axios";
-import classNames from "classnames";
-import cookie from "js-cookie";
-import Head from "next/head";
-import PropTypes from "prop-types";
-import React from "react";
-import CliengoLoader from "../../components/CliengoLoader";
-import FilesContent from "../../components/home/FilesContent";
-import HomeContent from "../../components/home/HomeContent";
-import KeysContent from "../../components/home/KeysContent";
-import MapsContent from "../../components/home/MapsContent";
-import ModalContactContent from "../../components/home/ModalContactContent";
-import ModelsContent from "../../components/home/ModelsContent";
-import UserProfileContent from "../../components/home/UserProfileContent";
-import SelectProjectButton from "../../components/SelectProjectButton";
-import { i18n, Link, withTranslation } from "../../i18n";
-import { buildApiUrl } from "../../utils/api";
-import { logout, withAuthSync } from "../../utils/auth";
-import { routerReplace } from "../../utils/router";
-
 import {
   AppBar,
   Button,
@@ -45,6 +14,34 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import CollectionsIcon from "@material-ui/icons/Collections";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import MapIcon from "@material-ui/icons/Map";
+import MemoryIcon from "@material-ui/icons/Memory";
+import MenuIcon from "@material-ui/icons/Menu";
+import PersonIcon from "@material-ui/icons/Person";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import classNames from "classnames";
+import cookie from "js-cookie";
+import Head from "next/head";
+import PropTypes from "prop-types";
+import React from "react";
+import CliengoLoader from "../../components/CliengoLoader";
+import FilesContent from "../../components/home/FilesContent";
+import HomeContent from "../../components/home/HomeContent";
+import KeysContent from "../../components/home/KeysContent";
+import MapsContent from "../../components/home/MapsContent";
+import ModalContactContent from "../../components/home/ModalContactContent";
+import ModelsContent from "../../components/home/ModelsContent";
+import UserProfileContent from "../../components/home/UserProfileContent";
+import SelectProjectButton from "../../components/SelectProjectButton";
+import { Link, withTranslation } from "../../i18n";
+import { logout, withAuthSync } from "../../utils/auth";
+import { routerReplace } from "../../utils/router";
 
 const drawerWidth = 200;
 
@@ -186,9 +183,7 @@ class Home extends React.Component {
   state = {
     open: true,
     section: null,
-    beta: false,
     contextualMenuOpen: null,
-    username: "",
     contactModalOpen: false,
   };
 
@@ -215,32 +210,6 @@ class Home extends React.Component {
     const projectId = cookie.get("project");
     if (!projectId) {
       routerReplace("/select-project");
-    }
-
-    this.getUserData();
-  }
-
-  async getUserData() {
-    const { token } = this.props;
-
-    try {
-      const response = await axios.get(buildApiUrl(`/auth/user/`), {
-        headers: {
-          "Accept-Language": i18n.language,
-          Authorization: token,
-        },
-      });
-
-      const {
-        username,
-        profile: { beta },
-      } = response.data;
-
-      this.setState({ username, beta });
-
-      if (beta) console.debug("Beta mode enabled");
-    } catch (error) {
-      console.error(error);
     }
   }
 
@@ -277,8 +246,8 @@ class Home extends React.Component {
   };
 
   render() {
-    const { t, classes, token } = this.props;
-    const { section, open, beta, contextualMenuOpen, username } = this.state;
+    const { t, classes, token, username } = this.props;
+    const { section, open, contextualMenuOpen } = this.state;
 
     const sectionList = sortedSections;
     const { contactModalOpen } = this.state;
@@ -289,7 +258,6 @@ class Home extends React.Component {
       React.cloneElement(originalContent, {
         token,
         username,
-        beta,
       });
 
     return (
@@ -425,11 +393,7 @@ class Home extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {section == null ? (
-            <HomeContent token={token} beta={beta} />
-          ) : (
-            content
-          )}
+          {section == null ? <HomeContent token={token} /> : content}
         </main>
       </div>
     );
