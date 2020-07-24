@@ -107,6 +107,9 @@ class UploadFileView(StorageAPIView):
             raise ParseError("'file' missing")
 
         quota = UserQuota.objects.get(user=request.user)
+        if not quota.check_max_file_size(fileobj.size):
+            raise ParseError("the file size exceeds the allowed limit")
+
         usage = File.objects.filter(project=self.get_project()).aggregate(total=Sum('size'))
         if not quota.check_total_space_per_project(usage['total'] + fileobj.size):
             raise ParseError("insufficient storage")
@@ -225,9 +228,22 @@ class CreateResumableUploadView(StorageAPIView):
         if size:
             size = int(size)
 
+        quota = UserQuota.objects.get(user=request.user)
+        if not quota.check_max_file_size(size):
+            raise ParseError("the file size exceeds the allowed limit")
+
+        usage = File.objects.filter(project=self.get_project()).aggregate(total=Sum('size'))
+        if not quota.check_total_space_per_project(usage['total'] + size):
+            raise ParseError("insufficient storage")
+
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-
+        File.objects.create(
+            project=self.get_project(),
+            path=path,
+            size=size,
+            complete=False,
+        )
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)

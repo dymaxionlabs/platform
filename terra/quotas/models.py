@@ -27,3 +27,7 @@ class UserQuota(models.Model):
 
     def check_total_space_per_project(self, bytes):
         return self.total_space_per_project * 1024 * 1024 * 1024 > bytes
+    
+
+    def check_max_file_size(self, bytes):
+        return self.max_file_size * 1024 * 1024 * 1024 > bytes

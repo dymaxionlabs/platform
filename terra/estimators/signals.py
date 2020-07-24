@@ -18,4 +18,4 @@ def pre_save_handler(sender, instance, *args, **kwargs):
     quota = UserQuota.objects.get(user=instance.project.owner)
     created_estimators = Estimator.objects.filter(project=instance.project).count()
     if created_estimators >= quota.max_estimator_per_project:
-        raise Exception('Quota exceeded')
+        raise Exception('Quota exceeded - You can only create {} estimators per project'.format(quota.max_estimator_per_project))
