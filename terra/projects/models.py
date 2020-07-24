@@ -32,6 +32,8 @@ class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     collaborators = models.ManyToManyField(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_('projects'))
+
 
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
