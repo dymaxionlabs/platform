@@ -165,10 +165,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         exclude = ('id', 'groups')
 
     def create(self, validated_data):
-        validated_data['collaborators'] = [self.context['request'].user]
-        validated_data['owner'] = self.context['request'].user
+        user = self.context['request'].user
+        validated_data['collaborators'] = [user]
+        validated_data['owner'] = user
         return super().create(validated_data)
-
 
 class LayerSerializer(serializers.ModelSerializer):
     tiles_url = serializers.ReadOnlyField()
