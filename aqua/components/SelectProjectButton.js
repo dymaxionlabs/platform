@@ -9,7 +9,7 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { Button } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 import { Skeleton } from "@material-ui/lab";
-import { Router } from "next/router";
+import { routerPush } from "../utils/router";
 
 const styles = (theme) => ({
   button: {
@@ -41,7 +41,7 @@ class SelectProjectButton extends React.Component {
       if (response) {
         // If project was not found, force user to select or create new project
         if (response.status === 404) {
-          Router.push("/select-project");
+          routerPush("/select-project");
           return;
         } else if (response.status === 401) {
           logout();
