@@ -12,7 +12,7 @@ from .models import Project, ProjectInvitationToken, UserAPIKey
 
 
 def create_some_project(*, collaborators, **data):
-    project = Project.objects.create(**data)
+    project = Project.objects.create(**data, owner=collaborators[0])
     project.collaborators.set(collaborators)
     return project
 
