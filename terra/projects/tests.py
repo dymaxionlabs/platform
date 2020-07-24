@@ -11,9 +11,9 @@ from terra.tests import create_some_user, loginWithAPI
 from .models import Project, ProjectInvitationToken, UserAPIKey
 
 
-def create_some_project(*, owners, **data):
+def create_some_project(*, collaborators, **data):
     project = Project.objects.create(**data)
-    project.owners.set(owners)
+    project.collaborators.set(collaborators)
     return project
 
 
@@ -165,7 +165,7 @@ class UserAPIKeyViewTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name='Some project',
-                                           owners=[self.user])
+                                           collaborators=[self.user])
 
     def test_create_user_api_key(self):
         params = {'name': 'default', 'project': self.project.uuid}
@@ -217,7 +217,7 @@ class UserAPIKeyViewTest(TestCase):
 
         # Create a second project with an API key
         second_project = create_some_project(name='Second project',
-                                             owners=[self.user])
+                                             collaborators=[self.user])
         second_project_api_key, _ = self.create_some_api_key(
             name='second', project=second_project)
 
@@ -233,7 +233,7 @@ class UserAPIKeyViewTest(TestCase):
     def test_list_no_user_api_keys_from_other_user(self):
         # Create an API key of another user and project
         another_user = create_some_user(username='ana')
-        create_some_project(name='Another project', owners=[another_user])
+        create_some_project(name='Another project', collaborators=[another_user])
         self.create_some_api_key(name='first', user=another_user)
 
         response = self.client.get('/api_keys/',

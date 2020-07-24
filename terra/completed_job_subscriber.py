@@ -28,7 +28,7 @@ from common.utils import gsutilCopy
 
 def sendPredictionJobCompletedEmail(job, map):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.owners.all()
+    users = estimator.project.collaborators.all()
     users = [user for user in users if user.userprofile.send_notification_emails]
     email = PredictionCompletedEmail(estimator=estimator,
                                      map=map,
@@ -39,7 +39,7 @@ def sendPredictionJobCompletedEmail(job, map):
 
 def sendTrainingJobCompletedEmail(job):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.owners.all()
+    users = estimator.project.collaborators.all()
     users = [user for user in users if user.userprofile.send_notification_emails]
     email = TrainingCompletedEmail(estimator=estimator,
                                    recipients=[user.email for user in users],

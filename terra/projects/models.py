@@ -31,7 +31,7 @@ class UserProfile(models.Model):
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
-    owners = models.ManyToManyField(User)
+    collaborators = models.ManyToManyField(User)
 
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
