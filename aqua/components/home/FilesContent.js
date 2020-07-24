@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -38,53 +37,15 @@ const styles = (theme) => ({
   },
 });
 
-class NotImplementedSnackbar extends React.Component {
-  render() {
-    const { classes, open, onClose } = this.props;
-
-    return (
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={open}
-        autoHideDuration={2000}
-        onClose={onClose}
-        ContentProps={{
-          "aria-describedby": "message-id",
-        }}
-        message={<span id="message-id">Disponible pronto</span>}
-        action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            className={classes.close}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton>,
-        ]}
-      />
-    );
-  }
-}
-
-NotImplementedSnackbar = withStyles(styles)(NotImplementedSnackbar);
-
 class FilesContent extends React.Component {
   state = {
     loading: true,
     files: [],
-    notImplementedOpen: false,
     showFileDialogOpen: false,
-    beta: false,
   };
 
   async componentDidMount() {
     await this.getFiles();
-    await this.getBetaFlag();
 
     this.setState({ loading: false });
   }
@@ -112,26 +73,6 @@ class FilesContent extends React.Component {
       }
     }
   }
-
-  async getBetaFlag() {
-    const { token } = this.props;
-    try {
-      const response = await axios.get(buildApiUrl("/auth/user/"), {
-        headers: {
-          "Accept-Language": i18n.language,
-          Authorization: token,
-        },
-      });
-      const userData = response.data;
-      this.setState({ beta: userData.profile.beta });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  handleNotImplementedClose = () => {
-    this.setState({ notImplementedOpen: false });
-  };
 
   handleFileURL = (file) => {
     const projectId = cookie.get("project");
@@ -164,7 +105,7 @@ class FilesContent extends React.Component {
 
   render() {
     const { t, classes } = this.props;
-    const { loading, files, notImplementedOpen } = this.state;
+    const { loading, files } = this.state;
 
     const locale = i18n.language;
 
@@ -214,25 +155,12 @@ class FilesContent extends React.Component {
                         <CloudDownloadIcon />
                       </IconButton>
                     </Tooltip>
-                    {/* <Tooltip title={t("delete")}>
-                      <IconButton
-                        className={classes.button}
-                        aria-label={t("delete")}
-                        onClick={() => this.handleDeleteClick(layer)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip> */}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </Paper>
-        <NotImplementedSnackbar
-          open={notImplementedOpen}
-          onClose={this.handleNotImplementedClose}
-        />
       </div>
     );
   }

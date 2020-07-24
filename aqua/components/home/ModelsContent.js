@@ -54,7 +54,6 @@ class ModelsContent extends React.Component {
     showUuidDialogOpen: false,
     deleteDialogOpen: false,
     currentUUID: "",
-    beta: false,
   };
 
   async getModels() {
@@ -82,25 +81,8 @@ class ModelsContent extends React.Component {
     }
   }
 
-  async getBetaFlag() {
-    const { token } = this.props;
-    try {
-      const response = await axios.get(buildApiUrl("/auth/user/"), {
-        headers: {
-          "Accept-Language": i18n.language,
-          Authorization: token,
-        },
-      });
-      const userData = response.data;
-      this.setState({ beta: userData.profile.beta });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   async componentDidMount() {
     await this.getModels();
-    await this.getBetaFlag();
     this.setState({ loading: false });
   }
 

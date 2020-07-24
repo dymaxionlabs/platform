@@ -239,7 +239,7 @@ class OpenProjectList extends React.Component {
                     <Moment locale={locale} fromNow>
                       {project.updated_at}
                     </Moment>{" "}
-                    - {project.owners.join(", ")}
+                    - {project.collaborators.join(", ")}
                   </>
                 }
               />
