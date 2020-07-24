@@ -88,7 +88,7 @@ class KeysContent extends React.Component {
     this.setState({ loading: false });
   }
 
-  async getApiKeys() {
+  getApiKeys = async () => {
     const project = cookie.get("project");
 
     try {
@@ -104,7 +104,7 @@ class KeysContent extends React.Component {
         variant: "error",
       });
     }
-  }
+  };
 
   revoke = async (prefix) => {
     this.setState({
