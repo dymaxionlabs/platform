@@ -51,5 +51,5 @@ def generate_raster_tiles_from_file(sender, instance, created, **kwargs):
 def pre_save_handler(sender, instance, *args, **kwargs):
     quota = UserQuota.objects.get(user=instance.owner)
     created_estimators = Project.objects.filter(owner=instance.owner).count()
-    if created_estimators >= quota.max_projects_per_user
+    if created_estimators >= quota.max_projects_per_user:
         raise Exception('Quota exceeded')

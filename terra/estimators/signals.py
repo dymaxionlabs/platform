@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from projects.models import File
+from quotas.models import UserQuota
 from .models import TrainingJob, PredictionJob, Estimator
 
 
@@ -16,5 +17,5 @@ def start_training_job(sender, instance, created, **kwargs):
 def pre_save_handler(sender, instance, *args, **kwargs):
     quota = UserQuota.objects.get(user=instance.project.owner)
     created_estimators = Estimator.objects.filter(project=instance.project).count()
-    if created_estimators >= quota.max_estimator_per_project
+    if created_estimators >= quota.max_estimator_per_project:
         raise Exception('Quota exceeded')
