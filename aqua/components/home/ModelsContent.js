@@ -210,6 +210,11 @@ class ModelsContent extends React.Component {
             </TableHead>
             <TableBody>
               {loading && <TableRowSkeleton cols={4} />}
+              {!loading && models.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no models.</TableCell>
+                </TableRow>
+              )}
               {models.map((model, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">

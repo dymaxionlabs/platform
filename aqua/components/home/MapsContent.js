@@ -99,6 +99,11 @@ class MapsContent extends React.Component {
             </TableHead>
             <TableBody>
               {loading && <TableRowSkeleton cols={3} />}
+              {!loading && maps.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no maps.</TableCell>
+                </TableRow>
+              )}
               {maps.map((map, i) => (
                 <TableRow key={i}>
                   <TableCell>

@@ -160,6 +160,11 @@ class KeysContent extends React.Component {
             </TableHead>
             <TableBody>
               {loading && <TableRowSkeleton cols={3} />}
+              {!loading && keys.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no API keys defined.</TableCell>
+                </TableRow>
+              )}
               {keys.map((key, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">

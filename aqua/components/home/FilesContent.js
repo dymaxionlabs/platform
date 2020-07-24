@@ -189,6 +189,11 @@ class FilesContent extends React.Component {
             </TableHead>
             <TableBody>
               {loading && <TableRowSkeleton cols={2} />}
+              {!loading && files.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no files in storage.</TableCell>
+                </TableRow>
+              )}
               {files.map((file, i) => (
                 <TableRow key={i}>
                   <TableCell>
