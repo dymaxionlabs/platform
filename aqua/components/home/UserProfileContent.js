@@ -225,7 +225,6 @@ class UserProfileContent extends React.Component {
 
 UserProfileContent.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
   enqueueSnackbar: PropTypes.func.isRequired,
 };
 
