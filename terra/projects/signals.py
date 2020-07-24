@@ -1,7 +1,7 @@
 import django_rq
 import os
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from terra.emails import WelcomeEmail
@@ -45,3 +45,11 @@ def generate_raster_tiles_from_file(sender, instance, created, **kwargs):
         if ext in ['.json', '.geojson']:
             django_rq.enqueue('projects.tasks.generate_vector_tiles',
                               instance.pk)
+
+
+@receiver(pre_save, sender=Project)
+def pre_save_handler(sender, instance, *args, **kwargs):
+    quota = UserQuota.objects.get(user=instance.owner)
+    created_estimators = Project.objects.filter(owner=instance.owner).count()
+    if created_estimators >= quota.max_projects_per_user
+        raise Exception('Quota exceeded')

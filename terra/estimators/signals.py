@@ -14,7 +14,7 @@ def start_training_job(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Estimator)
 def pre_save_handler(sender, instance, *args, **kwargs):
-    print(instance)
-    #TODO: Check user quota
-    if False:
+    quota = UserQuota.objects.get(user=instance.project.owner)
+    created_estimators = Estimator.objects.filter(project=instance.project).count()
+    if created_estimators >= quota.max_estimator_per_project
         raise Exception('Quota exceeded')
