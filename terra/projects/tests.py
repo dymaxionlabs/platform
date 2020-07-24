@@ -111,7 +111,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
     def test_create_public_token(self):
         # Create a project
-        project = Project.objects.create(name='testproject')
+        project = Project.objects.create(name='testproject', owner=self.test_user)
 
         # Create a project invitation token (without email)
         invite_token = ProjectInvitationToken.objects.create(project=project)
@@ -129,7 +129,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
     def test_create_public_token_new_user(self):
         # Create a project
-        project = Project.objects.create(name='testproject')
+        project = Project.objects.create(name='testproject', owner=self.test_user)
 
         # Create a project invitation token (without email)
         invite_token = ProjectInvitationToken.objects.create(project=project)
