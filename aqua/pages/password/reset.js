@@ -5,7 +5,7 @@ import Head from "next/head";
 import axios from "axios";
 import { i18n, withTranslation, Link } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 import {
   Avatar,
@@ -17,9 +17,9 @@ import {
   Paper,
   Typography,
   Grid,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -28,53 +28,55 @@ const styles = theme => ({
     [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
       width: 400,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   subheader: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   errorMessage: {
     marginTop: theme.spacing(1),
     textAlign: "center",
-    color: "red"
+    color: "red",
   },
   successMessage: {
     marginTop: theme.spacing(1),
     textAlign: "center",
-    color: "green"
+    color: "green",
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing(3)
-  }
+    marginTop: theme.spacing(3),
+  },
 });
 
 class PasswordReset extends React.Component {
   state = {
     email: "",
     password: "",
-    isSubmitting: false
+    isSubmitting: false,
   };
 
   static async getInitialProps({ query }) {
     return {
       namespacesRequired: ["common"],
-      query
+      query,
     };
   }
 
@@ -85,53 +87,53 @@ class PasswordReset extends React.Component {
     this.state.email = email;
   }
 
-  onEmailChange = e => {
+  onEmailChange = (e) => {
     this.setState({ email: e.target.value });
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
     const { t } = this.props;
     const { email } = this.state;
 
     const dataSend = {
-      email: email
+      email: email,
     };
 
     // Reset messages
     this.setState({
       errorMsg: "",
       successMsg: "",
-      isSubmitting: true
+      isSubmitting: true,
     });
 
     axios
       .post(buildApiUrl("/auth/password/reset/"), dataSend, {
-        headers: { "Accept-Language": i18n.language }
+        headers: { "Accept-Language": i18n.language },
       })
-      .then(response => {
+      .then((response) => {
         this.setState({
           email: "",
-          successMsg: t("reset_password.success_msg")
+          successMsg: t("reset_password.success_msg"),
         });
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({
           errorMsg: t("login.error_msg"),
-          successMsg: ""
+          successMsg: "",
         });
       })
       .then(() => {
         this.setState({
-          isSubmitting: false
+          isSubmitting: false,
         });
       });
   };
 
   render() {
     const { t, classes, query } = this.props;
-    const { redirect, beta, email } = query;
+    const { redirect, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -173,7 +175,7 @@ class PasswordReset extends React.Component {
                 <Link
                   href={{
                     pathname: "/login",
-                    query: { redirect, beta, email }
+                    query: { redirect, email },
                   }}
                 >
                   <Button
@@ -207,7 +209,7 @@ class PasswordReset extends React.Component {
 }
 
 PasswordReset.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 PasswordReset = withStyles(styles)(PasswordReset);

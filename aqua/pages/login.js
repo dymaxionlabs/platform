@@ -65,7 +65,6 @@ class Login extends React.Component {
   state = {
     username: "",
     password: "",
-    beta: false,
     remember: false,
     isSubmitting: false,
   };
@@ -75,16 +74,6 @@ class Login extends React.Component {
       namespacesRequired: ["common"],
       query,
     };
-  }
-
-  constructor(props) {
-    super(props);
-
-    const { beta } = props.query;
-    if (beta === "1") {
-      this.state.beta = true;
-      console.log("*** BETA ***");
-    }
   }
 
   onUsernameChange = (e) => {
@@ -104,7 +93,7 @@ class Login extends React.Component {
     event.preventDefault();
 
     const { t } = this.props;
-    const { username, password, beta } = this.state;
+    const { username, password } = this.state;
 
     const dataSend = {
       username: username,
@@ -121,17 +110,6 @@ class Login extends React.Component {
     try {
       const response = await axios.post(buildApiUrl("/auth/login/"), dataSend);
       const token = response.data.key;
-
-      // If beta=1, activate beta mode for user
-      if (beta) {
-        axios.patch(
-          buildApiUrl(`/user-profiles/${username}/`),
-          { beta: true },
-          {
-            headers: { "Accept-Language": i18n.language, Authorization: token },
-          }
-        );
-      }
 
       const expires = this.state.remember ? 30 : null;
       if (token) {
@@ -151,7 +129,7 @@ class Login extends React.Component {
 
   render() {
     const { t, classes, query } = this.props;
-    const { redirect, beta, email } = query;
+    const { redirect, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -215,7 +193,7 @@ class Login extends React.Component {
             <Link
               href={{
                 pathname: "/password/reset",
-                query: { redirect, beta, email },
+                query: { redirect, email },
               }}
             >
               <a>{t("login.request_new_password")}</a>
@@ -226,7 +204,7 @@ class Login extends React.Component {
             <Link
               href={{
                 pathname: "/signup",
-                query: { redirect, beta, email },
+                query: { redirect, email },
               }}
             >
               <a>{t("login.signup")}</a>

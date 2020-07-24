@@ -82,7 +82,6 @@ class Register extends React.Component {
     err_email_msg: "",
     err_password1_msg: "",
     err_password2_msg: "",
-    beta: false,
     isSubmitting: false,
   };
 
@@ -95,12 +94,6 @@ class Register extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const { beta } = props.query;
-    if (beta === "1") {
-      this.state.beta = true;
-      console.log("*** BETA ***");
-    }
 
     const { email } = props.query;
     this.state.email = email;
@@ -127,7 +120,7 @@ class Register extends React.Component {
     event.preventDefault();
 
     const { t } = this.props;
-    const { username, email, password1, password2, beta } = this.state;
+    const { username, email, password1, password2 } = this.state;
 
     const dataSend = {
       username: username,
@@ -157,17 +150,6 @@ class Register extends React.Component {
       );
 
       const token = response.data.key;
-
-      // If beta=1, activate beta mode for user
-      if (beta) {
-        axios.patch(
-          buildApiUrl(`/user-profiles/${username}/`),
-          { beta: true },
-          {
-            headers: { "Accept-Language": i18n.language, Authorization: token },
-          }
-        );
-      }
 
       this.setState({
         successMsg: t("signup.success_msg"),
@@ -209,7 +191,7 @@ class Register extends React.Component {
 
   render() {
     const { t, classes, query } = this.props;
-    const { redirect, beta, email } = query;
+    const { redirect, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -309,7 +291,7 @@ class Register extends React.Component {
                 <Link
                   href={{
                     pathname: "/login",
-                    query: { redirect, email, beta },
+                    query: { redirect, email },
                   }}
                 >
                   <Button
@@ -341,7 +323,7 @@ class Register extends React.Component {
             <Link
               href={{
                 pathname: "/login",
-                query: { redirect, email, beta },
+                query: { redirect, email },
               }}
             >
               <a>{t("signup.login")}</a>
