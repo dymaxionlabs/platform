@@ -154,8 +154,7 @@ def subscriber():
                     elif data['job_type'] == 'prediction':
                         predictionJobFinished(data['job_id'])
             if "failed" in data["payload"]:
-                task.state = states.FAILED
-                task.save(update_fields=['state', 'updated_at'])
+                task.mark_as_failed()
 
         else:
             print('[Subscriptor] Unknow message: {}'.format(message.data))
