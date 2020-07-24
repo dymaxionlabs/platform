@@ -109,7 +109,7 @@ class ContactSerializer(serializers.Serializer):
         elif landing == "Agro":
             return settings.MAILCHIMP_AUDIENCE_IDS['agri']
         else:
-            raise RuntimeError("Invalid landing")
+            raise RuntimeError(f"Invalid landing: {landing}")
 
     def _create_mailchimp_audience(self):
         email = self.data['email']

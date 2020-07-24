@@ -96,7 +96,6 @@ class ContactViewTest(TestCase):
         response = self.client.post('/contact/', {
             'email': 'john@doe.com',
             'message': 'This is a test message',
-            'landing': 'newsletter-landing'
         },
                                     format='json')
 
