@@ -7,8 +7,8 @@ class UserQuota(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     max_projects_per_user = models.IntegerField(default=settings.MAX_PROJECTS_PER_USER)
-    max_file_size = models.IntegerField(default=settings.MAX_FILE_SIZE)
-    total_space_per_project = models.IntegerField(default=settings.TOTAL_SPACE_PER_PROJECT)
+    max_file_size = models.BigIntegerField(default=settings.MAX_FILE_SIZE)
+    total_space_per_project = models.BigIntegerField(default=settings.TOTAL_SPACE_PER_PROJECT)
     max_estimator_per_project = models.IntegerField(default=settings.MAX_ESTIMATORS_PER_PROJECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -23,11 +23,3 @@ class UserQuota(models.Model):
             estimators=self.max_estimator_per_project, 
             file_size=self.max_file_size
         )
-
-
-    def check_total_space_per_project(self, bytes):
-        return self.total_space_per_project * 1024 * 1024 * 1024 > bytes
-    
-
-    def check_max_file_size(self, bytes):
-        return self.max_file_size * 1024 * 1024 * 1024 > bytes

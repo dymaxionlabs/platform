@@ -108,11 +108,11 @@ class UploadFileView(StorageAPIView):
             raise ParseError("'file' missing")
 
         quota = UserQuota.objects.get(user=request.user)
-        if not quota.check_max_file_size(fileobj.size):
+        if quota.max_file_size < fileobj.size:
             raise ParseError("the file size exceeds the allowed limit")
 
         usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
-        if not quota.check_total_space_per_project(usage['total'] + fileobj.size):
+        if quota.total_space_per_project < usage['total'] + fileobj.size:
             raise ParseError("insufficient storage")
 
         client = self.get_client()
@@ -230,12 +230,12 @@ class CreateResumableUploadView(StorageAPIView):
             size = int(size)
 
         quota = UserQuota.objects.get(user=request.user)
-        if not quota.check_max_file_size(size):
+        if quota.max_file_size < size:
             raise ParseError("the file size exceeds the allowed limit")
 
         usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
 
-        if not quota.check_total_space_per_project(usage['total'] + size):
+        if quota.total_space_per_project < usage['total'] + size:
             raise ParseError("insufficient storage")
 
         client = self.get_client()

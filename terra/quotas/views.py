@@ -36,7 +36,7 @@ class UserQuotaUsageView(APIView):
                 'name': p.name,
                 'storage': {
                     'used': File.objects.filter(project=p).aggregate(used=Coalesce(Sum('size'),0))['used'],
-                    'total': quota.total_space_per_project  * 1024 * 1024 * 1024
+                    'total': quota.total_space_per_project
                 },
                 'estimators': {
                     'created': Estimator.objects.filter(project=p).count(),
