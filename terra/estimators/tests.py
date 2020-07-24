@@ -10,6 +10,7 @@ from storage.client import Client
 
 from .models import Estimator, File
 from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView
+from tasks.models import Task
 
 
 class EstimatorViewSetTest(TestCase):
@@ -202,3 +203,73 @@ class StartTrainingJobViewTest(TestCase):
         setattr(request, 'user', self.user)
         with self.assertRaises(Estimator.DoesNotExist):
             StartTrainingJobView().post(request, uuid)
+
+
+class StartPredictionJobViewTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        loginWithAPI(self.client, self.user.username, 'secret')
+        self.project = create_some_project(name="Some project",
+                                           owners=[self.user])
+    
+
+    @patch("estimators.views.TrainingStartedEmail.send_mail")
+    @patch("estimators.views.Task.start")
+    def test_post_ok(self, mock_start, mock_send_mail):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        request = Object()
+        setattr(request, 'user', self.user)
+        setattr(request, 'data', dict(
+            files=['f1','f2'],
+            output_path='foo/'
+        ))
+
+        # to test prediction I need a training job
+        rv = StartTrainingJobView().post(request, estimator.uuid)
+        mock_send_mail.assert_called_once()
+        mock_start.assert_called_once()
+        self.assertEquals(rv.status_code, 200)
+
+        # I finish the job
+        job = Task.objects.filter(
+            internal_metadata__estimator=str(estimator.uuid),
+            name=Estimator.TRAINING_JOB_TASK).last()
+        job.state = "FINISHED"
+        job.save()
+
+        rv = StartPredictionJobView().post(request, estimator.uuid)
+        self.assertEquals(rv.status_code, 200)
+
+
+    @patch("estimators.views.TrainingStartedEmail.send_mail")
+    @patch("estimators.views.Task.start")
+    def test_post_bad_request(self, mock_start, mock_send_mail):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        request = Object()
+        setattr(request, 'user', self.user)
+        setattr(request, 'data', dict(
+            files=['f1','f2'],
+            output_path='foo/'
+        ))
+
+        rv = StartPredictionJobView().post(request, estimator.uuid)
+        self.assertEquals(rv.status_code, 400)
+
+
+    def test_post_not_found(self):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        uuid = estimator.uuid
+        estimator.delete()
+        request = Object()
+        setattr(request, 'user', self.user)
+        with self.assertRaises(Estimator.DoesNotExist):
+            StartPredictionJobView().post(request, uuid)
+
