@@ -15,7 +15,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import AllInboxIcon from "@material-ui/icons/AllInbox";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -25,12 +27,12 @@ import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import AllInboxIcon from "@material-ui/icons/AllInbox";
 import classNames from "classnames";
 import cookie from "js-cookie";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
+import CreditsContent from "../../components/home/CreditsContent";
 import FilesContent from "../../components/home/FilesContent";
 import HomeContent from "../../components/home/HomeContent";
 import KeysContent from "../../components/home/KeysContent";
@@ -145,6 +147,7 @@ const sortedSections = [
   "viewer",
   "_divider",
   "keys",
+  "credits",
   "profile",
 ];
 
@@ -178,6 +181,12 @@ const sections = {
     path: "/keys",
     icon: <VpnKeyIcon />,
     content: <KeysContent />,
+  },
+  credits: {
+    key: "credits",
+    path: "/credits",
+    icon: <AttachMoneyIcon />,
+    content: <CreditsContent />,
   },
   profile: {
     key: "profile",

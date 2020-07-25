@@ -13,7 +13,7 @@ from .models import LogEntry
 def add_initial_credit(sender, instance, created, **kwargs):
     if created:
         LogEntry.objects.create(user=instance,
-                                kind='initial',
+                                kind='credit',
                                 description='Initial credit',
                                 value=10000)
 

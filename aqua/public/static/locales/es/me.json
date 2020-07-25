@@ -1,4 +1,12 @@
 {
+  "credits": {
+    "kinds": {
+      "credit": "Cr\u00e9dito",
+      "prediction-task": "Tarea de predicci\u00f3n",
+      "task": "Tarea",
+      "training-task": "Tarea de entrenamiento"
+    }
+  },
   "download": "Descargar",
   "files": {
     "created_at": "Fecha de subida",
@@ -76,6 +84,7 @@
     "title": "Pedidos"
   },
   "sidebar": {
+    "credits": "Cr\u00e9ditos",
     "dashboard": "Dashboard",
     "files": "Archivos",
     "keys": "API Keys",
