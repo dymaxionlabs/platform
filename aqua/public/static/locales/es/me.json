@@ -86,5 +86,14 @@
     "tasks": "Tareas",
     "viewer": "Visor"
   },
+  "tasks": {
+    "states": {
+      "CANCELED": "Cancelado",
+      "FAILED": "Fallido",
+      "FINISHED": "Finalizado",
+      "PENDING": "Pendiente",
+      "STARTED": "Ejecutando"
+    }
+  },
   "view": "Ver"
 }

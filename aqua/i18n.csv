@@ -187,6 +187,11 @@ me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
 me,requests.area_km2,Área (km²),Area (km²)
 me,requests.state,Estado actual,Current state
+me,tasks.states.PENDING,Pendiente,Pending
+me,tasks.states.STARTED,Ejecutando,Running
+me,tasks.states.FINISHED,Finalizado,Finished
+me,tasks.states.FAILED,Fallido,Failed
+me,tasks.states.CANCELED,Cancelado,Canceled
 me,keys.title,API keys,API keys
 me,keys.name,Nombre,Name
 me,keys.prefix,Prefijo,Prefix

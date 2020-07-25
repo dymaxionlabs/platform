@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  LinearProgress,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -18,6 +19,7 @@ import { i18n, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import TableRowSkeleton from "../TableRowSkeleton";
+import moment from "moment";
 
 const styles = (theme) => ({
   root: {
@@ -32,6 +34,23 @@ const styles = (theme) => ({
   },
 });
 
+const TaskProgress = ({ task }) => {
+  const duration = task.duration || task.estimated_duration;
+  if (duration) {
+    const created_at = moment(task.created_at);
+    const progressSeconds = moment().diff(created_at, "seconds");
+    console.log("progress in seconds:", progressSeconds);
+    const progress = Math.min(
+      Math.round((progressSeconds / duration) * 100),
+      100
+    );
+    console.log("progress %", progress);
+    return <LinearProgress variant="determinate" value={progress} />;
+  } else {
+    return <LinearProgress />;
+  }
+};
+
 class TasksContent extends React.Component {
   state = {
     loading: true,
@@ -41,6 +60,8 @@ class TasksContent extends React.Component {
   async componentDidMount() {
     await this.getTasks();
     this.setState({ loading: false });
+
+    setInterval(() => this.getTasks(), 5000);
   }
 
   async getTasks() {
@@ -68,7 +89,7 @@ class TasksContent extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { t, classes } = this.props;
     const { loading, tasks } = this.state;
 
     const locale = i18n.language;
@@ -106,16 +127,18 @@ class TasksContent extends React.Component {
                 <TableRow key={i}>
                   <TableCell>{task.id}</TableCell>
                   <TableCell>{task.name}</TableCell>
-                  <TableCell>{task.state}</TableCell>
-                  <TableCell>???</TableCell>
+                  <TableCell>{t(`tasks.states.${task.state}`)}</TableCell>
+                  <TableCell>
+                    <TaskProgress task={task} />
+                  </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
-                      {model.created_at}
+                      {task.created_at}
                     </Moment>
                   </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
-                      {model.finished_at}
+                      {task.finished_at}
                     </Moment>
                   </TableCell>
                 </TableRow>
