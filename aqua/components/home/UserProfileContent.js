@@ -21,7 +21,6 @@ import {
 const styles = (theme) => ({
   main: {
     display: "block", // Fix IE 11 issue.
-    marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
   },
   avatar: {
@@ -165,7 +164,7 @@ class UserProfileContent extends React.Component {
 
     return (
       <main className={classes.main}>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h6">
           {"User Profile"}
         </Typography>
 

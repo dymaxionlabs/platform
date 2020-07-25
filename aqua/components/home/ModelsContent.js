@@ -31,12 +31,11 @@ const styles = (theme) => ({
   root: {
     width: "100%",
     overflowX: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   table: {
     minWidth: 700,
-  },
-  title: {
-    marginBottom: theme.spacing.units * 10,
   },
   modelBtn: {
     float: "right",
@@ -171,12 +170,7 @@ class ModelsContent extends React.Component {
 
     return (
       <div>
-        <Typography
-          className={classes.title}
-          variant="h4"
-          gutterBottom
-          component="h2"
-        >
+        <Typography variant="h6" gutterBottom component="h2">
           {t("models.title")}
         </Typography>
         <Paper className={classes.root}>

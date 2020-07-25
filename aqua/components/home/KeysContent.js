@@ -28,12 +28,11 @@ const styles = (theme) => ({
   root: {
     width: "100%",
     overflowX: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   table: {
     minWidth: 700,
-  },
-  title: {
-    marginBottom: theme.spacing.units * 10,
   },
   btnRight: {
     float: "right",
@@ -136,12 +135,7 @@ class KeysContent extends React.Component {
 
     return (
       <div>
-        <Typography
-          className={classes.title}
-          variant="h4"
-          gutterBottom
-          component="h2"
-        >
+        <Typography variant="h6" gutterBottom component="h2">
           <NewKeyDialogForm
             token={token}
             created={this.getApiKeys}
