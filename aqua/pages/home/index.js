@@ -30,7 +30,6 @@ import cookie from "js-cookie";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import React from "react";
-import CliengoLoader from "../../components/CliengoLoader";
 import FilesContent from "../../components/home/FilesContent";
 import HomeContent from "../../components/home/HomeContent";
 import KeysContent from "../../components/home/KeysContent";
@@ -264,7 +263,6 @@ class Home extends React.Component {
       <div className={classes.root}>
         <Head>
           <title>{t("common:title")}</title>
-          <CliengoLoader />
         </Head>
         <AppBar
           position="absolute"
