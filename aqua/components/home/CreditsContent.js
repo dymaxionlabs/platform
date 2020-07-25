@@ -28,6 +28,14 @@ const styles = (theme) => ({
   table: {
     minWidth: 700,
   },
+  availableCredits: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  availableCreditsNumber: {
+    fontSize: "2.5rem",
+    fontWeight: 500,
+  },
 });
 
 class CreditsContent extends React.Component {
@@ -94,15 +102,13 @@ class CreditsContent extends React.Component {
 
     return (
       <div>
-        <Typography variant="h6" gutterBottom component="h3">
+        <Typography variant="h6" gutterBottom component="h2">
           Credit Management
         </Typography>
         <Paper className={classes.availableCredits}>
-          <Typography variant="h6" gutterBottom component="h4">
-            Available credits
-          </Typography>
-          <Typography variant="h6" gutterBottom component="h4">
-            {availableCredits}
+          <Typography>Available credits</Typography>
+          <Typography className={classes.availableCreditsNumber}>
+            {availableCredits.toLocaleString()}
           </Typography>
         </Paper>
         <Typography variant="h6" gutterBottom component="h3">
