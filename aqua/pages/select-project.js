@@ -107,7 +107,7 @@ class NewProjectForm extends React.Component {
       if (response && response.status === 401) {
         logout();
       } else {
-        console.error(err);
+        console.error(response);
         this.props.enqueueSnackbar("Failed to create new project", {
           variant: "error",
         });
@@ -198,7 +198,7 @@ class OpenProjectList extends React.Component {
       if (response && response.status === 401) {
         logout();
       } else {
-        console.error(err);
+        console.error(response);
         this.props.enqueueSnackbar("Failed to get projects", {
           variant: "error",
         });
