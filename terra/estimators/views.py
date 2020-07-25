@@ -24,8 +24,10 @@ from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, PredictionJobSerializer,
                           TrainingJobSerializer)
 from storage.client import Client
+from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
+from credits.models import LogEntry as CreditsLogEntry
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -166,6 +168,17 @@ class StartTrainingJobView(APIView):
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
+            # Estimate task duration and cost
+            task_cost = CreditsLogEntry.calculate_task_cost(
+                duration=estimator.training_hours)
+
+            # If user has not enough credits for task, fail!
+            if CreditsLogEntry.available_credits < task_cost:
+                return Response(
+                    {'estimator': _('Not enough credits for training')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
+            # Otherwise, create and start task
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
@@ -196,7 +209,7 @@ class StartPredictionJobView(APIView):
 
         last_training_job = Task.objects.filter(
             internal_metadata__estimator=str(estimator.uuid),
-            state='FINISHED',
+            state=states.FINISHED,
             name=Estimator.TRAINING_JOB_TASK).last()
         if not last_training_job:
             return Response({'training_job': _('Not found')},
@@ -208,6 +221,16 @@ class StartPredictionJobView(APIView):
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
         if not job:
+            # If user has no credits, fail!
+            # Contrary to training, we still don't have a reliable way to
+            # estimate prediction task duration, so we only check if it has any
+            # credits at all, and allow negative credit balance in the worst
+            # case scenario.
+            if CreditsLogEntry.available_credits <= 0:
+                return Response(
+                    {'estimator': _('Not enough credits for prediction')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)

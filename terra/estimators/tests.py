@@ -15,7 +15,7 @@ class EstimatorViewSetTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           collaborators=[self.user])
+                                           owner=self.user)
 
     def test_create_ok(self):
         response = self.client.post('/estimators/', {

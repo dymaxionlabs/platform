@@ -85,16 +85,14 @@ def generate_image_tiles(task_id, args, kwargs):
                             with open(img_path, 'rb') as f:
                                 tile.tile_file = DjangoFile(f, name=img_fname)
                                 tile.save()
-        job.state = states.FINISHED
     except Exception as e:
         TaskLogEntry.objects.create(task=job,
                                     log=str(e),
                                     logged_at=datetime.now())
         print("Error: {}".format(e))
-        job.state = states.FAILED
-    finally:
-        job.finished_at = datetime.now()
-        job.save(update_fields=['state', 'updated_at', 'finished_at'])
+        job.mark_as_failed()
+    else:
+        job.mark_as_finished()
 
 
 def sliding_windows(size, step_size, width, height):
