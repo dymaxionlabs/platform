@@ -247,6 +247,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return allowed_projects_for(self.queryset, user)
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(owner=user, collaborators=[user])
+
 
 class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Map.objects.all().order_by('-created_at')

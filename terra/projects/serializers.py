@@ -154,8 +154,8 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     collaborators = serializers.SlugRelatedField(many=True,
-                                          read_only=True,
-                                          slug_field='username')
+                                                 read_only=True,
+                                                 slug_field='username')
     estimators = serializers.SlugRelatedField(many=True,
                                               read_only=True,
                                               slug_field='uuid')
@@ -163,12 +163,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         exclude = ('id', 'groups')
+        extra_kwargs = {'owner': {'read_only': True}}
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        validated_data['collaborators'] = [user]
-        validated_data['owner'] = user
-        return super().create(validated_data)
 
 class LayerSerializer(serializers.ModelSerializer):
     tiles_url = serializers.ReadOnlyField()
