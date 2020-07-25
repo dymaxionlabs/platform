@@ -32,8 +32,13 @@ def add_training_prediction_entry(sender, task, **kwargs):
         else:
             kind = 'task'
             description = 'Task'
-        cost = round(task.duration * 300)
-        LogEntry.objects.create(user=instance,
+
+        user = task.project.owner
+
+        # Use real task duration to calculate cost
+        cost = LogEntry.calculate_task_cost(duration=task.duration)
+
+        LogEntry.objects.create(user=user,
                                 kind=kind,
                                 description=description,
                                 value=-cost)

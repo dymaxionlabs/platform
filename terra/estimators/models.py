@@ -31,6 +31,8 @@ class Estimator(models.Model):
                     # (CLASSIFICATION, _('Classification')),
                     )
 
+    DEFAULT_TRAINING_HOURS = 2
+
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project,
                                 null=True,
@@ -63,6 +65,13 @@ class Estimator(models.Model):
     def __str__(self):
         return '{name} ({type})'.format(name=self.name,
                                         type=self.estimator_type)
+
+    @property
+    def training_hours(self):
+        if self.configuration and 'training_hours' in self.configuration:
+            return round(self.configuration['training_hours'])
+        else:
+            return self.DEFAULT_TRAINING_HOURS
 
 
 def tile_images_path(instance, filename):

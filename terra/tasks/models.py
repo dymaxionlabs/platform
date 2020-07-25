@@ -46,6 +46,17 @@ class Task(models.Model):
             project_id=self.project.id,
             pk=self.pk)
 
+    @property
+    def duration(self):
+        """
+        Returns the duration of a stopped task, in seconds
+
+        If the task is still running or pending, returns None.
+
+        """
+        if self.has_stopped():
+            return abs(self.finished_at - self.created_at).seconds
+
     def start(self):
         if self.state == states.PENDING:
             django_rq.enqueue(self.name, self.id, self.args, self.kwargs)

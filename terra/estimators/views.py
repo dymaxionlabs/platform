@@ -27,6 +27,7 @@ from storage.client import Client
 from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
+from credits.models import LogEntry as CreditsLogEntry
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -167,6 +168,17 @@ class StartTrainingJobView(APIView):
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
+            # Estimate task duration and cost
+            task_cost = CreditsLogEntry.calculate_task_cost(
+                duration=estimator.training_hours)
+
+            # If user has not enough credits for task, fail!
+            if CreditsLogEntry.available_credits < task_cost:
+                return Response(
+                    {'estimator': _('Not enough credits for training')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
+            # Otherwise, create and start task
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
