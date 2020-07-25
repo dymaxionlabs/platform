@@ -221,6 +221,16 @@ class StartPredictionJobView(APIView):
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
         if not job:
+            # If user has no credits, fail!
+            # Contrary to training, we still don't have a reliable way to
+            # estimate prediction task duration, so we only check if it has any
+            # credits at all, and allow negative credit balance in the worst
+            # case scenario.
+            if CreditsLogEntry.available_credits <= 0:
+                return Response(
+                    {'estimator': _('Not enough credits for prediction')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
