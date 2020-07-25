@@ -25,6 +25,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import AllInboxIcon from "@material-ui/icons/AllInbox";
 import classNames from "classnames";
 import cookie from "js-cookie";
 import Head from "next/head";
@@ -36,6 +37,7 @@ import KeysContent from "../../components/home/KeysContent";
 import MapsContent from "../../components/home/MapsContent";
 import ModalContactContent from "../../components/home/ModalContactContent";
 import ModelsContent from "../../components/home/ModelsContent";
+import TasksContent from "../../components/home/TasksContent";
 import UserProfileContent from "../../components/home/UserProfileContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withTranslation } from "../../i18n";
@@ -109,7 +111,7 @@ const styles = (theme) => ({
     }),
     width: theme.spacing(7),
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9),
+      width: theme.spacing(7),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -138,6 +140,7 @@ const styles = (theme) => ({
 
 const sortedSections = [
   "files",
+  "tasks",
   "models",
   "viewer",
   "_divider",
@@ -163,6 +166,12 @@ const sections = {
     path: "/files",
     icon: <CollectionsIcon />,
     content: <FilesContent />,
+  },
+  tasks: {
+    key: "tasks",
+    path: "/tasks",
+    icon: <AllInboxIcon />,
+    content: <TasksContent />,
   },
   keys: {
     key: "keys",

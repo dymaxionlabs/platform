@@ -182,6 +182,7 @@ class StartTrainingJobView(APIView):
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
+                estimated_duration=estimator.training_hours,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
 

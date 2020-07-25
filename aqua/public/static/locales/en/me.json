@@ -83,7 +83,17 @@
     "models": "Models",
     "profile": "Profile",
     "requests": "Requests",
+    "tasks": "Tasks",
     "viewer": "Viewer"
+  },
+  "tasks": {
+    "states": {
+      "CANCELED": "Canceled",
+      "FAILED": "Failed",
+      "FINISHED": "Finished",
+      "PENDING": "Pending",
+      "STARTED": "Running"
+    }
   },
   "view": "View"
 }

@@ -25,9 +25,12 @@ class Task(models.Model):
                              choices=TASK_STATE_CHOICES)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
-    finished_at = models.DateTimeField(_('finished at'), null=True)
+    finished_at = models.DateTimeField(_('finished at'), null=True, blank=True)
     metadata = JSONField(null=True, blank=True)
     traceback = models.TextField(_('traceback'), blank=True, null=True)
+    estimated_duration = models.PositiveIntegerField(_('estimated duration'),
+                                                     blank=True,
+                                                     null=True)
     internal_metadata = JSONField(null=True, blank=True)
 
     @property

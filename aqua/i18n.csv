@@ -150,6 +150,7 @@ me,sidebar.viewer,Visor,Viewer
 me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
+me,sidebar.tasks,Tareas,Tasks
 me,sidebar.keys,API Keys,API Keys
 me,sidebar.profile,Perfil,Profile
 me,download,Descargar,Download
@@ -186,6 +187,11 @@ me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
 me,requests.area_km2,Área (km²),Area (km²)
 me,requests.state,Estado actual,Current state
+me,tasks.states.PENDING,Pendiente,Pending
+me,tasks.states.STARTED,Ejecutando,Running
+me,tasks.states.FINISHED,Finalizado,Finished
+me,tasks.states.FAILED,Fallido,Failed
+me,tasks.states.CANCELED,Cancelado,Canceled
 me,keys.title,API keys,API keys
 me,keys.name,Nombre,Name
 me,keys.prefix,Prefijo,Prefix

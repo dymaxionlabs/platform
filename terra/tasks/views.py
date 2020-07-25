@@ -14,8 +14,8 @@ from tasks.models import Task
 from tasks.serializers import TaskSerializer
 
 
-class TaskViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
-    queryset = Task.objects.all().order_by('-created_at')
+class TaskViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = Task.objects.all().order_by('-finished_at', '-created_at')
     serializer_class = TaskSerializer
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
                           HasAccessToRelatedProjectPermission)
