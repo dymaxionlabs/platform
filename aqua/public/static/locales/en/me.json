@@ -83,6 +83,7 @@
     "models": "Models",
     "profile": "Profile",
     "requests": "Requests",
+    "tasks": "Tasks",
     "viewer": "Viewer"
   },
   "view": "View"

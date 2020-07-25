@@ -150,6 +150,7 @@ me,sidebar.viewer,Visor,Viewer
 me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
+me,sidebar.tasks,Tareas,Tasks
 me,sidebar.keys,API Keys,API Keys
 me,sidebar.profile,Perfil,Profile
 me,download,Descargar,Download
