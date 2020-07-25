@@ -30,11 +30,10 @@ class UserProfile(models.Model):
 
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              related_name=_('projects'))
     collaborators = models.ManyToManyField(User)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_('projects'))
-
-
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
 
@@ -48,6 +47,7 @@ class Project(models.Model):
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     class Meta:
+        unique_together = (('owner', 'name'), )
         verbose_name = _("Project")
         verbose_name_plural = _("Projects")
 
