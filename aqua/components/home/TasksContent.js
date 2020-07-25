@@ -25,12 +25,11 @@ const styles = (theme) => ({
   root: {
     width: "100%",
     overflowX: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   table: {
     minWidth: 700,
-  },
-  title: {
-    marginBottom: theme.spacing.units * 10,
   },
 });
 
@@ -39,12 +38,10 @@ const TaskProgress = ({ task }) => {
   if (duration) {
     const created_at = moment(task.created_at);
     const progressSeconds = moment().diff(created_at, "seconds");
-    console.log("progress in seconds:", progressSeconds);
     const progress = Math.min(
       Math.round((progressSeconds / duration) * 100),
       100
     );
-    console.log("progress %", progress);
     return <LinearProgress variant="determinate" value={progress} />;
   } else {
     return <LinearProgress />;
@@ -92,17 +89,15 @@ class TasksContent extends React.Component {
     const { t, classes } = this.props;
     const { loading, tasks } = this.state;
 
+    const runningTasks = tasks.filter((task) => !task.finished_at);
+    const stoppedTasks = tasks.filter((task) => task.finished_at);
+
     const locale = i18n.language;
 
     return (
       <div>
-        <Typography
-          className={classes.title}
-          variant="h4"
-          gutterBottom
-          component="h2"
-        >
-          Tasks
+        <Typography variant="h6" gutterBottom component="h3">
+          Currently running
         </Typography>
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -112,18 +107,17 @@ class TasksContent extends React.Component {
                 <TableCell>Name</TableCell>
                 <TableCell>State</TableCell>
                 <TableCell>Progress</TableCell>
-                <TableCell>Created at</TableCell>
-                <TableCell>Finished at</TableCell>
+                <TableCell>Started at</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading && <TableRowSkeleton cols={6} />}
-              {!loading && tasks.length === 0 && (
+              {loading && <TableRowSkeleton cols={5} />}
+              {!loading && runningTasks.length === 0 && (
                 <TableRow>
-                  <TableCell>There are no tasks.</TableCell>
+                  <TableCell>There are no running tasks.</TableCell>
                 </TableRow>
               )}
-              {tasks.map((task, i) => (
+              {runningTasks.map((task, i) => (
                 <TableRow key={i}>
                   <TableCell>{task.id}</TableCell>
                   <TableCell>{task.name}</TableCell>
@@ -131,6 +125,42 @@ class TasksContent extends React.Component {
                   <TableCell>
                     <TaskProgress task={task} />
                   </TableCell>
+                  <TableCell>
+                    <Moment locale={locale} fromNow>
+                      {task.created_at}
+                    </Moment>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+        <Typography variant="h6" gutterBottom component="h3">
+          Previous tasks
+        </Typography>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Id</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>State</TableCell>
+                <TableCell>Started at</TableCell>
+                <TableCell>Finished at</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading && <TableRowSkeleton cols={5} />}
+              {!loading && stoppedTasks.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no stopped tasks.</TableCell>
+                </TableRow>
+              )}
+              {stoppedTasks.map((task, i) => (
+                <TableRow key={i}>
+                  <TableCell>{task.id}</TableCell>
+                  <TableCell>{task.name}</TableCell>
+                  <TableCell>{t(`tasks.states.${task.state}`)}</TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
                       {task.created_at}
