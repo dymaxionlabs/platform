@@ -18,7 +18,7 @@ class LogEntry(models.Model):
     @classmethod
     def available_credits(cls, user):
         res = cls.objects.filter(user=user).aggregate(models.Sum('value'))
-        return res['value__sum']
+        return res['value__sum'] or 0
 
     @classmethod
     def calculate_task_cost(cls, duration):

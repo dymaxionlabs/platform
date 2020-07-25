@@ -1,7 +1,6 @@
 import {
   IconButton,
   Paper,
-  Snackbar,
   Table,
   TableBody,
   TableCell,

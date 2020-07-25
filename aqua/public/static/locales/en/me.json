@@ -1,4 +1,12 @@
 {
+  "credits": {
+    "kinds": {
+      "credit": "Credit",
+      "prediction-task": "Prediction task",
+      "task": "Task",
+      "training-task": "Training task"
+    }
+  },
   "download": "Download",
   "files": {
     "created_at": "Upload date",
@@ -76,6 +84,7 @@
     "title": "Requests"
   },
   "sidebar": {
+    "credits": "Credits",
     "dashboard": "Dashboard",
     "files": "Files",
     "keys": "API Keys",

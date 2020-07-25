@@ -151,6 +151,7 @@ me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
 me,sidebar.tasks,Tareas,Tasks
+me,sidebar.credits,Créditos,Credits
 me,sidebar.keys,API Keys,API Keys
 me,sidebar.profile,Perfil,Profile
 me,download,Descargar,Download
@@ -192,6 +193,10 @@ me,tasks.states.STARTED,Ejecutando,Running
 me,tasks.states.FINISHED,Finalizado,Finished
 me,tasks.states.FAILED,Fallido,Failed
 me,tasks.states.CANCELED,Cancelado,Canceled
+me,credits.kinds.credit,Crédito,Credit
+me,credits.kinds.task,Tarea,Task
+me,credits.kinds.training-task,Tarea de entrenamiento,Training task
+me,credits.kinds.prediction-task,Tarea de predicción,Prediction task
 me,keys.title,API keys,API keys
 me,keys.name,Nombre,Name
 me,keys.prefix,Prefijo,Prefix
