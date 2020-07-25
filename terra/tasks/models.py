@@ -28,6 +28,9 @@ class Task(models.Model):
     finished_at = models.DateTimeField(_('finished at'), null=True)
     metadata = JSONField(null=True, blank=True)
     traceback = models.TextField(_('traceback'), blank=True, null=True)
+    estimated_duration = models.PositiveIntegerField(_('estimated duration'),
+                                                     blank=True,
+                                                     null=True)
     internal_metadata = JSONField(null=True, blank=True)
 
     @property
