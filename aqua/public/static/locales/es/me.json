@@ -65,12 +65,15 @@
     "add_imgs": "Agregar im\u00e1genes",
     "classes": "Clases",
     "created_at": "Fecha de creaci\u00f3n",
-    "delete_models": "Borrar Modelo",
+    "delete_models": "Eliminar",
     "estimator_type": "Tipo",
     "more_info": "M\u00e1s informaci\u00f3n",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
+    "text_delete": "\u00bfEst\u00e1 seguro que desea eliminar este modelo y sus anotaciones?",
+    "text_delete_warning": "Esta acci\u00f3n es IRREVERSIBLE",
     "title": "Modelos",
+    "title_delete": "Eliminar modelo",
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     },

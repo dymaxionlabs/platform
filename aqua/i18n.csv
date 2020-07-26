@@ -166,7 +166,10 @@ me,models.types.OD,Detección de Objetos,Object Detection
 me,models.more_info,Más información,More information
 me,models.add_imgs,Agregar imágenes,Add images
 me,models.add_annot,Agregar anotaciones,Add annotations
-me,models.delete_models,Borrar Modelo,Delete Model
+me,models.delete_models,Eliminar,Delete
+me,models.title_delete,Eliminar modelo,Delete Model
+me,models.text_delete_warning,Esta acción es IRREVERSIBLE,This action is IRREVERSIBLE
+me,models.text_delete,¿Está seguro que desea eliminar este modelo y sus anotaciones?,Are you sure you want to delete this model and its annotations?
 me,models.uuid,Mostrar UUID,Show UUID
 me,layers.title,Capas,Layers
 me,layers.created_at,Fecha de creación,Creation date

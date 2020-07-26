@@ -65,12 +65,15 @@
     "add_imgs": "Add images",
     "classes": "Classes",
     "created_at": "Creation date",
-    "delete_models": "Delete Model",
+    "delete_models": "Delete",
     "estimator_type": "Type",
     "more_info": "More information",
     "name": "Name",
     "new_btn": "New Model",
+    "text_delete": "Are you sure you want to delete this model and its annotations?",
+    "text_delete_warning": "This action is IRREVERSIBLE",
     "title": "Models",
+    "title_delete": "Delete Model",
     "types": {
       "OD": "Object Detection"
     },
