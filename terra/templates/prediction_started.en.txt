@@ -1,6 +1,6 @@
 Hi,
 
-The prediction of your images with your custom model {{name}} for {{num_classes}} classes has started.
+A prediction task with your custom model "{{name}}" has started.
 
 We will email you when you results are ready.
 

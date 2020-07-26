@@ -21,8 +21,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 def send_welcome_email(sender, instance, created, **kwargs):
     if created and instance.email:
         email = WelcomeEmail(user=instance,
-                             recipients=[instance.email],
-                             language_code='es')
+                             recipients=[instance.email])
         email.send_mail()
 
 

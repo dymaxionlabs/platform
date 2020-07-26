@@ -32,8 +32,7 @@ def sendPredictionJobCompletedEmail(job, map):
     users = [user for user in users if user.userprofile.send_notification_emails]
     email = PredictionCompletedEmail(estimator=estimator,
                                      map=map,
-                                     recipients=[user.email for user in users],
-                                     language_code='es')
+                                     recipients=[user.email for user in users])
     email.send_mail()
 
 
@@ -42,8 +41,7 @@ def sendTrainingJobCompletedEmail(job):
     users = estimator.project.collaborators.all()
     users = [user for user in users if user.userprofile.send_notification_emails]
     email = TrainingCompletedEmail(estimator=estimator,
-                                   recipients=[user.email for user in users],
-                                   language_code='es')
+                                   recipients=[user.email for user in users])
     email.send_mail()
 
 

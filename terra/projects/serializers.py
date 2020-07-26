@@ -138,8 +138,7 @@ class SubscribeBetaSerializer(serializers.Serializer):
 
     def save(self):
         email = EarlyAccessBetaEmail(
-            recipients=[self.data['email']],
-            language_code=self.context['request'].LANGUAGE_CODE)
+            recipients=[self.data['email']])
         email.send_mail()
 
 

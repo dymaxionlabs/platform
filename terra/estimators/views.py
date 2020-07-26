@@ -190,8 +190,7 @@ class StartTrainingJobView(APIView):
             user = request.user
             if user.userprofile.send_notifications_emails:
                 email = TrainingStartedEmail(estimator=estimator,
-                                             recipients=[user.email],
-                                             language_code='es')
+                                             recipients=[user.email])
                 email.send_mail()
 
         serializer = TaskSerializer(job)
@@ -258,8 +257,7 @@ class StartPredictionJobView(APIView):
             user = request.user
             if user.userprofile.send_notifications_emails:
                 email = PredictionStartedEmail(estimator=estimator,
-                                               recipients=[user.email],
-                                               language_code='es')
+                                               recipients=[user.email])
                 email.send_mail()
 
         serializer = TaskSerializer(job)
