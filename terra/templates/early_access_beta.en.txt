@@ -1,12 +1,12 @@
 Hi,
 
-You can start using DYMA.
+You can now start using DYMAX.
 
 With this tool, you can train your own custom deep learning models without technical expertise in artificial intelligence.
 
 {signup_url}
 
-We are so happy to work with you!
+We are very happy to work with you!
 
 Best,
 

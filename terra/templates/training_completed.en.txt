@@ -1,7 +1,9 @@
 Hi,
 
-The training of your custom model {{name}} for {{num_classes}} classes has finished.
-Enter to the following link {{link}} to continue the prediction.
+The training of your custom model "{{name}}" has finished.
+
+If you want to unsubscribe from these notifications, uncheck "Send task notifications via email" in your User Profile.
+
 
 Best,
 Federico & the Dymaxion Labs team.

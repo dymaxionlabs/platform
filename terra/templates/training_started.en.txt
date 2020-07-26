@@ -4,5 +4,8 @@ The training of your custom model {{name}} for {{num_classes}} classes has start
 
 We will email you when you model it is ready.
 
+If you want to unsubscribe from these notifications, uncheck "Send task notifications via email" in your User Profile.
+
+
 Best,
 Federico & the Dymaxion Labs team.
