@@ -58,7 +58,13 @@ class TasksContent extends React.Component {
     await this.getTasks();
     this.setState({ loading: false });
 
-    setInterval(() => this.getTasks(), 5000);
+    this.interval = setInterval(() => this.getTasks(), 5000);
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   async getTasks() {
