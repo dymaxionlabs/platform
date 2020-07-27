@@ -16,7 +16,7 @@ class UserQuota(models.Model):
 
     def __str__(self):
         return """{user}: Projects: {projects}, User Storage: {user_storage}, 
-                Estiators per project: {estimators}, Max File Size: {file_size} """.format(
+                Estimators per project: {estimators}, Max File Size: {file_size} """.format(
             user=self.user, 
             projects=self.max_projects_per_user, 
             user_storage=self.total_space_per_user, 
