@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from terra.emails import WelcomeEmail
+from terra.utils import slack_notify
 
 from .models import File, UserProfile, Project
 
@@ -15,6 +16,12 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(user=instance)
         project = Project.objects.create(name='Default', owner=instance)
         project.collaborators.set([instance])
+
+
+@receiver(post_save, sender=User)
+def notify_user_signup(sender, instance, created, **kwargs):
+    if created:
+        slack_notify(f'New user signed up! {instance.username}, {instance.email}')
 
 
 @receiver(post_save, sender=User)

@@ -28,6 +28,7 @@ from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
 from credits.models import LogEntry as CreditsLogEntry
+from terra.utils import slack_notify
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -186,6 +187,11 @@ class StartTrainingJobView(APIView):
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
 
+            try:
+                slack_notify(f'User {request.user.username} started a training task {job.id} for estimator {estimator.id}')
+            except:
+                pass
+
             # Send notification email
             user = request.user
             if user.userprofile.send_notifications_emails:
@@ -253,6 +259,11 @@ class StartPredictionJobView(APIView):
                 })
             job.start()
 
+            try:
+                slack_notify(f'User {request.user.username} started a prediction task {job.id} for estimator {estimator.id}')
+            except:
+                pass
+
             # Send notification email
             user = request.user
             if user.userprofile.send_notifications_emails:
@@ -293,6 +304,12 @@ class StartImageTilingJobView(RelatedProjectAPIView):
                                           request.data.get('tile_size', None),
                                       })
             job.start()
+
+            try:
+                slack_notify(f'User {request.user.username} started an image tiling task {job.id}')
+            except:
+                pass
+
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
