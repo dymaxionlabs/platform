@@ -2,8 +2,6 @@ import mimetypes
 import tempfile
 
 import requests
-from django.db.models import Sum
-from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -107,14 +105,7 @@ class UploadFileView(StorageAPIView):
         if not fileobj:
             raise ParseError("'file' missing")
 
-        quota = UserQuota.objects.get(user=request.user)
-        if quota.max_file_size < fileobj.size:
-            raise ParseError("the file size exceeds the allowed limit")
-
-        #TODO: Change filter, get all files per user
-        usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
-        if quota.total_space_per_user < usage['total'] + fileobj.size:
-            raise ParseError("insufficient storage")
+        File.check_quota(request.user, fileobj.size)
 
         client = self.get_client()
         storage_file = client.upload_from_file(fileobj,
@@ -227,17 +218,12 @@ class CreateResumableUploadView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         size = request.query_params.get('size', None)
-        if size:
+        if not size:
+            raise ParseError("'size' missing")
+        else:
             size = int(size)
 
-        quota = UserQuota.objects.get(user=request.user)
-        if quota.max_file_size < size:
-            raise ParseError("the file size exceeds the allowed limit")
-
-        #TODO: Change filter, get all files per user
-        usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
-        if quota.total_space_per_user < usage['total'] + size:
-            raise ParseError("insufficient storage")
+        File.check_quota(request.user, size)
 
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
