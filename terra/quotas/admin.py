@@ -6,7 +6,7 @@ class UserQuotaAdmin(admin.ModelAdmin):
         'user', 
         'max_projects_per_user', 
         'max_file_size', 
-        'total_space_per_project', 
+        'total_space_per_user', 
         'max_estimator_per_project',
         'updated_at',
     )

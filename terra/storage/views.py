@@ -111,8 +111,9 @@ class UploadFileView(StorageAPIView):
         if quota.max_file_size < fileobj.size:
             raise ParseError("the file size exceeds the allowed limit")
 
+        #TODO: Change filter, get all files per user
         usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
-        if quota.total_space_per_project < usage['total'] + fileobj.size:
+        if quota.total_space_per_user < usage['total'] + fileobj.size:
             raise ParseError("insufficient storage")
 
         client = self.get_client()
@@ -233,9 +234,9 @@ class CreateResumableUploadView(StorageAPIView):
         if quota.max_file_size < size:
             raise ParseError("the file size exceeds the allowed limit")
 
+        #TODO: Change filter, get all files per user
         usage = File.objects.filter(project=self.get_project()).aggregate(total=Coalesce(Sum('size'),0))
-
-        if quota.total_space_per_project < usage['total'] + size:
+        if quota.total_space_per_user < usage['total'] + size:
             raise ParseError("insufficient storage")
 
         client = self.get_client()
