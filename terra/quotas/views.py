@@ -41,12 +41,14 @@ class UserQuotaUsageView(APIView):
             }
             projects_data.append(project_quota)
         usage = {
-            'user': str(request.user),
-            'storage': {
-                'used': File.objects.filter(project__in=projects).aggregate(
-                    used=Coalesce(Sum('size'),0))['used'],
-                'available': quota.total_space_per_user
-            },
+            'user': {
+                'username': request.user.username,
+                'storage': {
+                    'used': File.objects.filter(project__in=projects).aggregate(
+                        used=Coalesce(Sum('size'),0))['used'],
+                    'available': quota.total_space_per_user
+                },
+            },            
             'projects': projects_data,
         }
         return Response(usage)
