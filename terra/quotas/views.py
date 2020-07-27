@@ -31,22 +31,22 @@ class UserQuotaUsageView(APIView):
         quota = UserQuota.objects.get(user=request.user)
         projects = Project.objects.filter(owner=request.user)
         projects_data = []
-        #TODO: rebuild this dict. Storage per user
         for p in projects:
             project_quota = {
                 'name': p.name,
-                'storage': {
-                    'used': File.objects.filter(project=p).aggregate(used=Coalesce(Sum('size'),0))['used'],
-                    'total': quota.total_space_per_user
-                },
                 'estimators': {
-                    'created': Estimator.objects.filter(project=p).count(),
-                    'total': quota.max_estimator_per_project,
+                    'count': Estimator.objects.filter(project=p).count(),
+                    'limit': quota.max_estimator_per_project,
                 }
             }
             projects_data.append(project_quota)
         usage = {
             'user': str(request.user),
+            'storage': {
+                'used': File.objects.filter(project__in=projects).aggregate(
+                    used=Coalesce(Sum('size'),0))['used'],
+                'available': quota.total_space_per_user
+            },
             'projects': projects_data,
         }
         return Response(usage)
