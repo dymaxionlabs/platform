@@ -111,12 +111,14 @@ class UploadFileView(StorageAPIView):
         storage_file = client.upload_from_file(fileobj,
                                        to=path,
                                        content_type=fileobj.content_type)
-        file = File.objects.create(
+        File.objects.get_or_create(
             project=self.get_project(),
             path=storage_file.path,
-            size=fileobj.size,
-            metadata=storage_file.metadata
-        )      
+            defaults={
+                'size': fileobj.size,
+                'metadata': storage_file.metadata
+            }
+        )
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -228,11 +230,13 @@ class CreateResumableUploadView(StorageAPIView):
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-        File.objects.create(
+        File.objects.get_or_create(
             project=self.get_project(),
             path=path,
-            size=size,
-            complete=False,
+            defaults={
+                'size': size,
+                'complete': False,
+            }
         )
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)

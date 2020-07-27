@@ -10,7 +10,7 @@ from quotas.models import UserQuota
 class File(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='files')
     path = models.CharField(max_length=512)
-    size = models.IntegerField()
+    size = models.BigIntegerField()
     complete = models.BooleanField(default=True)
     metadata = JSONField(null=True, blank=True)
 
