@@ -8,4 +8,5 @@ from .models import File
 def delete_file_in_bucket(sender, instance, **kwargs):
     client = Client(instance.project)
     files = list(client.list_files(instance.path))
-    files[0].delete()
+    if files:
+        files[0].delete()
