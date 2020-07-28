@@ -103,7 +103,10 @@ class UploadFileViewTest(TestCase):
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
-    #TODO: teardown
+    def tearDown(self):
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class FileViewTest(TestCase):
@@ -119,7 +122,12 @@ class FileViewTest(TestCase):
         self.test_path = "foo/data.bin"
 
     def test_retrieve_file(self):
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        response = self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
+        self.assertEquals(200, response.status_code)
         response = self.client.get(f'/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
@@ -128,10 +136,6 @@ class FileViewTest(TestCase):
             dict(name=os.path.basename(self.test_path),
                  path=self.test_path,
                  metadata={}))
-        files = list(self.storage_client.list_files(self.test_path))
-        if not files:
-            raise FileNotFoundError
-        files[0].delete()
 
     def test_file_missing(self):
         missing_path = self.test_path + '.1'
@@ -144,13 +148,19 @@ class FileViewTest(TestCase):
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def test_destroy_file(self):
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        response = self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
+        self.assertEquals(200, response.status_code)
         response = self.client.delete(f'/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
         self.assertEqual(response.data['detail'], 'File deleted.')
-        files = list(self.storage_client.list_files(self.test_path))
-        self.assertFalse(files, 'File was not deleted.')
+
+        response = self.client.get(f'/storage/files/')
+        self.assertFalse(response.data, 'File was not deleted.')
 
     def test_destroy_file_missing(self):
         missing_path = self.test_path + '.1'
@@ -161,6 +171,11 @@ class FileViewTest(TestCase):
         response = self.client.delete(f'/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
+    
+    def tearDown(self):
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class DownloadFileViewTest(TestCase):

@@ -148,10 +148,10 @@ class FileView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
 
-        file = self.queryset.filter(path=path, project=project)
+        file = self.queryset.filter(path=path, project=project).first()
         if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-        content = FileSerializer(file.first()).data
+        content = FileSerializer(file).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
 
     def delete(self, request, format=None):
@@ -162,7 +162,7 @@ class FileView(StorageAPIView):
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        file = self.queryset.filter(path=path, project=project)
+        file = self.queryset.filter(path=path, project=project).first()
         if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
         file.delete()
