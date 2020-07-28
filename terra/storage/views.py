@@ -61,12 +61,13 @@ class ListFilesView(RelatedProjectAPIView):
         # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', '*')
-
+        print(path)
         clean_path = path.lstrip(" /").rstrip()
         prefix = clean_path.split("*")[0]
         files = self.queryset.filter(project=project, path__startswith=prefix)
+        response_status = status.HTTP_204_NO_CONTENT if files.first() is None else status.HTTP_200_OK
         match_files = (f for f in files if fnmatch(f.path, clean_path))
-        return Response(FileSerializer(match_files, many=True).data)
+        return Response(FileSerializer(match_files, many=True).data, status=response_status)
 
 
 class UploadFileView(StorageAPIView):
@@ -111,7 +112,7 @@ class UploadFileView(StorageAPIView):
         storage_file = client.upload_from_file(fileobj,
                                        to=path,
                                        content_type=fileobj.content_type)
-        File.objects.get_or_create(
+        file, _ = File.objects.get_or_create(
             project=self.get_project(),
             path=storage_file.path,
             defaults={

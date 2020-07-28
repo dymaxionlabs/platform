@@ -11,4 +11,4 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = File
-        exclude = ('complete',)
+        fields = ['name','path', 'metadata']
