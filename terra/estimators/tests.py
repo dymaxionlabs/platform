@@ -1,15 +1,17 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.db.models import Q
+
 from rest_framework import status
 from rest_framework.test import APIClient
 from unittest.mock import patch
 
 from terra.tests import create_some_user, loginWithAPI
-from projects.tests import create_some_project
+from projects.tests import create_some_project, create_some_api_key, login_with_api_key
 from storage.client import Client
 
 from .models import Estimator, File
-from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView
+from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView, StartImageTilingJobView
 from tasks.models import Task
 
 
@@ -87,17 +89,14 @@ class EstimatorViewSetTest(TestCase):
                           response.data)
 
 
-class Object(object):
-    pass
-
-
 def mock_list_vector_files(client, arg):
     if arg == 'f1':
         return ['f1']
     else:
         return []
 
-class EstimatorAnnotationUploadTest(TestCase):
+
+class AnnotationUploadTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
@@ -111,16 +110,16 @@ class EstimatorAnnotationUploadTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(
-            request, 'data',
-            dict(project=self.project.uuid,
-                 related_file='f1',
-                 vector_file='f1',
-                 label='label1'))
         mock_import_from_vector_file.return_value = ['label1']
         mock_list_files.return_value = ('f1', )
-        rv = AnnotationUpload().post(request, estimator.uuid)
+        
+        rv = self.client.post('/estimators/{}/load_labels/'.format(estimator.uuid), 
+            dict(
+                project=self.project.uuid,
+                related_file='f1',
+                vector_file='f1',
+                label='label1'
+        ))
         self.assertEquals(rv.status_code, 200)
         self.assertIn('annotation_created', rv.data['detail'].keys())
         self.assertEquals(rv.data['detail']['annotation_created'], 1)
@@ -134,16 +133,15 @@ class EstimatorAnnotationUploadTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(
-            request, 'data',
-            dict(project=self.project.uuid,
-                 related_file='f1',
-                 vector_file='f1',
-                 label='label1'))
         mock_import_from_vector_file.return_value = ['label1']
         mock_list_files.return_value = []
-        rv = AnnotationUpload().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/load_labels/'.format(estimator.uuid), 
+            dict(
+                project=self.project.uuid,
+                related_file='f1',
+                vector_file='f1',
+                label='label1'
+        ))
         self.assertEquals(rv.status_code, 404)
         self.assertIn('related_file', rv.data.keys())
         self.assertEquals(rv.data['related_file'], "Not found")
@@ -156,15 +154,14 @@ class EstimatorAnnotationUploadTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(
-            request, 'data',
-            dict(project=self.project.uuid,
-                 related_file='f1',
-                 vector_file='v1',
-                 label='label1'))
         mock_import_from_vector_file.return_value = ['label1']
-        rv = AnnotationUpload().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/load_labels/'.format(estimator.uuid), 
+            dict(
+                project=self.project.uuid,
+                related_file='f1',
+                vector_file='v1',
+                label='label1'
+        ))
         self.assertEquals(rv.status_code, 404)
         self.assertIn('vector_file', rv.data.keys())
         self.assertEquals(rv.data['vector_file'], "Not found")
@@ -186,9 +183,13 @@ class StartTrainingJobViewTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(request, 'user', self.user)
-        rv = StartTrainingJobView().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/train/'.format(estimator.uuid), 
+            dict(
+                project=self.project.uuid,
+                related_file='f1',
+                vector_file='f1',
+                label='label1'
+        ))    
         mock_send_mail.assert_called_once()
         mock_start.assert_called_once()
         self.assertEquals(rv.status_code, 200)
@@ -199,10 +200,14 @@ class StartTrainingJobViewTest(TestCase):
                                              classes=['a', 'b'])
         uuid = estimator.uuid
         estimator.delete()
-        request = Object()
-        setattr(request, 'user', self.user)
         with self.assertRaises(Estimator.DoesNotExist):
-            StartTrainingJobView().post(request, uuid)
+            rv = self.client.post('/estimators/{}/train/'.format(uuid), 
+                dict(
+                    project=self.project.uuid,
+                    related_file='f1',
+                    vector_file='f1',
+                    label='label1'
+            )) 
 
 
 class StartPredictionJobViewTest(TestCase):
@@ -221,15 +226,14 @@ class StartPredictionJobViewTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(request, 'user', self.user)
-        setattr(request, 'data', dict(
-            files=['f1','f2'],
-            output_path='foo/'
-        ))
+        request = dict(
+                user=self.user,
+                files=['f1','f2'],
+                output_path='foo/'
+            )
 
         # to test prediction I need a training job
-        rv = StartTrainingJobView().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/train/'.format(estimator.uuid), request)
         mock_send_mail.assert_called_once()
         mock_start.assert_called_once()
         self.assertEquals(rv.status_code, 200)
@@ -241,7 +245,7 @@ class StartPredictionJobViewTest(TestCase):
         job.state = "FINISHED"
         job.save()
 
-        rv = StartPredictionJobView().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/predict/'.format(estimator.uuid), request)
         self.assertEquals(rv.status_code, 200)
 
 
@@ -251,14 +255,12 @@ class StartPredictionJobViewTest(TestCase):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        request = Object()
-        setattr(request, 'user', self.user)
-        setattr(request, 'data', dict(
+        request = dict(
             files=['f1','f2'],
             output_path='foo/'
-        ))
+        )
 
-        rv = StartPredictionJobView().post(request, estimator.uuid)
+        rv = self.client.post('/estimators/{}/predict/'.format(estimator.uuid), request)
         self.assertEquals(rv.status_code, 400)
 
 
@@ -268,8 +270,55 @@ class StartPredictionJobViewTest(TestCase):
                                              classes=['a', 'b'])
         uuid = estimator.uuid
         estimator.delete()
-        request = Object()
-        setattr(request, 'user', self.user)
         with self.assertRaises(Estimator.DoesNotExist):
-            StartPredictionJobView().post(request, uuid)
+            rv = self.client.post('/estimators/{}/train/'.format(uuid), 
+                dict(
+                    project=self.project.uuid
+                ))
 
+
+class StartImageTilingJobViewTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_some_user()
+        loginWithAPI(self.client, self.user.username, 'secret')
+        self.project = create_some_project(name="Some project",
+                                           owners=[self.user])
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+
+    def test_post_ok(self):
+        estimator = Estimator.objects.create(name='Foo',
+                                             project=self.project,
+                                             classes=['a', 'b'])
+        rv = self.client.post('/estimators/start_tiling_job/', {
+            'path': 'path/',
+            'output_path': 'out/',
+            'tile_size': 'foo'
+        }, format='json')
+        self.assertEqual(rv.status_code, 200)
+        job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
+                                  project=self.project,
+                                  internal_metadata__path='path/',
+                                  name=Estimator.IMAGE_TILING_TASK).first()
+        self.assertIsNotNone(job)
+
+    def test_post_path_not_found(self):
+        request = dict(
+            output_path='out/',
+            tile_size='foo'
+        )
+        rv = self.client.post('/estimators/start_tiling_job/', request)
+        self.assertEqual(rv.status_code, 404)
+        self.assertEqual(rv.data['path'], 'Not found')
+
+    def test_post_output_path_not_found(self):
+        request = dict(
+            path='path/',
+            tile_size='foo'
+        )
+        rv = self.client.post('/estimators/start_tiling_job/', request)
+        self.assertEqual(rv.status_code, 404)
+        self.assertEqual(rv.data['output_path'], 'Not found')
