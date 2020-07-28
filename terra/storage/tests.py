@@ -3,7 +3,6 @@ import os
 from urllib.parse import parse_qs, urlparse
 
 import requests
-from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -11,6 +10,7 @@ from rest_framework.test import APIClient
 from projects.models import Project
 from projects.tests import create_some_api_key, login_with_api_key
 from storage.client import Client
+from storage.models import File
 from terra.tests import create_some_user
 
 
@@ -23,13 +23,18 @@ class ListFilesTest(TestCase):
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
         self.storage_client = Client(self.project)
-        with open("/tmp/testfile1.txt", "w") as f:
-            f.write("this is a test\n")
-        with open("/tmp/testfile2.py", "w") as f:
-            f.write("# this is another test\n")
-        self.storage_client.upload_from_filename("/tmp/testfile1.txt")
-        self.storage_client.upload_from_filename("/tmp/testfile2.py", "foo/")
         self.check_files = ["testfile1.txt", "foo/testfile2.py"]
+
+        self.client.post(
+            f'/storage/upload/', 
+            dict(path=self.check_files[0], file=io.BytesIO(b"test file content")), 
+            format='multipart'
+        )
+        self.client.post(
+            f'/storage/upload/', 
+            dict(path=self.check_files[1], file=io.BytesIO(b"test file2 content")), 
+            format='multipart'
+        )                           
 
     def test_client_list_file(self):
         uploaded_files = []
@@ -63,11 +68,9 @@ class ListFilesTest(TestCase):
             self.assertIn(f, files_retrieved)
 
     def tearDown(self):
-        files = list(self.storage_client.list_files())
-        if not files:
-            raise FileNotFoundError
-        for f in files:
-            f.delete()
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class UploadFileViewTest(TestCase):
@@ -99,6 +102,8 @@ class UploadFileViewTest(TestCase):
                                     format='multipart')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
+
+    #TODO: teardown
 
 
 class FileViewTest(TestCase):
