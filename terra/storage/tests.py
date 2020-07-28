@@ -190,7 +190,11 @@ class DownloadFileViewTest(TestCase):
         self.storage_client = Client(self.project)
         self.test_data = io.BytesIO(b"test file content")
         self.test_path = "foo/data.bin"
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
 
     def test_download_file(self):
         response = self.client.get(f'/storage/download/?path={self.test_path}')
@@ -209,10 +213,9 @@ class DownloadFileViewTest(TestCase):
         self.assertEquals(404, response.status_code)
 
     def tearDown(self):
-        files = list(self.storage_client.list_files(self.test_path))
-        if not files:
-            raise FileNotFoundError
-        files[0].delete()
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class CreateResumableUploadViewTest(TestCase):
