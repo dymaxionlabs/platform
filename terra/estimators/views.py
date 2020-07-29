@@ -174,7 +174,7 @@ class StartTrainingJobView(APIView):
                 duration=estimator.training_hours)
 
             # If user has not enough credits for task, fail!
-            if CreditsLogEntry.available_credits < task_cost:
+            if CreditsLogEntry.available_credits(estimator.project.owner) < task_cost:
                 return Response(
                     {'estimator': _('Not enough credits for training')},
                     status=status.HTTP_400_BAD_REQUEST)
@@ -194,7 +194,7 @@ class StartTrainingJobView(APIView):
 
             # Send notification email
             user = request.user
-            if user.userprofile.send_notifications_emails:
+            if user.userprofile.send_notification_emails:
                 email = TrainingStartedEmail(estimator=estimator,
                                              recipients=[user.email])
                 email.send_mail()
@@ -232,7 +232,7 @@ class StartPredictionJobView(APIView):
             # estimate prediction task duration, so we only check if it has any
             # credits at all, and allow negative credit balance in the worst
             # case scenario.
-            if CreditsLogEntry.available_credits <= 0:
+            if CreditsLogEntry.available_credits(estimator.project.owner) <= 0:
                 return Response(
                     {'estimator': _('Not enough credits for prediction')},
                     status=status.HTTP_400_BAD_REQUEST)
@@ -266,7 +266,7 @@ class StartPredictionJobView(APIView):
 
             # Send notification email
             user = request.user
-            if user.userprofile.send_notifications_emails:
+            if user.userprofile.send_notification_emails:
                 email = PredictionStartedEmail(estimator=estimator,
                                                recipients=[user.email])
                 email.send_mail()
