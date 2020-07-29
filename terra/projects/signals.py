@@ -12,7 +12,7 @@ from quotas.models import UserQuota
 
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def configure_user_and_default_project(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
         UserQuota.objects.create(user=instance)

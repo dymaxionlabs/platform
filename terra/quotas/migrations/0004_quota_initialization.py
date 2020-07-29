@@ -10,9 +10,6 @@ def quota_initialization(apps, schema_editor):
         MyModel.objects.get_or_create(user=user)
 
 
-def reverse_func(apps, schema_editor):
-    pass
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -21,5 +18,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(quota_initialization, reverse_func),
+        migrations.RunPython(quota_initialization, migrations.RunPython.noop),
     ]
