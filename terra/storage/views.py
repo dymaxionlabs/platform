@@ -61,7 +61,6 @@ class ListFilesView(RelatedProjectAPIView):
         # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', '*')
-        print(path)
         clean_path = path.lstrip(" /").rstrip()
         prefix = clean_path.split("*")[0]
         files = self.queryset.filter(project=project, path__startswith=prefix)
