@@ -1,19 +1,21 @@
 import django_rq
 import os
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from terra.emails import WelcomeEmail
 from terra.utils import slack_notify
 
 from .models import File, UserProfile, Project
+from quotas.models import UserQuota
 
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def configure_user_and_default_project(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+        UserQuota.objects.create(user=instance)
         project = Project.objects.create(name='Default', owner=instance)
         project.collaborators.set([instance])
 
@@ -43,3 +45,11 @@ def generate_raster_tiles_from_file(sender, instance, created, **kwargs):
         if ext in ['.json', '.geojson']:
             django_rq.enqueue('projects.tasks.generate_vector_tiles',
                               instance.pk)
+
+
+@receiver(pre_save, sender=Project)
+def pre_save_handler(sender, instance, *args, **kwargs):
+    quota = UserQuota.objects.get(user=instance.owner)
+    created_estimators = Project.objects.filter(owner=instance.owner).count()
+    if created_estimators >= quota.max_projects_per_user:
+        raise Exception('Quota exceeded')

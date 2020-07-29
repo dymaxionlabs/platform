@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'jsoneditor',
     'guardian',
     'django_rq',
+    'quotas',
 ]
 
 MIDDLEWARE = [
@@ -313,3 +314,9 @@ TIPPECANOE_BIN_PATH = os.getenv('TIPPECANOE_BIN_PATH',
 OGR2OGR_BIN_PATH = os.getenv('OGR2OGR_BIN_PATH', '/usr/bin/ogr2ogr')
 
 SLACK_HOOK_URL = os.getenv('SLACK_HOOK_URL')
+
+# Quotas
+MAX_PROJECTS_PER_USER = 100
+MAX_FILE_SIZE =  10 * 2**30 #10GB
+TOTAL_SPACE_PER_USER = 25 * 2**30 #25GB 
+MAX_ESTIMATORS_PER_PROJECT = 100

@@ -114,4 +114,5 @@ urlpatterns += [path('tasks/', include('tasks.urls'))]
 urlpatterns += [path('estimators/', include('estimators.urls'))]
 urlpatterns += [path('credits/', include('credits.urls'))]
 urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
+urlpatterns += [path('quotas/', include('quotas.urls'))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
