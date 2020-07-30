@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from dymaxionlabs.models import Estimator
 from dymaxionlabs.files import File
 from datetime import datetime
@@ -5,7 +6,8 @@ import glob
 import os
 import time
 
-def smoke():
+
+def run_object_detection_e2e_test():
     #Estimator
     print("Smoke test.")
     storage_root = 'smoke'
@@ -64,5 +66,6 @@ def smoke():
     for path in estimator.prediction_job.metadata["results_files"]:
         File.get(path).download("vineyard/predict-results/")
 
+
 if __name__ == "__main__":
-    smoke()
+    run_object_detection_e2e_test()
