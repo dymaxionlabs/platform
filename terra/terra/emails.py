@@ -256,13 +256,9 @@ class TrainingCompletedEmail(Email):
 class PredictionCompletedEmail(Email):
     template_name = 'prediction_completed'
 
-    def __init__(self, estimator, map, *args, **kwargs):
+    def __init__(self, estimator, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.estimator = estimator
-        self.link = '{web_client_url}/maps/{uuid}'.format(
-            web_client_url = settings.WEBCLIENT_URL,
-            uuid = str(map.uuid)
-        )
 
     @property
     def subject(self):
@@ -275,7 +271,6 @@ class PredictionCompletedEmail(Email):
             **super().template_params,
             'name': self.estimator_name,
             'num_classes': self.num_classes,
-            'link': self.link,
         }
 
     @property
@@ -284,7 +279,6 @@ class PredictionCompletedEmail(Email):
             **super().mc_variables,
             '*|NAME|*': self.estimator_name,
             '*|NUM_CLASSES|*': self.num_classes,
-            '*|LINK|*': self.link,
         }
 
     @property
