@@ -35,7 +35,7 @@ from stac.views import SearchView
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet)
-router.register(r'user_profiles', UserProfileViewSet)
+router.register(r'user-profiles', UserProfileViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
@@ -112,5 +112,7 @@ if settings.DEBUG:
 urlpatterns += [path('storage/', include('storage.urls'))]
 urlpatterns += [path('tasks/', include('tasks.urls'))]
 urlpatterns += [path('estimators/', include('estimators.urls'))]
+urlpatterns += [path('credits/', include('credits.urls'))]
 urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
+urlpatterns += [path('quotas/', include('quotas.urls'))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,17 +1,3 @@
-import FolderIcon from "@material-ui/icons/Folder";
-import axios from "axios";
-import cookie from "js-cookie";
-import Head from "next/head";
-import PropTypes from "prop-types";
-import React from "react";
-import Moment from "react-moment";
-import BasicAppbar from "../components/BasicAppbar";
-import { i18n, withTranslation } from "../i18n";
-import { buildApiUrl } from "../utils/api";
-import { logout, withAuthSync } from "../utils/auth";
-import { routerPush } from "../utils/router";
-import { withStyles } from '@material-ui/core/styles';
-
 import {
   Avatar,
   Button,
@@ -21,12 +7,27 @@ import {
   LinearProgress,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import FolderIcon from "@material-ui/icons/Folder";
+import axios from "axios";
+import cookie from "js-cookie";
+import Head from "next/head";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import BasicAppbar from "../components/BasicAppbar";
+import { i18n, withTranslation } from "../i18n";
+import { buildApiUrl } from "../utils/api";
+import { logout, withAuthSync } from "../utils/auth";
+import { routerPush } from "../utils/router";
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -35,85 +36,89 @@ const styles = theme => ({
     [theme.breakpoints.up(500 + theme.spacing(2) * 2)]: {
       width: 500,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   subheader: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   subsubheader: {
-    fontWeight: 500
+    fontWeight: 500,
   },
   grid: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   list: {
     overflow: "auto",
-    maxHeight: 320
+    maxHeight: 320,
   },
   inlineFormContainer: {
-    display: "flex"
+    display: "flex",
   },
   inlineFormControl: {
     flexGrow: 1,
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 });
 
 class NewProjectForm extends React.Component {
   state = {
-    name: ""
+    submitting: false,
+    name: "",
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = e => {
+  handleSubmit = async (e) => {
     e.preventDefault();
 
     const { token } = this.props;
     const { name } = this.state;
 
-    axios
-      .post(
+    this.setState({ submitting: true });
+
+    try {
+      const response = await axios.post(
         buildApiUrl(`/projects/`),
         { name: name },
         {
           headers: {
             "Accept-Language": i18n.language,
-            Authorization: token
-          }
+            Authorization: token,
+          },
         }
-      )
-      .then(response => {
-        const { uuid } = response.data;
-        cookie.set("project", uuid);
-        routerPush("/home/");
-      })
-      .catch(err => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
-      })
-      .then(() => {
-        this.setState({ loading: false });
-      });
+      );
+      const { uuid } = response.data;
+      cookie.set("project", uuid);
+      routerPush("/home/");
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to create new project", {
+          variant: "error",
+        });
+        this.setState({ submitting: false });
+      }
+    }
   };
 
   render() {
     const { t, classes } = this.props;
-    const { name } = this.state;
+    const { submitting, name } = this.state;
 
     return (
       <form
@@ -133,9 +138,15 @@ class NewProjectForm extends React.Component {
               placeholder={t("new.name_placeholder")}
               value={name}
               onChange={this.handleChange}
+              disabled={submitting}
             />
           </FormControl>
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={submitting}
+          >
             {t("new.submit_btn")}
           </Button>
         </div>
@@ -146,11 +157,12 @@ class NewProjectForm extends React.Component {
 
 NewProjectForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 NewProjectForm = withStyles(styles)(NewProjectForm);
 NewProjectForm = withTranslation("select_project")(NewProjectForm);
+NewProjectForm = withSnackbar(NewProjectForm);
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -158,45 +170,43 @@ class OpenProjectList extends React.Component {
   state = {
     loading: true,
     results: [],
-    count: 0
+    count: 0,
   };
 
-  // pages() {
-  //   const { count } = this.props;
-  //   return Math.ceil(count / PROJECTS_PER_PAGE);
-  // }
-
-  componentDidMount() {
-    const { token } = this.props;
-
-    axios
-      .get(buildApiUrl(`/projects/`), {
-        headers: {
-          "Accept-Language": i18n.language,
-          Authorization: token
-        }
-      })
-      .then(response => {
-        const { count, results } = response.data;
-        this.setState({ count, results });
-        if((count == 1) && (!cookie.get("project"))) {
-          this.handleSelectProject(results[0].uuid);
-        }
-      })
-      .catch(err => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
-      })
-      .then(() => {
-        this.setState({ loading: false });
-      });
+  async componentDidMount() {
+    await this.getProjects();
+    this.setState({ loading: false });
   }
 
-  handleSelectProject = uuid => {
+  async getProjects() {
+    const { token } = this.props;
+
+    try {
+      const response = await axios.get(buildApiUrl(`/projects/`), {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: token,
+        },
+      });
+      const { count, results } = response.data;
+      this.setState({ count, results });
+      if (count == 1 && !cookie.get("project")) {
+        this.handleSelectProject(results[0].uuid);
+      }
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get projects", {
+          variant: "error",
+        });
+      }
+    }
+  }
+
+  handleSelectProject = (uuid) => {
     cookie.set("project", uuid);
     routerPush("/home/");
   };
@@ -211,21 +221,26 @@ class OpenProjectList extends React.Component {
     } else if (results.length > 0) {
       return (
         <List className={classes.list}>
-          {results.map(project => (
+          {results.map((project) => (
             <ListItem
               button
               key={project.uuid}
               onClick={() => this.handleSelectProject(project.uuid)}
             >
-              <Avatar>
-                <FolderIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <FolderIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText
                 primary={project.name}
                 secondary={
-                  <Moment locale={locale} fromNow>
-                    {project.updated_at}
-                  </Moment>
+                  <>
+                    <Moment locale={locale} fromNow>
+                      {project.updated_at}
+                    </Moment>{" "}
+                    - {project.collaborators.join(", ")}
+                  </>
                 }
               />
             </ListItem>
@@ -241,16 +256,17 @@ class OpenProjectList extends React.Component {
 OpenProjectList.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired
+  token: PropTypes.string.isRequired,
 };
 
 OpenProjectList = withStyles(styles)(OpenProjectList);
 OpenProjectList = withTranslation("select_project")(OpenProjectList);
+OpenProjectList = withSnackbar(OpenProjectList);
 
 class SelectProject extends React.Component {
   static async getInitialProps(ctx) {
     return {
-      namespacesRequired: ["select_project"]
+      namespacesRequired: ["select_project"],
     };
   }
 
@@ -274,7 +290,7 @@ class SelectProject extends React.Component {
             <Grid
               container
               direction="column"
-              spacing={24}
+              spacing={3}
               className={classes.grid}
             >
               <Grid item xs>
@@ -299,7 +315,7 @@ class SelectProject extends React.Component {
 
 SelectProject.propTypes = {
   classes: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 SelectProject = withStyles(styles)(SelectProject);

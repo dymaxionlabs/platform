@@ -56,7 +56,8 @@ class RelatedProjectAPIView(APIView):
         return project
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (
@@ -245,6 +246,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         # Filter only projects that user has access to
         user = self.request.user
         return allowed_projects_for(self.queryset, user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(owner=user, collaborators=[user])
 
 
 class MapViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):

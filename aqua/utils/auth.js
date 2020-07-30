@@ -4,8 +4,14 @@ import nextCookie from "next-cookies";
 import cookie from "js-cookie";
 import querystring from "querystring";
 
-export const login = async ({ token, expires, redirectTo = "/home" }) => {
+export const login = async ({
+  username,
+  token,
+  expires,
+  redirectTo = "/home",
+}) => {
   cookie.set("token", token, { expires: expires });
+  cookie.set("username", username, { expires: expires });
   if (!redirectTo) {
     redirectTo = "/home";
   }
@@ -14,6 +20,7 @@ export const login = async ({ token, expires, redirectTo = "/home" }) => {
 
 export const logout = () => {
   cookie.remove("token");
+  cookie.remove("username");
   cookie.remove("project");
   // to support logging out from all windows
   window.localStorage.setItem("logout", Date.now());
@@ -21,7 +28,7 @@ export const logout = () => {
 };
 
 // Gets the display name of a JSX component for dev tools
-const getDisplayName = Component =>
+const getDisplayName = (Component) =>
   Component.displayName || Component.name || "Component";
 
 export const withAuthSync = (WrappedComponent, options) =>
@@ -30,13 +37,13 @@ export const withAuthSync = (WrappedComponent, options) =>
 
     static async getInitialProps(ctx) {
       const { redirect } = options || {};
-      const token = auth(ctx, redirect);
+      const { username, token } = auth(ctx, redirect);
 
       const componentProps =
         WrappedComponent.getInitialProps &&
         (await WrappedComponent.getInitialProps(ctx));
 
-      return { ...componentProps, token };
+      return { ...componentProps, username, token };
     }
 
     constructor(props) {
@@ -71,24 +78,24 @@ export const withAuthSync = (WrappedComponent, options) =>
   };
 
 export const auth = (ctx, redirect) => {
-  const { token } = nextCookie(ctx);
+  const { username, token } = nextCookie(ctx);
 
   if (typeof redirect === "undefined") {
     redirect = true;
   }
 
   if (redirect) {
-    if (ctx.req && !token) {
-      const query = querystring.stringify({ redirect: ctx.req.url });
-      ctx.res.writeHead(302, { Location: `/login?${query}` });
-      ctx.res.end();
-      return;
-    }
-
-    if (!token) {
-      routerPush("/login");
+    if (!token || !username) {
+      if (ctx.req) {
+        const query = querystring.stringify({ redirect: ctx.req.url });
+        ctx.res.writeHead(302, { Location: `/login?${query}` });
+        ctx.res.end();
+        return;
+      } else {
+        routerPush("/login");
+      }
     }
   }
 
-  return token;
+  return { username, token };
 };

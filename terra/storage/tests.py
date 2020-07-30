@@ -3,7 +3,6 @@ import os
 from urllib.parse import parse_qs, urlparse
 
 import requests
-from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -11,6 +10,7 @@ from rest_framework.test import APIClient
 from projects.models import Project
 from projects.tests import create_some_api_key, login_with_api_key
 from storage.client import Client
+from storage.models import File
 from terra.tests import create_some_user
 
 
@@ -18,18 +18,23 @@ class ListFilesTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
         self.storage_client = Client(self.project)
-        with open("/tmp/testfile1.txt", "w") as f:
-            f.write("this is a test\n")
-        with open("/tmp/testfile2.py", "w") as f:
-            f.write("# this is another test\n")
-        self.storage_client.upload_from_filename("/tmp/testfile1.txt")
-        self.storage_client.upload_from_filename("/tmp/testfile2.py", "foo/")
         self.check_files = ["testfile1.txt", "foo/testfile2.py"]
+
+        self.client.post(
+            f'/storage/upload/', 
+            dict(path=self.check_files[0], file=io.BytesIO(b"test file content")), 
+            format='multipart'
+        )
+        self.client.post(
+            f'/storage/upload/', 
+            dict(path=self.check_files[1], file=io.BytesIO(b"test file2 content")), 
+            format='multipart'
+        )                           
 
     def test_client_list_file(self):
         uploaded_files = []
@@ -63,18 +68,16 @@ class ListFilesTest(TestCase):
             self.assertIn(f, files_retrieved)
 
     def tearDown(self):
-        files = list(self.storage_client.list_files())
-        if not files:
-            raise FileNotFoundError
-        for f in files:
-            f.delete()
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class UploadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -100,12 +103,17 @@ class UploadFileViewTest(TestCase):
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
+    def tearDown(self):
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
+
 
 class FileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -114,7 +122,12 @@ class FileViewTest(TestCase):
         self.test_path = "foo/data.bin"
 
     def test_retrieve_file(self):
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        response = self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
+        self.assertEquals(200, response.status_code)
         response = self.client.get(f'/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
@@ -123,10 +136,6 @@ class FileViewTest(TestCase):
             dict(name=os.path.basename(self.test_path),
                  path=self.test_path,
                  metadata={}))
-        files = list(self.storage_client.list_files(self.test_path))
-        if not files:
-            raise FileNotFoundError
-        files[0].delete()
 
     def test_file_missing(self):
         missing_path = self.test_path + '.1'
@@ -139,13 +148,19 @@ class FileViewTest(TestCase):
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def test_destroy_file(self):
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        response = self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
+        self.assertEquals(200, response.status_code)
         response = self.client.delete(f'/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
         self.assertEqual(response.data['detail'], 'File deleted.')
-        files = list(self.storage_client.list_files(self.test_path))
-        self.assertFalse(files, 'File was not deleted.')
+
+        response = self.client.get(f'/storage/files/')
+        self.assertFalse(response.data, 'File was not deleted.')
 
     def test_destroy_file_missing(self):
         missing_path = self.test_path + '.1'
@@ -156,13 +171,18 @@ class FileViewTest(TestCase):
         response = self.client.delete(f'/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
+    
+    def tearDown(self):
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class DownloadFileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -170,7 +190,11 @@ class DownloadFileViewTest(TestCase):
         self.storage_client = Client(self.project)
         self.test_data = io.BytesIO(b"test file content")
         self.test_path = "foo/data.bin"
-        self.storage_client.upload_from_file(self.test_data, to=self.test_path)
+        self.client.post(
+            f'/storage/upload/',
+            dict(path=self.test_path, file=self.test_data),
+            format='multipart',
+        )
 
     def test_download_file(self):
         response = self.client.get(f'/storage/download/?path={self.test_path}')
@@ -189,17 +213,16 @@ class DownloadFileViewTest(TestCase):
         self.assertEquals(404, response.status_code)
 
     def tearDown(self):
-        files = list(self.storage_client.list_files(self.test_path))
-        if not files:
-            raise FileNotFoundError
-        files[0].delete()
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete('/storage/file/?path={path}'.format(path=file['path']))
 
 
 class CreateResumableUploadViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
-        self.project = Project.objects.filter(owners=self.user).first()
+        self.project = Project.objects.filter(collaborators=self.user).first()
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)

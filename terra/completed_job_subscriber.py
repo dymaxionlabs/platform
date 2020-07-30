@@ -28,27 +28,26 @@ from common.utils import gsutilCopy
 
 def sendPredictionJobCompletedEmail(job, map):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.owners.all()
+    users = estimator.project.collaborators.all()
+    users = [user for user in users if user.userprofile.send_notification_emails]
     email = PredictionCompletedEmail(estimator=estimator,
                                      map=map,
-                                     recipients=[user.email for user in users],
-                                     language_code='es')
+                                     recipients=[user.email for user in users])
     email.send_mail()
 
 
 def sendTrainingJobCompletedEmail(job):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.owners.all()
+    users = estimator.project.collaborators.all()
+    users = [user for user in users if user.userprofile.send_notification_emails]
     email = TrainingCompletedEmail(estimator=estimator,
-                                   recipients=[user.email for user in users],
-                                   language_code='es')
+                                   recipients=[user.email for user in users])
     email.send_mail()
 
 
 def trainingJobFinished(job_id):
     job = Task.objects.get(pk=job_id)
-    job.state = states.FINISHED
-    job.save(update_fields=['state', 'updated_at'])
+    job.mark_as_finished()
     sendTrainingJobCompletedEmail(job)
 
 
@@ -70,8 +69,7 @@ def createFile(name, image, tmpdirname, metadata):
 def predictionJobFinished(job_id):
     print("Prediction job finished {}".format(job_id))
     job = Task.objects.get(pk=job_id)
-    job.state = states.FINISHED
-    job.save(update_fields=['state', 'updated_at'])
+    job.mark_as_finished()
 
     client = Client(job.project)
     if job.metadata is None:
@@ -127,7 +125,7 @@ def predictionJobFinished(job_id):
                     job.internal_metadata['output_path'].rstrip('/'), f))
 
         job.save(update_fields=['internal_metadata', 'metadata', 'updated_at'])
-    #sendPredictionJobCompletedEmail(job, result_map)
+    sendPredictionJobCompletedEmail(job, result_map)
 
 
 def subscriber():
@@ -154,8 +152,7 @@ def subscriber():
                     elif data['job_type'] == 'prediction':
                         predictionJobFinished(data['job_id'])
             if "failed" in data["payload"]:
-                task.state = states.FAILED
-                task.save(update_fields=['state', 'updated_at'])
+                task.mark_as_failed()
 
         else:
             print('[Subscriptor] Unknow message: {}'.format(message.data))

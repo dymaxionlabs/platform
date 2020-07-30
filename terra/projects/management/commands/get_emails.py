@@ -78,7 +78,7 @@ class Command(BaseCommand):
                 annotations_count = 0
                 has_trainingJobs = "No"
                 for project in projects:
-                    if profile.user in project.owners.all():
+                    if profile.user in project.collaborators.all():
                         has_projects = "Si"
                         for estimator in estimators:
                             if estimator.project == project:

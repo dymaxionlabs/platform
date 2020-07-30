@@ -22,6 +22,7 @@ class UserProfile(models.Model):
     city = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=60, blank=True)
     beta = models.BooleanField(default=False)
+    send_notification_emails = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,9 +30,10 @@ class UserProfile(models.Model):
 
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-
-    owners = models.ManyToManyField(User)
-
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              related_name=_('projects'))
+    collaborators = models.ManyToManyField(User)
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
 
@@ -45,6 +47,7 @@ class Project(models.Model):
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     class Meta:
+        unique_together = (('owner', 'name'), )
         verbose_name = _("Project")
         verbose_name_plural = _("Projects")
 

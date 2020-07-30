@@ -1,9 +1,17 @@
 {
+  "credits": {
+    "kinds": {
+      "credit": "Cr\u00e9dito",
+      "prediction-task": "Tarea de predicci\u00f3n",
+      "task": "Tarea",
+      "training-task": "Tarea de entrenamiento"
+    }
+  },
   "download": "Descargar",
   "files": {
     "created_at": "Fecha de subida",
     "name": "Nombre del archivo",
-    "title": "Tus archivos"
+    "title": "Archivos"
   },
   "home": {
     "api_descrip1": "Genera tu API Key desde este",
@@ -23,7 +31,7 @@
     "revoke": "Revocar",
     "revoked": "Revocada",
     "state": "Estado",
-    "title": "Tus API Keys"
+    "title": "API keys"
   },
   "keys_new": {
     "button": "Nueva",
@@ -43,26 +51,29 @@
     "layer_type_R": "R\u00e1ster",
     "layer_type_V": "Vector",
     "name": "Nombre",
-    "title": "Tus capas",
+    "title": "Capas",
     "type": "Tipo"
   },
   "maps": {
     "created_at": "Fecha de creaci\u00f3n",
     "description": "Descripci\u00f3n",
     "name": "Nombre",
-    "title": "Tus mapas"
+    "title": "Mapas"
   },
   "models": {
     "add_annot": "Agregar anotaciones",
     "add_imgs": "Agregar im\u00e1genes",
     "classes": "Clases",
     "created_at": "Fecha de creaci\u00f3n",
-    "delete_models": "Borrar Modelo",
+    "delete_models": "Eliminar",
     "estimator_type": "Tipo",
     "more_info": "M\u00e1s informaci\u00f3n",
     "name": "Nombre",
     "new_btn": "Nuevo Modelo",
-    "title": "Tus Modelos",
+    "text_delete": "\u00bfEst\u00e1 seguro que desea eliminar este modelo y sus anotaciones?",
+    "text_delete_warning": "Esta acci\u00f3n es IRREVERSIBLE",
+    "title": "Modelos",
+    "title_delete": "Eliminar modelo",
     "types": {
       "OD": "Detecci\u00f3n de Objetos"
     },
@@ -73,16 +84,28 @@
     "created_at": "Fecha",
     "layers": "Capas",
     "state": "Estado actual",
-    "title": "Tus pedidos"
+    "title": "Pedidos"
   },
   "sidebar": {
+    "credits": "Cr\u00e9ditos",
     "dashboard": "Dashboard",
     "files": "Archivos",
     "keys": "API Keys",
     "layers": "Capas",
     "models": "Modelos",
+    "profile": "Perfil",
     "requests": "Pedidos",
+    "tasks": "Tareas",
     "viewer": "Visor"
+  },
+  "tasks": {
+    "states": {
+      "CANCELED": "Cancelado",
+      "FAILED": "Fallido",
+      "FINISHED": "Finalizado",
+      "PENDING": "Pendiente",
+      "STARTED": "Ejecutando"
+    }
   },
   "view": "Ver"
 }

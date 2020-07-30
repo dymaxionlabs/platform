@@ -1,38 +1,36 @@
-import React from "react";
-import PropTypes from "prop-types";
-
-import { withStyles } from "@material-ui/core/styles";
-import MapIcon from "@material-ui/icons/Map";
-
-import { i18n, withTranslation } from "../../i18n";
-import { logout } from "../../utils/auth";
-import axios from "axios";
-import { buildApiUrl } from "../../utils/api";
-import Moment from "react-moment";
-import cookie from "js-cookie";
-
 import {
-  Typography,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-} from '@material-ui/core';
+  Typography,
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import MapIcon from "@material-ui/icons/Map";
+import axios from "axios";
+import cookie from "js-cookie";
+import { withSnackbar } from "notistack";
+import PropTypes from "prop-types";
+import React from "react";
+import Moment from "react-moment";
+import TableRowSkeleton from "../../components/TableRowSkeleton";
+import { i18n, withTranslation } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
+import { logout } from "../../utils/auth";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
-    overflowX: "auto"
+    overflowX: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
   },
-  title: {
-    marginBottom: theme.spacing.units * 10
-  }
 });
 
 function getMapId(layer) {
@@ -42,43 +40,45 @@ function getMapId(layer) {
 
 class MapsContent extends React.Component {
   state = {
-    maps: []
+    loading: true,
+    maps: [],
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.getMaps();
+    this.setState({ loading: false });
+  }
+
+  async getMaps() {
     const projectId = cookie.get("project");
 
-    axios
-      .get(buildApiUrl("/maps/"), {
+    try {
+      const response = await axios.get(buildApiUrl("/maps/"), {
         params: { project: projectId },
-        headers: { Authorization: this.props.token }
-      })
-      .then(response => {
-        this.setState({ maps: response.data.results });
-      })
-      .catch(err => {
-        const response = err.response;
-        if (response && response.status === 401) {
-          logout();
-        } else {
-          console.error(response);
-        }
+        headers: { Authorization: this.props.token },
       });
+      this.setState({ maps: response.data.results });
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get maps", {
+          variant: "error",
+        });
+      }
+    }
   }
 
   render() {
     const { t, classes } = this.props;
-    const { maps } = this.state;
+    const { loading, maps } = this.state;
     const locale = i18n.language;
 
     return (
       <div>
-        <Typography
-          className={classes.title}
-          variant="h4"
-          gutterBottom
-          component="h2"
-        >
+        <Typography variant="h6" gutterBottom component="h2">
           {t("maps.title")}
         </Typography>
         <Paper className={classes.root}>
@@ -92,6 +92,12 @@ class MapsContent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && <TableRowSkeleton cols={3} />}
+              {!loading && maps.length === 0 && (
+                <TableRow>
+                  <TableCell>There are no maps.</TableCell>
+                </TableRow>
+              )}
               {maps.map((map, i) => (
                 <TableRow key={i}>
                   <TableCell>
@@ -124,10 +130,11 @@ class MapsContent extends React.Component {
 }
 
 MapsContent.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 MapsContent = withStyles(styles)(MapsContent);
 MapsContent = withTranslation("me")(MapsContent);
+MapsContent = withSnackbar(MapsContent);
 
 export default MapsContent;

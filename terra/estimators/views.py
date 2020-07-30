@@ -24,8 +24,11 @@ from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer, PredictionJobSerializer,
                           TrainingJobSerializer)
 from storage.client import Client
+from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
+from credits.models import LogEntry as CreditsLogEntry
+from terra.utils import slack_notify
 
 
 class EstimatorViewSet(ProjectRelatedModelListMixin, viewsets.ModelViewSet):
@@ -166,17 +169,35 @@ class StartTrainingJobView(APIView):
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
+            # Estimate task duration and cost
+            task_cost = CreditsLogEntry.calculate_task_cost(
+                duration=estimator.training_hours)
+
+            # If user has not enough credits for task, fail!
+            if CreditsLogEntry.available_credits < task_cost:
+                return Response(
+                    {'estimator': _('Not enough credits for training')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
+            # Otherwise, create and start task
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
+                estimated_duration=estimator.training_hours,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
-            # Send email
+
+            try:
+                slack_notify(f'User {request.user.username} started a training task {job.id} for estimator {estimator.id}')
+            except:
+                pass
+
+            # Send notification email
             user = request.user
-            email = TrainingStartedEmail(estimator=estimator,
-                                         recipients=[user.email],
-                                         language_code='es')
-            email.send_mail()
+            if user.userprofile.send_notifications_emails:
+                email = TrainingStartedEmail(estimator=estimator,
+                                             recipients=[user.email])
+                email.send_mail()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
@@ -194,7 +215,7 @@ class StartPredictionJobView(APIView):
 
         last_training_job = Task.objects.filter(
             internal_metadata__estimator=str(estimator.uuid),
-            state='FINISHED',
+            state=states.FINISHED,
             name=Estimator.TRAINING_JOB_TASK).last()
         if not last_training_job:
             return Response({'training_job': _('Not found')},
@@ -206,6 +227,16 @@ class StartPredictionJobView(APIView):
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
         if not job:
+            # If user has no credits, fail!
+            # Contrary to training, we still don't have a reliable way to
+            # estimate prediction task duration, so we only check if it has any
+            # credits at all, and allow negative credit balance in the worst
+            # case scenario.
+            if CreditsLogEntry.available_credits <= 0:
+                return Response(
+                    {'estimator': _('Not enough credits for prediction')},
+                    status=status.HTTP_400_BAD_REQUEST)
+
             files = File.objects.filter(name__in=request.data.get('files'),
                                         project=estimator.project,
                                         owner=request.user)
@@ -227,12 +258,18 @@ class StartPredictionJobView(APIView):
                         settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)
                 })
             job.start()
-            # Send email
+
+            try:
+                slack_notify(f'User {request.user.username} started a prediction task {job.id} for estimator {estimator.id}')
+            except:
+                pass
+
+            # Send notification email
             user = request.user
-            email = PredictionStartedEmail(estimator=estimator,
-                                           recipients=[user.email],
-                                           language_code='es')
-            email.send_mail()
+            if user.userprofile.send_notifications_emails:
+                email = PredictionStartedEmail(estimator=estimator,
+                                               recipients=[user.email])
+                email.send_mail()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
@@ -267,6 +304,12 @@ class StartImageTilingJobView(RelatedProjectAPIView):
                                           request.data.get('tile_size', None),
                                       })
             job.start()
+
+            try:
+                slack_notify(f'User {request.user.username} started an image tiling task {job.id}')
+            except:
+                pass
+
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)

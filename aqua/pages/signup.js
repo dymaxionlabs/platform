@@ -6,7 +6,7 @@ import axios from "axios";
 import { i18n, withTranslation, Link } from "../i18n";
 import { login } from "../utils/auth";
 import { buildApiUrl } from "../utils/api";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 import {
   Avatar,
@@ -19,9 +19,9 @@ import {
   Paper,
   Typography,
   Grid,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -30,44 +30,46 @@ const styles = theme => ({
     [theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
       width: 400,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   subheader: {
     marginTop: theme.spacing(1),
-    textAlign: "center"
+    textAlign: "center",
   },
   errorMessage: {
     marginTop: theme.spacing(1),
     textAlign: "center",
-    color: "red"
+    color: "red",
   },
   successMessage: {
     marginTop: theme.spacing(1),
     textAlign: "center",
-    color: "green"
+    color: "green",
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   loginPar: {
-    marginTop: theme.spacing(2)
-  }
+    marginTop: theme.spacing(2),
+  },
 });
 
 class Register extends React.Component {
@@ -80,59 +82,51 @@ class Register extends React.Component {
     err_email_msg: "",
     err_password1_msg: "",
     err_password2_msg: "",
-    beta: false,
-    isSubmitting: false
+    isSubmitting: false,
   };
 
   static async getInitialProps({ query }) {
     return {
       namespacesRequired: ["common"],
-      query
+      query,
     };
   }
 
   constructor(props) {
     super(props);
 
-    const { beta } = props.query;
-    if (beta === "1") {
-      this.state.beta = true;
-      console.log("*** BETA ***");
-    }
-
     const { email } = props.query;
     this.state.email = email;
   }
 
-  onUsernameChange = e => {
+  onUsernameChange = (e) => {
     var uname = e.target.value.toLowerCase();
     this.setState({ username: uname });
-
   };
 
-  onEmailChange = e => {
+  onEmailChange = (e) => {
     this.setState({ email: e.target.value });
   };
 
-  onPassword1Change = e => {
+  onPassword1Change = (e) => {
     this.setState({ password1: e.target.value });
   };
 
-  onPassword2Change = e => {
+  onPassword2Change = (e) => {
     this.setState({ password2: e.target.value });
   };
 
-  onSubmit = async event => {
+  onSubmit = async (event) => {
     event.preventDefault();
 
     const { t } = this.props;
-    const { username, email, password1, password2, beta } = this.state;
+    const { username, email, password1, password2 } = this.state;
 
     const dataSend = {
       username: username,
       email: email,
       password1: password1,
-      password2: password2
+      password2: password2,
     };
 
     // Reset messages
@@ -143,7 +137,7 @@ class Register extends React.Component {
       err_email_msg: "",
       err_password1_msg: "",
       err_password2_msg: "",
-      isSubmitting: true
+      isSubmitting: true,
     });
 
     try {
@@ -151,30 +145,19 @@ class Register extends React.Component {
         buildApiUrl("/auth/registration/"),
         dataSend,
         {
-          headers: { "Accept-Language": i18n.language }
+          headers: { "Accept-Language": i18n.language },
         }
       );
 
       const token = response.data.key;
 
-      // If beta=1, activate beta mode for user
-      if (beta) {
-        axios.patch(
-          buildApiUrl(`/user_profiles/${username}/`),
-          { beta: true },
-          {
-            headers: { "Accept-Language": i18n.language, Authorization: token }
-          }
-        );
-      }
-
       this.setState({
-        successMsg: t("signup.success_msg")
+        successMsg: t("signup.success_msg"),
       });
 
       if (token) {
         const { redirect } = this.props.query;
-        login({ token, redirectTo: redirect });
+        login({ username, token, redirectTo: redirect });
       }
     } catch (error) {
       console.error(error);
@@ -197,18 +180,18 @@ class Register extends React.Component {
       this.setState({
         errorMsg: errorMsg,
         successMsg: "",
-        isSubmitting: false
+        isSubmitting: false,
       });
     }
 
     this.setState({
-      isSubmitting: false
+      isSubmitting: false,
     });
   };
 
   render() {
     const { t, classes, query } = this.props;
-    const { redirect, beta, email } = query;
+    const { redirect, email } = query;
     const { isSubmitting } = this.state;
 
     return (
@@ -308,7 +291,7 @@ class Register extends React.Component {
                 <Link
                   href={{
                     pathname: "/login",
-                    query: { redirect, email, beta }
+                    query: { redirect, email },
                   }}
                 >
                   <Button
@@ -340,7 +323,7 @@ class Register extends React.Component {
             <Link
               href={{
                 pathname: "/login",
-                query: { redirect, email, beta }
+                query: { redirect, email },
               }}
             >
               <a>{t("signup.login")}</a>
@@ -353,7 +336,7 @@ class Register extends React.Component {
 }
 
 Register.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 Register = withStyles(styles)(Register);

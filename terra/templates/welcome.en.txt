@@ -1,11 +1,11 @@
 Hi {{ name }},
 
-Welcome to Dymaxion Analytics (DYMA).
+Welcome to Dymaxion Platform (DYMAX).
 
 We are very happy that you use our tool. You can access your account at:
 {{ link }}
 
-If you have any doubt about DYMA, feel free to respond to this email.
+If you have any doubt about DYMAX, feel free to respond to this email.
 
 Let’s begin!
 

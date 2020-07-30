@@ -109,7 +109,7 @@ class ContactSerializer(serializers.Serializer):
         elif landing == "Agro":
             return settings.MAILCHIMP_AUDIENCE_IDS['agri']
         else:
-            raise RuntimeError("Invalid landing")
+            raise RuntimeError(f"Invalid landing: {landing}")
 
     def _create_mailchimp_audience(self):
         email = self.data['email']
@@ -138,8 +138,7 @@ class SubscribeBetaSerializer(serializers.Serializer):
 
     def save(self):
         email = EarlyAccessBetaEmail(
-            recipients=[self.data['email']],
-            language_code=self.context['request'].LANGUAGE_CODE)
+            recipients=[self.data['email']])
         email.send_mail()
 
 
@@ -153,9 +152,9 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    owners = serializers.SlugRelatedField(many=True,
-                                          read_only=True,
-                                          slug_field='username')
+    collaborators = serializers.SlugRelatedField(many=True,
+                                                 read_only=True,
+                                                 slug_field='username')
     estimators = serializers.SlugRelatedField(many=True,
                                               read_only=True,
                                               slug_field='uuid')
@@ -163,10 +162,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         exclude = ('id', 'groups')
-
-    def create(self, validated_data):
-        validated_data['owners'] = [self.context['request'].user]
-        return super().create(validated_data)
+        extra_kwargs = {'owner': {'read_only': True}}
 
 
 class LayerSerializer(serializers.ModelSerializer):

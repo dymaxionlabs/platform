@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^upload/?$', views.UploadFileView.as_view()),
     url(r'^download/?$', views.DownloadFileView.as_view()),
     url(r'^create-resumable-upload/?$',
-        views.CreateResumableUploadView.as_view())
+        views.CreateResumableUploadView.as_view()),
+    url(r'^check-completed-file/?$', views.CheckCompletedFileView.as_view()),
 ]

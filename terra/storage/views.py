@@ -5,7 +5,8 @@ import requests
 from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from fnmatch import fnmatch
+from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import NotFound, ParseError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +14,7 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView, Response
 
+from quotas.models import UserQuota
 from projects.mixins import allowed_projects_for
 from projects.models import Project
 from projects.permissions import HasUserAPIKey
@@ -21,6 +23,7 @@ from projects.views import RelatedProjectAPIView
 
 from .client import Client
 from .serializers import FileSerializer
+from .models import File
 
 
 class StorageAPIView(RelatedProjectAPIView):
@@ -35,7 +38,7 @@ class ListFilesView(RelatedProjectAPIView):
     """
     View to list all files in the projects container
     """
-
+    queryset = File.objects.filter(complete=True)
     permission_classes = [HasUserAPIKey | IsAuthenticated]
 
     @swagger_auto_schema(manual_parameters=[
@@ -58,14 +61,12 @@ class ListFilesView(RelatedProjectAPIView):
         # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', '*')
-
-        client = Client(project)
-        files = client.list_files(path)
-
-        files = [FileSerializer(f).data for f in files]
-        if not files:
-            return Response(files, status=status.HTTP_204_NO_CONTENT)
-        return Response(files)
+        clean_path = path.lstrip(" /").rstrip()
+        prefix = clean_path.split("*")[0]
+        files = self.queryset.filter(project=project, path__startswith=prefix)
+        response_status = status.HTTP_204_NO_CONTENT if files.first() is None else status.HTTP_200_OK
+        match_files = (f for f in files if fnmatch(f.path, clean_path))
+        return Response(FileSerializer(match_files, many=True).data, status=response_status)
 
 
 class UploadFileView(StorageAPIView):
@@ -104,16 +105,28 @@ class UploadFileView(StorageAPIView):
         if not fileobj:
             raise ParseError("'file' missing")
 
+        File.check_quota(request.user, fileobj.size)
+
         client = self.get_client()
-        file = client.upload_from_file(fileobj,
+        storage_file = client.upload_from_file(fileobj,
                                        to=path,
                                        content_type=fileobj.content_type)
-
+        file, _ = File.objects.get_or_create(
+            project=self.get_project(),
+            path=storage_file.path,
+            defaults={
+                'size': fileobj.size,
+                'metadata': storage_file.metadata
+            }
+        )
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
 
 class FileView(StorageAPIView):
+
+    queryset = File.objects.filter(complete=True)
+
     @swagger_auto_schema(manual_parameters=[
         openapi.Parameter('path',
                           openapi.IN_QUERY,
@@ -124,38 +137,36 @@ class FileView(StorageAPIView):
                              200: FileSerializer(many=False),
                              404: openapi.Response('File not found'),
                          })
+    
     def get(self, request, format=None):
         """
         Return the content of a file
         """
-        # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        client = Client(project)
-        files = list(client.list_files(path))
-        if not files:
+
+        file = self.queryset.filter(path=path, project=project).first()
+        if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-        content = FileSerializer(files[0]).data
+        content = FileSerializer(file).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)
 
     def delete(self, request, format=None):
         """
         Delete a file.
         """
-        # TODO Pagination
         project = self.get_project()
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
-        client = Client(project)
-        files = list(client.list_files(path))
-        if not files:
+        file = self.queryset.filter(path=path, project=project).first()
+        if file is None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-        files[0].delete()
+        file.delete()
         return Response(dict(detail='File deleted.'),
-                        status=status.HTTP_200_OK)
+                status=status.HTTP_200_OK)
 
 
 class DownloadFileView(StorageAPIView):
@@ -209,12 +220,41 @@ class CreateResumableUploadView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         size = request.query_params.get('size', None)
-        if size:
+        if not size:
+            raise ParseError("'size' missing")
+        else:
             size = int(size)
+
+        File.check_quota(request.user, size)
 
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-
+        File.objects.get_or_create(
+            project=self.get_project(),
+            path=path,
+            defaults={
+                'size': size,
+                'complete': False,
+            }
+        )
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)
+
+
+class CheckCompletedFileView(StorageAPIView):
+
+    def post(self, request):
+        path = request.query_params.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+
+        file = File.objects.filter(project=self.get_project(), path=path).first()
+        if not file:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+        file.complete = True
+        file.save()        
+        
+        content = FileSerializer(file).data
+        return Response(dict(detail=content), status=status.HTTP_200_OK)

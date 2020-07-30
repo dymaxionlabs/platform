@@ -37,7 +37,7 @@ class HasAccessToRelatedProjectPermission(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         user = request.user
-        user_is_project_owner = user in obj.project.owners.all()
+        user_is_project_owner = user in obj.project.collaborators.all()
         user_can_view_project = user.has_perm('view_project', obj.project)
         user_belongs_to_some_project_group = obj.project.groups.filter(
             user=user).exists()  # deprecated
@@ -69,7 +69,7 @@ class HasAccessToProjectPermission(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         user = request.user
-        user_is_owner = user in obj.owners.all()
+        user_is_owner = user in obj.collaborators.all()
         user_can_view_project = user.has_perm('view_project', obj)
         user_belongs_to_some_group = obj.groups.filter(
             user=user).exists()  # deprecated

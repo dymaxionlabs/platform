@@ -150,10 +150,13 @@ me,sidebar.viewer,Visor,Viewer
 me,sidebar.files,Archivos,Files
 me,sidebar.requests,Pedidos,Requests
 me,sidebar.models,Modelos,Models
+me,sidebar.tasks,Tareas,Tasks
+me,sidebar.credits,Créditos,Credits
 me,sidebar.keys,API Keys,API Keys
+me,sidebar.profile,Perfil,Profile
 me,download,Descargar,Download
 me,view,Ver,View
-me,models.title,Tus Modelos,Your Models
+me,models.title,Modelos,Models
 me,models.name,Nombre,Name
 me,models.estimator_type,Tipo,Type
 me,models.classes,Clases,Classes
@@ -163,9 +166,12 @@ me,models.types.OD,Detección de Objetos,Object Detection
 me,models.more_info,Más información,More information
 me,models.add_imgs,Agregar imágenes,Add images
 me,models.add_annot,Agregar anotaciones,Add annotations
-me,models.delete_models,Borrar Modelo,Delete Model
+me,models.delete_models,Eliminar,Delete
+me,models.title_delete,Eliminar modelo,Delete Model
+me,models.text_delete_warning,Esta acción es IRREVERSIBLE,This action is IRREVERSIBLE
+me,models.text_delete,¿Está seguro que desea eliminar este modelo y sus anotaciones?,Are you sure you want to delete this model and its annotations?
 me,models.uuid,Mostrar UUID,Show UUID
-me,layers.title,Tus capas,Your layers
+me,layers.title,Capas,Layers
 me,layers.created_at,Fecha de creación,Creation date
 me,layers.name,Nombre,Name
 me,layers.description,Descripción,Description
@@ -173,19 +179,28 @@ me,layers.type,Tipo,Type
 me,layers.date,Fecha de adquisición,Acquisition date
 me,layers.layer_type_R,Ráster,Raster
 me,layers.layer_type_V,Vector,Vector
-me,maps.title,Tus mapas,Your maps
+me,maps.title,Mapas,Maps
 me,maps.name,Nombre,Name
 me,maps.description,Descripción,Description
 me,maps.created_at,Fecha de creación,Creation date
-me,files.title,Tus archivos,Your files
+me,files.title,Archivos,Files
 me,files.name,Nombre del archivo,File name
 me,files.created_at,Fecha de subida,Upload date
-me,requests.title,Tus pedidos,Your requests
+me,requests.title,Pedidos,Requests
 me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers
 me,requests.area_km2,Área (km²),Area (km²)
 me,requests.state,Estado actual,Current state
-me,keys.title,Tus API Keys,Your API Keys
+me,tasks.states.PENDING,Pendiente,Pending
+me,tasks.states.STARTED,Ejecutando,Running
+me,tasks.states.FINISHED,Finalizado,Finished
+me,tasks.states.FAILED,Fallido,Failed
+me,tasks.states.CANCELED,Cancelado,Canceled
+me,credits.kinds.credit,Crédito,Credit
+me,credits.kinds.task,Tarea,Task
+me,credits.kinds.training-task,Tarea de entrenamiento,Training task
+me,credits.kinds.prediction-task,Tarea de predicción,Prediction task
+me,keys.title,API keys,API keys
 me,keys.name,Nombre,Name
 me,keys.prefix,Prefijo,Prefix
 me,keys.state,Estado,State

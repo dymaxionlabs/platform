@@ -21,7 +21,7 @@ class EstimatorViewSetTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           owners=[self.user])
+                                           owner=self.user)
 
     def test_create_ok(self):
         response = self.client.post('/estimators/', {
@@ -187,7 +187,6 @@ class AnnotationUploadTest(TestCase):
 
 
 class StartTrainingJobViewTest(TestCase):
-
     def setUp(self):
         self.client = APIClient()
         self.user = create_some_user()
