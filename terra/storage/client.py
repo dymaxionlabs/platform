@@ -95,6 +95,11 @@ class File:
     def __init__(self, blob):
         self.blob = blob
         self.deleted = False
+    
+    def __eq__(self, other):
+        if isinstance(other, File):
+            return self.path == other.path
+        return False
 
     def download_to_filename(self, filename, start=None, end=None):
         self.blob.download_to_filename(filename, start=start, end=end)

@@ -103,28 +103,46 @@ class AnnotationUploadTest(TestCase):
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
                                            owners=[self.user])
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
+     
+        self.storage_client = Client(self.project)
+        with open("/tmp/file1.txt", "w") as f:
+            f.write("this is a test\n")
+        with open("/tmp/vectorfile1.txt", "w") as f:
+            f.write("this is another test\n")
+        self.file1 = self.storage_client.upload_from_filename("/tmp/file1.txt")
+        self.vectorfile1 = self.storage_client.upload_from_filename("/tmp/vectorfile1.txt")
 
-    @patch("estimators.views.Client.list_files")
+    def tearDown(self):
+        for f in self.storage_client.list_files():
+            f.delete()
+
     @patch("estimators.views.Annotation.import_from_vector_file")
-    def test_post_ok(self, mock_import_from_vector_file, mock_list_files):
+    def test_post_ok(self, mock_import_from_vector_file):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
         mock_import_from_vector_file.return_value = ['label1']
-        mock_list_files.return_value = ('f1', )
-        
+      
         rv = self.client.post('/estimators/{}/load_labels/'.format(estimator.uuid), 
             dict(
                 project=self.project.uuid,
-                related_file='f1',
-                vector_file='f1',
+                related_file=self.file1.path,
+                vector_file=self.vectorfile1.path,
                 label='label1'
         ))
         self.assertEquals(rv.status_code, 200)
         self.assertIn('annotation_created', rv.data['detail'].keys())
         self.assertEquals(rv.data['detail']['annotation_created'], 1)
-        mock_import_from_vector_file.assert_called_once()
-        mock_list_files.assert_called()
+        mock_import_from_vector_file.assert_called_once_with(
+            self.project,
+            self.vectorfile1,
+            self.file1,
+            estimator=estimator,
+            label='label1'
+        )
 
     @patch("estimators.views.Client.list_files")
     @patch("estimators.views.Annotation.import_from_vector_file")
@@ -176,10 +194,12 @@ class StartTrainingJobViewTest(TestCase):
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
                                            owners=[self.user])
+        _, self.api_key = create_some_api_key(user=self.user,
+                                              project=self.project)
+        login_with_api_key(self.client, self.api_key)
 
     @patch("estimators.views.TrainingStartedEmail.send_mail")
-    @patch("estimators.views.Task.start")
-    def test_post_ok(self, mock_start, mock_send_mail):
+    def test_post_ok(self, mock_send_mail):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
@@ -189,9 +209,14 @@ class StartTrainingJobViewTest(TestCase):
                 related_file='f1',
                 vector_file='f1',
                 label='label1'
-        ))    
+        ))
+        job = Task.objects.filter(Q(state='STARTED'),
+                                  project=self.project,
+                                  internal_metadata__estimator=str(
+                                      estimator.uuid),
+                                  name=Estimator.TRAINING_JOB_TASK).first()
+        self.assertIsNotNone(job)
         mock_send_mail.assert_called_once()
-        mock_start.assert_called_once()
         self.assertEquals(rv.status_code, 200)
 
     def test_post_not_found(self):
@@ -247,6 +272,11 @@ class StartPredictionJobViewTest(TestCase):
 
         rv = self.client.post('/estimators/{}/predict/'.format(estimator.uuid), request)
         self.assertEquals(rv.status_code, 200)
+        job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
+                                  internal_metadata__estimator=str(
+                                      estimator.uuid),
+                                  name=Estimator.PREDICTION_JOB_TASK).first()
+        self.assertIsNotNone(job)
 
 
     @patch("estimators.views.TrainingStartedEmail.send_mail")
