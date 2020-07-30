@@ -17,12 +17,13 @@ from django.conf import settings
 from django.core.files import File as DjangoFile
 from estimators.models import Estimator
 from google.cloud import pubsub_v1
-from projects.models import File, Map, Layer, MapLayer
+from projects.models import Map, Layer, MapLayer
 from terra.emails import TrainingCompletedEmail
 from terra.emails import PredictionCompletedEmail
 from tasks.models import Task, TaskLogEntry
 from tasks import states
 from storage.client import Client
+from storage.models import File
 from common.utils import gsutilCopy
 
 
@@ -50,19 +51,21 @@ def trainingJobFinished(job_id):
     sendTrainingJobCompletedEmail(job)
 
 
-def createFile(name, image, tmpdirname, metadata):
+def createFile(name, tmpdirname, metadata, project, path):
     ext = os.path.splitext(name)[1]
     if ext in ['.json', '.geojson']:
         metadata['class'] = name.split("_")[0]
-    filename = File.prepare_filename(name)
-    resut_file = File.objects.create(owner=image.owner,
-                                     project=image.project,
-                                     name=filename,
-                                     metadata=metadata)
     with open(os.path.join(tmpdirname, name), "rb") as f:
-        resut_file.file = DjangoFile(f, name=filename)
-        resut_file.save()
-    return resut_file
+        file = File.objects.get_or_create(
+            project=project,
+            path=path,
+            defaults={
+                'size': os.path.getsize(os.path.join(tmpdirname, name)),
+                'metadata': metadata
+            }
+        )
+    return file
+
 
 
 def predictionJobFinished(job_id):
@@ -116,10 +119,14 @@ def predictionJobFinished(job_id):
             for f in files:
                 #meta['map']['layer_order'] = order
                 #order += 1
-                print("f")
-                print(f)
                 path, name = os.path.split(img.path)
-                #result_file = createFile(f, img, results_path, meta)
+                createFile(
+                    f, 
+                    results_path, 
+                    meta, 
+                    job.project, 
+                    '{}/{}'.format(job.internal_metadata['output_path'].rstrip('/'), f)
+                )
                 job.metadata['results_files'].append('{}/{}'.format(
                     job.internal_metadata['output_path'].rstrip('/'), f))
 
