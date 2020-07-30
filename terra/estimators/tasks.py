@@ -227,7 +227,7 @@ def upload_prediction_image_tiles(job):
     job.internal_metadata["image_files"] = []
     for path in job.internal_metadata['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=job.project,
-                                        source_tile_path=path)
+                                               source_tile_path=path)
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
             if source_file not in job.internal_metadata["image_files"]:
@@ -257,15 +257,16 @@ def upload_prediction_image_tiles(job):
                     'height': t.height,
                 }
 
-            url = os.path.join(job.artifacts_url,
-                            'img/{file_name}/'.format(file_name=files[0].name))
+            url = os.path.join(
+                job.artifacts_url,
+                'img/{file_name}/'.format(file_name=files[0].name))
 
             with tempfile.NamedTemporaryFile() as tmpfile:
                 tmpfile.name = '{}_tiles_meta.json'.format(files[0].name)
                 with open(tmpfile.name, 'w') as json_file:
                     json.dump(meta_data, json_file, indent=4)
-                gsutilCopy(tmpfile.name, "{url}{file}".format(url=url,
-                                                            file=tmpfile.name))
+                gsutilCopy(tmpfile.name,
+                           "{url}{file}".format(url=url, file=tmpfile.name))
 
             for urls in list_chunks(image_tile_urls, 500):
                 gsutilCopy(' '.join(urls), url, recursive=False)
@@ -273,49 +274,52 @@ def upload_prediction_image_tiles(job):
 
 
 def run_cloudml(job, script_name):
-    epochs = settings.CLOUDML_DEFAULT_EPOCHS
     estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
-    if estimator.configuration is not None:
-        if 'training_hours' in estimator.configuration:
-            epochs = estimator.configuration['training_hours'] * 6
+
+    cloudml_env = {
+        'CLOUDSDK_PYTHON':
+        '/usr/bin/python3',
+        'PATH':
+        '{sdk_bin_path}/:{path}'.format(
+            sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, path=os.getenv('PATH')),
+        'TERRA_ESTIMATOR_UUID':
+        str(estimator.uuid),
+        'TERRA_JOB_ID':
+        str(job.pk),
+        'JOB_DIR':
+        job.job_dir,
+        'REGION':
+        settings.CLOUDML_REGION,
+        'PROJECT':
+        settings.CLOUDML_PROJECT,
+        'ESTIMATORS_BUCKET':
+        'gs://{}'.format(settings.ESTIMATORS_BUCKET),
+        'PUBSUB_TOPIC':
+        settings.PUBSUB_JOB_TOPIC_ID,
+        'SENTRY_SDK':
+        os.environ['SENTRY_DNS'],
+        'SENTRY_ENVIRONMENT':
+        os.environ['SENTRY_ENVIRONMENT'],
+    }
+
+    # Set training parameters from estimator configuration object
+    if estimator.configuration:
+        epochs = estimator.configuration.get('epochs',
+                                             settings.CLOUDML_DEFAULT_EPOCHS)
+        steps = estimator.configuration.get('steps',
+                                            settings.CLOUDML_DEFAULT_STEPS)
+        cloudml_env['EPOCHS'] = str(round(epochs))
+        cloudml_env['STEPS'] = str(round(steps))
+
+    # Set default confidence score
     confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
     if 'confidence' in job.internal_metadata:
         confidence = job.internal_metadata['confidence']
 
-    p = subprocess.Popen(
-        [script_name],
-        env={
-            'CLOUDSDK_PYTHON':
-            '/usr/bin/python3',
-            'PATH':
-            '{sdk_bin_path}/:{path}'.format(
-                sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH,
-                path=os.getenv('PATH')),
-            'TERRA_ESTIMATOR_UUID':
-            str(job.internal_metadata["estimator"]),
-            'TERRA_JOB_ID':
-            str(job.pk),
-            'JOB_DIR':
-            job.job_dir,
-            'REGION':
-            settings.CLOUDML_REGION,
-            'PROJECT':
-            settings.CLOUDML_PROJECT,
-            'ESTIMATORS_BUCKET':
-            'gs://{}'.format(settings.ESTIMATORS_BUCKET),
-            'PUBSUB_TOPIC':
-            settings.PUBSUB_JOB_TOPIC_ID,
-            'SENTRY_SDK':
-            os.environ['SENTRY_DNS'],
-            'SENTRY_ENVIRONMENT':
-            os.environ['SENTRY_ENVIRONMENT'],
-            'EPOCHS':
-            str(round(epochs)),
-            'CONFIDENCE':
-            str(confidence),
-        },
-        cwd=settings.CLOUDML_DIRECTORY,
-        shell=True)
+    p = subprocess.Popen([script_name],
+                         env=cloudml_env,
+                         cwd=settings.CLOUDML_DIRECTORY,
+                         shell=True)
 
 
 def prepare_artifacts(job):
