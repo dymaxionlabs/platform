@@ -22,4 +22,4 @@ class LogEntry(models.Model):
 
     @classmethod
     def calculate_task_cost(cls, duration):
-        return round(duration * 300)
+        return round(duration/3600 * 300)
