@@ -8,7 +8,7 @@ from guardian.admin import GuardedModelAdmin
 from jsoneditor.forms import JSONEditor
 from rest_framework_api_key.admin import APIKeyModelAdmin
 
-from .models import (File, Layer, Map, MapLayer, Project,
+from .models import (Layer, Map, MapLayer, Project,
                      ProjectInvitationToken, UserProfile, UserAPIKey)
 
 
@@ -138,20 +138,6 @@ class MapAdmin(admin.ModelAdmin):
     }
 
 
-class FileAdmin(admin.ModelAdmin):
-    list_filter = (
-        'owner',
-        'project',
-    )
-    list_display = (
-        'owner',
-        'project',
-        'name',
-        'created_at',
-    )
-    list_display_links = ('name', )
-
-
 class UserAPIKeyAdmin(APIKeyModelAdmin):
     list_display = [*APIKeyModelAdmin.list_display, "user"]
     search_fields = [*APIKeyModelAdmin.search_fields, "user"]
@@ -162,5 +148,4 @@ admin.site.register(ProjectInvitationToken, ProjectInvitationTokenAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Map, MapAdmin)
-admin.site.register(File, FileAdmin)
 admin.site.register(UserAPIKey, UserAPIKeyAdmin)
