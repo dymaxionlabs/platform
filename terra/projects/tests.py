@@ -74,16 +74,6 @@ class LogoutViewTest(TestCase):
         self.assertEquals("Invalid token.", response.data['detail'])
 
 
-    def test_user_create_fail(self):
-        pass
-
-    def test_user_update_fail(self):
-        pass
-
-    def test_user_delete_fail(self):
-        pass
-
-
 class TestAuthViewTest(TestCase):
     def setUp(self):
         self.test_user = User(email="test@prueba.com", username='test')
