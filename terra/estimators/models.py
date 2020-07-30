@@ -31,8 +31,6 @@ class Estimator(models.Model):
                     # (CLASSIFICATION, _('Classification')),
                     )
 
-    DEFAULT_TRAINING_HOURS = 2
-
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project,
                                 null=True,
@@ -67,11 +65,17 @@ class Estimator(models.Model):
                                         type=self.estimator_type)
 
     @property
-    def training_hours(self):
-        if self.configuration and 'training_hours' in self.configuration:
-            return round(self.configuration['training_hours'])
-        else:
-            return self.DEFAULT_TRAINING_HOURS
+    def estimated_training_duration(self):
+        if self.estimator_type == "OD":
+            ### RetinaNet estimator
+            epochs = settings.CLOUDML_DEFAULT_EPOCHS
+            steps = settings.CLOUDML_DEFAULT_STEPS
+            if self.configuration and 'epochs' in self.configuration:
+                epochs = int(self.configuration['epochs'])
+            if self.configuration and 'steps' in self.configuration:
+                steps = int(self.configuration['steps'])
+            # Currently takes around 7 minutes per epoch (1000 steps)
+            return epochs * (steps * 7 / 1000) * 60
 
 
 def tile_images_path(instance, filename):

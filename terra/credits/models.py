@@ -22,4 +22,6 @@ class LogEntry(models.Model):
 
     @classmethod
     def calculate_task_cost(cls, duration):
-        return round(duration/3600 * 300)
+        # Duration is in seconds, so we convert them to hours and multiply by
+        # "training cost per hour"
+        return round((duration / 3600) * 300)

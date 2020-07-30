@@ -170,11 +170,13 @@ class StartTrainingJobView(APIView):
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
             # Estimate task duration and cost
+            training_duration = estimator.estimated_training_duration
             task_cost = CreditsLogEntry.calculate_task_cost(
-                duration=estimator.training_hours)
+                duration=training_duration)
 
             # If user has not enough credits for task, fail!
-            if CreditsLogEntry.available_credits(estimator.project.owner) < task_cost:
+            if CreditsLogEntry.available_credits(
+                    estimator.project.owner) < task_cost:
                 return Response(
                     {'estimator': _('Not enough credits for training')},
                     status=status.HTTP_400_BAD_REQUEST)
@@ -183,12 +185,14 @@ class StartTrainingJobView(APIView):
             job = Task.objects.create(
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
-                estimated_duration=estimator.training_hours,
+                estimated_duration=training_duration,
                 internal_metadata={'estimator': str(estimator.uuid)})
             job.start()
 
             try:
-                slack_notify(f'User {request.user.username} started a training task {job.id} for estimator {estimator.id}')
+                slack_notify(
+                    f'User {request.user.username} started a training task {job.id} for estimator {estimator.id}'
+                )
             except:
                 pass
 
@@ -260,7 +264,9 @@ class StartPredictionJobView(APIView):
             job.start()
 
             try:
-                slack_notify(f'User {request.user.username} started a prediction task {job.id} for estimator {estimator.id}')
+                slack_notify(
+                    f'User {request.user.username} started a prediction task {job.id} for estimator {estimator.id}'
+                )
             except:
                 pass
 
@@ -306,10 +312,11 @@ class StartImageTilingJobView(RelatedProjectAPIView):
             job.start()
 
             try:
-                slack_notify(f'User {request.user.username} started an image tiling task {job.id}')
+                slack_notify(
+                    f'User {request.user.username} started an image tiling task {job.id}'
+                )
             except:
                 pass
-
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
