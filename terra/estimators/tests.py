@@ -102,7 +102,7 @@ class AnnotationUploadTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           owners=[self.user])
+                                           owner=self.user)
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -192,7 +192,7 @@ class StartTrainingJobViewTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           owners=[self.user])
+                                           owner=self.user)
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
@@ -241,7 +241,7 @@ class StartPredictionJobViewTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           owners=[self.user])
+                                           owner=self.user)
     
 
     @patch("estimators.views.TrainingStartedEmail.send_mail")
@@ -313,7 +313,7 @@ class StartImageTilingJobViewTest(TestCase):
         self.user = create_some_user()
         loginWithAPI(self.client, self.user.username, 'secret')
         self.project = create_some_project(name="Some project",
-                                           owners=[self.user])
+                                           owner=self.user)
         _, self.api_key = create_some_api_key(user=self.user,
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)

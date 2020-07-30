@@ -74,59 +74,6 @@ class LogoutViewTest(TestCase):
         self.assertEquals("Invalid token.", response.data['detail'])
 
 
-class UserViewSetTest(APITestCase):
-    def setUp(self):
-        self.user = User(email='user@test.com', username='user')
-        self.user.set_password('secret')
-        self.user.save()
-
-        self.admin_user = User(email='admin@test.com',
-                               username='admin',
-                               is_staff=True)
-        self.admin_user.set_password('secret')
-        self.admin_user.save()
-
-    def test_user_list_only_shows_logged_in_user(self):
-        loginWithAPI(self.client, 'user', 'secret')
-
-        url = reverse('user-list')
-        response = self.client.get(url, {}, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual([{
-            'username': 'user',
-            'email': 'user@test.com',
-            'first_name': '',
-            'last_name': ''
-        }], response.data['results'])
-
-    def test_user_list_shows_all_if_admin(self):
-        loginWithAPI(self.client, 'admin', 'secret')
-
-        url = reverse('user-list')
-        response = self.client.get(url, {}, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expectedUsers = [
-            {
-                'username': 'AnonymousUser',
-                'email': '',
-                'first_name': '',
-                'last_name': '',
-            },
-            {
-                'username': 'user',
-                'email': 'user@test.com',
-                'first_name': '',
-                'last_name': '',
-            },
-            {
-                'username': 'admin',
-                'email': 'admin@test.com',
-                'first_name': '',
-                'last_name': '',
-            },
-        ]
-        self.assertCountEqual(expectedUsers, response.data['results'])
-
     def test_user_create_fail(self):
         pass
 
