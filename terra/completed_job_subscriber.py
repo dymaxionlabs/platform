@@ -51,7 +51,7 @@ def trainingJobFinished(job_id):
     sendTrainingJobCompletedEmail(job)
 
 
-def createFile(name, tmpdirname, metadata, project, path):
+def createFile(name, tmpdirname, project, path, metadata={}):
     ext = os.path.splitext(name)[1]
     if ext in ['.json', '.geojson']:
         metadata['class'] = name.split("_")[0]
@@ -123,7 +123,6 @@ def predictionJobFinished(job_id):
                 createFile(
                     f, 
                     results_path, 
-                    meta, 
                     job.project, 
                     '{}/{}'.format(job.internal_metadata['output_path'].rstrip('/'), f)
                 )
