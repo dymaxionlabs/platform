@@ -1,5 +1,7 @@
 from django.utils.dateparse import parse_datetime
 from django_cron import CronJobBase, Schedule
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 from tasks import states
 from tasks.clients import CloudMLClient
@@ -11,6 +13,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
 
     RUN_EVERY_MINS = 5
     INVALID_TASK_EXPIRATION_TIME = 15 * 60
+    JOBS_CREATE_TIME_BASE = make_aware(datetime(2020, 7, 31))
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'tasks.cron.update_cloudml_tasks'  # a unique code
@@ -31,6 +34,8 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         # Get all CloudML jobs
         # TODO: Filter by date of oldest running task...
         all_jobs = client.list_jobs()['jobs']
+        all_jobs = [(job, parse_datetime(job['createTime'])) for job in all_jobs]
+        all_jobs = [job for job, create_time in all_jobs if create_time >= self.JOBS_CREATE_TIME_BASE]
         print("CloudML jobs:", len(all_jobs))
 
         jobs_by_task_id = [(job['jobId'].split('_')[1], job)
