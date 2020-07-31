@@ -4,7 +4,11 @@ from django.conf import settings
 
 def run_subprocess(cmd):
     print(cmd)
-    subprocess.run(cmd, shell=True, check=True)
+    subprocess.run(cmd,
+                   shell=True,
+                   check=True,
+                   stdout=subprocess.PIPE,
+                   stderr=subprocess.PIPE)
 
 
 def gsutilCopy(src, dst, recursive=True):
