@@ -33,7 +33,7 @@ def run_object_detection_e2e_test():
     tiling_job = img.tiling(output_path=storage_train_tiles)
     print("Tiling file...")
     while tiling_job.is_running():
-        time.sleep(60)
+        time.sleep(5)
 
     print("Tiling finished. Status= {}".format(tiling_job.state))
     if tiling_job.state == "FAILED":
