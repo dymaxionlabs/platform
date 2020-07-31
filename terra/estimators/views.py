@@ -182,11 +182,13 @@ class StartTrainingJobView(APIView):
                     status=status.HTTP_400_BAD_REQUEST)
 
             # Otherwise, create and start task
-            job = Task.objects.create(
-                name=Estimator.TRAINING_JOB_TASK,
-                project=estimator.project,
-                estimated_duration=training_duration,
-                internal_metadata={'estimator': str(estimator.uuid)})
+            job = Task.objects.create(name=Estimator.TRAINING_JOB_TASK,
+                                      project=estimator.project,
+                                      estimated_duration=training_duration,
+                                      internal_metadata={
+                                          'estimator': str(estimator.uuid),
+                                          'uses_cloudml': True
+                                      })
             job.start()
 
             try:
@@ -248,6 +250,8 @@ class StartPredictionJobView(APIView):
                 name=Estimator.PREDICTION_JOB_TASK,
                 project=estimator.project,
                 internal_metadata={
+                    'uses_cloudml':
+                    True,
                     'estimator':
                     str(estimator.uuid),
                     'training_job':
