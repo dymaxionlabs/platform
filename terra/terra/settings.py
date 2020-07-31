@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'guardian',
     'django_rq',
     'quotas',
+    'django_cron',
 ]
 
 MIDDLEWARE = [
