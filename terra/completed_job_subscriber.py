@@ -30,7 +30,9 @@ from common.utils import gsutilCopy
 def sendPredictionJobCompletedEmail(job):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
     users = estimator.project.collaborators.all()
-    users = [user for user in users if user.userprofile.send_notification_emails]
+    users = [
+        user for user in users if user.userprofile.send_notification_emails
+    ]
     email = PredictionCompletedEmail(estimator=estimator,
                                      recipients=[user.email for user in users])
     email.send_mail()
@@ -39,7 +41,9 @@ def sendPredictionJobCompletedEmail(job):
 def sendTrainingJobCompletedEmail(job):
     estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
     users = estimator.project.collaborators.all()
-    users = [user for user in users if user.userprofile.send_notification_emails]
+    users = [
+        user for user in users if user.userprofile.send_notification_emails
+    ]
     email = TrainingCompletedEmail(estimator=estimator,
                                    recipients=[user.email for user in users])
     email.send_mail()
@@ -62,10 +66,8 @@ def createFile(name, tmpdirname, project, path, metadata={}):
             defaults={
                 'size': os.path.getsize(os.path.join(tmpdirname, name)),
                 'metadata': metadata
-            }
-        )
+            })
     return file
-
 
 
 def predictionJobFinished(job_id):
@@ -121,11 +123,8 @@ def predictionJobFinished(job_id):
                 #order += 1
                 path, name = os.path.split(img.path)
                 createFile(
-                    f, 
-                    results_path, 
-                    job.project, 
-                    '{}/{}'.format(job.internal_metadata['output_path'].rstrip('/'), f)
-                )
+                    f, results_path, job.project, '{}/{}'.format(
+                        job.internal_metadata['output_path'].rstrip('/'), f))
                 job.metadata['results_files'].append('{}/{}'.format(
                     job.internal_metadata['output_path'].rstrip('/'), f))
 
