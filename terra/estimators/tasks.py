@@ -16,19 +16,20 @@ from django.core.files import File as DjangoFile
 from django.core.mail import send_mail
 from django_rq import job
 from rasterio.windows import Window
+from rest_framework.exceptions import NotFound
 from skimage import exposure
 from skimage.io import imsave
 
+from common.utils import gsutilCopy, list_chunks, run_subprocess
 from projects.models import File
-
-from .models import Annotation, Estimator, ImageTile, TrainingJob, PredictionJob
-from tasks.models import Task, TaskLogEntry
-IMAGE_TILE_SIZE = 500
-
 from storage.client import Client
-from rest_framework.exceptions import NotFound
 from tasks import states
-from common.utils import gsutilCopy, list_chunks
+from tasks.models import Task, TaskLogEntry
+
+from .models import (Annotation, Estimator, ImageTile, PredictionJob,
+                     TrainingJob)
+
+IMAGE_TILE_SIZE = 500
 
 
 @job("default", timeout=3600)
