@@ -12,6 +12,11 @@ from django.core.files import File as DjangoFile
 from dotenv import load_dotenv
 from google.cloud import pubsub_v1
 
+load_dotenv()
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
+django.setup()
+
 from common.utils import gsutilCopy
 from estimators.models import Estimator
 from projects.models import Layer, Map, MapLayer
@@ -21,10 +26,7 @@ from tasks import states
 from tasks.models import Task, TaskLogEntry
 from terra.emails import PredictionCompletedEmail, TrainingCompletedEmail
 
-load_dotenv()
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
-django.setup()
 
 
 def subscriber():
