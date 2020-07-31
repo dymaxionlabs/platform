@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'guardian',
     'django_rq',
     'quotas',
+    'django_cron',
 ]
 
 MIDDLEWARE = [
@@ -321,3 +322,8 @@ MAX_PROJECTS_PER_USER = 100
 MAX_FILE_SIZE = 10 * 2**30  #10GB
 TOTAL_SPACE_PER_USER = 25 * 2**30  #25GB
 MAX_ESTIMATORS_PER_PROJECT = 100
+
+CRON_CLASSES = [
+    "tasks.cron.UpdateCloudMLTasksCronJob",
+    # ...
+]

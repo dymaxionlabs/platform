@@ -105,22 +105,22 @@ class Task(models.Model):
         self.metadata['status'] = str(status)
         self.save(update_fields=['metadata', 'updated_at'])
 
-    def mark_as_finished(self):
-        self._mark_as(states.FINISHED)
+    def mark_as_finished(self, finished_at=None):
+        self._mark_as(states.FINISHED, finished_at=finished_at)
         signals.task_finished.send(sender=self.__class__, task=self)
 
-    def mark_as_canceled(self):
-        self._mark_as(states.CANCELED)
+    def mark_as_canceled(self, finished_at=None):
+        self._mark_as(states.CANCELED, finished_at=finished_at)
         signals.task_canceled.send(sender=self.__class__, task=self)
 
-    def mark_as_failed(self):
-        self._mark_as(states.FAILED)
+    def mark_as_failed(self, finished_at=None):
+        self._mark_as(states.FAILED, finished_at=finished_at)
         signals.task_failed.send(sender=self.__class__, task=self)
 
-    def _mark_as(self, state):
+    def _mark_as(self, state, finished_at=None):
         """Mark a Task as stopped with a state (FINISHED, FAILED, CANCELED)"""
         self.state = state
-        self.finished_at = timezone.now()
+        self.finished_at = finished_at or timezone.now()
         self.save(update_fields=['state', 'finished_at', 'updated_at'])
 
 
