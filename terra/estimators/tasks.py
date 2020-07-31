@@ -315,11 +315,11 @@ def run_cloudml(job, script_name):
     confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
     if 'confidence' in job.internal_metadata:
         confidence = job.internal_metadata['confidence']
+    #cloudml_env['CONFIDENCE'] = str(confidence)
 
-    p = subprocess.Popen([script_name],
-                         env=cloudml_env,
-                         cwd=settings.CLOUDML_DIRECTORY,
-                         shell=True)
+    run_subprocess(script_name,
+                   env=cloudml_env,
+                   cwd=settings.CLOUDML_DIRECTORY)
 
 
 def prepare_artifacts(job):

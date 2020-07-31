@@ -2,9 +2,11 @@ import subprocess
 from django.conf import settings
 
 
-def run_subprocess(cmd):
-    print(cmd)
+def run_subprocess(cmd, env=None, cwd=None):
+    print("Run command:", cmd, "env:", env, "cwd:", cwd)
     subprocess.run(cmd,
+                   env=env,
+                   cwd=cwd,
                    shell=True,
                    check=True,
                    stdout=subprocess.PIPE,
