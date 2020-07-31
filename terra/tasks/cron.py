@@ -43,13 +43,23 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         # If CloudML job has finished, update state of task
         for task in cloudml_tasks:
             # Ref: https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#State
-            job = jobs_by_task_id[task.pk]
+            job = jobs_by_task_id.get(task.pk)
+            if not job:
+                print(f'Task {task.pk} has no related CloudML. Mark as finished with the created_at')
+                task.mark_as_finished(finished_at=task.created_at)
+                return
+
             state = job['state']
+            print(f'Task {task.pk} has a CloudML job with state {state}')
+
             # Use real endTime as finished_at, not current time
             finished_at = parse_datetime(job['endTime'])
             if state == 'SUCCEEDED':
+                print(f'Task {task.pk}: Mark as finished at {finished_at}')
                 task.mark_as_finished(finished_at=finished_at)
             if state in ['CANCELLING', 'CANCELED']:
+                print(f'Job {task.pk}: Mark as canceled at {finished_at}')
                 task.mark_as_canceled(finished_at=finished_at)
             if state == 'FAILED':
+                print(f'Job {task.pk}: Mark as failed at {finished_at}')
                 task.mark_as_failed(finished_at=finished_at)
