@@ -60,6 +60,14 @@ class Task(models.Model):
         if self.has_stopped():
             return abs(self.finished_at - self.created_at).seconds
 
+    @property
+    def age(self):
+        """
+        Returns task age in seconds
+
+        """
+        return timezone.now() - self.created_at
+
     def start(self):
         if self.state == states.PENDING:
             django_rq.enqueue(self.name, self.id, self.args, self.kwargs)

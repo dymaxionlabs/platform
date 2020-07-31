@@ -10,6 +10,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
     help = 'Update status of running Cloud ML-based tasks'
 
     RUN_EVERY_MINS = 5
+    INVALID_TASK_EXPIRATION_TIME = 15 * 60
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'tasks.cron.update_cloudml_tasks'  # a unique code
@@ -44,9 +45,12 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         for task in cloudml_tasks:
             # Ref: https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#State
             job = jobs_by_task_id.get(task.pk)
-            if not job:
-                print(f'Task {task.pk} has no related CloudML. Mark as finished with the created_at')
-                task.mark_as_finished(finished_at=task.created_at)
+            task_is_too_old = task.age > INVALID_TASK_EXPIRATION_TIME
+            if not job and task_is_too_old:
+                print(
+                    f'Task {task.pk} has no related CloudML and is old (started at {task.created_at}). Mark as failed.'
+                )
+                task.mark_as_failed()
                 return
 
             state = job['state']
