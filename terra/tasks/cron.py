@@ -46,7 +46,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
             job = jobs_by_task_id[task.pk]
             state = job['state']
             # Use real endTime as finished_at, not current time
-            finished_at = parse_datetime(job['endTime']
+            finished_at = parse_datetime(job['endTime'])
             if state == 'SUCCEEDED':
                 task.mark_as_finished(finished_at=finished_at)
             if state in ['CANCELLING', 'CANCELED']:
