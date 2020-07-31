@@ -23,8 +23,6 @@ def run_object_detection_e2e_test():
     storage_train_img_path = '{}/image/orthomosaic.tif'.format(storage_root)
     img = File.get(storage_train_img_path, raise_error=False)
     if not img:
-        import pdb
-        pdb.set_trace()
         img = File.upload(train_img_path, storage_train_img)
         print("File uploaded")
     print(img)
