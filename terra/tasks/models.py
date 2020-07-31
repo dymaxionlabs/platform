@@ -66,7 +66,7 @@ class Task(models.Model):
         Returns task age in seconds
 
         """
-        return timezone.now() - self.created_at
+        return (timezone.now() - self.created_at).seconds
 
     def start(self):
         if self.state == states.PENDING:
