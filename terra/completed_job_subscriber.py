@@ -1,135 +1,30 @@
 #!/usr/bin/env python3
-import django
 import json
 import os
-import time
 import subprocess
 import tempfile
+import time
 from datetime import datetime
+
+import django
+from django.conf import settings
+from django.core.files import File as DjangoFile
 from dotenv import load_dotenv
+from google.cloud import pubsub_v1
+
+from common.utils import gsutilCopy
+from estimators.models import Estimator
+from projects.models import Layer, Map, MapLayer
+from storage.client import Client
+from storage.models import File
+from tasks import states
+from tasks.models import Task, TaskLogEntry
+from terra.emails import PredictionCompletedEmail, TrainingCompletedEmail
 
 load_dotenv()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "terra.settings")
 django.setup()
-
-from django.conf import settings
-from django.core.files import File as DjangoFile
-from estimators.models import Estimator
-from google.cloud import pubsub_v1
-from projects.models import Map, Layer, MapLayer
-from terra.emails import TrainingCompletedEmail
-from terra.emails import PredictionCompletedEmail
-from tasks.models import Task, TaskLogEntry
-from tasks import states
-from storage.client import Client
-from storage.models import File
-from common.utils import gsutilCopy
-
-
-def sendPredictionJobCompletedEmail(job):
-    estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.collaborators.all()
-    users = [
-        user for user in users if user.userprofile.send_notification_emails
-    ]
-    email = PredictionCompletedEmail(estimator=estimator,
-                                     recipients=[user.email for user in users])
-    email.send_mail()
-
-
-def sendTrainingJobCompletedEmail(job):
-    estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
-    users = estimator.project.collaborators.all()
-    users = [
-        user for user in users if user.userprofile.send_notification_emails
-    ]
-    email = TrainingCompletedEmail(estimator=estimator,
-                                   recipients=[user.email for user in users])
-    email.send_mail()
-
-
-def trainingJobFinished(job_id):
-    job = Task.objects.get(pk=job_id)
-    job.mark_as_finished()
-    sendTrainingJobCompletedEmail(job)
-
-
-def createFile(name, tmpdirname, project, path, metadata={}):
-    ext = os.path.splitext(name)[1]
-    if ext in ['.json', '.geojson']:
-        metadata['class'] = name.split("_")[0]
-    with open(os.path.join(tmpdirname, name), "rb") as f:
-        file = File.objects.get_or_create(
-            project=project,
-            path=path,
-            defaults={
-                'size': os.path.getsize(os.path.join(tmpdirname, name)),
-                'metadata': metadata
-            })
-    return file
-
-
-def predictionJobFinished(job_id):
-    print("Prediction job finished {}".format(job_id))
-    job = Task.objects.get(pk=job_id)
-    job.mark_as_finished()
-
-    client = Client(job.project)
-    if job.metadata is None:
-        job.metadata = {}
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        gsutilCopy('{job_dir}/predictions/*'.format(job_dir=job.job_dir),
-                   tmpdirname)
-        images_files = []
-        for file_path in job.internal_metadata['image_files']:
-            files = list(client.list_files(file_path))
-            if files:
-                images_files.append(files[0])
-        job.metadata['results_files'] = []
-        for img in images_files:
-            predictions_url = '{job_dir}/predictions/{img_folder}/'.format(
-                job_dir=job.job_dir, img_folder=img.name)
-            results_dst = 'gs://{bucket}/project_{project_id}/{output_path}/'.format(
-                bucket=settings.FILES_BUCKET,
-                project_id=job.project.pk,
-                output_path=job.internal_metadata['output_path'].rstrip('/'))
-            gsutilCopy("{}*".format(predictions_url), results_dst)
-            """
-            result_map = Map.objects.create(
-                project=img.project,
-                name='{prediction_pk}_{img_name}'.format(prediction_pk=job.pk,
-                                                         img_name=img.name))
-            img_layer = Layer.objects.filter(file=img).first()
-            if img_layer is not None:
-                MapLayer.objects.create(map=result_map,
-                                        layer=img_layer,
-                                        order=1)
-            meta = {
-                'source_img': {
-                    'pk': img.pk,
-                    'name': img.name
-                },
-                'map': {
-                    'uuid': str(result_map.uuid)
-                }
-            }
-            """
-            results_path = os.path.sep.join([tmpdirname, img.name])
-            files = os.listdir(results_path)
-            #order = 2
-            for f in files:
-                #meta['map']['layer_order'] = order
-                #order += 1
-                path, name = os.path.split(img.path)
-                createFile(
-                    f, results_path, job.project, '{}/{}'.format(
-                        job.internal_metadata['output_path'].rstrip('/'), f))
-                job.metadata['results_files'].append('{}/{}'.format(
-                    job.internal_metadata['output_path'].rstrip('/'), f))
-
-        job.save(update_fields=['internal_metadata', 'metadata', 'updated_at'])
-    sendPredictionJobCompletedEmail(job)
 
 
 def subscriber():
@@ -139,27 +34,22 @@ def subscriber():
 
     def callback(message):
         print('[Subscriptor] Job log: {}'.format(message.data))
-        message.ack()
-        data = json.loads(message.data.decode('utf8'))
-        task = Task.objects.filter(pk=int(data["job_id"])).first()
-        if task is not None:
-            TaskLogEntry.objects.create(
-                task=task,
-                log=data["payload"],
-                logged_at=datetime.strptime(data["logged_at"],
-                                            '%Y-%m-%d %H:%M:%S.%f'),
-            )
-            if "done" in data["payload"]:
-                if "job_type" in data:
-                    if data['job_type'] == 'training':
-                        trainingJobFinished(data['job_id'])
-                    elif data['job_type'] == 'prediction':
-                        predictionJobFinished(data['job_id'])
-            if "failed" in data["payload"]:
-                task.mark_as_failed()
-
+        try:
+            data = json.loads(message.data.decode('utf8'))
+            task = Task.objects.filter(pk=int(data["job_id"])).first()
+            if task is not None:
+                TaskLogEntry.objects.create(
+                    task=task,
+                    log=data["payload"],
+                    logged_at=datetime.strptime(data["logged_at"],
+                                                '%Y-%m-%d %H:%M:%S.%f'),
+                )
+            else:
+                print('[Subscriptor] Unknow message: {}'.format(message.data))
+        except Exception as err:
+            raise err
         else:
-            print('[Subscriptor] Unknow message: {}'.format(message.data))
+            message.ack()
 
     print("Subscribe to:", subscription_path)
     client.subscribe(subscription_path, callback=callback)
