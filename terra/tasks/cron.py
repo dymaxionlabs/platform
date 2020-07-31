@@ -1,15 +1,20 @@
-from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
+from django_cron import CronJobBase, Schedule
 
+from tasks import states
 from tasks.clients import CloudMLClient
 from tasks.models import Task
-from tasks import states
 
 
-class Command(BaseCommand):
+class UpdateCloudMLTasksCronJob(CronJobBase):
     help = 'Update status of running Cloud ML-based tasks'
 
-    def handle(self, *args, **options):
+    RUN_EVERY_MINS = 5
+
+    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
+    code = 'tasks.cron.update_cloudml_tasks'  # a unique code
+
+    def do(self):
         client = CloudMLClient()
 
         # Look for running Tasks of type TRAIN or PREDICT
