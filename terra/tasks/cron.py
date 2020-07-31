@@ -24,11 +24,11 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         count = cloudml_tasks.count()
 
         if count == 0:
-            print("No running tasks. Do nothing")
             return
         print("Running tasks:", count)
 
         # Get all CloudML jobs
+        # TODO: Filter by date of oldest running task...
         all_jobs = client.list_jobs()['jobs']
         print("CloudML jobs:", len(all_jobs))
 
