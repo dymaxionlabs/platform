@@ -45,7 +45,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         for task in cloudml_tasks:
             # Ref: https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#State
             job = jobs_by_task_id.get(task.pk)
-            task_is_too_old = task.age > INVALID_TASK_EXPIRATION_TIME
+            task_is_too_old = task.age > self.INVALID_TASK_EXPIRATION_TIME
             if not job and task_is_too_old:
                 print(
                     f'Task {task.pk} has no related CloudML and is old (started at {task.created_at}). Mark as failed.'
