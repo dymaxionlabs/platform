@@ -58,7 +58,7 @@ def run_object_detection_e2e_test():
     print("Train finished")
 
     if training_job.state == "FAILED":
-        raise "Training job failed!"
+        raise RuntimeError("Training job failed!")
 
     prediction_results_dir = '{}/prediction_results/'.format(storage_root)
     print("Start prediction...")
@@ -71,7 +71,7 @@ def run_object_detection_e2e_test():
     print("Predict finished")
 
     if prediction_job.state == "FAILED":
-        raise "Prediction job failed!"
+        raise RuntimeError("Prediction job failed!")
 
     for path in estimator.prediction_job.metadata["results_files"]:
         File.get(path).download("vineyard/predict-results/")
