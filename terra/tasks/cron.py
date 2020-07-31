@@ -60,7 +60,9 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
             print(f'Task {task.pk} has a CloudML job with state {state}')
 
             # Use real endTime as finished_at, not current time
-            finished_at = parse_datetime(job['endTime'])
+            job_end_time = job.get('endTime')
+            finished_at = parse_datetime(job_end_time) if job_end_time else None
+
             if state == 'SUCCEEDED':
                 print(f'Task {task.pk}: Mark as finished at {finished_at}')
                 task.mark_as_finished(finished_at=finished_at)
