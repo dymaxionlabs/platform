@@ -230,7 +230,11 @@ MEDIA_URL = '/uploads/'
 
 FILES_BUCKET = os.getenv('FILES_BUCKET')
 TILES_BUCKET = os.getenv('TILES_BUCKET')
+
+# deprecated, replaced by artifacts and models buckets
 ESTIMATORS_BUCKET = os.getenv('ESTIMATORS_BUCKET')
+TASK_ARTIFACTS_BUCKET = os.getenv('TASK_ARTIFACTS_BUCKET')
+MODELS_BUCKET = os.getenv('MODELS_BUCKET')
 
 WEBCLIENT_URL = os.getenv('WEBCLIENT_URL')
 
