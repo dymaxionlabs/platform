@@ -44,6 +44,8 @@ yapf = "*"
 pylint = "*"
 ipython = "*"
 pre-commit = "*"
+rope = "*"
+isort = "*"
 
 [requires]
 python_version = "3"
