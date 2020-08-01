@@ -116,11 +116,19 @@ def write_image(img, path):
 
 @job("default")
 def start_training_job(task_id, args, kwargs):
+    task = Task.objects.get(pk=task_id)
+    generate_annotations_csv(task)
+    generate_classes_csv(task)
+    upload_image_tiles(task)
+    run_cloudml(task, './submit_job.sh')
+
+
+@job("default")
+def start_prediction_job(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
-    annotation_csvs = generate_annotations_csv(job)
-    classes_csv = generate_classes_csv(job)
-    upload_image_tiles(job)
-    run_cloudml(job, './submit_job.sh')
+    prepare_artifacts(job)
+    upload_prediction_image_tiles(job)
+    run_cloudml(job, './submit_prediction_job.sh')
 
 
 def train_val_split_rows(rows, val_size=0.2):
@@ -164,9 +172,9 @@ def build_annotations_csv_rows(annotations):
     return rows
 
 
-def generate_annotations_csv(job):
+def generate_annotations_csv(task):
     annotations = Annotation.objects.filter(
-        estimator__uuid=job.internal_metadata["estimator"])
+        estimator__uuid=task.internal_metadata["estimator"])
 
     rows = build_annotations_csv_rows(annotations)
 
@@ -174,7 +182,7 @@ def generate_annotations_csv(job):
 
     urls = []
     for name, rows in zip(['train', 'val'], [rows_train, rows_val]):
-        url = os.path.join(job.artifacts_url, '{}.csv'.format(name))
+        url = os.path.join(task.input_artifacts_url, '{}.csv'.format(name))
         upload_csv(url, rows, ('tile_path', 'x1', 'y1', 'x2', 'y2', 'label'))
         urls.append(url)
 
@@ -187,7 +195,7 @@ def generate_classes_csv(job):
         dict(label=label, class_id=i)
         for i, label in enumerate(estimator.classes)
     ]
-    url = os.path.join(job.artifacts_url, 'classes.csv')
+    url = os.path.join(job.input_artifacts_url, 'classes.csv')
     upload_csv(url, rows, ('label', 'class_id'))
 
 
@@ -219,7 +227,7 @@ def upload_image_tiles(job):
 
     for img_file_name, urls in groups:
         urls = [url for _, url in urls]
-        dst_url = os.path.join(job.artifacts_url, 'img/', img_file_name)
+        dst_url = os.path.join(job.input_artifacts_url, 'img/', img_file_name)
         gsutilCopy(' '.join(urls), dst_url)
 
 
@@ -274,8 +282,8 @@ def upload_prediction_image_tiles(job):
     job.save()
 
 
-def run_cloudml(job, script_name):
-    estimator = Estimator.objects.get(uuid=job.internal_metadata['estimator'])
+def run_cloudml(task, script_name):
+    estimator = Estimator.objects.get(uuid=task.internal_metadata['estimator'])
 
     cloudml_env = {
         'CLOUDSDK_PYTHON':
@@ -283,19 +291,19 @@ def run_cloudml(job, script_name):
         'PATH':
         '{sdk_bin_path}/:{path}'.format(
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, path=os.getenv('PATH')),
-        'TERRA_ESTIMATOR_UUID':
-        str(estimator.uuid),
-        'TERRA_JOB_ID':
-        str(job.pk),
         'JOB_DIR':
-        job.job_dir,
+        task.cloudml_job_dir,
         'REGION':
         settings.CLOUDML_REGION,
         'PROJECT':
         settings.CLOUDML_PROJECT,
-        'ESTIMATORS_BUCKET':
-        'gs://{}'.format(settings.ESTIMATORS_BUCKET),
-        'PUBSUB_TOPIC':
+        'TERRA_TASK_ID':
+        str(task.pk),
+        'TERRA_TASK_ARTIFACTS_URL':
+        task.artifacts_url,
+        'TERRA_MODEL_URL':
+        estimator.model_url,
+        'TERRA_PUBSUB_TOPIC':
         settings.PUBSUB_JOB_TOPIC_ID,
         'SENTRY_SDK':
         os.environ['SENTRY_DNS'],
@@ -330,14 +338,3 @@ def prepare_artifacts(job):
 
     snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
     gsutilCopy(snapshots_path, job.artifacts_url)
-
-
-@job("default")
-def start_prediction_job(task_id, args, kwargs):
-    job = Task.objects.get(pk=task_id)
-
-    prepare_artifacts(job)
-
-    upload_prediction_image_tiles(job)
-
-    run_cloudml(job, './submit_prediction_job.sh')

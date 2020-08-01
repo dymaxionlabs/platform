@@ -65,6 +65,13 @@ class Estimator(models.Model):
                                         type=self.estimator_type)
 
     @property
+    def model_url(self):
+        return 'gs://{bucket}/{project_id}/{pk}/latest.h5'.format(
+            bucket=settings.MODELS_BUCKET,
+            project_id=self.project.pk,
+            pk=self.pk)
+
+    @property
     def estimated_training_duration(self):
         if self.estimator_type == "OD":
             ### RetinaNet estimator
