@@ -55,6 +55,14 @@ class Task(models.Model):
         return f'{self.artifacts_url}/output/'
 
     @property
+    def input_artifacts_path(self):
+        return f'{self.artifacts_path}/input/'
+
+    @property
+    def output_artifacts_path(self):
+        return f'{self.artifacts_path}/output/'
+
+    @property
     def cloudml_job_url(self):
         return f'{self.artifacts_url}/cloudml/'
 
