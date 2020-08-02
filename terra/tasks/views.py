@@ -40,7 +40,8 @@ class ArtifactsMixin:
         return client.list_blobs(settings.TASK_ARTIFACTS_BUCKET, prefix=prefix)
 
     def _get_prefix(self, task):
-        return f'{task.artifacts_path}'
+        # User is only interested in output artifacts, for now
+        return f'{task.output_artifacts_path}'
 
 
 class ListArtifactsAPIView(APIView, ArtifactsMixin):
