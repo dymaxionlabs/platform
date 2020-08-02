@@ -13,6 +13,7 @@ from skimage.io import imsave
 
 from storage.client import Client
 from tasks.models import Task, TaskLogEntry
+from estimators.models import ImageTile
 
 IMAGE_TILE_SIZE = 500
 
