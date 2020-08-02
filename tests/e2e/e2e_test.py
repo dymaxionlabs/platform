@@ -73,8 +73,7 @@ def run_object_detection_e2e_test():
     if prediction_job.state == "FAILED":
         raise RuntimeError("Prediction job failed!")
 
-    for path in estimator.prediction_job.metadata["results_files"]:
-        File.get(path).download("vineyard/predict-results/")
+    prediction_job.download_artifacts("vineyard/")
 
 
 if __name__ == "__main__":
