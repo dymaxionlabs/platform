@@ -40,10 +40,11 @@ class Task(models.Model):
 
     @property
     def artifacts_url(self):
-        return 'gs://{bucket}/{project_id}/{pk}'.format(
-            bucket=settings.TASK_ARTIFACTS_BUCKET,
-            project_id=self.project.pk,
-            pk=self.pk)
+        return f'gs://{settings.TASK_ARTIFACTS_BUCKET}/{self.artifacts_path}'
+
+    @property
+    def artifacts_path(self):
+        return f'{self.project.pk}/{self.pk}'
 
     @property
     def input_artifacts_url(self):
