@@ -40,7 +40,7 @@ def upload_prediction_image_tiles(task):
                                                source_tile_path=path)
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
-            if source_file not in job.internal_metadata["image_files"]:
+            if source_file not in task.internal_metadata["image_files"]:
                 task.internal_metadata["image_files"].append(source_file)
             files = list(client.list_files(source_file))
             image_tile_urls = []
