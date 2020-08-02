@@ -60,11 +60,9 @@ def run_object_detection_e2e_test():
     if training_task.state == "FAILED":
         raise RuntimeError("Training task failed!")
 
-    prediction_results_dir = '{}/prediction_results/'.format(storage_root)
     print("Start prediction...")
     prediction_task = estimator.predict_files([storage_train_tiles],
-                            output_path=prediction_results_dir,
-                            confidence=0.2)
+                                              confidence=0.2)
     print("Task: {}".format(prediction_task.id))
     while prediction_task.is_running():
         time.sleep(5)
@@ -73,7 +71,9 @@ def run_object_detection_e2e_test():
     if prediction_task.state == "FAILED":
         raise RuntimeError("Prediction task failed!")
 
-    prediction_task.download_artifacts("vineyard/")
+    artifacts_path = prediction_task.download_artifacts("vineyard/")
+    print("Artifacts downloaded at", artifacts_path)
+    print("Done!")
 
 
 if __name__ == "__main__":
