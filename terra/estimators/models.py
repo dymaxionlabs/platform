@@ -21,9 +21,9 @@ import fiona
 
 
 class Estimator(models.Model):
-    TRAINING_JOB_TASK = 'estimators.tasks.start_training_job'
-    PREDICTION_JOB_TASK = 'estimators.tasks.start_prediction_job'
-    IMAGE_TILING_TASK = 'estimators.tasks.generate_image_tiles'
+    TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'
+    PREDICTION_JOB_TASK = 'estimators.tasks.predict.start_prediction_job'
+    IMAGE_TILING_TASK = 'estimators.tasks.tile.generate_image_tiles'
 
     OBJECT_DETECTION = 'OD'
     CLASSIFICATION = 'C'
