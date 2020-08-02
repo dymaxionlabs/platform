@@ -36,70 +36,12 @@ def pre_save_handler(sender, instance, *args, **kwargs):
 
 
 @receiver(task_finished, sender=Task)
-def perform_train_predict_post_processing(sender, task, **kwargs):
+def send_job_completed_email(sender, task, **kwargs):
     # TODO: These should be rq jobs...
     if task.name == Estimator.TRAINING_JOB_TASK:
-        post_process_training_task(task)
+        send_training_job_completed_email(task)
     elif task.name == Estimator.PREDICTION_JOB_TASK:
-        post_process_prediction_task(task)
-
-
-def post_process_training_task(task):
-    send_training_job_completed_email(task)
-
-
-def post_process_prediction_task(task):
-    print(f"Prediction job finished {task.pk}")
-
-    client = Client(task.project)
-
-    if task.metadata is None:
-        task.metadata = {}
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        gsutilCopy(f'{task.job_dir}/predictions/*', tmpdirname)
-        images_files = []
-        for file_path in task.internal_metadata['image_files']:
-            files = list(client.list_files(file_path))
-            if files:
-                images_files.append(files[0])
-        task.metadata['results_files'] = []
-        for img in images_files:
-            predictions_url = f'{task.job_dir}/predictions/{img.name}/'
-            results_dst = 'gs://{bucket}/project_{project_id}/{output_path}/'.format(
-                bucket=settings.FILES_BUCKET,
-                project_id=task.project.pk,
-                output_path=task.internal_metadata['output_path'].rstrip('/'))
-            gsutilCopy(f"{predictions_url}*", results_dst)
-
-            results_path = os.path.sep.join([tmpdirname, img.name])
-            files = os.listdir(results_path)
-            for f in files:
-                create_file(
-                    f, results_path, task.project, '{}/{}'.format(
-                        task.internal_metadata['output_path'].rstrip('/'), f))
-                task.metadata['results_files'].append('{}/{}'.format(
-                    task.internal_metadata['output_path'].rstrip('/'), f))
-
-        task.save(
-            update_fields=['internal_metadata', 'metadata', 'updated_at'])
-
-    send_prediction_job_completed_email(task)
-
-
-def create_file(name, tmpdirname, project, path, metadata={}):
-    ext = os.path.splitext(name)[1]
-    if ext in ['.json', '.geojson']:
-        metadata['class'] = name.split("_")[0]
-    with open(os.path.join(tmpdirname, name), "rb") as f:
-        file = File.objects.get_or_create(
-            project=project,
-            path=path,
-            defaults={
-                'size': os.path.getsize(os.path.join(tmpdirname, name)),
-                'metadata': metadata
-            })
-    return file
+        send_prediction_job_completed_email(task)
 
 
 def send_training_job_completed_email(task):
