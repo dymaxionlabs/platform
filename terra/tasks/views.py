@@ -51,7 +51,7 @@ class ListArtifactsAPIView(APIView, ArtifactsMixin):
 
         # Remove prefix from file names
         prefix = self._get_prefix(task)
-        files = [f.split(f'{prefix}/')[1] for f in files]
+        files = [f.split(prefix)[1] for f in files]
 
         return Response(dict(files=files))
 
@@ -80,7 +80,7 @@ class DownloadArtifactsAPIView(APIView, ArtifactsMixin):
         # For each blob, download to temp file and write to zipfile
         prefix = self._get_prefix(task)
         for blob in blobs:
-            blob_path = blob.name.split(f'{prefix}/')[1]
+            blob_path = blob.name.split(prefix)[1]
             with tempfile.NamedTemporaryFile() as tmp:
                 blob.download_to_filename(tmp.name)
                 z.write(tmp.name, blob_path)
