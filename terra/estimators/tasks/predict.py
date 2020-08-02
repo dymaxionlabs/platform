@@ -7,7 +7,7 @@ from django.conf import settings
 from django_rq import job
 
 from common.utils import gsutilCopy, list_chunks
-from estimators.models import ImageTile
+from estimators.models import Estimator, ImageTile
 from storage.client import Client
 from tasks.models import Task
 
@@ -16,22 +16,32 @@ from . import run_cloudml
 
 @job("default")
 def start_prediction_job(task_id, args, kwargs):
-    job = Task.objects.get(pk=task_id)
-    prepare_artifacts(job)
-    upload_prediction_image_tiles(job)
-    run_cloudml(job, './submit_prediction_job.sh')
+    task = Task.objects.get(pk=task_id)
+    prepare_artifacts(task)
+    run_cloudml(task, './submit_prediction_job.sh')
 
 
-def upload_prediction_image_tiles(job):
-    client = Client(job.project)
-    job.internal_metadata["image_files"] = []
-    for path in job.internal_metadata['tiles_folders']:
-        image_tiles = ImageTile.objects.filter(project=job.project,
+def prepare_artifacts(task):
+    training_task = Task.objects.get(pk=task.internal_metadata['training_job'])
+    csv_url = os.path.join(training_task.input_artifacts_url, 'classes.csv')
+    gsutilCopy(csv_url, task.input_artifacts_url, recursive=False)
+
+    estimator = Estimator.objects.get(uuid=task.internal_metadata["estimator"])
+    gsutilCopy(estimator.model_url, task.input_artifacts_url)
+
+    upload_prediction_image_tiles(task)
+
+
+def upload_prediction_image_tiles(task):
+    client = Client(task.project)
+    task.internal_metadata["image_files"] = []
+    for path in task.internal_metadata['tiles_folders']:
+        image_tiles = ImageTile.objects.filter(project=task.project,
                                                source_tile_path=path)
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
             if source_file not in job.internal_metadata["image_files"]:
-                job.internal_metadata["image_files"].append(source_file)
+                task.internal_metadata["image_files"].append(source_file)
             files = list(client.list_files(source_file))
             image_tile_urls = []
             meta_data = {}
@@ -58,7 +68,7 @@ def upload_prediction_image_tiles(job):
                 }
 
             url = os.path.join(
-                job.artifacts_url,
+                task.input_artifacts_url,
                 'img/{file_name}/'.format(file_name=files[0].name))
 
             with tempfile.NamedTemporaryFile() as tmpfile:
@@ -70,13 +80,5 @@ def upload_prediction_image_tiles(job):
 
             for urls in list_chunks(image_tile_urls, 500):
                 gsutilCopy(' '.join(urls), url, recursive=False)
-    job.save()
 
-
-def prepare_artifacts(job):
-    training_job = Task.objects.get(pk=job.internal_metadata['training_job'])
-    csv_url = os.path.join(training_job.artifacts_url, 'classes.csv')
-    gsutilCopy(csv_url, job.artifacts_url, recursive=False)
-
-    snapshots_path = os.path.join(training_job.artifacts_url, 'snapshots')
-    gsutilCopy(snapshots_path, job.artifacts_url)
+    task.save()

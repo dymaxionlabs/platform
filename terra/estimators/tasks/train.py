@@ -18,10 +18,14 @@ from . import run_cloudml
 @job("default")
 def start_training_job(task_id, args, kwargs):
     task = Task.objects.get(pk=task_id)
+    prepare_artifacts(task)
+    run_cloudml(task, './submit_job.sh')
+
+
+def prepare_artifacts(task):
     generate_annotations_csv(task)
     generate_classes_csv(task)
     upload_image_tiles(task)
-    run_cloudml(task, './submit_job.sh')
 
 
 def train_val_split_rows(rows, val_size=0.2):
