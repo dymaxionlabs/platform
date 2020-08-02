@@ -1,12 +1,8 @@
 import tempfile
 import zipfile
-from datetime import datetime, timezone
-from pathlib import Path
 
 from django.conf import settings
-from django.db.models import Q
 from django.http import FileResponse
-from django.shortcuts import render
 from google.cloud import storage as gcs
 from rest_framework import permissions, status, viewsets
 from rest_framework.exceptions import NotFound
@@ -45,6 +41,9 @@ class ArtifactsMixin:
 
 
 class ListArtifactsAPIView(APIView, ArtifactsMixin):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
+
     def get(self, request, id):
         task = self._get_task(id)
         blobs = self._get_artifact_blobs(task)
@@ -58,6 +57,9 @@ class ListArtifactsAPIView(APIView, ArtifactsMixin):
 
 
 class DownloadArtifactsAPIView(APIView, ArtifactsMixin):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
+
     def get(self, request, id):
         """
         Downloads all artifacts from a task in a zip file
