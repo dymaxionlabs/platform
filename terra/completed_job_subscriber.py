@@ -27,8 +27,6 @@ from tasks.models import Task, TaskLogEntry
 from terra.emails import PredictionCompletedEmail, TrainingCompletedEmail
 
 
-
-
 def subscriber():
     client = pubsub_v1.SubscriberClient()
     subscription_path = client.subscription_path(settings.PUBSUB_PROJECT_ID,
@@ -38,7 +36,13 @@ def subscriber():
         print('[Subscriptor] Job log: {}'.format(message.data))
         try:
             data = json.loads(message.data.decode('utf8'))
-            task = Task.objects.filter(pk=int(data["job_id"])).first()
+
+            task_id = data.get("task_id")
+            if not task_id:
+                print('Message with no task id:', data)
+                return
+
+            task = Task.objects.filter(pk=int(task_id)).first()
             if task is not None:
                 TaskLogEntry.objects.create(
                     task=task,
@@ -47,7 +51,7 @@ def subscriber():
                                                 '%Y-%m-%d %H:%M:%S.%f'),
                 )
             else:
-                print('[Subscriptor] Unknow message: {}'.format(message.data))
+                print('Unknow Task message: {}'.format(message.data))
         except Exception as err:
             raise err
         else:
@@ -56,7 +60,7 @@ def subscriber():
     print("Subscribe to:", subscription_path)
     client.subscribe(subscription_path, callback=callback)
 
-    print("Waiting for completed jobs...")
+    print("Waiting for completed tasks...")
     while True:
         time.sleep(30)
 

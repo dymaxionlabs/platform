@@ -71,7 +71,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
             if state == 'SUCCEEDED':
                 print(f'Task {task.pk}: Mark as finished at {finished_at}')
                 task.mark_as_finished(finished_at=finished_at)
-            if state in ['CANCELLING', 'CANCELED']:
+            if state in ['CANCELLING', 'CANCELLED']:
                 print(f'Job {task.pk}: Mark as canceled at {finished_at}')
                 task.mark_as_canceled(finished_at=finished_at)
             if state == 'FAILED':

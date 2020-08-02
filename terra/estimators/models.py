@@ -21,9 +21,9 @@ import fiona
 
 
 class Estimator(models.Model):
-    TRAINING_JOB_TASK = 'estimators.tasks.start_training_job'
-    PREDICTION_JOB_TASK = 'estimators.tasks.start_prediction_job'
-    IMAGE_TILING_TASK = 'estimators.tasks.generate_image_tiles'
+    TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'
+    PREDICTION_JOB_TASK = 'estimators.tasks.predict.start_prediction_job'
+    IMAGE_TILING_TASK = 'estimators.tasks.tile.generate_image_tiles'
 
     OBJECT_DETECTION = 'OD'
     CLASSIFICATION = 'C'
@@ -63,6 +63,13 @@ class Estimator(models.Model):
     def __str__(self):
         return '{name} ({type})'.format(name=self.name,
                                         type=self.estimator_type)
+
+    @property
+    def model_url(self):
+        return 'gs://{bucket}/{project_id}/{pk}/latest.h5'.format(
+            bucket=settings.MODELS_BUCKET,
+            project_id=self.project.pk,
+            pk=self.pk)
 
     @property
     def estimated_training_duration(self):

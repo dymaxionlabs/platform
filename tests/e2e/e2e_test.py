@@ -30,14 +30,14 @@ def run_object_detection_e2e_test():
     print("File added to estimator")
 
     storage_train_tiles = '{}/tiles/'.format(storage_root)
-    tiling_job = img.tiling(output_path=storage_train_tiles)
+    tiling_task = img.tiling(output_path=storage_train_tiles)
     print("Tiling file...")
-    while tiling_job.is_running():
+    while tiling_task.is_running():
         time.sleep(5)
 
-    print("Tiling finished. Status= {}".format(tiling_job.state))
-    if tiling_job.state == "FAILED":
-        raise "Tiling job failed!"
+    print("Tiling finished. Status= {}".format(tiling_task.state))
+    if tiling_task.state == "FAILED":
+        raise "Tiling task failed!"
 
     # annotation upload
     annotations_filename = 'vineyard_annotations.geojson'
@@ -51,30 +51,29 @@ def run_object_detection_e2e_test():
     estimator.save()
 
     print("Start training...")
-    training_job = estimator.train()
-    print("Task: {}".format(training_job.id))
-    while training_job.is_running():
+    training_task = estimator.train()
+    print("Task: {}".format(training_task.id))
+    while training_task.is_running():
         time.sleep(5)
     print("Train finished")
 
-    if training_job.state == "FAILED":
-        raise RuntimeError("Training job failed!")
+    if training_task.state == "FAILED":
+        raise RuntimeError("Training task failed!")
 
     prediction_results_dir = '{}/prediction_results/'.format(storage_root)
     print("Start prediction...")
-    prediction_job = estimator.predict_files([storage_train_tiles],
+    prediction_task = estimator.predict_files([storage_train_tiles],
                             output_path=prediction_results_dir,
                             confidence=0.2)
-    print("Task: {}".format(prediction_job.id))
-    while prediction_job.is_running():
+    print("Task: {}".format(prediction_task.id))
+    while prediction_task.is_running():
         time.sleep(5)
     print("Predict finished")
 
-    if prediction_job.state == "FAILED":
-        raise RuntimeError("Prediction job failed!")
+    if prediction_task.state == "FAILED":
+        raise RuntimeError("Prediction task failed!")
 
-    for path in estimator.prediction_job.metadata["results_files"]:
-        File.get(path).download("vineyard/predict-results/")
+    prediction_task.download_artifacts("vineyard/")
 
 
 if __name__ == "__main__":

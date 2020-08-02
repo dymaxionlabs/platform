@@ -40,14 +40,31 @@ class Task(models.Model):
 
     @property
     def artifacts_url(self):
-        return '{job_dir}/artifacts/'.format(job_dir=self.job_dir)
+        return f'gs://{settings.TASK_ARTIFACTS_BUCKET}/{self.artifacts_path}'
 
     @property
-    def job_dir(self):
-        return 'gs://{bucket}/{project_id}/{pk}'.format(
-            bucket=settings.ESTIMATORS_BUCKET,
-            project_id=self.project.id,
-            pk=self.pk)
+    def artifacts_path(self):
+        return f'{self.project.pk}/{self.pk}'
+
+    @property
+    def input_artifacts_url(self):
+        return f'{self.artifacts_url}/input/'
+
+    @property
+    def output_artifacts_url(self):
+        return f'{self.artifacts_url}/output/'
+
+    @property
+    def input_artifacts_path(self):
+        return f'{self.artifacts_path}/input/'
+
+    @property
+    def output_artifacts_path(self):
+        return f'{self.artifacts_path}/output/'
+
+    @property
+    def cloudml_job_url(self):
+        return f'{self.artifacts_url}/cloudml/'
 
     @property
     def duration(self):
@@ -70,7 +87,7 @@ class Task(models.Model):
 
     def start(self):
         if self.state == states.PENDING:
-            django_rq.enqueue(self.name, self.id, self.args, self.kwargs)
+            django_rq.enqueue(self.name, self.pk, self.args, self.kwargs)
             self.state = states.STARTED
             self.save(update_fields=['state', 'updated_at'])
             signals.task_started.send(sender=self.__class__, task=self)
