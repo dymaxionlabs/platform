@@ -8,6 +8,7 @@ router = SimpleRouter()
 router.register(r'', views.TaskViewSet)
 
 urlpatterns = [
+    url(r'^(?P<id>[^/]+)/artifacts/?', views.ListArtifactsAPIView.as_view()),
     url(r'^(?P<id>[^/]+)/artifacts/download/?',
         views.DownloadArtifactsAPIView.as_view()),
     url(r'^', include(router.urls)),

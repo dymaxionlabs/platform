@@ -27,21 +27,42 @@ class TaskViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
                           HasAccessToRelatedProjectPermission)
 
 
-class DownloadArtifactsAPIView(APIView):
+class ArtifactsMixin:
+    def _get_task(self, id):
+        task = Task.objects.get(pk=id)
+        if not task:
+            return NotFound(detail='Task not found')
+        return task
+
+    def _get_artifact_blobs(self, task):
+        client = gcs.Client()
+        prefix = self._get_prefix(task)
+        return client.list_blobs(settings.TASK_ARTIFACTS_BUCKET, prefix=prefix)
+
+    def _get_prefix(self, task):
+        return f'{task.artifacts_path}'
+
+
+class ListArtifactsAPIView(APIView, ArtifactsMixin):
+    def get(self, request, id):
+        task = self._get_task(id)
+        blobs = self._get_artifact_blobs(task)
+        files = [b.name for b in blobs]
+
+        # Remove prefix from file names
+        prefix = self._get_prefix(task)
+        files = [f.split(f'{prefix}/')[1] for f in files]
+
+        return Response(dict(files=files))
+
+
+class DownloadArtifactsAPIView(APIView, ArtifactsMixin):
     def get(self, request, id):
         """
         Downloads all artifacts from a task in a zip file
         """
-        # Get task
-        task = Task.objects.get(pk=id)
-        if not task:
-            return NotFound(detail='Task not found')
-
-        # Get list of all artifact files (blobs)
-        client = gcs.Client()
-        prefix = f'{task.artifacts_path}'
-        blobs = client.list_blobs(settings.TASK_ARTIFACTS_BUCKET,
-                                  prefix=prefix)
+        task = self._get_task(id)
+        blobs = self._get_artifact_blobs(task)
 
         # If there are no blobs, return 204
         if not blobs:
@@ -54,6 +75,7 @@ class DownloadArtifactsAPIView(APIView):
                             compression=zipfile.ZIP_DEFLATED)
 
         # For each blob, download to temp file and write to zipfile
+        prefix = self._get_prefix(task)
         for blob in blobs:
             blob_path = blob.name.split(f'{prefix}/')[1]
             with tempfile.NamedTemporaryFile() as tmp:
