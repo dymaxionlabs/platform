@@ -38,7 +38,7 @@ def subscriber():
         print('[Subscriptor] Job log: {}'.format(message.data))
         try:
             data = json.loads(message.data.decode('utf8'))
-            task = Task.objects.filter(pk=int(data["job_id"])).first()
+            task = Task.objects.filter(pk=int(data["task_id"])).first()
             if task is not None:
                 TaskLogEntry.objects.create(
                     task=task,
@@ -56,7 +56,7 @@ def subscriber():
     print("Subscribe to:", subscription_path)
     client.subscribe(subscription_path, callback=callback)
 
-    print("Waiting for completed jobs...")
+    print("Waiting for completed tasks...")
     while True:
         time.sleep(30)
 
