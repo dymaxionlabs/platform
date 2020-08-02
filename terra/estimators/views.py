@@ -258,8 +258,6 @@ class StartPredictionJobView(APIView):
                     last_training_job.pk,
                     'tiles_folders':
                     request.data.get('files'),
-                    'output_path':
-                    request.data.get('output_path'),
                     'confidence':
                     request.data.get(
                         'confidence',
