@@ -17,7 +17,7 @@ def run_cloudml(task, script_name):
         '{sdk_bin_path}/:{path}'.format(
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, path=os.getenv('PATH')),
         'JOB_DIR':
-        task.cloudml_job_dir,
+        task.cloudml_job_url,
         'REGION':
         settings.CLOUDML_REGION,
         'PROJECT':
