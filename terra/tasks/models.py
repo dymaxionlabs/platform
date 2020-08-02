@@ -48,15 +48,15 @@ class Task(models.Model):
 
     @property
     def input_artifacts_url(self):
-        return f'{self.artifacts_url}/input'
+        return f'{self.artifacts_url}/input/'
 
     @property
     def output_artifacts_url(self):
-        return f'{self.artifacts_url}/output'
+        return f'{self.artifacts_url}/output/'
 
     @property
     def cloudml_job_url(self):
-        return f'{self.artifacts_url}/cloudml'
+        return f'{self.artifacts_url}/cloudml/'
 
     @property
     def duration(self):
