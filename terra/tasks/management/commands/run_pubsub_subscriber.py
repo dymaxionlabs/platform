@@ -30,12 +30,17 @@ class Command(BaseCommand):
 
                 task = Task.objects.filter(pk=int(task_id)).first()
                 if task is not None:
+                    payload = data['payload']
                     TaskLogEntry.objects.create(
                         task=task,
-                        log=data["payload"],
+                        log=payload,
                         logged_at=datetime.strptime(data["logged_at"],
                                                     '%Y-%m-%d %H:%M:%S.%f'),
                     )
+                    if payload['done']:
+                        task.mark_as_finished()
+                    elif payload['failed']:
+                        task.mark_as_failed()
                 else:
                     self.stdout.write(f'Unknow Task message: {message.data}')
             except Exception as err:
