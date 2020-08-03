@@ -44,6 +44,8 @@ class EstimatorViewSetTest(TestCase):
                 'configuration',
                 'created_at',
                 'updated_at',
+                'training_tasks',
+                'prediction_tasks',
             ]), sorted(response.data.keys()))
 
     def test_duplicate_error(self):
