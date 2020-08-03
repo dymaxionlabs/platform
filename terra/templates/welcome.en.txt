@@ -1,13 +1,14 @@
 Hi {{ name }},
 
-Welcome to Dymaxion Platform (DYMAX).
+Welcome to Dymaxion Labs Platform (DYMA)!
 
-We are very happy that you use our tool. You can access your account at:
+We are very happy you signed up to try out our tool. You can access your account
+with 10,000 welcome-credits at:
 {{ link }}
 
-If you have any doubt about DYMAX, feel free to respond to this email.
+If you have any doubt about DYMA, feel free to respond to this email.
 
-Let’s begin!
+Let’s get started!
 
 Best,
 Federico & the Dymaxion Labs team.
