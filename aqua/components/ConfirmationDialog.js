@@ -1,38 +1,33 @@
-import React from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@material-ui/core";
 import PropTypes from "prop-types";
-
+import React from "react";
 import { withTranslation } from "../i18n";
 
-import { Button, DialogTitle, DialogContent, DialogActions, Dialog, Typography } from '@material-ui/core';
-
 class ConfirmationDialog extends React.Component {
-  handleCancel = () => {
-    this.props.onClose(false);
-  };
-
-  handleOk = () => {
-    this.props.onClose(true);
-  };
-
   render() {
-    const { open, title, content, t } = this.props;
+    const { open, onClose, onConfirm, title, content, t } = this.props;
+
     return (
       <Dialog
-        disableBackdropClick
-        disableEscapeKeyDown
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         open={open}
+        onClose={onClose}
       >
         <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">{content}</Typography>
-        </DialogContent>
+        <DialogContent>{content}</DialogContent>
         <DialogActions>
-          <Button onClick={this.handleCancel} color="primary">
+          <Button onClick={onClose} color="primary">
             {t("confirmation.cancel")}
           </Button>
-          <Button onClick={this.handleOk} color="primary">
+          <Button onClick={onConfirm} color="primary">
             Ok
           </Button>
         </DialogActions>
@@ -43,7 +38,10 @@ class ConfirmationDialog extends React.Component {
 
 ConfirmationDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired
+  onConfirm: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
 };
 
 ConfirmationDialog = withTranslation("common")(ConfirmationDialog);
