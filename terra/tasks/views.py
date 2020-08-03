@@ -5,13 +5,15 @@ from django.conf import settings
 from django.http import FileResponse
 from google.cloud import storage as gcs
 from rest_framework import permissions, status, viewsets
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ParseError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
 from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
+from projects.views import RelatedProjectAPIView
+from storage.models import File
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 
@@ -54,6 +56,19 @@ class ListArtifactsAPIView(APIView, ArtifactsMixin):
         files = [f.split(prefix)[1] for f in files]
 
         return Response(dict(files=files))
+
+
+class ExportArtifactsAPIView(RelatedProjectAPIView, ArtifactsMixin):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
+
+    def post(self, request, id):
+        task = self._get_task(id)
+        path = request.data.get('path', None)
+        if not path:
+            raise ParseError("'path' missing")
+        File.copy(task.output_artifacts_url, path, project=self.get_project())
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DownloadArtifactsAPIView(APIView, ArtifactsMixin):
