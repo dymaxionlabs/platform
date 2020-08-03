@@ -4,7 +4,8 @@
     "success_msg": "Your email address has been verified successfully."
   },
   "confirmation": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "copy": "Copy"
   },
   "crop_lots_desc": "Categorized lots by crop type",
   "crop_lots_title": "Crop lots",

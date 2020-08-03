@@ -52,7 +52,7 @@ class ModelsContent extends React.Component {
     contextualMenuOpen: null,
     showUuidDialogOpen: false,
     deleteDialogOpen: false,
-    currentUUID: "",
+    currentModel: null,
   };
 
   async getModels() {
@@ -90,58 +90,65 @@ class ModelsContent extends React.Component {
     return t(`models.types.${model.estimator_type}`);
   }
 
-  handleContextualMenuClick = (event) => {
-    this.setState({ contextualMenuOpen: event.currentTarget });
+  handleContextualMenuClick = (event, model) => {
+    this.setState({
+      contextualMenuOpen: event.currentTarget,
+      currentModel: model,
+    });
   };
 
   handleContextualMenuClose = () => {
     this.setState({ contextualMenuOpen: null });
   };
 
-  onDialogResult = async (action) => {
+  onDialogResult = () => {
     this.setState({
       showUuidDialogOpen: false,
       deleteDialogOpen: false,
-      currentUUID: "",
     });
   };
 
-  estimatorViewUUID = (model) => {
+  handleShowUUIDClick = () => {
     this.setState({
-      currentUUID: model.uuid,
       showUuidDialogOpen: true,
+      contextualMenuOpen: null,
     });
   };
 
-  estimatorDelete = (model) => {
+  handleDeleteClick = () => {
     this.setState({
-      currentUUID: model.uuid,
       deleteDialogOpen: true,
+      contextualMenuOpen: null,
     });
   };
 
-  onDeleteDialogResult = async (action) => {
-    if (action) {
-      const currentUUID = this.state.currentUUID;
+  onDeleteDialogClose = () => {
+    this.setState({
+      deleteDialogOpen: false,
+    });
+  };
 
-      try {
-        await axios.delete(buildApiUrl(`/estimators/${currentUUID}`), {
-          headers: { Authorization: this.props.token },
-        });
-        this.props.enqueueSnackbar(`Model deleted`, {
-          variant: "success",
-        });
-        this.getModels();
-      } catch (error) {
-        console.error(error);
-        this.props.enqueueSnackbar(
-          `Failed to delete model: ${JSON.stringify(error)}`,
-          {
-            variant: "error",
-          }
-        );
-      }
+  onDeleteDialogConfirm = async () => {
+    const { currentModel } = this.state;
+
+    try {
+      await axios.delete(buildApiUrl(`/estimators/${currentModel.uuid}`), {
+        headers: { Authorization: this.props.token },
+      });
+      this.props.enqueueSnackbar(`Model deleted`, {
+        variant: "success",
+      });
+      this.getModels();
+    } catch (error) {
+      console.error(error);
+      this.props.enqueueSnackbar(
+        `Failed to delete model: ${JSON.stringify(error)}`,
+        {
+          variant: "error",
+        }
+      );
     }
+
     this.setState({
       deleteDialogOpen: false,
     });
@@ -159,10 +166,10 @@ class ModelsContent extends React.Component {
     const { t, classes } = this.props;
     const {
       loading,
-      models: models,
+      models,
       contextualMenuOpen,
       showUuidDialogOpen,
-      currentUUID,
+      currentModel,
       deleteDialogOpen,
     } = this.state;
 
@@ -191,8 +198,8 @@ class ModelsContent extends React.Component {
                   <TableCell>There are no models.</TableCell>
                 </TableRow>
               )}
-              {models.map((model, i) => (
-                <TableRow key={i}>
+              {models.map((model) => (
+                <TableRow key={model.uuid}>
                   <TableCell component="th" scope="row">
                     {model.name}
                   </TableCell>
@@ -213,46 +220,47 @@ class ModelsContent extends React.Component {
                       aria-label="Edit"
                       aria-controls="simple-menu"
                       aria-haspopup="true"
-                      onClick={this.handleContextualMenuClick}
+                      onClick={(e) => this.handleContextualMenuClick(e, model)}
                     >
                       <EditIcon />
                     </IconButton>
-                    <Menu
-                      id="edit-estimator-menu"
-                      anchorEl={contextualMenuOpen}
-                      keepMounted
-                      open={Boolean(contextualMenuOpen)}
-                      onClose={this.handleContextualMenuClose}
-                    >
-                      <MenuItem onClick={() => this.estimatorViewUUID(model)}>
-                        {t("models.uuid")}
-                      </MenuItem>
-                      <MenuItem onClick={() => this.estimatorDelete(model)}>
-                        {t("models.delete_models")}
-                      </MenuItem>
-                    </Menu>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </Paper>
+        <Menu
+          id="edit-estimator-menu"
+          anchorEl={contextualMenuOpen}
+          keepMounted
+          open={Boolean(contextualMenuOpen)}
+          onClose={this.handleContextualMenuClose}
+        >
+          <MenuItem onClick={this.handleShowUUIDClick}>
+            {t("models.uuid")}
+          </MenuItem>
+          <MenuItem onClick={this.handleDeleteClick}>
+            {t("models.delete_models")}
+          </MenuItem>
+        </Menu>
         <ShowUuidDialog
           onClose={this.onDialogResult}
           open={showUuidDialogOpen}
           title={"UUID"}
-          content={currentUUID}
+          content={currentModel && currentModel.uuid}
         />
         <ConfirmationDialog
-          onClose={this.onDeleteDialogResult}
+          onClose={this.onDeleteDialogClose}
+          onConfirm={this.onDeleteDialogConfirm}
           open={deleteDialogOpen}
           title={t("models.title_delete")}
           content={
             <div>
-              <p>{t("models.text_delete")}</p>
-              <p>
+              <Typography variant="body1">{t("models.text_delete")}</Typography>
+              <Typography variant="body1">
                 <strong>{t("models.text_delete_warning")}</strong>
-              </p>
+              </Typography>
             </div>
           }
         />
