@@ -1,5 +1,5 @@
 [Unit]
-Description=Terra Jobs subscriber
+Description=Terra Cloud PubSub subscriber
 After=network.target
 
 [Service]
@@ -7,11 +7,11 @@ Environment=PYTHONUNBUFFERED=true
 Environment=SENTRY_DNS=https://2dd8f13e32504a0ca9ac927ec6adbcba@sentry.io/1412965
 User=ubuntu
 Group=ubuntu
-SyslogIdentifier=terra-jobs-subscriber
+SyslogIdentifier=terra-pubsub-subscriber
 StandardOutput=syslog
 StandardError=syslog
 WorkingDirectory=/home/ubuntu/dymaxionlabs-platform/terra
-ExecStart=/bin/bash -c '/home/ubuntu/.local/share/virtualenvs/terra-O5su8kSy/bin/python /home/ubuntu/dymaxionlabs-platform/terra/completed_job_subscriber.py'
+ExecStart=/bin/bash -c '/home/ubuntu/.local/share/virtualenvs/terra-O5su8kSy/bin/python /home/ubuntu/dymaxionlabs-platform/terra/manage.py run_pubsub_subscriber'
 
 [Install]
 WantedBy=multi-user.target
