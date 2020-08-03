@@ -8,7 +8,7 @@ Environment=SENTRY_DNS=https://2dd8f13e32504a0ca9ac927ec6adbcba@sentry.io/141296
 Environment=PATH=/home/ubuntu/.local/bin:/home/ubuntu/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 User=ubuntu
 Group=ubuntu
-SyslogIdentifier=rqworker
+SyslogIdentifier=terra-rqworker
 StandardOutput=syslog
 StandardError=syslog
 WorkingDirectory=/home/ubuntu/dymaxionlabs-platform/terra
