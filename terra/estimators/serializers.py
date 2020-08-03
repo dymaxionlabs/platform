@@ -29,20 +29,20 @@ class EstimatorSlugField(serializers.SlugRelatedField):
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
     classes = serializers.ListField(required=True, validators=[non_empty])
-    training_jobs = serializers.SerializerMethodField()
-    prediction_jobs = serializers.SerializerMethodField()
+    training_tasks = serializers.SerializerMethodField()
+    prediction_tasks = serializers.SerializerMethodField()
 
-    def get_training_jobs(self, obj):
-        jobs = Task.objects.filter(
+    def get_training_tasks(self, obj):
+        tasks = Task.objects.filter(
             internal_metadata__estimator=str(obj.uuid), 
             name=Estimator.TRAINING_JOB_TASK).order_by('-created_at')
-        return TaskSerializer(jobs, many=True).data
+        return TaskSerializer(tasks, many=True).data
     
-    def get_prediction_jobs(self, obj):
-        jobs = Task.objects.filter(
+    def get_prediction_tasks(self, obj):
+        tasks = Task.objects.filter(
             internal_metadata__estimator=str(obj.uuid), 
             name=Estimator.PREDICTION_JOB_TASK).order_by('-created_at')
-        return TaskSerializer(jobs, many=True).data
+        return TaskSerializer(tasks, many=True).data
 
     class Meta:
         model = Estimator
