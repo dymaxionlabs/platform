@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from projects.mixins import allowed_projects_for
 from projects.models import File, Project
-
+from tasks.models import Task
+from tasks.serializers import TaskSerializer
 from .models import (Annotation, Estimator, ImageTile, TrainingJob,
                      PredictionJob)
 
@@ -28,6 +29,20 @@ class EstimatorSlugField(serializers.SlugRelatedField):
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
     classes = serializers.ListField(required=True, validators=[non_empty])
+    training_tasks = serializers.SerializerMethodField()
+    prediction_tasks = serializers.SerializerMethodField()
+
+    def get_training_tasks(self, obj):
+        tasks = Task.objects.filter(
+            internal_metadata__estimator=str(obj.uuid), 
+            name=Estimator.TRAINING_JOB_TASK).order_by('-created_at')
+        return TaskSerializer(tasks, many=True).data
+    
+    def get_prediction_tasks(self, obj):
+        tasks = Task.objects.filter(
+            internal_metadata__estimator=str(obj.uuid), 
+            name=Estimator.PREDICTION_JOB_TASK).order_by('-created_at')
+        return TaskSerializer(tasks, many=True).data
 
     class Meta:
         model = Estimator
