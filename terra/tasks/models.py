@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from estimators.models import Estimator
 from projects.models import Project
 
 from . import signals, states
@@ -84,6 +84,14 @@ class Task(models.Model):
 
         """
         return (timezone.now() - self.created_at).seconds
+    
+    @property
+    def can_be_cancelled(self):
+        """
+        Returns True if the task can be cacelled
+
+        """
+        return self.name in [Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK]
 
     def start(self):
         if self.state == states.PENDING:
