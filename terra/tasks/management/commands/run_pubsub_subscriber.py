@@ -37,10 +37,13 @@ class Command(BaseCommand):
                         logged_at=datetime.strptime(data["logged_at"],
                                                     '%Y-%m-%d %H:%M:%S.%f'),
                     )
-                    if payload['done']:
-                        task.mark_as_finished()
-                    elif payload['failed']:
-                        task.mark_as_failed()
+                    if task.is_running():
+                        # Only mark as finished or failed if task is still running,
+                        # otherwise, message may be too old and should be ignored.
+                        if payload['done']:
+                            task.mark_as_finished()
+                        elif payload['failed']:
+                            task.mark_as_failed()
                 else:
                     self.stdout.write(f'Unknow Task message: {message.data}')
             except Exception as err:
