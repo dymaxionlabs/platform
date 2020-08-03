@@ -40,9 +40,9 @@ class Command(BaseCommand):
                     if task.is_running():
                         # Only mark as finished or failed if task is still running,
                         # otherwise, message may be too old and should be ignored.
-                        if payload['done']:
+                        if payload.get('done'):
                             task.mark_as_finished()
-                        elif payload['failed']:
+                        elif payload.get('failed'):
                             task.mark_as_failed()
                 else:
                     self.stdout.write(f'Unknow Task message: {message.data}')
