@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
     'estimators.apps.EstimatorsConfig',
-    'quotations.apps.QuotationsConfig',
     'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',

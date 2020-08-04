@@ -30,7 +30,6 @@ from projects.views import (ConfirmProjectInvitationView, ContactView,
                             SubscribeBetaView, TestAuthView, TestErrorView,
                             TestTaskErrorView, UserAPIKeyViewSet,
                             UserProfileViewSet, UserViewSet)
-from quotations.views import RequestViewSet
 from stac.views import SearchView
 
 router = SimpleRouter()
@@ -39,7 +38,6 @@ router.register(r'user-profiles', UserProfileViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'layers', LayerViewSet)
 router.register(r'maps', MapViewSet)
-router.register(r'requests', RequestViewSet)
 router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
 
 schema_view = get_schema_view(
