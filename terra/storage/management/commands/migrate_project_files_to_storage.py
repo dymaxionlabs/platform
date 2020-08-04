@@ -5,7 +5,7 @@ import tempfile
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from common.utils import gsutilCopy
+from terra.utils import gsutilCopy
 from projects.models import File
 from storage.client import Client
 

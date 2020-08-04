@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from common.utils import gsutilCopy
+from terra.utils import gsutilCopy
 from projects.models import File
 from quotas.models import UserQuota
 from storage.models import File

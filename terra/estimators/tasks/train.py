@@ -8,7 +8,7 @@ from operator import itemgetter
 from django.conf import settings
 from django_rq import job
 
-from common.utils import gsutilCopy
+from terra.utils import gsutilCopy
 from estimators.models import Annotation, Estimator, ImageTile
 from tasks.models import Task
 

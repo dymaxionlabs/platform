@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django_rq import job
 
-from common.utils import run_subprocess
+from terra.utils import run_subprocess
 from estimators.models import Estimator
 
 
