@@ -89,7 +89,7 @@ class Task(models.Model):
     @property
     def can_be_cancelled(self):
         """
-        Returns True if the task can be cacelled
+        Returns True if the task can be cancelled
 
         """
         return self.name in [Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK]
