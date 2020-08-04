@@ -7,6 +7,7 @@ from operator import itemgetter
 
 from django.conf import settings
 from django_rq import job
+from datetime import datetime
 
 from terra.utils import gsutilCopy
 from estimators.models import Annotation, Estimator, ImageTile
