@@ -4,7 +4,7 @@ from django.db.models import Sum
 from rest_framework.exceptions import ParseError
 from django.db.models.functions import Coalesce
 from django.contrib.postgres.fields import JSONField
-from common.utils import gsutilCopy
+from terra.utils import gsutilCopy
 from projects.models import Project
 from quotas.models import UserQuota
 from storage.client import Client
