@@ -112,14 +112,16 @@ class Task(models.Model):
         self.start()
 
     def cancel(self):
-        if self.internal_metadata is not None and 'cloudml_job_name' in self.internal_metadata:
+        if self.can_be_cancelled:
             if self.state in [states.CANCELED, states.FINISHED, states.FAILED]:
                 raise RuntimeError("Cannot cancel an already completed job")
-            else:
+            if self.internal_metadata is not None and 'cloudml_job_name' in self.internal_metadata:
                 client = CloudMLClient()
                 client.cancel_job(self.internal_metadat['cloudml_job_name'])
                 self.state = states.CANCELED
                 self.save(update_fields=['state', 'updated_at'])
+            else:
+                raise RuntimeError("Cloudml job name is not setted")
         else:
             raise RuntimeError("This task can not be canceled")
 
