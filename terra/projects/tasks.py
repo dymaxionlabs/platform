@@ -16,7 +16,7 @@ from django_rq import job
 from rq import get_current_job
 from shapely.geometry import box, mapping
 from shapely.ops import transform
-from common.utils import gsutilCopy, run_subprocess
+from terra.utils import gsutilCopy, run_subprocess
 from .models import File, Layer, Map, MapLayer
 
 GDAL2TILES_PATH = os.path.join(settings.SCRIPT_DIR, 'preprocess',

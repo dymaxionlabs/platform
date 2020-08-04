@@ -56,10 +56,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
     'estimators.apps.EstimatorsConfig',
-    'quotations.apps.QuotationsConfig',
     'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',
+    'quotas.apps.QuotasConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
@@ -75,7 +75,6 @@ INSTALLED_APPS = [
     'jsoneditor',
     'guardian',
     'django_rq',
-    'quotas',
     'django_cron',
 ]
 

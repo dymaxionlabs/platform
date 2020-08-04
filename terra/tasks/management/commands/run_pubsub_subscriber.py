@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from google.cloud import pubsub_v1
 
-from common.utils import gsutilCopy
+from terra.utils import gsutilCopy
 from tasks.models import Task, TaskLogEntry
 
 

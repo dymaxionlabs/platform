@@ -6,7 +6,7 @@ import rasterio
 from django.conf import settings
 from django_rq import job
 
-from common.utils import gsutilCopy, list_chunks
+from terra.utils import gsutilCopy, list_chunks
 from estimators.models import Estimator, ImageTile
 from storage.client import Client
 from tasks.models import Task
