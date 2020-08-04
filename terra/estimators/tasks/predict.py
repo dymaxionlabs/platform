@@ -5,6 +5,7 @@ import tempfile
 import rasterio
 from django.conf import settings
 from django_rq import job
+from datetime import datetime
 
 from terra.utils import gsutilCopy, list_chunks
 from estimators.models import Estimator, ImageTile
@@ -18,7 +19,10 @@ from . import run_cloudml
 def start_prediction_job(task_id, args, kwargs):
     task = Task.objects.get(pk=task_id)
     prepare_artifacts(task)
-    run_cloudml(task, './submit_prediction_job.sh')
+    job_name = f'predict_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+    run_cloudml(task, './submit_prediction_job.sh', job_name)
+    task.internal_metadata['cloudml_job_name'] = job_name
+    task.save(update_fields=["internal_metadata"])
 
 
 def prepare_artifacts(task):
