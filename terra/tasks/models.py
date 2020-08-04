@@ -9,6 +9,7 @@ from estimators.models import Estimator
 from projects.models import Project
 
 from . import signals, states
+from .clients import CloudMLClient
 
 
 class Task(models.Model):
@@ -111,8 +112,16 @@ class Task(models.Model):
         self.start()
 
     def cancel(self):
-        # TODO
-        pass
+        if self.internal_metadata is not None and 'cloudml_job_name' in self.internal_metadata:
+            if self.state in [states.CANCELED, states.FINISHED, states.FAILED]:
+                raise RuntimeError("Cannot cancel an already completed job")
+            else:
+                client = CloudMLClient()
+                client.cancel_job(self.internal_metadat['cloudml_job_name'])
+                self.state = states.CANCELED
+                self.save(update_fields=['state', 'updated_at'])
+        else:
+            raise RuntimeError("This task can not be canceled")
 
     def is_pending(self):
         return self.state == states.PENDING

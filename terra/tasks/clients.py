@@ -34,5 +34,6 @@ class CloudMLClient:
         pass
 
     def cancel_job(self, job_id):
-        # TODO
-        pass
+        name = f'{self.project_id}/jobs/{job_id}'
+        req = self.client.projects().jobs().cancel(name=name)
+        return req.execute()
