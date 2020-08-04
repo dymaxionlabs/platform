@@ -15,13 +15,7 @@ from tasks.models import Task
 from tasks.signals import task_finished
 from terra.emails import TrainingCompletedEmail, PredictionCompletedEmail
 
-from .models import Estimator, PredictionJob, TrainingJob
-
-
-@receiver(post_save, sender=TrainingJob)
-def start_training_job(sender, instance, created, **kwargs):
-    if created:
-        django_rq.enqueue('estimators.tasks.start_training_job', instance.pk)
+from .models import Estimator
 
 
 @receiver(pre_save, sender=Estimator)

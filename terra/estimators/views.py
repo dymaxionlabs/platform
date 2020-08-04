@@ -16,12 +16,10 @@ from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
 from projects.views import RelatedProjectAPIView
 
-from .models import (Annotation, Estimator, ImageTile, PredictionJob,
-                     TrainingJob)
+from .models import Annotation, Estimator, ImageTile
 from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
-                          ImageTileSerializer, PredictionJobSerializer,
-                          TrainingJobSerializer)
+                          ImageTileSerializer)
 from storage.client import Client
 from tasks import states
 from tasks.serializers import TaskSerializer

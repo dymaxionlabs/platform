@@ -4,8 +4,7 @@ from projects.mixins import allowed_projects_for
 from projects.models import File, Project
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
-from .models import (Annotation, Estimator, ImageTile, TrainingJob,
-                     PredictionJob)
+from .models import Annotation, Estimator, ImageTile
 
 
 def non_empty(value):
@@ -37,7 +36,7 @@ class EstimatorSerializer(serializers.ModelSerializer):
             kwargs__estimator=str(obj.uuid), 
             name=Estimator.TRAINING_JOB_TASK).order_by('-created_at')
         return TaskSerializer(tasks, many=True).data
-    
+
     def get_prediction_tasks(self, obj):
         tasks = Task.objects.filter(
             kwargs__estimator=str(obj.uuid), 
@@ -65,28 +64,3 @@ class AnnotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Annotation
         exclude = ('id', )
-
-
-class TrainingJobSerializer(serializers.ModelSerializer):
-    estimator = EstimatorSlugField(slug_field='uuid')
-
-    class Meta:
-        model = TrainingJob
-        fields = '__all__'
-
-
-class PredictionJobSerializer(serializers.ModelSerializer):
-    estimator = EstimatorSlugField(slug_field='uuid')
-    image_files = serializers.SlugRelatedField(many=True,
-                                               read_only=True,
-                                               slug_field='name')
-    result_files = serializers.SlugRelatedField(many=True,
-                                                read_only=True,
-                                                slug_field='name')
-    result_files = serializers.SlugRelatedField(many=True,
-                                                read_only=True,
-                                                slug_field='name')
-
-    class Meta:
-        model = PredictionJob
-        fields = '__all__'
