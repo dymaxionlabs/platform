@@ -117,7 +117,7 @@ class Task(models.Model):
                 raise RuntimeError("Cannot cancel an already completed job")
             if self.internal_metadata is not None and 'cloudml_job_name' in self.internal_metadata:
                 client = CloudMLClient()
-                client.cancel_job(self.internal_metadat['cloudml_job_name'])
+                client.cancel_job(self.internal_metadata['cloudml_job_name'])
                 self.state = states.CANCELED
                 self.save(update_fields=['state', 'updated_at'])
             else:
