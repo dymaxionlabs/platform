@@ -102,3 +102,13 @@ class DownloadArtifactsAPIView(APIView, ArtifactsMixin):
 
         z.close()
         return FileResponse(open(artifacts_zipfile.name, 'rb'))
+
+
+class CancelTaskAPIView(RelatedProjectAPIView, ArtifactsMixin):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated,
+                          HasAccessToRelatedProjectPermission)
+
+    def post(self, request, id):
+        task = self._get_task(id)
+        task.cancel()
+        return Response(status=status.HTTP_204_NO_CONTENT)

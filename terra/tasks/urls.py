@@ -14,5 +14,7 @@ urlpatterns = [
         views.ExportArtifactsAPIView.as_view()),
     url(r'^(?P<id>[^/]+)/download-artifacts/?',
         views.DownloadArtifactsAPIView.as_view()),
+    url(r'^(?P<id>[^/]+)/cancel/?',
+        views.CancelTaskAPIView.as_view()),
     url(r'^', include(router.urls)),
 ]

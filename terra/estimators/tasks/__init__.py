@@ -7,7 +7,7 @@ from terra.utils import run_subprocess
 from estimators.models import Estimator
 
 
-def run_cloudml(task, script_name):
+def run_cloudml(task, script_name, job_name):
     estimator = Estimator.objects.get(uuid=task.internal_metadata['estimator'])
 
     cloudml_env = {
@@ -18,6 +18,8 @@ def run_cloudml(task, script_name):
             sdk_bin_path=settings.GOOGLE_SDK_BIN_PATH, path=os.getenv('PATH')),
         'JOB_DIR':
         task.cloudml_job_url,
+        'JOB_NAME': 
+        job_name,
         'REGION':
         settings.CLOUDML_REGION,
         'PROJECT':

@@ -5,10 +5,11 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from estimators.models import Estimator
 from projects.models import Project
 
 from . import signals, states
+from .clients import CloudMLClient
 
 
 class Task(models.Model):
@@ -84,6 +85,14 @@ class Task(models.Model):
 
         """
         return (timezone.now() - self.created_at).seconds
+    
+    @property
+    def can_be_cancelled(self):
+        """
+        Returns True if the task can be cancelled
+
+        """
+        return self.name in [Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK]
 
     def start(self):
         if self.state == states.PENDING:
@@ -103,8 +112,18 @@ class Task(models.Model):
         self.start()
 
     def cancel(self):
-        # TODO
-        pass
+        if self.can_be_cancelled:
+            if self.state in [states.CANCELED, states.FINISHED, states.FAILED]:
+                raise RuntimeError("Cannot cancel an already completed job")
+            if self.internal_metadata is not None and 'cloudml_job_name' in self.internal_metadata:
+                client = CloudMLClient()
+                client.cancel_job(self.internal_metadata['cloudml_job_name'])
+                self.state = states.CANCELED
+                self.save(update_fields=['state', 'updated_at'])
+            else:
+                raise RuntimeError("Cloudml job name is not setted")
+        else:
+            raise RuntimeError("This task can not be canceled")
 
     def is_pending(self):
         return self.state == states.PENDING
