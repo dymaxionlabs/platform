@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',
+    'quotas.apps.QuotasConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
@@ -75,7 +76,6 @@ INSTALLED_APPS = [
     'jsoneditor',
     'guardian',
     'django_rq',
-    'quotas',
     'django_cron',
 ]
 
