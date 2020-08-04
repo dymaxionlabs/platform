@@ -199,8 +199,8 @@ class StartTrainingJobViewTest(TestCase):
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
 
-    @patch("estimators.views.TrainingStartedEmail.send_mail")
-    def test_post_ok(self, mock_send_mail):
+    
+    def test_post_ok(self):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
@@ -217,7 +217,6 @@ class StartTrainingJobViewTest(TestCase):
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         self.assertIsNotNone(job)
-        mock_send_mail.assert_called_once()
         self.assertEquals(rv.status_code, 200)
 
     def test_post_not_found(self):
@@ -246,9 +245,9 @@ class StartPredictionJobViewTest(TestCase):
                                            owner=self.user)
     
 
-    @patch("estimators.views.TrainingStartedEmail.send_mail")
+    
     @patch("estimators.views.Task.start")
-    def test_post_ok(self, mock_start, mock_send_mail):
+    def test_post_ok(self, mock_start):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
@@ -260,7 +259,6 @@ class StartPredictionJobViewTest(TestCase):
 
         # to test prediction I need a training job
         rv = self.client.post('/estimators/{}/train/'.format(estimator.uuid), request)
-        mock_send_mail.assert_called_once()
         mock_start.assert_called_once()
         self.assertEquals(rv.status_code, 200)
 
@@ -280,9 +278,8 @@ class StartPredictionJobViewTest(TestCase):
         self.assertIsNotNone(job)
 
 
-    @patch("estimators.views.TrainingStartedEmail.send_mail")
     @patch("estimators.views.Task.start")
-    def test_post_bad_request(self, mock_start, mock_send_mail):
+    def test_post_bad_request(self, mock_start):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])

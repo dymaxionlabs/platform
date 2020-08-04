@@ -15,7 +15,6 @@ from projects.models import Project, File
 from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
 from projects.views import RelatedProjectAPIView
-from terra.emails import PredictionStartedEmail, TrainingStartedEmail
 
 from .models import (Annotation, Estimator, ImageTile, PredictionJob,
                      TrainingJob)
@@ -198,13 +197,6 @@ class StartTrainingJobView(APIView):
             except:
                 pass
 
-            # Send notification email
-            user = request.user
-            if user.userprofile.send_notification_emails:
-                email = TrainingStartedEmail(estimator=estimator,
-                                             recipients=[user.email])
-                email.send_mail()
-
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
@@ -271,13 +263,6 @@ class StartPredictionJobView(APIView):
                 )
             except:
                 pass
-
-            # Send notification email
-            user = request.user
-            if user.userprofile.send_notification_emails:
-                email = PredictionStartedEmail(estimator=estimator,
-                                               recipients=[user.email])
-                email.send_mail()
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
