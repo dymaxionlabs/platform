@@ -17,7 +17,7 @@ class Task(models.Model):
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
-    name = models.CharField(_('name'), null=True, max_length=255)
+    name = models.CharField(_('name'), max_length=255)
     args = JSONField(_('arguments'), default=list)
     kwargs = JSONField(_('keyword arguments'), default=dict)
     state = models.CharField(_('state'),
