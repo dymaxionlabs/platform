@@ -19,7 +19,7 @@ IMAGE_TILE_SIZE = 500
 
 
 @job("default", timeout=3600)
-def generate_image_tiles(task_id, args, kwargs):
+def generate_image_tiles(task_id):
     job = Task.objects.get(pk=task_id)
     try:
         client = Client(job.project)

@@ -17,7 +17,7 @@ from . import run_cloudml
 
 
 @job("default")
-def start_training_job(task_id, args, kwargs):
+def start_training_job(task_id):
     task = Task.objects.get(pk=task_id)
     prepare_artifacts(task)
     job_name = f'train_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'

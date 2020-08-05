@@ -16,7 +16,7 @@ from . import run_cloudml
 
 
 @job("default")
-def start_prediction_job(task_id, args, kwargs):
+def start_prediction_job(task_id):
     task = Task.objects.get(pk=task_id)
     prepare_artifacts(task)
     job_name = f'predict_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
