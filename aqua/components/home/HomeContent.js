@@ -8,14 +8,20 @@ import {
   Grid,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import axios from "axios";
 import cookie from "js-cookie";
 import PropTypes from "prop-types";
 import React from "react";
 import { withTranslation, Link } from "../../i18n";
+import { buildApiUrl } from "../../utils/api";
 
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
+  },
+  availableCreditsNumber: {
+    fontSize: "1.5rem",
+    fontWeight: 500,
   },
 });
 
@@ -43,7 +49,25 @@ let WelcomeCard = ({ classes }) => (
 
 WelcomeCard = withStyles(styles)(WelcomeCard);
 
-let CreditsCard = ({ classes }) => <Card></Card>;
+let CreditsCard = ({ classes, availableCredits }) => (
+  <Card className={classes.cardRoot}>
+    <CardContent>
+      <Typography gutterBottom variant="h5" component="h2">
+      Available credits
+      </Typography>
+      <Typography className={classes.availableCreditsNumber}>
+        {availableCredits && availableCredits.toLocaleString()}
+      </Typography>
+    </CardContent>
+    <CardActions>
+      <Link href="/home/credits">
+        <Button size="small" color="primary">
+          Credits
+        </Button>
+      </Link>
+    </CardActions>
+  </Card>
+  );
 
 CreditsCard = withStyles(styles)(CreditsCard);
 
@@ -95,8 +119,38 @@ let PythonSDKCard = ({ classes }) => (
 PythonSDKCard = withStyles(styles)(PythonSDKCard);
 
 class HomeContent extends React.Component {
+  state = {
+    availableCredits: null,
+  };
+
+  async componentDidMount() {
+    await this.getAvailableCredit();
+  }
+
+  async getAvailableCredit() {
+    try {
+      const response = await axios.get(buildApiUrl("/credits/available/"), {
+        headers: { Authorization: this.props.token },
+      });
+      this.setState({
+        availableCredits: response.data.available,
+      });
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get available credits", {
+          variant: "error",
+        });
+      }
+    }
+  }
+
   render() {
     const { t, classes } = this.props;
+    const { availableCredits } = this.state;
     const projectId = cookie.get("project");
 
     return (
@@ -108,8 +162,8 @@ class HomeContent extends React.Component {
           <Grid item xs={3}>
             <PythonSDKCard />
           </Grid>
-          <Grid item xs={6}>
-            <WelcomeCard />
+          <Grid item xs={3}>
+            <CreditsCard availableCredits={availableCredits}/>
           </Grid>
           <Grid item xs={3}>
             <WelcomeCard />
