@@ -18,8 +18,8 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     name = models.CharField(_('name'), null=True, max_length=255)
-    args = models.TextField(_('arguments'), null=True)
-    kwargs = models.TextField(_('keyword arguments'), null=True)
+    args = JSONField(_('arguments'), default=list)
+    kwargs = JSONField(_('keyword arguments'), default=dict)
     state = models.CharField(_('state'),
                              max_length=50,
                              default=states.PENDING,
@@ -27,12 +27,12 @@ class Task(models.Model):
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     finished_at = models.DateTimeField(_('finished at'), null=True, blank=True)
-    metadata = JSONField(null=True, blank=True)
+    metadata = JSONField(_("metadata"), default=dict)
     traceback = models.TextField(_('traceback'), blank=True, null=True)
     estimated_duration = models.PositiveIntegerField(_('estimated duration'),
                                                      blank=True,
                                                      null=True)
-    internal_metadata = JSONField(null=True, blank=True)
+    internal_metadata = JSONField(_("internal metadata"), default=dict)
 
     @property
     def status(self):
@@ -85,14 +85,16 @@ class Task(models.Model):
 
         """
         return (timezone.now() - self.created_at).seconds
-    
+
     @property
     def can_be_cancelled(self):
         """
         Returns True if the task can be cancelled
 
         """
-        return self.name in [Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK]
+        return self.name in [
+            Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK
+        ]
 
     def start(self):
         if self.state == states.PENDING:
