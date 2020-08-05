@@ -1,10 +1,10 @@
-from django.utils import timezone
-
 import django_rq
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from estimators.models import Estimator
 from projects.models import Project
 
@@ -33,6 +33,9 @@ class Task(models.Model):
                                                      blank=True,
                                                      null=True)
     internal_metadata = JSONField(_("internal metadata"), default=dict)
+
+    def __str__(self):
+        return f'{self.name}({self.args}, {self.kwargs})'
 
     @property
     def status(self):
@@ -173,3 +176,7 @@ class TaskLogEntry(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     logged_at = models.DateTimeField()
     log = JSONField()
+
+    class Meta:
+        verbose_name = _('task log entry')
+        verbose_name_plural = _('task log entries')
