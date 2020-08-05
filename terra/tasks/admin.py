@@ -1,5 +1,8 @@
+import json
+
 from django.conf import settings
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Task, TaskLogEntry
 
@@ -12,8 +15,8 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'args',
-        'kwargs',
+        'arguments',
+        'keyword_arguments',
         'state',
         'created_at',
         'finished_at',
@@ -25,6 +28,15 @@ class TaskAdmin(admin.ModelAdmin):
         'name',
     )
     search_fields = ('name', 'id', 'status')
+
+    def arguments(self, instance):
+        return format_html('<pre>{}</pre>',
+                           json.dumps(instance.args, indent=4, sort_keys=True))
+
+    def keyword_arguments(self, instance):
+        return format_html(
+            '<pre>{}</pre>',
+            json.dumps(instance.kwargs, indent=4, sort_keys=True))
 
 
 class TaskLogEntryAdmin(admin.ModelAdmin):
