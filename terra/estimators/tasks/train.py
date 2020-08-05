@@ -21,8 +21,9 @@ def start_training_job(task_id, args, kwargs):
     task = Task.objects.get(pk=task_id)
     prepare_artifacts(task)
     job_name = f'train_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+    task.internal_metadata.update(uses_cloudml=True)
     run_cloudml(task, './submit_job.sh', job_name)
-    task.internal_metadata['cloudml_job_name'] = job_name
+    task.internal_metadata.update(cloudml_job_name=job_name)
     task.save(update_fields=["internal_metadata"])
 
 

@@ -28,7 +28,8 @@ def generate_image_tiles(task_id, args, kwargs):
             raise NotFound(detail=None, code=None)
 
         output_path = job.kwargs['output_path']
-        tile_size = job.kwargs['tile_size'] if job.kwargs['tile_size'] is not None else IMAGE_TILE_SIZE
+        tile_size = job.kwargs['tile_size'] if job.kwargs[
+            'tile_size'] is not None else IMAGE_TILE_SIZE
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
             files[0].download_to_filename(src)
