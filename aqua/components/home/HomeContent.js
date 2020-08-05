@@ -1,20 +1,26 @@
 import {
   Box,
   Button,
-  Typography,
   Card,
   CardContent,
   CardActions,
-  CardActionArea,
   Grid,
   LinearProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import cookie from "js-cookie";
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
-import { withTranslation, Link } from "../../i18n";
+import Moment from "react-moment";
+import { i18n, withTranslation, Link } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { formatBytes } from "../../utils/utils";
 
@@ -55,6 +61,17 @@ const styles = (theme) => ({
   availableCreditsNumber: {
     fontSize: "1.5rem",
     fontWeight: 500,
+  },
+  textTruncate: {
+    lineHeight: '0.5rem',
+    width: "50px",
+    maxWidth: "30%",
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  tableHeight: {
+    lineHeight: '0.5rem'
   },
 });
 
@@ -151,6 +168,56 @@ let PythonSDKCard = ({ classes }) => (
 
 PythonSDKCard = withStyles(styles)(PythonSDKCard);
 
+let TasksCard = ({ classes, tasks, t, locale }) => (
+  <Card className={classes.cardRoot}>
+    <CardContent>
+      <Typography gutterBottom variant="h5" component="h2">
+        Tasks
+      </Typography>
+      <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.tableHeight}>Id</TableCell>
+                <TableCell className={classes.textTruncate}>Name</TableCell>
+                <TableCell className={classes.tableHeight}>State</TableCell>
+                <TableCell className={classes.tableHeight}>Started at</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tasks.length === 0 && (
+                <TableRow>
+                  <TableCell className={classes.tableHeight}>There are tasks.</TableCell>
+                </TableRow>
+              )}
+              {tasks.map((task, i) => (
+                <TableRow key={i}>
+                  <TableCell className={classes.tableHeight}>{task.id}</TableCell>
+                  <TableCell className={classes.textTruncate}>{task.name}</TableCell>
+                  <TableCell className={classes.tableHeight}>{t(`tasks.states.${task.state}`)}</TableCell>
+                  <TableCell className={classes.tableHeight}>
+                    <Moment locale={locale} fromNow>
+                      {task.created_at}
+                    </Moment>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+    </CardContent>
+    <CardActions>
+      <Link href="/home/tasks">
+        <Button size="small" color="primary">
+          Show more
+        </Button>
+      </Link>
+    </CardActions>
+  </Card>
+)
+
+TasksCard = withStyles(styles)(TasksCard);
+
 let UsageCard = ({ classes, storageUsage, projectData }) => (
   <Card className={classes.cardRoot}>
     <CardContent>
@@ -192,11 +259,13 @@ class HomeContent extends React.Component {
     availableCredits: null,
     storageUsage: null,
     projectData: null,
+    latestTasks: [],
   };
 
   async componentDidMount() {
     await this.getAvailableCredit();
     await this.getUserUsage();
+    await this.getLatestTasks();
   }
 
   async getAvailableCredit() {
@@ -243,33 +312,53 @@ class HomeContent extends React.Component {
     }
   }
 
+  async getLatestTasks() {
+    const projectId = cookie.get("project");
+
+    try {
+      const response = await axios.get(buildApiUrl("/tasks/?limit=5"), {
+        params: { project: projectId },
+        headers: { Authorization: this.props.token },
+      });
+      this.setState({
+        latestTasks: response.data.results,
+      });
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status === 401) {
+        logout();
+      } else {
+        console.error(response);
+        this.props.enqueueSnackbar("Failed to get tasks", {
+          variant: "error",
+        });
+      }
+    }
+  }
+
   render() {
     const { t, classes } = this.props;
-    const { availableCredits, storageUsage, projectData } = this.state;
+    const { availableCredits, storageUsage, projectData, latestTasks } = this.state;
+
+    const locale = i18n.language;
 
     return (
       <div className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={3}>
+          <Grid item xs={6} md={3}>
             <WelcomeCard />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6} md={3}>
             <PythonSDKCard />
           </Grid>
-          <Grid item xs={3}>
-            <CreditsCard availableCredits={availableCredits}/>
-          </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} md={6}>
             <UsageCard storageUsage={storageUsage} projectData={projectData}/>
           </Grid>
-          <Grid item xs={3}>
-            <WelcomeCard />
+          <Grid item xs={6} md={3}>
+            <CreditsCard availableCredits={availableCredits}/>
           </Grid>
-          <Grid item xs={3}>
-            <WelcomeCard />
-          </Grid>
-          <Grid item xs={3}>
-            <WelcomeCard />
+          <Grid item xs={12} md={9}>
+            <TasksCard tasks={latestTasks} t={t} locale={locale}/>
           </Grid>
         </Grid>
       </div>
