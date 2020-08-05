@@ -26,11 +26,11 @@ def start_prediction_job(task_id, args, kwargs):
 
 
 def prepare_artifacts(task):
-    training_task = Task.objects.get(pk=task.internal_metadata['training_job'])
+    training_task = Task.objects.get(pk=task.kwargs['training_job'])
     csv_url = os.path.join(training_task.input_artifacts_url, 'classes.csv')
     gsutilCopy(csv_url, task.input_artifacts_url, recursive=False)
 
-    estimator = Estimator.objects.get(uuid=task.internal_metadata["estimator"])
+    estimator = Estimator.objects.get(uuid=task.kwargs["estimator"])
     gsutilCopy(estimator.model_url, task.input_artifacts_url)
 
     upload_prediction_image_tiles(task)
@@ -38,14 +38,14 @@ def prepare_artifacts(task):
 
 def upload_prediction_image_tiles(task):
     client = Client(task.project)
-    task.internal_metadata["image_files"] = []
-    for path in task.internal_metadata['tiles_folders']:
+    task.kwargs["image_files"] = []
+    for path in task.kwargs['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=task.project,
                                                source_tile_path=path)
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
-            if source_file not in task.internal_metadata["image_files"]:
-                task.internal_metadata["image_files"].append(source_file)
+            if source_file not in task.kwargs["image_files"]:
+                task.kwargs["image_files"].append(source_file)
             files = list(client.list_files(source_file))
             image_tile_urls = []
             meta_data = {}

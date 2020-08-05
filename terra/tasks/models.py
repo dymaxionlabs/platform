@@ -36,8 +36,7 @@ class Task(models.Model):
 
     @property
     def status(self):
-        return self.metadata and 'status' in self.metadata and self.metadata[
-            'status']
+        return self.metadata.get('status')
 
     @property
     def artifacts_url(self):

@@ -14,7 +14,7 @@ class TaskTestCase(TestCase):
         self.project = create_some_project(owner=self.user)
 
     def test_new_tasks_are_pending(self):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         self.assertIsInstance(task, Task)
         self.assertEqual(task.state, states.PENDING)
         self.assertIsNotNone(task.created_at)
@@ -27,7 +27,7 @@ class TaskTestCase(TestCase):
     @patch("tasks.models.signals")
     @patch("tasks.models.django_rq")
     def test_start_enqueues_job(self, django_rq_mock, signals_mock):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         self.assertTrue(task.start())
         self.assertEqual(task.state, states.STARTED)
         django_rq_mock.enqueue.assert_called_once_with(task.name, task.id,
@@ -36,12 +36,12 @@ class TaskTestCase(TestCase):
                                                                task=task)
 
     def test_cant_start_task_if_not_pending(self):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         task.state = states.STARTED
         self.assertFalse(task.start())
 
     def test_update_status(self):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         self.assertIsNone(task.status)
 
         task.update_status('foobar')
@@ -50,7 +50,7 @@ class TaskTestCase(TestCase):
     @patch("tasks.models.signals")
     @patch("tasks.models.django_rq")
     def test_mark_as_finished(self, django_rq_mock, signals_mock):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         task.start()
         self.assertEqual(task.state, states.STARTED)
         self.assertIsNone(task.finished_at)
@@ -64,7 +64,7 @@ class TaskTestCase(TestCase):
     @patch("tasks.models.signals")
     @patch("tasks.models.django_rq")
     def test_mark_as_failed(self, django_rq_mock, signals_mock):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         task.start()
         self.assertEqual(task.state, states.STARTED)
         self.assertIsNone(task.finished_at)
@@ -78,7 +78,7 @@ class TaskTestCase(TestCase):
     @patch("tasks.models.signals")
     @patch("tasks.models.django_rq")
     def test_mark_as_canceled(self, django_rq_mock, signals_mock):
-        task = Task.objects.create(project=self.project)
+        task = Task.objects.create(name='task', project=self.project)
         task.start()
         self.assertEqual(task.state, states.STARTED)
         self.assertIsNone(task.finished_at)

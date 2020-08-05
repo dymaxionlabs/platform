@@ -23,13 +23,12 @@ def generate_image_tiles(task_id, args, kwargs):
     job = Task.objects.get(pk=task_id)
     try:
         client = Client(job.project)
-        files = list(client.list_files(job.internal_metadata['path']))
+        files = list(client.list_files(job.kwargs['path']))
         if not files:
             raise NotFound(detail=None, code=None)
 
-        output_path = job.internal_metadata['output_path']
-        tile_size = job.internal_metadata['tile_size'] if job.internal_metadata[
-            'tile_size'] is not None else IMAGE_TILE_SIZE
+        output_path = job.kwargs['output_path']
+        tile_size = job.kwargs['tile_size'] if job.kwargs['tile_size'] is not None else IMAGE_TILE_SIZE
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
             files[0].download_to_filename(src)

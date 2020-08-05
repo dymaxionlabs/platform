@@ -45,7 +45,7 @@ def send_job_completed_email(sender, task, **kwargs):
 
 
 def send_training_job_completed_email(task):
-    estimator = Estimator.objects.get(uuid=task.internal_metadata["estimator"])
+    estimator = Estimator.objects.get(uuid=task.kwargs["estimator"])
     users = estimator.project.collaborators.all()
     users = [
         user for user in users if user.userprofile.send_notification_emails
@@ -56,7 +56,7 @@ def send_training_job_completed_email(task):
 
 
 def send_prediction_job_completed_email(task):
-    estimator = Estimator.objects.get(uuid=task.internal_metadata["estimator"])
+    estimator = Estimator.objects.get(uuid=task.kwargs["estimator"])
     users = estimator.project.collaborators.all()
     users = [
         user for user in users if user.userprofile.send_notification_emails
