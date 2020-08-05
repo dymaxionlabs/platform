@@ -12,10 +12,13 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
+        'args',
+        'kwargs',
         'state',
         'created_at',
         'finished_at',
     )
+    list_display_links = ('id', 'name')
     list_filter = (
         'state',
         'finished_at',
