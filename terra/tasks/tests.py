@@ -30,8 +30,7 @@ class TaskTestCase(TestCase):
         task = Task.objects.create(name='task', project=self.project)
         self.assertTrue(task.start())
         self.assertEqual(task.state, states.STARTED)
-        django_rq_mock.enqueue.assert_called_once_with(task.name, task.id,
-                                                       task.args, task.kwargs)
+        django_rq_mock.enqueue.assert_called_once_with(task.name, task.id)
         signals_mock.task_started.send.assert_called_once_with(sender=Task,
                                                                task=task)
 

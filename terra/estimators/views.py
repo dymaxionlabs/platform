@@ -164,8 +164,7 @@ class StartTrainingJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  kwargs__estimator=str(
-                                      estimator.uuid),
+                                  kwargs__estimator=str(estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
             # Estimate task duration and cost
@@ -185,9 +184,7 @@ class StartTrainingJobView(APIView):
                 name=Estimator.TRAINING_JOB_TASK,
                 project=estimator.project,
                 estimated_duration=training_duration,
-                kwargs=dict(
-                    estimator=str(estimator.uuid)),
-                internal_metadata=dict(uses_cloudml=True))
+                kwargs=dict(estimator=str(estimator.uuid)))
             job.start()
 
             try:
@@ -220,8 +217,7 @@ class StartPredictionJobView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  kwargs__estimator=str(
-                                      estimator.uuid),
+                                  kwargs__estimator=str(estimator.uuid),
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
         if not job:
@@ -247,9 +243,7 @@ class StartPredictionJobView(APIView):
                     tiles_folders=request.data.get('files'),
                     confidence=request.data.get(
                         'confidence',
-                        settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)
-                ),
-                internal_metadata=dict(uses_cloudml=True))
+                        settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)))
             job.start()
 
             try:
@@ -281,13 +275,12 @@ class StartImageTilingJobView(RelatedProjectAPIView):
                                   project=project,
                                   name=Estimator.IMAGE_TILING_TASK).first()
         if not job:
-            job = Task.objects.create(
-                name=Estimator.IMAGE_TILING_TASK,
-                project=project,
-                kwargs=dict(
-                    path=path,
-                    output_path=output_path,
-                    tile_size=request.data.get('tile_size', None)))
+            job = Task.objects.create(name=Estimator.IMAGE_TILING_TASK,
+                                      project=project,
+                                      kwargs=dict(path=path,
+                                                  output_path=output_path,
+                                                  tile_size=request.data.get(
+                                                      'tile_size', None)))
             job.start()
 
             try:

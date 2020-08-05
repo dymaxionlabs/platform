@@ -16,12 +16,13 @@ from . import run_cloudml
 
 
 @job("default")
-def start_prediction_job(task_id, args, kwargs):
+def start_prediction_job(task_id):
     task = Task.objects.get(pk=task_id)
     prepare_artifacts(task)
     job_name = f'predict_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+    task.internal_metadata.update(uses_cloudml=True)
     run_cloudml(task, './submit_prediction_job.sh', job_name)
-    task.internal_metadata['cloudml_job_name'] = job_name
+    task.internal_metadata.update(cloudml_job_name=job_name)
     task.save(update_fields=["internal_metadata"])
 
 

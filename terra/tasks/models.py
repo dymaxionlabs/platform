@@ -100,7 +100,7 @@ class Task(models.Model):
 
     def start(self):
         if self.state == states.PENDING:
-            django_rq.enqueue(self.name, self.pk, self.args, self.kwargs)
+            django_rq.enqueue(self.name, self.pk)
             self.state = states.STARTED
             self.save(update_fields=['state', 'updated_at'])
             signals.task_started.send(sender=self.__class__, task=self)
