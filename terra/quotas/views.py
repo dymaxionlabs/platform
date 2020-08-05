@@ -11,6 +11,7 @@ from django.conf import settings
 from estimators.models import Estimator
 from projects.models import Project
 from storage.models import File
+from tasks.models import Task
 
 
 class UserQuotaView(generics.RetrieveAPIView):
@@ -30,16 +31,6 @@ class UserQuotaUsageView(APIView):
     def get(self, request, format=None):
         quota = UserQuota.objects.get(user=request.user)
         projects = Project.objects.filter(owner=request.user)
-        projects_data = []
-        for p in projects:
-            project_quota = {
-                'name': p.name,
-                'estimators': {
-                    'count': Estimator.objects.filter(project=p).count(),
-                    'limit': quota.max_estimator_per_project,
-                }
-            }
-            projects_data.append(project_quota)
         usage = {
             'user': {
                 'username': request.user.username,
@@ -49,6 +40,24 @@ class UserQuotaUsageView(APIView):
                     'available': quota.total_space_per_user
                 },
             },            
-            'projects': projects_data,
         }
+        project_uuid = request.query_params.get('project', None)
+        if project_uuid is not None:
+            projects = projects.filter(uuid=project_uuid)
+        projects_data = []
+        for p in projects:
+            related_estimators = Estimator.objects.filter(project=p)
+            uuids = list(map(lambda x: str(x), Estimator.objects.filter(project=p).values_list('uuid', flat=True)))
+            project_quota = {
+                'name': p.name,
+                'uuid': p.uuid,
+                'estimators': {
+                    'count': related_estimators.count(),
+                    'limit': quota.max_estimator_per_project,
+                },
+                'tasks': Task.objects.filter(internal_metadata__estimator__in=uuids).count(),
+                'files': File.objects.filter(project=p).count()
+            }
+            projects_data.append(project_quota)
+        usage['projects'] = projects_data
         return Response(usage)
