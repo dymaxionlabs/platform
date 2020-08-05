@@ -23,9 +23,6 @@ class TaskAdmin(admin.ModelAdmin):
     )
     search_fields = ('name', 'id', 'status')
 
-    def get_readonly_fields(self, request, obj=None):
-        return list(set([field.name for field in self.opts.local_fields]))
-
 
 class TaskLogEntryAdmin(admin.ModelAdmin):
     model = TaskLogEntry
