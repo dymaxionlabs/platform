@@ -57,6 +57,9 @@ def run_object_detection_e2e_test():
         time.sleep(5)
     print("Train finished")
 
+    artifacts_path = prediction_task.download_artifacts("vineyard/")
+    print("Training artifacts downloaded at", artifacts_path)
+
     if training_task.state == "FAILED":
         raise RuntimeError("Training task failed!")
 
@@ -66,13 +69,13 @@ def run_object_detection_e2e_test():
     print("Task: {}".format(prediction_task.id))
     while prediction_task.is_running():
         time.sleep(5)
-    print("Predict finished")
+    print("Prediction task finished")
 
     if prediction_task.state == "FAILED":
         raise RuntimeError("Prediction task failed!")
 
     artifacts_path = prediction_task.download_artifacts("vineyard/")
-    print("Artifacts downloaded at", artifacts_path)
+    print("Prediction artifacts downloaded at", artifacts_path)
     print("Done!")
 
 
