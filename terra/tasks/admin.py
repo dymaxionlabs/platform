@@ -12,19 +12,19 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
+        'args',
+        'kwargs',
         'state',
         'created_at',
         'finished_at',
     )
+    list_display_links = ('id', 'name')
     list_filter = (
         'state',
         'finished_at',
         'name',
     )
     search_fields = ('name', 'id', 'status')
-
-    def get_readonly_fields(self, request, obj=None):
-        return list(set([field.name for field in self.opts.local_fields]))
 
 
 class TaskLogEntryAdmin(admin.ModelAdmin):

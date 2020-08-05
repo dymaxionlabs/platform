@@ -213,7 +213,7 @@ class StartTrainingJobViewTest(TestCase):
         ))
         job = Task.objects.filter(Q(state='STARTED'),
                                   project=self.project,
-                                  internal_metadata__estimator=str(
+                                  kwargs__estimator=str(
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         self.assertIsNotNone(job)
@@ -264,7 +264,7 @@ class StartPredictionJobViewTest(TestCase):
 
         # I finish the job
         job = Task.objects.filter(
-            internal_metadata__estimator=str(estimator.uuid),
+            kwargs__estimator=str(estimator.uuid),
             name=Estimator.TRAINING_JOB_TASK).last()
         job.state = "FINISHED"
         job.save()
@@ -272,7 +272,7 @@ class StartPredictionJobViewTest(TestCase):
         rv = self.client.post('/estimators/{}/predict/'.format(estimator.uuid), request)
         self.assertEquals(rv.status_code, 200)
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  internal_metadata__estimator=str(
+                                  kwargs__estimator=str(
                                       estimator.uuid),
                                   name=Estimator.PREDICTION_JOB_TASK).first()
         self.assertIsNotNone(job)
@@ -329,7 +329,7 @@ class StartImageTilingJobViewTest(TestCase):
         self.assertEqual(rv.status_code, 200)
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
                                   project=self.project,
-                                  internal_metadata__path='path/',
+                                  kwargs__path='path/',
                                   name=Estimator.IMAGE_TILING_TASK).first()
         self.assertIsNotNone(job)
 

@@ -1,10 +1,10 @@
-from django.utils import timezone
-
 import django_rq
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from estimators.models import Estimator
 from projects.models import Project
 
@@ -17,9 +17,9 @@ class Task(models.Model):
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
-    name = models.CharField(_('name'), null=True, max_length=255)
-    args = models.TextField(_('arguments'), null=True)
-    kwargs = models.TextField(_('keyword arguments'), null=True)
+    name = models.CharField(_('name'), max_length=255)
+    args = JSONField(_('arguments'), default=list)
+    kwargs = JSONField(_('keyword arguments'), default=dict)
     state = models.CharField(_('state'),
                              max_length=50,
                              default=states.PENDING,
@@ -27,17 +27,19 @@ class Task(models.Model):
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     finished_at = models.DateTimeField(_('finished at'), null=True, blank=True)
-    metadata = JSONField(null=True, blank=True)
+    metadata = JSONField(_("metadata"), default=dict)
     traceback = models.TextField(_('traceback'), blank=True, null=True)
     estimated_duration = models.PositiveIntegerField(_('estimated duration'),
                                                      blank=True,
                                                      null=True)
-    internal_metadata = JSONField(null=True, blank=True)
+    internal_metadata = JSONField(_("internal metadata"), default=dict)
+
+    def __str__(self):
+        return f'{self.name}({self.args}, {self.kwargs})'
 
     @property
     def status(self):
-        return self.metadata and 'status' in self.metadata and self.metadata[
-            'status']
+        return self.metadata.get('status')
 
     @property
     def artifacts_url(self):
@@ -85,14 +87,16 @@ class Task(models.Model):
 
         """
         return (timezone.now() - self.created_at).seconds
-    
+
     @property
     def can_be_cancelled(self):
         """
         Returns True if the task can be cancelled
 
         """
-        return self.name in [Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK]
+        return self.name in [
+            Estimator.TRAINING_JOB_TASK, Estimator.PREDICTION_JOB_TASK
+        ]
 
     def start(self):
         if self.state == states.PENDING:
@@ -172,3 +176,7 @@ class TaskLogEntry(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     logged_at = models.DateTimeField()
     log = JSONField()
+
+    class Meta:
+        verbose_name = _('task log entry')
+        verbose_name_plural = _('task log entries')

@@ -8,7 +8,7 @@ from estimators.models import Estimator
 
 
 def run_cloudml(task, script_name, job_name):
-    estimator = Estimator.objects.get(uuid=task.internal_metadata['estimator'])
+    estimator = Estimator.objects.get(uuid=task.kwargs['estimator'])
 
     cloudml_env = {
         'CLOUDSDK_PYTHON':
@@ -49,8 +49,8 @@ def run_cloudml(task, script_name, job_name):
 
     # Set default confidence score
     confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
-    if 'confidence' in task.internal_metadata:
-        confidence = task.internal_metadata['confidence']
+    if 'confidence' in task.kwargs:
+        confidence = task.kwargs['confidence']
     cloudml_env['CONFIDENCE'] = str(confidence)
 
     run_subprocess(script_name,

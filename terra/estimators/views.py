@@ -164,7 +164,7 @@ class StartTrainingJobView(APIView):
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  internal_metadata__estimator=str(
+                                  kwargs__estimator=str(
                                       estimator.uuid),
                                   name=Estimator.TRAINING_JOB_TASK).first()
         if not job:
@@ -181,13 +181,13 @@ class StartTrainingJobView(APIView):
                     status=status.HTTP_400_BAD_REQUEST)
 
             # Otherwise, create and start task
-            job = Task.objects.create(name=Estimator.TRAINING_JOB_TASK,
-                                      project=estimator.project,
-                                      estimated_duration=training_duration,
-                                      internal_metadata={
-                                          'estimator': str(estimator.uuid),
-                                          'uses_cloudml': True
-                                      })
+            job = Task.objects.create(
+                name=Estimator.TRAINING_JOB_TASK,
+                project=estimator.project,
+                estimated_duration=training_duration,
+                kwargs=dict(
+                    estimator=str(estimator.uuid)),
+                internal_metadata=dict(uses_cloudml=True))
             job.start()
 
             try:
@@ -212,7 +212,7 @@ class StartPredictionJobView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         last_training_job = Task.objects.filter(
-            internal_metadata__estimator=str(estimator.uuid),
+            kwargs__estimator=str(estimator.uuid),
             state=states.FINISHED,
             name=Estimator.TRAINING_JOB_TASK).last()
         if not last_training_job:
@@ -220,7 +220,7 @@ class StartPredictionJobView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  internal_metadata__estimator=str(
+                                  kwargs__estimator=str(
                                       estimator.uuid),
                                   name=Estimator.PREDICTION_JOB_TASK).first()
 
@@ -241,20 +241,15 @@ class StartPredictionJobView(APIView):
             job = Task.objects.create(
                 name=Estimator.PREDICTION_JOB_TASK,
                 project=estimator.project,
-                internal_metadata={
-                    'uses_cloudml':
-                    True,
-                    'estimator':
-                    str(estimator.uuid),
-                    'training_job':
-                    last_training_job.pk,
-                    'tiles_folders':
-                    request.data.get('files'),
-                    'confidence':
-                    request.data.get(
+                kwargs=dict(
+                    estimator=str(estimator.uuid),
+                    training_job=last_training_job.pk,
+                    tiles_folders=request.data.get('files'),
+                    confidence=request.data.get(
                         'confidence',
                         settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE)
-                })
+                ),
+                internal_metadata=dict(uses_cloudml=True))
             job.start()
 
             try:
@@ -282,20 +277,17 @@ class StartImageTilingJobView(RelatedProjectAPIView):
                             status=status.HTTP_404_NOT_FOUND)
         project = self.get_project()
         job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
-                                  internal_metadata__path=path,
+                                  kwargs__path=path,
                                   project=project,
                                   name=Estimator.IMAGE_TILING_TASK).first()
         if not job:
-            job = Task.objects.create(name=Estimator.IMAGE_TILING_TASK,
-                                      project=project,
-                                      internal_metadata={
-                                          'path':
-                                          path,
-                                          'output_path':
-                                          output_path,
-                                          'tile_size':
-                                          request.data.get('tile_size', None),
-                                      })
+            job = Task.objects.create(
+                name=Estimator.IMAGE_TILING_TASK,
+                project=project,
+                kwargs=dict(
+                    path=path,
+                    output_path=output_path,
+                    tile_size=request.data.get('tile_size', None)))
             job.start()
 
             try:

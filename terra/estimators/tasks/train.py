@@ -75,7 +75,7 @@ def build_annotations_csv_rows(annotations):
 
 def generate_annotations_csv(task):
     annotations = Annotation.objects.filter(
-        estimator__uuid=task.internal_metadata["estimator"])
+        estimator__uuid=task.kwargs["estimator"])
 
     rows = build_annotations_csv_rows(annotations)
 
@@ -91,7 +91,7 @@ def generate_annotations_csv(task):
 
 
 def generate_classes_csv(job):
-    estimator = Estimator.objects.get(uuid=job.internal_metadata["estimator"])
+    estimator = Estimator.objects.get(uuid=job.kwargs["estimator"])
     rows = [
         dict(label=label, class_id=i)
         for i, label in enumerate(estimator.classes)
@@ -111,7 +111,7 @@ def upload_csv(url, rows, fieldnames):
 
 def upload_image_tiles(job):
     annotations = Annotation.objects.filter(
-        estimator__uuid=job.internal_metadata["estimator"]).all()
+        estimator__uuid=job.kwargs["estimator"]).all()
     image_tiles = [a.image_tile for a in annotations]
 
     image_tile_urls = [
