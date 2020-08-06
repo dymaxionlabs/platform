@@ -45,9 +45,7 @@ let APIContent = ({ classes, t, modelVar}) => (
       To train a model, using the Python package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`train_task = ${modelVar}.train()
-train_task.is_running()
-#=> True`}
+      {`train_task = ${modelVar}.train()`}
     </CodeBlock>
     <Typography>
       Because training can take hours to complete, the <code>train()</code>{" "}
@@ -55,10 +53,8 @@ train_task.is_running()
       job status:
     </Typography>
     <CodeBlock language="python">
-      {`# Adjust configuration
-${modelVar}.configuration.update(epochs=25, steps=500)
-# Re-train
-train_task = ${modelVar}.train()`}
+      {`train_task.is_running()
+#=> True`}
     </CodeBlock>
     <Link href="/testdrive/select">
       <Button

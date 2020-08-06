@@ -203,11 +203,11 @@ AnnotateContent = withTranslation("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 const apiContentByUseCase = {
-  pools: {name: "pool", path: "pools/tiles-250/"},
-  cattle: {name: "cattel", path: "cattle/tiles-250/"}
+  pools: {name: "pool", path: "pools/labels/", nameVar: "pools_detector"},
+  cattle: {name: "cattle", path: "cattle/labels/", nameVar: "cattle_detector"}
 };
 
-let APIContent = ({ classes, t , path, name }) => (
+let APIContent = ({ classes, t , path, name, modelVar }) => (
   <div>
     <Typography>
       You can upload a vector file (a Shapefile or GeoJSON) with annotated
@@ -221,7 +221,7 @@ let APIContent = ({ classes, t , path, name }) => (
     </Typography>
     <CodeBlock language="python">
       {`labels = File.upload("labels.geojson", ${JSON.stringify(path)})
-pools_detector.add_labels_for(labels, img, ${JSON.stringify(name)})`}
+${modelVar}.add_labels_for(labels, img, ${JSON.stringify(name)})`}
     </CodeBlock>
     <Link href="/testdrive/train">
       <Button
@@ -472,6 +472,7 @@ class AnnotateStep extends React.Component {
           <APIContent 
             path={apiContent["path"]}
             name={apiContent["name"]}
+            modelVar={apiContent["nameVar"]}
           />
         ) : (
           <React.Fragment>

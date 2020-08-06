@@ -31,37 +31,30 @@ const BorderLinearProgress = withStyles({
 
 const apiContentByUseCase = {
   pools: { 
-    name: "pools_detector",  
-    resultcsv: "pools.tif/results.csv",
-    resultjson: "pools.tif/results.geojson" 
+    name: "pools_detector"
   },
    
   cattle: {
-    name: "cattle_detector",  
-    resultcsv: "cattle.tif/results.csv",
-    resultjson: "cattle.tif/results.geojson"  
+    name: "cattle_detector"
   }
     
 };
 
-let APIContent = ({ classes, t, modelName, modelResultcsv, modelResultjson}) => (
+let APIContent = ({ classes, t, modelName}) => (
   <div>
     <Typography>
       To use your trained model on some of the uploaded images:
     </Typography>
     <CodeBlock language="python">
-      {`prediction_task = ${modelName}.predict_files([predict_tiles_folder])
-prediction_task.is_running()
-#=> True`}
+      {`prediction_task = ${modelName}.predict_files([predict_tiles_folder])`}
     </CodeBlock>
     <Typography>
       Similarly to training, prediction also takes time, so you can fetch the
       job status:
     </Typography>
     <CodeBlock language="python">
-      {`prediction_task.list_artifacts()
-#=> [${JSON.stringify(modelResultcsv)}, ${JSON.stringify(modelResultjson)}]
-prediction_task.download_artifacts("results/")`}
+      {`prediction_task.is_running()
+#=> True`}
     </CodeBlock>
     <Link href="/view/testdrive-map">
       <Button
@@ -148,8 +141,6 @@ class PredictStep extends React.Component {
         {apiMode ? (
           <APIContent
             modelName={apiContent["name"]}
-            modelResultcsv={apiContent["resultcsv"]}
-            modelResultjson={apiContent["resultjson"]}
           />
         ) : (
           <React.Fragment>
