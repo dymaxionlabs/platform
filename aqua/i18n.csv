@@ -30,6 +30,8 @@ common,signup.error_msg,Un error ha ocurrido. Por favor reintentelo.,An error ha
 common,signup.success_msg,¡Gracias por registrarse! En breve será redirigido...,Thank you for signing up! Soon you will be redirected...
 common,signup.already_has_account,¿Ya tiene una cuenta?,Already have an account?
 common,signup.login,Iniciar sesión,Login
+common,signup.text_invitation,Te invitamos a probar nuestra plataforma mediante un Test Drive:,We invite you to test our platform through a Test Drive:
+common,signup.developing,¡En desarrollo!,Developing!
 common,confirm_email.success_msg,Su dirección de correo fue verificada con éxito.,Your email address has been verified successfully.
 common,confirm_email.error_msg,Un error ha ocurrido. Por favor reintente más tarde.,An error has occurred. Please try again later.
 common,reset_password.success_msg,Su requerimiento fue recibido. Revise su email para hacer el cambio de contraseña.,Your request was received. Check your email to make the password change.
@@ -221,9 +223,6 @@ me,keys_new.create,Crear,Create
 me,keys_new.copy,Copiar,Copy
 me,home.models_title,Modelos,Models
 me,home.models_descrip,Puedes generar tu modelo para detectar objectos de tus imagenes desde este,You can generate your model to detect objects from your images from this
-me,home.api_title,Dymaxion Labs API,Dymaxion Labs API
-me,home.api_descrip1,Genera tu API Key desde este,Generate your API Key from this
-me,home.api_descrip2,y podras integrar nuestra api a tu código python. Para mas información puedes acceder a la Documentación,and you can integrate our api to your python code. For more information you can access the Documentation
 me,home.project_title,Proyectos,Project
 me,home.project_descrip,El identificador del proyecto te será de utilidad para utilizar nuestra API ,The project identifier will be useful to use our API
 image_upload_dialog,upload_progress.title,Subiendo...,Uploading...
@@ -396,6 +395,7 @@ testdrive,steps.results,Resultados,Results
 testdrive,btn_use_api,Usar API,Use API
 testdrive,btn_use_web_ui,Usar Web UI,Use Web UI
 testdrive,btn_contact_modal,Contáctenos,Contact sales
+testdrive,btn_signup,Registrate,Sign up
 testdrive,metrics_title_result,Resultados,Results
 testdrive,metrics_title_object,Objetos Detectados,Detected objects
 testdrive,metrics_title_area,Área (km²),Area (km²)

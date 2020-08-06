@@ -30,15 +30,13 @@ const BorderLinearProgress = withStyles({
 })(LinearProgress);
 
 const apiContentByUseCase = {
-  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
+  pools: { var: "pools_detector" },
   cattle: {
-    name: "Cattle detector",
-    classes: ["red", "black"],
     var: "cattle_detector"
   }
 };
 
-let APIContent = ({ classes, t, modelVar, modelName }) => (
+let APIContent = ({ classes, t, modelVar}) => (
   <div>
     <Typography>
       When you have enough annotations and images, you can train your model.
@@ -47,10 +45,9 @@ let APIContent = ({ classes, t, modelVar, modelName }) => (
       To train a model, using the Python package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
-
-${modelVar} = Model.get(${JSON.stringify(modelName)})
-job = ${modelVar}.train()`}
+      {`train_task = ${modelVar}.train()
+train_task.is_running()
+#=> True`}
     </CodeBlock>
     <Typography>
       Because training can take hours to complete, the <code>train()</code>{" "}
@@ -58,8 +55,10 @@ job = ${modelVar}.train()`}
       job status:
     </Typography>
     <CodeBlock language="python">
-      {`job.is_running()
-# => True`}
+      {`# Adjust configuration
+${modelVar}.configuration.update(epochs=25, steps=500)
+# Re-train
+train_task = ${modelVar}.train()`}
     </CodeBlock>
     <Link href="/testdrive/select">
       <Button
@@ -146,7 +145,6 @@ class TrainStep extends React.Component {
         </Typography>
         {apiMode ? (
           <APIContent
-            modelName={apiContent["name"]}
             modelVar={apiContent["var"]} 
           />
         ) : (

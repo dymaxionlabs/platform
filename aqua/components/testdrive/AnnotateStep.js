@@ -203,15 +203,11 @@ AnnotateContent = withTranslation("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 const apiContentByUseCase = {
-  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
-  cattle: {
-    name: "Cattle detector",
-    classes: ["red", "black"],
-    var: "cattle_detector"
-  }
+  pools: {name: "pool", path: "pools/tiles-250/"},
+  cattle: {name: "cattel", path: "cattle/tiles-250/"}
 };
 
-let APIContent = ({ classes, t , modelVar, modelName }) => (
+let APIContent = ({ classes, t , path, name }) => (
   <div>
     <Typography>
       You can upload a vector file (a Shapefile or GeoJSON) with annotated
@@ -224,10 +220,8 @@ let APIContent = ({ classes, t , modelVar, modelName }) => (
       package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
-
-${modelVar} = Model.get(${JSON.stringify(modelName)})
-${modelVar}.upload_annotations("./annotations.geojson")`}
+      {`labels = File.upload("labels.geojson", ${JSON.stringify(path)})
+pools_detector.add_labels_for(labels, img, ${JSON.stringify(name)})`}
     </CodeBlock>
     <Link href="/testdrive/train">
       <Button
@@ -476,8 +470,8 @@ class AnnotateStep extends React.Component {
         </Typography>
         {apiMode ? (
           <APIContent 
-            modelName={apiContent["name"]}
-            modelVar={apiContent["var"]}
+            path={apiContent["path"]}
+            name={apiContent["name"]}
           />
         ) : (
           <React.Fragment>

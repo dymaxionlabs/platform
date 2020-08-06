@@ -31,41 +31,37 @@ const BorderLinearProgress = withStyles({
 
 const apiContentByUseCase = {
   pools: { 
-    name: "Pools detector", 
-    classes: ["pool"], 
-    var: "pools_detector",
-    filesVar: "pools_files",
-    files: "pools*.tif"
+    name: "pools_detector",  
+    resultcsv: "pools.tif/results.csv",
+    resultjson: "pools.tif/results.geojson" 
   },
+   
   cattle: {
-    name: "Cattle detector",
-    classes: ["red", "black"],
-    var: "cattle_detector",
-    filesVar: "cattle_files",
-    files: "cattle*.tif"
+    name: "cattle_detector",  
+    resultcsv: "cattle.tif/results.csv",
+    resultjson: "cattle.tif/results.geojson"  
   }
+    
 };
 
-let APIContent = ({ classes, t, modelVar, modelName, modelFiles, modelFilesVar }) => (
+let APIContent = ({ classes, t, modelName, modelResultcsv, modelResultjson}) => (
   <div>
     <Typography>
       To use your trained model on some of the uploaded images:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
-from dymaxionlabs.files import File
-
-${modelVar} = Model.get(${JSON.stringify(modelName)})
-${modelFilesVar} = File.all(${JSON.stringify(modelFiles)})
-job = ${modelVar}.predict_files(${modelFilesVar})`}
+      {`prediction_task = ${modelName}.predict_files([predict_tiles_folder])
+prediction_task.is_running()
+#=> True`}
     </CodeBlock>
     <Typography>
       Similarly to training, prediction also takes time, so you can fetch the
       job status:
     </Typography>
     <CodeBlock language="python">
-      {`job.is_running()
-# => True`}
+      {`prediction_task.list_artifacts()
+#=> [${JSON.stringify(modelResultcsv)}, ${JSON.stringify(modelResultjson)}]
+prediction_task.download_artifacts("results/")`}
     </CodeBlock>
     <Link href="/view/testdrive-map">
       <Button
@@ -152,9 +148,8 @@ class PredictStep extends React.Component {
         {apiMode ? (
           <APIContent
             modelName={apiContent["name"]}
-            modelVar={apiContent["var"]}
-            modelFiles={apiContent["files"]}
-            modelFilesVar={apiContent["filesVar"]}
+            modelResultcsv={apiContent["resultcsv"]}
+            modelResultjson={apiContent["resultjson"]}
           />
         ) : (
           <React.Fragment>

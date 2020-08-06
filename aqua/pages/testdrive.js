@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import Head from "next/head";
-import ContactButton from "../components/ContactButton";
+import SignupButton from "../components/SignupButton";
 import React from "react";
 import BasicAppbar from "../components/BasicAppbar";
 import AnnotateStep from "../components/testdrive/AnnotateStep";
@@ -180,7 +180,7 @@ class TestDrive extends React.Component {
             />
           </div>
         )}
-        <ContactButton />
+        <SignupButton />
       </div>
     );
   }

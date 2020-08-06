@@ -47,9 +47,9 @@ let APIContent = ({ classes, t, modelVar, modelName, modelClasses }) => (
       To create a model, using the Python package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
+      {`from dymaxionlabs.models import Estimator
 
-${modelVar} = Model.create(name=${JSON.stringify(modelName)},
+${modelVar} = Estimator.create(name=${JSON.stringify(modelName)},
                               type="object_detection",
                               labels=${JSON.stringify(modelClasses)})`}
     </CodeBlock>
