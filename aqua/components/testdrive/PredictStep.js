@@ -6,56 +6,61 @@ import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   progress: {
     flexGrow: 1,
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(2),
+  },
 });
 
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
-    backgroundColor: "rgb(255, 181, 173)"
+    backgroundColor: "rgb(255, 181, 173)",
   },
   bar: {
     borderRadius: 20,
-    backgroundColor: "#ff6c5c"
-  }
+    backgroundColor: "#ff6c5c",
+  },
 })(LinearProgress);
 
 const apiContentByUseCase = {
-  pools: { 
-    name: "pools_detector"
+  pools: {
+    name: "pools_detector",
   },
-   
+
   cattle: {
-    name: "cattle_detector"
-  }
-    
+    name: "cattle_detector",
+  },
 };
 
-let APIContent = ({ classes, t, modelName}) => (
+let APIContent = ({ classes, t, modelName }) => (
   <div>
-    <Typography>
+    <Typography gutterBottom>
       To use your trained model on some of the uploaded images:
     </Typography>
     <CodeBlock language="python">
-      {`prediction_task = ${modelName}.predict_files([predict_tiles_folder])`}
+      {`task = ${modelName}.predict_files([predict_tiles_folder])`}
     </CodeBlock>
-    <Typography>
-      Similarly to training, prediction also takes time, so you can fetch the
-      job status:
+    <Typography gutterBottom>
+      Similarly to training, prediction is also an asynchronous task and it
+      might take some time, but much less. You can ask for the task status as
+      before:
     </Typography>
     <CodeBlock language="python">
-      {`prediction_task.is_running()
+      {`task.is_running()
 #=> True`}
     </CodeBlock>
+    <Typography gutterBottom>
+      When you predict, the model is deployed and a process makes inference on{" "}
+      <strong>all tiles in parallel</strong>. Then, the tile results are fetched
+      and compiled into a single vector file with the results.
+    </Typography>
     <Link href="/view/testdrive-map">
       <Button
         type="submit"
@@ -76,7 +81,7 @@ APIContent = withTranslation("testdrive")(APIContent);
 class PredictStep extends React.Component {
   state = {
     finished: false,
-    percentage: 0
+    percentage: 0,
   };
 
   increment = 10;
@@ -107,7 +112,7 @@ class PredictStep extends React.Component {
 
   advanceProgressBar() {
     const { increment, interval } = this;
-    this.setState(prevState => {
+    this.setState((prevState) => {
       const newPerc = prevState.percentage + increment;
       if (newPerc < 100) {
         setTimeout(() => this.advanceProgressBar(increment), interval);
@@ -139,9 +144,7 @@ class PredictStep extends React.Component {
           {t("predict_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent
-            modelName={apiContent["name"]}
-          />
+          <APIContent modelName={apiContent["name"]} />
         ) : (
           <React.Fragment>
             <Typography>

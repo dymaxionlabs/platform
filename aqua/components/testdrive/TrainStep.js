@@ -6,37 +6,37 @@ import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   progress: {
     flexGrow: 1,
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(2),
+  },
 });
 
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
-    backgroundColor: "rgb(255, 181, 173)"
+    backgroundColor: "rgb(255, 181, 173)",
   },
   bar: {
     borderRadius: 20,
-    backgroundColor: "#ff6c5c"
-  }
+    backgroundColor: "#ff6c5c",
+  },
 })(LinearProgress);
 
 const apiContentByUseCase = {
   pools: { var: "pools_detector" },
   cattle: {
-    var: "cattle_detector"
-  }
+    var: "cattle_detector",
+  },
 };
 
-let APIContent = ({ classes, t, modelVar}) => (
+let APIContent = ({ classes, t, modelVar }) => (
   <div>
     <Typography>
       When you have enough annotations and images, you can train your model.
@@ -44,16 +44,14 @@ let APIContent = ({ classes, t, modelVar}) => (
     <Typography>
       To train a model, using the Python package, execute:
     </Typography>
-    <CodeBlock language="python">
-      {`train_task = ${modelVar}.train()`}
-    </CodeBlock>
+    <CodeBlock language="python">{`task = ${modelVar}.train()`}</CodeBlock>
     <Typography>
       Because training can take hours to complete, the <code>train()</code>{" "}
-      method returns a<code>Job</code> instance, which you can use to fetch the
-      job status:
+      method returns a <code>Task</code> instance, which you can use to fetch
+      the task status:
     </Typography>
     <CodeBlock language="python">
-      {`train_task.is_running()
+      {`task.is_running()
 #=> True`}
     </CodeBlock>
     <Link href="/testdrive/select">
@@ -77,7 +75,7 @@ class TrainStep extends React.Component {
   state = {
     finished: false,
     percentage: 0,
-    currentModel: null
+    currentModel: null,
   };
 
   increment = 10;
@@ -90,7 +88,7 @@ class TrainStep extends React.Component {
 
   advanceProgressBar() {
     const { increment, interval } = this;
-    this.setState(prevState => {
+    this.setState((prevState) => {
       const newPerc = prevState.percentage + increment;
       if (newPerc < 100) {
         setTimeout(() => this.advanceProgressBar(increment), interval);
@@ -127,7 +125,7 @@ class TrainStep extends React.Component {
   render() {
     const { classes, t, apiMode } = this.props;
     const { currentModel, finished, percentage } = this.state;
-    
+
     let apiContent;
     if (currentModel) {
       const useCase = currentModel["useCase"];
@@ -140,9 +138,7 @@ class TrainStep extends React.Component {
           {t("train_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent
-            modelVar={apiContent["var"]} 
-          />
+          <APIContent modelVar={apiContent["var"]} />
         ) : (
           <React.Fragment>
             <Typography>
