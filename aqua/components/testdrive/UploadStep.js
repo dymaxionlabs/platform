@@ -6,24 +6,37 @@ import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery";
 import CodeBlock from "../CodeBlock";
 
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   errorMsg: {
-    color: "red"
-  }
+    color: "red",
+  },
 });
 
 const useCaseFiles = {
   pools: [{ name: "pools.tif", src: "/static/testdrive/pools/train1.png" }],
-  cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/train1.png" }]
+  cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/train1.png" }],
 };
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: {
+    file: "pools-2020-02-01.tif",
+    path: "pools/images/",
+    outputPath: "pools/tiles/",
+  },
+  cattle: {
+    file: "cattle-2020-02-01.tif",
+    path: "cattle/images/",
+    outputPath: "cattle/tiles/",
+  },
+};
+
+let APIContent = ({ classes, t, file, path, outputPath }) => (
   <div>
     <Typography>
       To upload multiple files, using the Python package, execute:
@@ -31,8 +44,16 @@ let APIContent = ({ classes, t }) => (
     <CodeBlock language="python">
       {`from dymaxionlabs.files import File
 
-for path in files:
-    File.upload(path)`}
+img = File.upload(${JSON.stringify(file)}, ${JSON.stringify(path)})
+pools_detector.add_image(img)`}
+    </CodeBlock>
+    <Typography>
+      After uploading files, you will need to generate their tiles:
+    </Typography>
+    <CodeBlock language="python">
+      {`tiling_task = img.tiling(output_path=${JSON.stringify(outputPath)})
+tiling_task.is_running()
+#=> True`}
     </CodeBlock>
     <Link href="/testdrive/annotate">
       <Button
@@ -56,7 +77,7 @@ class UploadStep extends React.Component {
     currentModel: null,
     files: [],
     filesLoaded: false,
-    fileSelected: false
+    fileSelected: false,
   };
 
   _trackEvent = (action, value) => {
@@ -69,17 +90,17 @@ class UploadStep extends React.Component {
     this._loadCurrentModel();
   }
 
-  handleFileClick = file => {
+  handleFileClick = (file) => {
     const { files } = this.state;
 
-    files.map(item => {
+    files.map((item) => {
       if (item["name"] == file) {
         item["selected"] = !item["selected"];
       }
     });
 
     this.setState({ ...this.state, fileSelected: false });
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file["selected"]) {
         this.setState({ ...this.state, fileSelected: true });
       }
@@ -120,14 +141,20 @@ class UploadStep extends React.Component {
 
   _saveSelectedFiles() {
     const { currentModel, files } = this.state;
-    const selectedFiles = files.filter(file => file.selected);
+    const selectedFiles = files.filter((file) => file.selected);
     const newModel = { trainingFiles: selectedFiles, ...currentModel };
     window.localStorage.setItem("current", JSON.stringify(newModel));
   }
 
   render() {
     const { classes, t, apiMode } = this.props;
-    const { fileSelected, files, filesLoaded } = this.state;
+    const { fileSelected, files, filesLoaded, currentModel } = this.state;
+
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer>
@@ -135,7 +162,11 @@ class UploadStep extends React.Component {
           {t("upload_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent
+            file={apiContent["file"]}
+            path={apiContent["path"]}
+            outputPath={apiContent["outputPath"]}
+          />
         ) : (
           <React.Fragment>
             <Typography variant="body2">{t("upload_step.text")}</Typography>

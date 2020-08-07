@@ -6,67 +6,61 @@ import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 import CodeBlock from "../CodeBlock";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   progress: {
     flexGrow: 1,
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(2),
+  },
 });
 
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
-    backgroundColor: "rgb(255, 181, 173)"
+    backgroundColor: "rgb(255, 181, 173)",
   },
   bar: {
     borderRadius: 20,
-    backgroundColor: "#ff6c5c"
-  }
+    backgroundColor: "#ff6c5c",
+  },
 })(LinearProgress);
 
 const apiContentByUseCase = {
-  pools: { 
-    name: "Pools detector", 
-    classes: ["pool"], 
-    var: "pools_detector",
-    filesVar: "pools_files",
-    files: "pools*.tif"
+  pools: {
+    name: "pools_detector",
   },
+
   cattle: {
-    name: "Cattle detector",
-    classes: ["red", "black"],
-    var: "cattle_detector",
-    filesVar: "cattle_files",
-    files: "cattle*.tif"
-  }
+    name: "cattle_detector",
+  },
 };
 
-let APIContent = ({ classes, t, modelVar, modelName, modelFiles, modelFilesVar }) => (
+let APIContent = ({ classes, t, modelName }) => (
   <div>
-    <Typography>
+    <Typography gutterBottom>
       To use your trained model on some of the uploaded images:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
-from dymaxionlabs.files import File
-
-${modelVar} = Model.get(${JSON.stringify(modelName)})
-${modelFilesVar} = File.all(${JSON.stringify(modelFiles)})
-job = ${modelVar}.predict_files(${modelFilesVar})`}
+      {`task = ${modelName}.predict_files([predict_tiles_folder])`}
     </CodeBlock>
-    <Typography>
-      Similarly to training, prediction also takes time, so you can fetch the
-      job status:
+    <Typography gutterBottom>
+      Similarly to training, prediction is also an asynchronous task and it
+      might take some time, but much less. You can ask for the task status as
+      before:
     </Typography>
     <CodeBlock language="python">
-      {`job.is_running()
-# => True`}
+      {`task.is_running()
+#=> True`}
     </CodeBlock>
+    <Typography gutterBottom>
+      When you predict, the model is deployed and a process makes inference on{" "}
+      <strong>all tiles in parallel</strong>. Then, the tile results are fetched
+      and compiled into a single vector file with the results.
+    </Typography>
     <Link href="/view/testdrive-map">
       <Button
         type="submit"
@@ -87,7 +81,7 @@ APIContent = withTranslation("testdrive")(APIContent);
 class PredictStep extends React.Component {
   state = {
     finished: false,
-    percentage: 0
+    percentage: 0,
   };
 
   increment = 10;
@@ -118,7 +112,7 @@ class PredictStep extends React.Component {
 
   advanceProgressBar() {
     const { increment, interval } = this;
-    this.setState(prevState => {
+    this.setState((prevState) => {
       const newPerc = prevState.percentage + increment;
       if (newPerc < 100) {
         setTimeout(() => this.advanceProgressBar(increment), interval);
@@ -150,12 +144,7 @@ class PredictStep extends React.Component {
           {t("predict_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent
-            modelName={apiContent["name"]}
-            modelVar={apiContent["var"]}
-            modelFiles={apiContent["files"]}
-            modelFilesVar={apiContent["filesVar"]}
-          />
+          <APIContent modelName={apiContent["name"]} />
         ) : (
           <React.Fragment>
             <Typography>

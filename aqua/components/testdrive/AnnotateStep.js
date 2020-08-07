@@ -32,49 +32,51 @@ import {
   ListItemText,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 const PAGE_SIZE = 10;
 const IMAGE_SIZE = 600;
 const MIN_COUNT_PER_LABEL = 50;
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     textAlign: "center",
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   imageTileListContainer: {
     overflow: "hidden",
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   imageTileList: {
     height: 500,
-    transform: "translateZ(0)"
+    transform: "translateZ(0)",
   },
   paper: {
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
   },
   pageButtons: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   pageButton: {
     marginTop: 0,
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   page: {
     display: "inline",
-    textAlign: "center"
+    textAlign: "center",
   },
   submitButton: {
     marginTop: theme.spacing(2),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   buttons: {
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 });
 
 class ImageTileList extends React.Component {
@@ -88,7 +90,7 @@ class ImageTileList extends React.Component {
           cols={1}
           spacing={1}
         >
-          {props.imageTiles.map(tile => (
+          {props.imageTiles.map((tile) => (
             <GridListTile key={tile.tile_file}>
               <AnnotatedImageTile
                 key={tile.id}
@@ -203,31 +205,29 @@ AnnotateContent = withTranslation("testdrive")(AnnotateContent);
 AnnotateContent = withStyles(styles)(AnnotateContent);
 
 const apiContentByUseCase = {
-  pools: { name: "Pools detector", classes: ["pool"], var: "pools_detector" },
+  pools: { name: "pool", path: "pools/labels/", nameVar: "pools_detector" },
   cattle: {
-    name: "Cattle detector",
-    classes: ["red", "black"],
-    var: "cattle_detector"
-  }
+    name: "cattle",
+    path: "cattle/labels/",
+    nameVar: "cattle_detector",
+  },
 };
 
-let APIContent = ({ classes, t , modelVar, modelName }) => (
+let APIContent = ({ classes, t, path, name, modelVar }) => (
   <div>
-    <Typography>
+    <Typography gutterBottom>
       You can upload a vector file (a Shapefile or GeoJSON) with annotated
       objects. Each feature must contain a single rectangle, and a property
-      "class", referencing one of the class names you entered when you created
-      the model.
+      <code>"label"</code>, referencing one of the class names you entered when
+      you created the model.
     </Typography>
-    <Typography>
-      To upload a vector file named annotations.geojson, using the Python
-      package, execute:
+    <Typography gutterBottom>
+      To upload a vector file named <code>labels.geojson</code> and set label{" "}
+      <code>{name}</code>, using the Python package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
-
-${modelVar} = Model.get(${JSON.stringify(modelName)})
-${modelVar}.upload_annotations("./annotations.geojson")`}
+      {`labels = File.upload("labels.geojson", ${JSON.stringify(path)})
+${modelVar}.add_labels_for(labels, img, ${JSON.stringify(name)})`}
     </CodeBlock>
     <Link href="/testdrive/train">
       <Button
@@ -256,7 +256,7 @@ class AnnotateStep extends React.Component {
     annotationsByTile: {},
     labelCount: {},
     loading: true,
-    currentModel: null
+    currentModel: null,
   };
 
   _loadCurrentModel() {
@@ -371,7 +371,7 @@ class AnnotateStep extends React.Component {
     const { labelCount } = this.state;
     const hasLabels = Object.entries(labelCount).length > 0;
     const allLabelsHaveEnoughAnnotations = Object.values(labelCount).every(
-      count => count >= MIN_COUNT_PER_LABEL
+      (count) => count >= MIN_COUNT_PER_LABEL
     );
     return hasLabels && allLabelsHaveEnoughAnnotations;
   }
@@ -380,8 +380,8 @@ class AnnotateStep extends React.Component {
     this.setState((state, _) => ({
       annotationsByTile: {
         ...state.annotationsByTile,
-        [imageTileId]: rectangles
-      }
+        [imageTileId]: rectangles,
+      },
     }));
   };
 
@@ -419,7 +419,7 @@ class AnnotateStep extends React.Component {
 
   handlePrevPageClick = () => {
     this._updateStateAndRefetch((state, _) => ({
-      offset: Math.max(state.offset - PAGE_SIZE, 0)
+      offset: Math.max(state.offset - PAGE_SIZE, 0),
     }));
   };
 
@@ -427,14 +427,14 @@ class AnnotateStep extends React.Component {
     const { offset, count } = this.state;
     if (offset + PAGE_SIZE < count) {
       this._updateStateAndRefetch((state, _) => ({
-        offset: Math.min(state.offset + PAGE_SIZE, state.count)
+        offset: Math.min(state.offset + PAGE_SIZE, state.count),
       }));
     }
   };
 
   handleLastPageClick = () => {
     this._updateStateAndRefetch((state, _) => ({
-      offset: Math.floor(state.count / PAGE_SIZE) * PAGE_SIZE
+      offset: Math.floor(state.count / PAGE_SIZE) * PAGE_SIZE,
     }));
   };
 
@@ -457,7 +457,7 @@ class AnnotateStep extends React.Component {
       labelCount,
       offset,
       count,
-      currentModel
+      currentModel,
     } = this.state;
 
     const labels = estimator && estimator.classes;
@@ -475,9 +475,10 @@ class AnnotateStep extends React.Component {
           {t("annotate_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent 
-            modelName={apiContent["name"]}
-            modelVar={apiContent["var"]}
+          <APIContent
+            path={apiContent["path"]}
+            name={apiContent["name"]}
+            modelVar={apiContent["nameVar"]}
           />
         ) : (
           <React.Fragment>

@@ -99,6 +99,7 @@
   "signup": {
     "already_has_account": "Already have an account?",
     "cancel": "Cancel",
+    "developing": "Developing!",
     "email_placeholder": "Email",
     "error_msg": "An error has occurred. Please retry.",
     "header": "Sign up",
@@ -108,6 +109,7 @@
     "subheader": "To register, please enter a username, a valid email address and password.",
     "submit": "Sign up",
     "success_msg": "Thank you for signing up! Soon you will be redirected...",
+    "text_invitation": "We invite you to test our platform through a Test Drive:",
     "username_placeholder": "Username"
   },
   "signup_btn": "Sign up",

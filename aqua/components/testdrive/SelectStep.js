@@ -6,35 +6,54 @@ import StepContentContainer from "../StepContentContainer";
 import FileGallery from "../FileGallery.js";
 import CodeBlock from "../CodeBlock";
 
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   errorMsg: {
-    color: "red"
-  }
+    color: "red",
+  },
 });
 
 const useCaseFiles = {
   pools: [{ name: "pools.tif", src: "/static/testdrive/pools/predict1.png" }],
-  cattle: [{ name: "cattle.tif", src: "/static/testdrive/cattle/predict1.png" }]
+  cattle: [
+    { name: "cattle.tif", src: "/static/testdrive/cattle/predict1.png" },
+  ],
 };
 
-let APIContent = ({ classes, t }) => (
+const apiContentByUseCase = {
+  pools: {
+    fileName: "pools.tif",
+    path: "pools/predict-images/",
+    folder: "pools/predict-tiles/",
+  },
+  cattle: {
+    fileName: "cattle.tif",
+    path: "cattle/predict-images/",
+    folder: "cattle/predict-tiles/",
+  },
+};
+
+let APIContent = ({ classes, t, fileName, path, folder }) => (
   <div>
-    <Typography>
+    <Typography gutterBottom>
       Now that you have a trained model, you can upload a new image for
       prediction.
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.files import File
-
-File.upload(path)`}
+      {`predict_img = File.upload(${JSON.stringify(fileName)}, ${JSON.stringify(
+        path
+      )})
+predict_tiles_folder = ${JSON.stringify(folder)}
+tiling_task = predict_img.tiling(output_path=predict_tiles_folder)
+tiling_task.is_running()
+#=> True`}
     </CodeBlock>
-    <Typography>
+    <Typography gutterBottom>
       You can also use the same image you used for training.
     </Typography>
     <Link href="/testdrive/predict">
@@ -59,24 +78,24 @@ class SelectStep extends React.Component {
     currentModel: null,
     files: [],
     filesLoaded: false,
-    fileSelected: false
+    fileSelected: false,
   };
 
   componentDidMount() {
     this._loadCurrentModel();
   }
 
-  handleFileClick = file => {
+  handleFileClick = (file) => {
     const { files } = this.state;
 
-    files.map(item => {
+    files.map((item) => {
       if (item["name"] == file) {
         item["selected"] = !item["selected"];
       }
     });
 
     this.setState({ ...this.state, fileSelected: false });
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file["selected"]) {
         this.setState({ ...this.state, fileSelected: true });
       }
@@ -123,14 +142,20 @@ class SelectStep extends React.Component {
 
   _saveSelectedFiles() {
     const { currentModel, files } = this.state;
-    const selectedFiles = files.filter(file => file.selected);
+    const selectedFiles = files.filter((file) => file.selected);
     const newModel = { predictionFiles: selectedFiles, ...currentModel };
     window.localStorage.setItem("current", JSON.stringify(newModel));
   }
 
   render() {
     const { classes, t, apiMode } = this.props;
-    const { fileSelected, files, filesLoaded } = this.state;
+    const { fileSelected, files, filesLoaded, currentModel } = this.state;
+
+    let apiContent;
+    if (currentModel) {
+      const useCase = currentModel["useCase"];
+      apiContent = apiContentByUseCase[useCase];
+    }
 
     return (
       <StepContentContainer>
@@ -138,7 +163,11 @@ class SelectStep extends React.Component {
           {t("upload_step.title")}
         </Typography>
         {apiMode ? (
-          <APIContent />
+          <APIContent
+            fileName={apiContent["fileName"]}
+            path={apiContent["path"]}
+            folder={apiContent["folder"]}
+          />
         ) : (
           <React.Fragment>
             <Typography variant="body2">{t("select_step.text")}</Typography>

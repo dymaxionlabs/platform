@@ -14,22 +14,22 @@ import {
   InputLabel,
   Typography,
   Snackbar,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   classesLabel: {
-    paddingBottom: theme.spacing(1)
+    paddingBottom: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   errorMessage: {
-    color: "red"
-  }
+    color: "red",
+  },
 });
 
 const apiContentByUseCase = {
@@ -37,8 +37,8 @@ const apiContentByUseCase = {
   cattle: {
     name: "Cattle detector",
     classes: ["red", "black"],
-    var: "cattle_detector"
-  }
+    var: "cattle_detector",
+  },
 };
 
 let APIContent = ({ classes, t, modelVar, modelName, modelClasses }) => (
@@ -47,11 +47,12 @@ let APIContent = ({ classes, t, modelVar, modelName, modelClasses }) => (
       To create a model, using the Python package, execute:
     </Typography>
     <CodeBlock language="python">
-      {`from dymaxionlabs.models import Model
+      {`from dymaxionlabs.models import Estimator
 
-${modelVar} = Model.create(name=${JSON.stringify(modelName)},
-                              type="object_detection",
-                              labels=${JSON.stringify(modelClasses)})`}
+${modelVar} = Estimator.create(
+    name=${JSON.stringify(modelName)},
+    type="object_detection",
+    labels=${JSON.stringify(modelClasses)})`}
     </CodeBlock>
 
     <Link href="/testdrive/upload">
@@ -77,7 +78,7 @@ class CreateStep extends React.Component {
     classes: [],
     isSubmitting: false,
     showAlerts: false,
-    errorClassMsg: ""
+    errorClassMsg: "",
   };
 
   componentDidMount() {
@@ -120,7 +121,7 @@ class CreateStep extends React.Component {
         this.setState({
           errorClassMsg: `${t(
             "create_step.error_msg_wrong_classes"
-          )}: "red", "black"`
+          )}: "red", "black"`,
         });
         this.setState({ showAlerts: true });
         return false;
@@ -132,7 +133,7 @@ class CreateStep extends React.Component {
       const m = chips.indexOf("pool");
       if (m === -1 || chips.length !== 1) {
         this.setState({
-          errorClassMsg: `${t("create_step.error_msg_wrong_classes")}: "pool"`
+          errorClassMsg: `${t("create_step.error_msg_wrong_classes")}: "pool"`,
         });
         this.setState({ showAlerts: true });
         return false;
@@ -143,7 +144,7 @@ class CreateStep extends React.Component {
     }
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
 
     if (!this.checkClasses()) {
@@ -153,17 +154,17 @@ class CreateStep extends React.Component {
     // Reset messages
     this.setState({
       errorMsg: "",
-      isSubmitting: true
+      isSubmitting: true,
     });
 
     routerPush("/testdrive/upload");
   };
 
-  handleNameChange = e => {
+  handleNameChange = (e) => {
     this.setState({ name: e.target.value });
   };
 
-  handleChangeClasses = chips => {
+  handleChangeClasses = (chips) => {
     this.setState({ classes: chips });
     this.setState({ showAlerts: false });
   };
@@ -175,7 +176,7 @@ class CreateStep extends React.Component {
       isSubmitting,
       errorMsg,
       showAlerts,
-      errorClassMsg
+      errorClassMsg,
     } = this.state;
 
     let apiContent;
@@ -228,7 +229,7 @@ class CreateStep extends React.Component {
               <FormControl margin="normal" required fullWidth>
                 <ChipInput
                   label={t("create_step.classes_label")}
-                  onChange={chips => this.handleChangeClasses(chips)}
+                  onChange={(chips) => this.handleChangeClasses(chips)}
                 />
                 <FormHelperText>
                   {t("create_step.classes_helper_1")} <kbd>Enter</kbd>
@@ -251,7 +252,7 @@ class CreateStep extends React.Component {
               <Snackbar
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "left"
+                  horizontal: "left",
                 }}
                 open={showAlerts}
                 autoHideDuration={6000}

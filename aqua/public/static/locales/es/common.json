@@ -99,6 +99,7 @@
   "signup": {
     "already_has_account": "\u00bfYa tiene una cuenta?",
     "cancel": "Cancelar",
+    "developing": "\u00a1En desarrollo!",
     "email_placeholder": "Email",
     "error_msg": "Un error ha ocurrido. Por favor reintentelo.",
     "header": "Registraci\u00f3n",
@@ -108,6 +109,7 @@
     "subheader": "Para registrarse por favor ingrese un nombre de usuario, una direcci\u00f3n de correo v\u00e1lida y contrase\u00f1a.",
     "submit": "Registrar",
     "success_msg": "\u00a1Gracias por registrarse! En breve ser\u00e1 redirigido...",
+    "text_invitation": "Te invitamos a probar nuestra plataforma mediante un Test Drive:",
     "username_placeholder": "Nombre de usuario"
   },
   "signup_btn": "Registrarse",
