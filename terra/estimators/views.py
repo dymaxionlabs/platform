@@ -290,3 +290,16 @@ class StartImageTilingJobView(RelatedProjectAPIView):
 
         serializer = TaskSerializer(job)
         return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
+
+
+class CloneEstimatorView(RelatedProjectAPIView):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
+
+    def post(self, request, uuid):
+        estimator = Estimator.objects.filter(uuid=uuid, project=self.get_project()).first()
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        cloned = estimator.clone()
+        serializer = EstimatorSerializer(cloned)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^(?P<uuid>[^/]+)/train/?', views.StartTrainingJobView.as_view()),
     url(r'^(?P<uuid>[^/]+)/predict/?', views.StartPredictionJobView.as_view()),
     url(r'^(?P<uuid>[^/]+)/load_labels/?', views.AnnotationUpload.as_view()),
+    url(r'^(?P<uuid>[^/]+)/clone/?', views.CloneEstimatorView.as_view()),
     url(r'^start_tiling_job/?', views.StartImageTilingJobView.as_view()),
     url(r'^', include(router.urls)),
 ]
