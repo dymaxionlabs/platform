@@ -299,6 +299,20 @@ class HomeContent extends React.Component {
     await this.getAvailableCredit();
     await this.getUserUsage();
     await this.getLatestTasks();
+
+    this.intervalTasks = setInterval(() => this.getLatestTasks(), 5000);
+    this.intervalUsage = setInterval(() => this.getUserUsage(), 5000);
+
+  }
+
+
+  componentWillUnmount() {
+    if (this.intervalTasks) {
+      clearInterval(this.intervalTasks);
+    }
+    if (this.intervalUsage) {
+      clearInterval(this.intervalUsage);
+    }
   }
 
   async getAvailableCredit() {
