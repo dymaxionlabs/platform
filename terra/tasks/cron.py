@@ -31,25 +31,11 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
             return
         print("Running tasks:", count)
 
-        # Get all CloudML jobs
-        # TODO: Filter by date of oldest running task...
-        all_jobs = client.list_jobs()['jobs']
-        all_jobs = [(job, parse_datetime(job['createTime'])) for job in all_jobs]
-        all_jobs = [job for job, create_time in all_jobs if create_time >= self.JOBS_CREATE_TIME_BASE]
-        print("CloudML jobs:", len(all_jobs))
-
-        jobs_by_task_id = [(job['jobId'].split('_')[1], job)
-                           for job in all_jobs]
-        jobs_by_task_id = {
-            int(id): job
-            for id, job in jobs_by_task_id if id.isnumeric()
-        }
-
         # For each task, get the corresponding Cloud ML Job
         # If CloudML job has finished, update state of task
         for task in cloudml_tasks:
             # Ref: https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#State
-            job = jobs_by_task_id.get(task.pk)
+            job = client.get_job(task.internal_metadata.get("cloudml_job_name"))
             task_is_too_old = task.age > self.INVALID_TASK_EXPIRATION_TIME
             if not job:
                 if task_is_too_old:
