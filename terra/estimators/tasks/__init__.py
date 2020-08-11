@@ -24,6 +24,8 @@ def run_cloudml(task, script_name, job_name):
         settings.CLOUDML_REGION,
         'PROJECT':
         settings.CLOUDML_PROJECT,
+        'EPOCHS': str(settings.CLOUDML_DEFAULT_EPOCHS),
+        'STEPS': str(settings.CLOUDML_DEFAULT_STEPS),
         'TERRA_TASK_ID':
         str(task.pk),
         'TERRA_TASK_ARTIFACTS_URL':
@@ -38,14 +40,14 @@ def run_cloudml(task, script_name, job_name):
         os.environ['SENTRY_ENVIRONMENT'],
     }
 
-    # Set training parameters from estimator configuration object
+    # Override training parameters from estimator configuration object
     if estimator.configuration:
-        epochs = estimator.configuration.get('epochs',
-                                             settings.CLOUDML_DEFAULT_EPOCHS)
-        steps = estimator.configuration.get('steps',
-                                            settings.CLOUDML_DEFAULT_STEPS)
-        cloudml_env['EPOCHS'] = str(round(epochs))
-        cloudml_env['STEPS'] = str(round(steps))
+        epochs = estimator.configuration.get('epochs')
+        steps = estimator.configuration.get('steps')
+        if epochs:
+            cloudml_env['EPOCHS'] = str(round(epochs))
+        if steps:
+            cloudml_env['STEPS'] = str(round(steps))
 
     # Set default confidence score
     confidence = settings.CLOUDML_DEFAULT_PREDICTION_CONFIDENCE
