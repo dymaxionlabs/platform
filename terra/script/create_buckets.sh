@@ -7,8 +7,7 @@ echo '{
     "rule": [{
       "action": {"type": "Delete"},
       "condition": {
-        "age": 7,
-        "isLive": true
+        "age": 7
       }
     }]
   }
