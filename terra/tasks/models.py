@@ -28,7 +28,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     finished_at = models.DateTimeField(_('finished at'), null=True, blank=True)
     metadata = JSONField(_("metadata"), default=dict)
-    traceback = models.TextField(_('traceback'), blank=True, null=True)
+    error = models.TextField(_("error"), blank=True, null=True)
     estimated_duration = models.PositiveIntegerField(_('estimated duration'),
                                                      blank=True,
                                                      null=True)
