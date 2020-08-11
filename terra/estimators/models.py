@@ -103,11 +103,15 @@ class Estimator(models.Model):
         return name
 
     def clone(self):
-        cloned = Estimator.objects.get(pk=self.pk)
-        cloned.pk = None
-        cloned.uuid = uuid.uuid4()
-        cloned.name = self.prepare_estimator_cloned_name()
-        cloned.save()
+        cloned = Estimator.objects.create(
+            name = self.prepare_estimator_cloned_name(),
+            project = self.project,
+            estimator_type = self.estimator_type,
+            classes = self.classes,
+            configuration = self.configuration,
+            metadata = self.metadata,
+            image_files = self.image_files,
+        )
         return cloned
 
 
