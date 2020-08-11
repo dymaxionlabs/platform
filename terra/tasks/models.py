@@ -161,8 +161,10 @@ class Task(models.Model):
         self._mark_as(states.CANCELED, finished_at=finished_at)
         signals.task_canceled.send(sender=self.__class__, task=self)
 
-    def mark_as_failed(self, finished_at=None):
+    def mark_as_failed(self, error=None, finished_at=None):
         self._mark_as(states.FAILED, finished_at=finished_at)
+        self.error = error
+        self.save(update_fields=['error', 'updated_at'])
         signals.task_failed.send(sender=self.__class__, task=self)
 
     def _mark_as(self, state, finished_at=None):
