@@ -28,7 +28,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     finished_at = models.DateTimeField(_('finished at'), null=True, blank=True)
     metadata = JSONField(_("metadata"), default=dict)
-    traceback = models.TextField(_('traceback'), blank=True, null=True)
+    error = models.TextField(_("error"), blank=True, null=True)
     estimated_duration = models.PositiveIntegerField(_('estimated duration'),
                                                      blank=True,
                                                      null=True)
@@ -161,8 +161,10 @@ class Task(models.Model):
         self._mark_as(states.CANCELED, finished_at=finished_at)
         signals.task_canceled.send(sender=self.__class__, task=self)
 
-    def mark_as_failed(self, finished_at=None):
+    def mark_as_failed(self, error=None, finished_at=None):
         self._mark_as(states.FAILED, finished_at=finished_at)
+        self.error = error
+        self.save(update_fields=['error', 'updated_at'])
         signals.task_failed.send(sender=self.__class__, task=self)
 
     def _mark_as(self, state, finished_at=None):
