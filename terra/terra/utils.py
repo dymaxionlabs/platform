@@ -19,9 +19,7 @@ def run_subprocess(cmd, env=None, cwd=None):
                    env=env,
                    cwd=cwd,
                    shell=True,
-                   check=True,
-                   stdout=subprocess.PIPE,
-                   stderr=subprocess.PIPE)
+                   check=True)
 
 
 def gsutilCopy(src, dst, recursive=True):
