@@ -21,6 +21,8 @@ import fiona
 
 
 class Estimator(models.Model):
+    suffix_sep = '__'
+
     TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'
     PREDICTION_JOB_TASK = 'estimators.tasks.predict.start_prediction_job'
     IMAGE_TILING_TASK = 'estimators.tasks.tile.generate_image_tiles'
@@ -83,6 +85,34 @@ class Estimator(models.Model):
                 steps = int(self.configuration['steps'])
             # Currently takes around 7 minutes per epoch (1000 steps)
             return epochs * (steps * 7 / 1000) * 60
+    
+    @classmethod
+    def _last_name_with_suffix(cls, estimator):
+        estimators = cls.objects.filter(
+            project=estimator.project, 
+            estimator_type=estimator.estimator_type,
+            name__startswith='{name}{sep}'.format(sep=cls.suffix_sep, name=estimator.name)
+        )
+        last_estimator = estimators.last()
+        return last_estimator and last_estimator.name
+    
+    def prepare_estimator_cloned_name(self):
+        last_name = self._last_name_with_suffix(self)
+        suffix = int(last_name.split(self.suffix_sep)[-1]) + 1 if last_name else 1
+        name = '{name}{sep}{suffix}'.format(name=self.name, sep=self.suffix_sep, suffix=suffix)
+        return name
+
+    def clone(self):
+        cloned = Estimator.objects.create(
+            name = self.prepare_estimator_cloned_name(),
+            project = self.project,
+            estimator_type = self.estimator_type,
+            classes = self.classes,
+            configuration = self.configuration,
+            metadata = self.metadata,
+            image_files = self.image_files,
+        )
+        return cloned
 
 
 def tile_images_path(instance, filename):
