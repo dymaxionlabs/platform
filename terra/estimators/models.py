@@ -107,7 +107,6 @@ class Estimator(models.Model):
         cloned.pk = None
         cloned.uuid = uuid.uuid4()
         cloned.name = self.prepare_estimator_cloned_name()
-        #TODO: Check internal_metadata
         cloned.save()
         return cloned
 
