@@ -42,7 +42,7 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
                     print(
                         f'Task {task.pk} has no related CloudML and is old (started at {task.created_at}). Mark as failed.'
                     )
-                    task.mark_as_failed()
+                    task.mark_as_failed(reason='Task failed to start')
                     return
                 else:
                     continue

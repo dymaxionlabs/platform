@@ -72,12 +72,13 @@ def generate_image_tiles(task_id):
                             with open(img_path, 'rb') as f:
                                 tile.tile_file = DjangoFile(f, name=img_fname)
                                 tile.save()
-    except Exception as e:
+    except Exception as err:
         TaskLogEntry.objects.create(task=job,
-                                    log=str(e),
+                                    error=err,
+                                    failed=True,
                                     logged_at=datetime.now())
-        print("Error: {}".format(e))
-        job.mark_as_failed()
+        print("Error: {}".format(err))
+        job.mark_as_failed(reason=str(err))
     else:
         job.mark_as_finished()
 
