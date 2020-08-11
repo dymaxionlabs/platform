@@ -7,6 +7,7 @@ import {
   TableRow,
   Typography,
   LinearProgress,
+  Button,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -20,6 +21,7 @@ import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import TableRowSkeleton from "../TableRowSkeleton";
 import moment from "moment";
+import FileDownload from "../../utils/file-download";
 
 const styles = (theme) => ({
   root: {
@@ -66,6 +68,19 @@ class TasksContent extends React.Component {
       clearInterval(this.interval);
     }
   }
+
+
+  handleDownloadArtifact = (id) => {
+    const token = cookie.get("token");
+    axios
+      .get(buildApiUrl(`/tasks/${id}/download-artifacts/`), {
+        headers: { Authorization: token },
+        responseType: "blob",
+      })
+      .then((response) => {
+        FileDownload(response.data, `task_${id}_artifacts.zip`)
+      });
+  };
 
   async getTasks() {
     const projectId = cookie.get("project");
@@ -153,6 +168,7 @@ class TasksContent extends React.Component {
                 <TableCell>State</TableCell>
                 <TableCell>Started at</TableCell>
                 <TableCell>Finished at</TableCell>
+                <TableCell>Artifacts</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -176,6 +192,14 @@ class TasksContent extends React.Component {
                     <Moment locale={locale} fromNow>
                       {task.finished_at}
                     </Moment>
+                  </TableCell>
+                  <TableCell>
+                    <Button                     
+                      variant="contained"
+                      color="primary" 
+                      onClick={() => this.handleDownloadArtifact(task.id)}>
+                      Download
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

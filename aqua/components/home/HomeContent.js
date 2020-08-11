@@ -23,6 +23,7 @@ import Moment from "react-moment";
 import { i18n, withTranslation, Link } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { formatBytes } from "../../utils/utils";
+import FileDownload from "../../utils/file-download";
 
 const styles = (theme) => ({
   root: {
@@ -172,7 +173,7 @@ let PythonSDKCard = ({ classes }) => (
 
 PythonSDKCard = withStyles(styles)(PythonSDKCard);
 
-let TasksCard = ({ classes, tasks, t, locale }) => (
+let TasksCard = ({ classes, tasks, t, locale, handleDownloadArtifact }) => (
   <Card className={classes.cardRoot}>
     <CardContent>
       <Typography gutterBottom variant="h5" component="h2">
@@ -186,6 +187,7 @@ let TasksCard = ({ classes, tasks, t, locale }) => (
               <TableCell className={classes.textTruncate}>Name</TableCell>
               <TableCell className={classes.tableHeight}>State</TableCell>
               <TableCell className={classes.tableHeight}>Started at</TableCell>
+              <TableCell className={classes.tableHeight}>Artifacts</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -209,6 +211,14 @@ let TasksCard = ({ classes, tasks, t, locale }) => (
                   <Moment locale={locale} fromNow>
                     {task.created_at}
                   </Moment>
+                </TableCell>
+                <TableCell className={classes.tableHeight}>
+                  <Button 
+                    variant="contained"
+                    color="primary" 
+                    onClick={() => handleDownloadArtifact(task.id)}>
+                    Download
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -374,6 +384,18 @@ class HomeContent extends React.Component {
     }
   }
 
+  handleDownloadArtifact = (id) => {
+    const token = cookie.get("token");
+    axios
+      .get(buildApiUrl(`/tasks/${id}/download-artifacts/`), {
+        headers: { Authorization: token },
+        responseType: "blob",
+      })
+      .then((response) => {
+        FileDownload(response.data, `task_${id}_artifacts.zip`)
+      });
+  };
+
   render() {
     const { t, classes } = this.props;
     const {
@@ -398,7 +420,7 @@ class HomeContent extends React.Component {
             <UsageCard storageUsage={storageUsage} projectData={projectData} />
           </Grid>
           <Grid item xs={12} md={9}>
-            <TasksCard tasks={latestTasks} t={t} locale={locale} />
+            <TasksCard tasks={latestTasks} t={t} locale={locale} handleDownloadArtifact={this.handleDownloadArtifact} />
           </Grid>
           <Grid item xs={6} md={3}>
             <CreditsCard availableCredits={availableCredits} />
