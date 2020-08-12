@@ -77,7 +77,7 @@ def generate_image_tiles(task_id):
                                     log=str(err),
                                     logged_at=datetime.now())
         print("Error: {}".format(err))
-        job.mark_as_failed(reason=str(err))
+        job.mark_as_failed(error=str(err))
     else:
         job.mark_as_finished()
 
