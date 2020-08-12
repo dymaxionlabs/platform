@@ -13,6 +13,7 @@ import {
   MenuItem,
   Toolbar,
   Typography,
+  Chip,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
@@ -95,6 +96,10 @@ const styles = (theme) => ({
   },
   titleLogo: {
     marginRight: 5,
+  },
+  betaChip: {
+    marginLeft: theme.spacing(1),
+    marginTop: 5,
   },
   drawerPaper: {
     position: "relative",
@@ -305,17 +310,18 @@ class Home extends React.Component {
                 height="24"
               />
             </Link>
-            <Link href="/">
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                className={classes.title}
-              >
-                Dymaxion Labs Platform
-              </Typography>
-            </Link>
+            <div className={classes.title}>
+              <Link href="/">
+                <Typography component="h1" variant="h6" color="inherit" noWrap>
+                  Dymaxion Labs Platform
+                </Typography>
+              </Link>
+              <Chip
+                className={classes.betaChip}
+                label="Beta"
+                color="secondary"
+              />
+            </div>
             <SelectProjectButton token={token} />
             <Button className={classes.button} onClick={this.handleClickOpen}>
               {t("simple_modal_contact_form:header")}
