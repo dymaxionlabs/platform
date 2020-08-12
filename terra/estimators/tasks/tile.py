@@ -74,8 +74,7 @@ def generate_image_tiles(task_id):
                                 tile.save()
     except Exception as err:
         TaskLogEntry.objects.create(task=job,
-                                    error=err,
-                                    failed=True,
+                                    log=str(err),
                                     logged_at=datetime.now())
         print("Error: {}".format(err))
         job.mark_as_failed(reason=str(err))
