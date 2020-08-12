@@ -10,7 +10,7 @@ from datetime import datetime
 from terra.utils import gsutilCopy, list_chunks
 from estimators.models import Estimator, ImageTile
 from storage.client import Client
-from tasks.models import Task
+from tasks.models import Task, TaskLogEntry
 
 from . import run_cloudml
 
@@ -18,12 +18,19 @@ from . import run_cloudml
 @job("default")
 def start_prediction_job(task_id):
     task = Task.objects.get(pk=task_id)
-    prepare_artifacts(task)
-    job_name = f'predict_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
-    task.internal_metadata.update(uses_cloudml=True)
-    run_cloudml(task, './submit_prediction_job.sh', job_name)
-    task.internal_metadata.update(cloudml_job_name=job_name)
-    task.save(update_fields=["internal_metadata"])
+    try:
+        prepare_artifacts(task)
+        job_name = f'predict_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+        task.internal_metadata.update(uses_cloudml=True)
+        run_cloudml(task, './submit_prediction_job.sh', job_name)
+        task.internal_metadata.update(cloudml_job_name=job_name)
+        task.save(update_fields=["internal_metadata"])
+    except Exception as err:
+        TaskLogEntry.objects.create(task=task,
+                            log={'error':str(err)},
+                            logged_at=datetime.now())
+        print("Error: {}".format(err))
+        task.mark_as_failed(error=str(err))
 
 
 def prepare_artifacts(task):
@@ -43,6 +50,8 @@ def upload_prediction_image_tiles(task):
     for path in task.kwargs['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=task.project,
                                                source_tile_path=path)
+        if image_tiles.count() == 0:
+            raise Exception("There is not tiles")
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
             if source_file not in task.kwargs["image_files"]:
