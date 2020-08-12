@@ -1,6 +1,5 @@
 import { withStyles } from "@material-ui/core/styles";
 import Head from "next/head";
-import SignupButton from "../components/SignupButton";
 import React from "react";
 import BasicAppbar from "../components/BasicAppbar";
 import AnnotateStep from "../components/testdrive/AnnotateStep";
@@ -16,7 +15,7 @@ import { withTranslation } from "../i18n";
 import ResultsStep from "../components/testdrive/ResultsStep";
 import cookie from "js-cookie";
 
-const styles = theme => ({
+const styles = (theme) => ({
   stepperContent: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -26,8 +25,8 @@ const styles = theme => ({
     [theme.breakpoints.up(700 + theme.spacing(2) * 2)]: {
       width: 700,
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+    },
   },
   paper: {
     width: 700,
@@ -36,8 +35,10 @@ const styles = theme => ({
     marginLeft: "auto",
     marginRight: "auto",
     flexDirection: "column",
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`
-  }
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3
+    )}px`,
+  },
 });
 
 const steps = [
@@ -49,7 +50,7 @@ const steps = [
   "train",
   "select",
   "predict",
-  "results"
+  "results",
 ];
 
 const hiddenSteps = ["initial", "choose-usecase"];
@@ -57,13 +58,13 @@ const hiddenSteps = ["initial", "choose-usecase"];
 class TestDrive extends React.Component {
   state = {
     step: steps[0],
-    apiMode: false
+    apiMode: false,
   };
 
   static async getInitialProps({ query }) {
     return {
       namespacesRequired: ["testdrive"],
-      query: query
+      query: query,
     };
   }
 
@@ -79,7 +80,7 @@ class TestDrive extends React.Component {
   }
 
   loadApiMode() {
-    var apiMode = (cookie.get("testdrive-api-mode") === "true");
+    var apiMode = cookie.get("testdrive-api-mode") === "true";
     if (apiMode != this.state.apiMode) {
       this.setState({ apiMode });
     }
@@ -147,16 +148,19 @@ class TestDrive extends React.Component {
   }
 
   handleModeButtonClick = () => {
-    this.setState(prevState => ({ apiMode: !prevState.apiMode }), () => {
-      cookie.set("testdrive-api-mode", this.state.apiMode);
-    });
+    this.setState(
+      (prevState) => ({ apiMode: !prevState.apiMode }),
+      () => {
+        cookie.set("testdrive-api-mode", this.state.apiMode);
+      }
+    );
   };
 
   render() {
     const { t, classes, ...props } = this.props;
     const { step, apiMode } = this.state;
 
-    const isHiddenStep = step => hiddenSteps.includes(step);
+    const isHiddenStep = (step) => hiddenSteps.includes(step);
     const showStepper = !isHiddenStep(step);
     const showModeButton = !isHiddenStep(step);
 
@@ -175,12 +179,11 @@ class TestDrive extends React.Component {
           <div className={classes.stepperContent}>
             <StepperContent
               activeStep={step}
-              steps={steps.filter(step => !isHiddenStep(step))}
+              steps={steps.filter((step) => !isHiddenStep(step))}
               {...props}
             />
           </div>
         )}
-        <SignupButton />
       </div>
     );
   }

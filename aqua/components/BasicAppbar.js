@@ -1,22 +1,23 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "../i18n";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
+import SignupButton from "../components/SignupButton";
 
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   appBar: {
-    position: "relative"
+    position: "relative",
   },
   logo: {
     height: 25,
     marginRight: theme.spacing(1),
-    cursor: "pointer"
+    cursor: "pointer",
   },
   title: {
-    cursor: "pointer"
-  }
+    cursor: "pointer",
+  },
 });
 
 const BasicAppbar = withStyles(styles)(
@@ -41,26 +42,20 @@ const BasicAppbar = withStyles(styles)(
           <Button
             style={{ marginLeft: "auto" }}
             onClick={onModeButtonClick}
-            color="primary"
             variant="contained"
           >
-            <Typography
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              {modeButtonText}
-            </Typography>
+            {modeButtonText}
           </Button>
         )}
+
+        <SignupButton />
       </Toolbar>
     </AppBar>
   )
 );
 
 BasicAppbar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(BasicAppbar);
