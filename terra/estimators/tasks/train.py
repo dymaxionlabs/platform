@@ -11,7 +11,7 @@ from datetime import datetime
 
 from terra.utils import gsutilCopy
 from estimators.models import Annotation, Estimator, ImageTile
-from tasks.models import Task
+from tasks.models import Task, TaskLogEntry
 
 from . import run_cloudml
 
@@ -28,11 +28,10 @@ def start_training_job(task_id):
         task.save(update_fields=["internal_metadata"])
     except Exception as err:
         TaskLogEntry.objects.create(task=task,
-                            error=err,
-                            failed=True,
+                            log={'error':str(err)},
                             logged_at=datetime.now())
         print("Error: {}".format(err))
-        job.mark_as_failed(reason=str(err))
+        task.mark_as_failed(error=str(err))
     
 
 
