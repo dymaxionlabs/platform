@@ -6,10 +6,11 @@ import {
   CardActions,
   Grid,
   LinearProgress,
-  Paper,
   Table,
   TableBody,
   TableCell,
+  Tooltip,
+  IconButton,
   TableHead,
   TableRow,
   Typography,
@@ -24,6 +25,7 @@ import { i18n, withTranslation, Link } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { formatBytes } from "../../utils/utils";
 import FileDownload from "../../utils/file-download";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 
 const styles = (theme) => ({
   root: {
@@ -40,9 +42,6 @@ const styles = (theme) => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-  },
-  tableHeight: {
-    lineHeight: "0.5rem",
   },
   anchor: {
     textDecoration: "none",
@@ -179,52 +178,52 @@ let TasksCard = ({ classes, tasks, t, locale, handleDownloadArtifact }) => (
       <Typography gutterBottom variant="h5" component="h2">
         Tasks
       </Typography>
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Id</TableCell>
+            <TableCell className={classes.textTruncate}>Name</TableCell>
+            <TableCell>State</TableCell>
+            <TableCell>Started at</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tasks.length === 0 && (
             <TableRow>
-              <TableCell className={classes.tableHeight}>Id</TableCell>
-              <TableCell className={classes.textTruncate}>Name</TableCell>
-              <TableCell className={classes.tableHeight}>State</TableCell>
-              <TableCell className={classes.tableHeight}>Started at</TableCell>
-              <TableCell className={classes.tableHeight}>Artifacts</TableCell>
+              <TableCell>There are tasks.</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {tasks.length === 0 && (
-              <TableRow>
-                <TableCell className={classes.tableHeight}>
-                  There are tasks.
-                </TableCell>
-              </TableRow>
-            )}
-            {tasks.map((task, i) => (
-              <TableRow key={i}>
-                <TableCell className={classes.tableHeight}>{task.id}</TableCell>
-                <TableCell className={classes.textTruncate}>
-                  {task.name}
-                </TableCell>
-                <TableCell className={classes.tableHeight}>
-                  {t(`tasks.states.${task.state}`)}
-                </TableCell>
-                <TableCell className={classes.tableHeight}>
-                  <Moment locale={locale} fromNow>
-                    {task.created_at}
-                  </Moment>
-                </TableCell>
-                <TableCell className={classes.tableHeight}>
-                  <Button 
-                    variant="contained"
-                    color="primary" 
-                    onClick={() => handleDownloadArtifact(task.id)}>
-                    Download
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+          )}
+          {tasks.map((task, i) => (
+            <TableRow key={i}>
+              <TableCell>{task.id}</TableCell>
+              <TableCell className={classes.textTruncate}>
+                {task.name}
+              </TableCell>
+              <TableCell>{t(`tasks.states.${task.state}`)}</TableCell>
+              <TableCell>
+                <Moment locale={locale} fromNow>
+                  {task.created_at}
+                </Moment>
+              </TableCell>
+              <TableCell align="right">
+                {task.finished_at && (
+                  <Tooltip title="Download output artifacts">
+                    <IconButton
+                      onClick={() => handleDownloadArtifact(task.id)}
+                      className={classes.button}
+                      size="small"
+                      aria-label="Download output artifacts"
+                    >
+                      <CloudDownloadIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </CardContent>
     <CardActions>
       <Link href="/home/tasks">
@@ -312,9 +311,7 @@ class HomeContent extends React.Component {
 
     this.intervalTasks = setInterval(() => this.getLatestTasks(), 5000);
     this.intervalUsage = setInterval(() => this.getUserUsage(), 5000);
-
   }
-
 
   componentWillUnmount() {
     if (this.intervalTasks) {
@@ -406,7 +403,7 @@ class HomeContent extends React.Component {
         responseType: "blob",
       })
       .then((response) => {
-        FileDownload(response.data, `task_${id}_artifacts.zip`)
+        FileDownload(response.data, `task_${id}_artifacts.zip`);
       });
   };
 
@@ -434,7 +431,12 @@ class HomeContent extends React.Component {
             <UsageCard storageUsage={storageUsage} projectData={projectData} />
           </Grid>
           <Grid item xs={12} md={9}>
-            <TasksCard tasks={latestTasks} t={t} locale={locale} handleDownloadArtifact={this.handleDownloadArtifact} />
+            <TasksCard
+              tasks={latestTasks}
+              t={t}
+              locale={locale}
+              handleDownloadArtifact={this.handleDownloadArtifact}
+            />
           </Grid>
           <Grid item xs={6} md={3}>
             <CreditsCard availableCredits={availableCredits} />

@@ -6,8 +6,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tooltip,
+  IconButton,
   LinearProgress,
-  Button,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -22,6 +23,7 @@ import { logout } from "../../utils/auth";
 import TableRowSkeleton from "../TableRowSkeleton";
 import moment from "moment";
 import FileDownload from "../../utils/file-download";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 
 const styles = (theme) => ({
   root: {
@@ -69,7 +71,6 @@ class TasksContent extends React.Component {
     }
   }
 
-
   handleDownloadArtifact = (id) => {
     const token = cookie.get("token");
     axios
@@ -78,7 +79,7 @@ class TasksContent extends React.Component {
         responseType: "blob",
       })
       .then((response) => {
-        FileDownload(response.data, `task_${id}_artifacts.zip`)
+        FileDownload(response.data, `task_${id}_artifacts.zip`);
       });
   };
 
@@ -168,7 +169,7 @@ class TasksContent extends React.Component {
                 <TableCell>State</TableCell>
                 <TableCell>Started at</TableCell>
                 <TableCell>Finished at</TableCell>
-                <TableCell>Artifacts</TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -194,12 +195,16 @@ class TasksContent extends React.Component {
                     </Moment>
                   </TableCell>
                   <TableCell>
-                    <Button                     
-                      variant="contained"
-                      color="primary" 
-                      onClick={() => this.handleDownloadArtifact(task.id)}>
-                      Download
-                    </Button>
+                    <Tooltip title="Download output artifacts">
+                      <IconButton
+                        onClick={() => this.handleDownloadArtifact(task.id)}
+                        className={classes.button}
+                        size="small"
+                        aria-label="Download output artifacts"
+                      >
+                        <CloudDownloadIcon />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
