@@ -18,10 +18,19 @@ const styles = (theme) => ({
   title: {
     cursor: "pointer",
   },
+  right: {
+    marginLeft: "auto",
+  },
 });
 
 const BasicAppbar = withStyles(styles)(
-  ({ classes, showModeButton, modeButtonText, onModeButtonClick }) => (
+  ({
+    classes,
+    showModeButton,
+    showSignUp,
+    modeButtonText,
+    onModeButtonClick,
+  }) => (
     <AppBar position="absolute" color="default" className={classes.appBar}>
       <Toolbar>
         <Link href="/">
@@ -37,18 +46,14 @@ const BasicAppbar = withStyles(styles)(
             Dymaxion Labs Platform
           </Typography>
         </Link>
-
-        {showModeButton && (
-          <Button
-            style={{ marginLeft: "auto" }}
-            onClick={onModeButtonClick}
-            variant="contained"
-          >
-            {modeButtonText}
-          </Button>
-        )}
-
-        <SignupButton />
+        <div className={classes.right}>
+          {showModeButton && (
+            <Button onClick={onModeButtonClick} variant="contained">
+              {modeButtonText}
+            </Button>
+          )}
+          {showSignUp && <SignupButton />}
+        </div>
       </Toolbar>
     </AppBar>
   )
@@ -56,6 +61,15 @@ const BasicAppbar = withStyles(styles)(
 
 BasicAppbar.propTypes = {
   classes: PropTypes.object.isRequired,
+  showSignUp: PropTypes.bool,
+  showModeButton: PropTypes.bool,
+  modeButtonText: PropTypes.string,
+};
+
+BasicAppbar.defaultProps = {
+  showSignUp: false,
+  showModeButton: false,
+  modeButtonText: "",
 };
 
 export default withStyles(styles)(BasicAppbar);

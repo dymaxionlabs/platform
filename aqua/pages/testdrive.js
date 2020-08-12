@@ -170,6 +170,7 @@ class TestDrive extends React.Component {
           <title>{t("header")}</title>
         </Head>
         <BasicAppbar
+          showSignUp
           showModeButton={showModeButton}
           modeButtonText={apiMode ? t("btn_use_web_ui") : t("btn_use_api")}
           onModeButtonClick={this.handleModeButtonClick}

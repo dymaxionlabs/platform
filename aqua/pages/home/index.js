@@ -99,7 +99,7 @@ const styles = (theme) => ({
   },
   betaChip: {
     marginLeft: theme.spacing(1),
-    marginTop: 5,
+    marginTop: 3,
   },
   drawerPaper: {
     position: "relative",
