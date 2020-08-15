@@ -2,17 +2,17 @@ import { withStyles } from "@material-ui/core/styles";
 import Head from "next/head";
 import React from "react";
 import BasicAppbar from "../components/BasicAppbar";
-import AnnotateStep from "../components/testdrive/AnnotateStep";
-import CreateStep from "../components/testdrive/CreateStep";
-import ChooseUseCaseStep from "../components/testdrive/ChooseUseCaseStep";
-import InitialStep from "../components/testdrive/InitialStep";
-import TrainStep from "../components/testdrive/TrainStep";
-import UploadStep from "../components/testdrive/UploadStep";
-import SelectStep from "../components/testdrive/SelectStep";
-import PredictStep from "../components/testdrive/PredictStep";
-import StepperContent from "../components/testdrive/StepperContent";
+import AnnotateStep from "../components/demo/AnnotateStep";
+import CreateStep from "../components/demo/CreateStep";
+import ChooseUseCaseStep from "../components/demo/ChooseUseCaseStep";
+import InitialStep from "../components/demo/InitialStep";
+import TrainStep from "../components/demo/TrainStep";
+import UploadStep from "../components/demo/UploadStep";
+import SelectStep from "../components/demo/SelectStep";
+import PredictStep from "../components/demo/PredictStep";
+import StepperContent from "../components/demo/StepperContent";
 import { withTranslation } from "../i18n";
-import ResultsStep from "../components/testdrive/ResultsStep";
+import ResultsStep from "../components/demo/ResultsStep";
 import cookie from "js-cookie";
 
 const styles = (theme) => ({
@@ -55,7 +55,7 @@ const steps = [
 
 const hiddenSteps = ["initial", "choose-usecase"];
 
-class TestDrive extends React.Component {
+class Demo extends React.Component {
   state = {
     step: steps[0],
     apiMode: false,
@@ -190,7 +190,7 @@ class TestDrive extends React.Component {
   }
 }
 
-TestDrive = withStyles(styles)(TestDrive);
-TestDrive = withTranslation("testdrive")(TestDrive);
+Demo = withStyles(styles)(Demo);
+Demo = withTranslation("testdrive")(Demo);
 
-export default TestDrive;
+export default Demo;

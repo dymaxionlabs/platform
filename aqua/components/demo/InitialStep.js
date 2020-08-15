@@ -3,46 +3,46 @@ import { withStyles } from "@material-ui/core/styles";
 import { Link, withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 
-import { Typography, Button, Grid } from '@material-ui/core';
+import { Typography, Button, Grid } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(5),
-    textAlign: "center"
+    textAlign: "center",
   },
   guide: {
-    marginBottom: theme.spacing(5)
+    marginBottom: theme.spacing(5),
   },
   step: {
     textAlign: "center",
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   stepImage: {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 });
 
 const steps = [
   {
     title: "Problem",
-    desc: "Problem definition. Available data. Alternative sources."
+    desc: "Problem definition. Available data. Alternative sources.",
   },
   {
     title: "Data",
-    desc: "Data wrangling. Preprocessing. Outlier removal."
+    desc: "Data wrangling. Preprocessing. Outlier removal.",
   },
   {
     title: "Annotation",
-    desc: "Imagery labeling. Experts validation. Ground truth."
+    desc: "Imagery labeling. Experts validation. Ground truth.",
   },
   {
     title: "Modeling",
-    desc: "Train/Test split. Deep Neural Network. Hyperparameters."
+    desc: "Train/Test split. Deep Neural Network. Hyperparameters.",
   },
   {
     title: "Deploy",
-    desc: "Map tile server. Data compression. Visualization."
-  }
+    desc: "Map tile server. Data compression. Visualization.",
+  },
 ];
 
 let GuideSteps = ({ classes, t }) => (
@@ -70,7 +70,7 @@ let InitialStep = ({ classes, t }) => (
       {t("header")}
     </Typography>
     <GuideSteps />
-    <Link href="/testdrive/choose-usecase">
+    <Link href="/demo/choose-usecase">
       <Button color="primary" variant="contained">
         {t("start")}
       </Button>

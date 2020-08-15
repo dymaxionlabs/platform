@@ -4,18 +4,18 @@ import { Link, withTranslation } from "../../i18n";
 import { routerPush } from "../../utils/router";
 import StepContentContainer from "../StepContentContainer";
 
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 });
 
 class ResultsStep extends React.Component {
   state = {
-    currentModel: null
+    currentModel: null,
   };
 
   componentDidMount() {
@@ -25,7 +25,7 @@ class ResultsStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace.replace("/testdrive");
+      routerReplace.replace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
@@ -37,11 +37,11 @@ class ResultsStep extends React.Component {
   _trackEvent = (action, value) => {
     if (this.props.analytics) {
       this.props.analytics.event("testdrive", action, value);
-    } 
-  }
+    }
+  };
 
   handleClickResultMap() {
-    this._trackEvent("ResultsStep","buttonClick")
+    this._trackEvent("ResultsStep", "buttonClick");
     routerPush("/view/testdrive-map");
   }
 

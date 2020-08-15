@@ -14,7 +14,7 @@ const handle = app.getRequestHandler();
   await nextI18next.initPromise;
   server.use(nextI18NextMiddleware(nextI18next));
 
-  server.use(function(req, res, next) {
+  server.use(function (req, res, next) {
     if (req.path.substr(-1) == "/" && req.path.length > 1) {
       var query = req.url.slice(req.path.length);
       res.redirect(301, req.path.slice(0, -1) + query);
@@ -30,7 +30,7 @@ const handle = app.getRequestHandler();
   server.get("/layers/:uuid", (req, res) => {
     const actualPage = "/layers";
     const queryParams = {
-      uuid: req.params.uuid
+      uuid: req.params.uuid,
     };
     app.render(req, res, actualPage, queryParams);
   });
@@ -42,7 +42,7 @@ const handle = app.getRequestHandler();
   server.get("/maps/:uuid", (req, res) => {
     const actualPage = "/maps";
     const queryParams = {
-      uuid: req.params.uuid
+      uuid: req.params.uuid,
     };
     app.render(req, res, actualPage, queryParams);
   });
@@ -66,9 +66,9 @@ const handle = app.getRequestHandler();
     return app.render(req, res, "/models/new/od", { step: step, id: id });
   });
 
-  server.get("/testdrive/:step", (req, res) => {
+  server.get("/demo/:step", (req, res) => {
     const { step } = req.params;
-    return app.render(req, res, "/testdrive", { step });
+    return app.render(req, res, "/demo", { step });
   });
 
   server.get("*", (req, res) => handle(req, res));

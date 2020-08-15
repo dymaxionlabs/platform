@@ -56,7 +56,7 @@ tiling_task.is_running()
     <Typography gutterBottom>
       You can also use the same image you used for training.
     </Typography>
-    <Link href="/testdrive/predict">
+    <Link href="/demo/predict">
       <Button
         type="submit"
         fullWidth
@@ -112,13 +112,13 @@ class SelectStep extends React.Component {
     this._trackEvent("SelectStep", "buttonClick");
     this._saveSelectedFiles();
 
-    routerPush("/testdrive/predict");
+    routerPush("/demo/predict");
   };
 
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace("/testdrive");
+      routerReplace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
