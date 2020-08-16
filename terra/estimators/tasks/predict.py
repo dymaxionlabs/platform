@@ -52,7 +52,7 @@ def upload_prediction_image_tiles(task):
         image_tiles = ImageTile.objects.filter(project=task.project,
                                                source_tile_path=path)
         if image_tiles.count() == 0:
-            raise Exception("There is not tiles")
+            raise Exception("There are no tiles to predict. Please check your input.")
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
             if source_file not in task.kwargs["image_files"]:

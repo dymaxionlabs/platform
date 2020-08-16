@@ -88,7 +88,9 @@ def generate_annotations_csv(task):
 
     if sum([len(a.segments)
             for a in annotations]) < settings.MIN_ANNOTATION_NEEDED:
-        raise Exception("There is not enough annotations")
+        raise Exception("Not enough labels for training. "
+                        "You need at least {} objects of each class.".format(
+                            settings.MIN_ANNOTATION_NEEDED))
 
     rows = build_annotations_csv_rows(annotations)
 
@@ -128,7 +130,8 @@ def upload_image_tiles(job):
     image_tiles = [a.image_tile for a in annotations]
 
     if len(image_tiles) == 0:
-        raise Exception("There is not tiles")
+        raise Exception(
+            "There are no tiles with labels. Please check your input.")
 
     image_tile_urls = [
         'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,
