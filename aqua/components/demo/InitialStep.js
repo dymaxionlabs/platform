@@ -25,23 +25,25 @@ const styles = (theme) => ({
 const steps = [
   {
     title: "Problem",
-    desc: "Problem definition. Available data. Alternative sources.",
+    desc: "Object Detection in Satellite, SAR, Aerial imagery.",
   },
   {
     title: "Data",
-    desc: "Data wrangling. Preprocessing. Outlier removal.",
+    desc:
+      "3-band imagery. Upload different indexes and band combinations besides RGB.",
   },
   {
     title: "Annotation",
-    desc: "Imagery labeling. Experts validation. Ground truth.",
+    desc: "GeoJSON vector file. One rectangle per object.",
   },
   {
     title: "Modeling",
-    desc: "Train/Test split. Deep Neural Network. Hyperparameters.",
+    desc:
+      "RetinaNet architecture. Tuneable parameters: epochs, steps, tile size.",
   },
   {
     title: "Deploy",
-    desc: "Map tile server. Data compression. Visualization.",
+    desc: "Deploy your custom model to predict in large areas.",
   },
 ];
 
