@@ -16,7 +16,7 @@
   "classification_desc": "Land use maps.",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
-    "classes_helper_2": "key. You can enter several classes in this way.",
+    "classes_helper_2": "key. You can enter several classes this way.",
     "classes_label": "Object classes",
     "error_msg_classes": "Please add at least one object class.",
     "error_msg_duplicate": "Model already exists, please enter another name.",

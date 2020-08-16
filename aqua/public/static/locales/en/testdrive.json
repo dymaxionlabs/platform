@@ -18,7 +18,7 @@
   "btn_use_web_ui": "Use Web UI",
   "create_step": {
     "classes_helper_1": "Enter the name of a class and press the",
-    "classes_helper_2": "key. You can enter several classes in this way.",
+    "classes_helper_2": "key. You can enter several classes this way.",
     "classes_label": "Object classes",
     "error_msg_cattle": "Cattle must have these fields: red, black.",
     "error_msg_classes": "Please add at least one object class.",
