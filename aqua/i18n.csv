@@ -269,7 +269,7 @@ models,create_step.name_label,Nombre,Name
 models,create_step.name_helper,Ingrese un nombre para su modelo.,Enter a name for your model.
 models,create_step.classes_label,Clases de objetos,Object classes
 models,create_step.classes_helper_1,Ingrese el nombre de una clase y presione la tecla,Enter the name of a class and press the
-models,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes in this way.
+models,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes this way.
 models,create_step.submit_btn,Crear,Create
 models,upload_step.title,Subir imágenes,Upload images
 models,upload_step.explanation,Selecciona una o más imágenes y luego cliquea subir.,Select one or more images and then click upload.
@@ -330,7 +330,7 @@ testdrive,create_step.name_label,Nombre,Name
 testdrive,create_step.name_helper,Ingrese un nombre para su modelo.,Enter a name for your model.
 testdrive,create_step.classes_label,Clases de objetos,Object classes
 testdrive,create_step.classes_helper_1,Ingrese el nombre de una clase y presione la tecla,Enter the name of a class and press the
-testdrive,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes in this way.
+testdrive,create_step.classes_helper_2,. Puede ingresar varias clases de esta manera., key. You can enter several classes this way.
 testdrive,create_step.submit_btn,Crear,Create
 testdrive,create_step.error_msg_duplicate,"Ya existe un modelo con ese nombre, ingrese otro.","Model already exists, please enter another name."
 testdrive,create_step.error_msg_classes,Debe ingresar al menos una clase de objeto.,Please add at least one object class.

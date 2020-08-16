@@ -230,9 +230,13 @@ class CreateStep extends React.Component {
                 <ChipInput
                   label={t("create_step.classes_label")}
                   onChange={(chips) => this.handleChangeClasses(chips)}
+                  newChipKeys={["Tab"]}
                 />
                 <FormHelperText>
-                  {t("create_step.classes_helper_1")} <kbd>Enter</kbd>
+                  {t("create_step.classes_helper_1")}{" "}
+                  <strong>
+                    <kbd>Tab</kbd>
+                  </strong>{" "}
                   {t("create_step.classes_helper_2")}
                 </FormHelperText>
               </FormControl>
