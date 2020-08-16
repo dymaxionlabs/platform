@@ -66,6 +66,10 @@ const handle = app.getRequestHandler();
     return app.render(req, res, "/models/new/od", { step: step, id: id });
   });
 
+  server.get("/testdrive", (req, res) => {
+    return res.redirect("/try");
+  });
+
   server.get("/demo/:step", (req, res) => {
     const { step } = req.params;
     return app.render(req, res, "/demo", { step });
