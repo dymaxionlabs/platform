@@ -5,32 +5,32 @@ import Head from "next/head";
 import withStyles from "@material-ui/core/styles/withStyles";
 import dynamic from "next/dynamic";
 import LoadingProgress from "../../components/LoadingProgress";
-import ResultsButton from "../../components/testdrive/ResultsButton";
+import ResultsButton from "../../components/demo/ResultsButton";
 import ContactButton from "../../components/ContactButton";
 import LayersFab from "../../components/LayersFab";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import ListItem from "@material-ui/core/ListItem";
-import ModalContactEmail from "../../components/testdrive/ModalContactEmail";
+import ModalContactEmail from "../../components/demo/ModalContactEmail";
 import cookie from "js-cookie";
 
-const styles = theme => ({
+const styles = (theme) => ({
   topLeft: {
     position: "fixed",
     left: theme.spacing.unit,
     top: theme.spacing.unit,
-    zIndex: 1000
+    zIndex: 1000,
   },
   controlPaper: {
     padding: theme.spacing.unit * 2,
-    margin: theme.spacing.unit * 2
-  }
+    margin: theme.spacing.unit * 2,
+  },
 });
 
 var lotsData = {};
 
 const TileLayer = dynamic(() => import("../../components/TileLayer"), {
-  ssr: true
+  ssr: true,
 });
 
 const mapData = {
@@ -39,31 +39,31 @@ const mapData = {
     center: [-34.43283793934236, -58.87167763852244],
     zoom: 16,
     minZoom: 15,
-    maxZoom: 18
+    maxZoom: 18,
   },
   cattle: {
     vectorData: require("../../public/static/testdrive/cattle/results.json"),
     center: [-37.79857199410538, -57.49418322639319],
     zoom: 17,
     minZoom: 16,
-    maxZoom: 20
-  }
+    maxZoom: 20,
+  },
 };
 
 var initialViewport = {
   center: [-34.43283793934236, -58.87167763852244],
-  zoom: 16
+  zoom: 16,
 };
 
 const dymaxionAttribution = "&copy; Dymaxion Labs 2020";
 
 const Map = dynamic(() => import("../../components/Map"), {
   ssr: false,
-  loading: LoadingProgress
+  loading: LoadingProgress,
 });
 
 const GeoJSON = dynamic(() => import("../../components/GeoJSON"), {
-  ssr: false
+  ssr: false,
 });
 
 const rasterLayers = [
@@ -72,15 +72,15 @@ const rasterLayers = [
     type: "raster",
     url:
       "https://storage.googleapis.com/dym-tiles/testdrive/cattle/{z}/{x}/{y}.png",
-    attribution: dymaxionAttribution
+    attribution: dymaxionAttribution,
   },
   {
     id: "pools",
     type: "raster",
     url:
       "https://storage.googleapis.com/dym-tiles/testdrive/pools/{z}/{x}/{y}.png",
-    attribution: dymaxionAttribution
-  }
+    attribution: dymaxionAttribution,
+  },
 ];
 
 var selectedRasterLayer = {};
@@ -115,7 +115,7 @@ let DescriptionControl = ({ t, classes }) => (
       className={classes.controlPaper}
       style={{
         width: 400,
-        cursor: "default"
+        cursor: "default",
       }}
     >
       <Typography component="p">{t("text_metrics_map_view")}</Typography>
@@ -132,7 +132,7 @@ let LotsLegend = ({ t, classes }) => (
       className={classes.controlPaper}
       style={{
         width: 190,
-        cursor: "default"
+        cursor: "default",
       }}
     >
       <Typography style={{ marginBottom: "10px" }} variant="h6" component="h3">
@@ -150,11 +150,11 @@ let LotsLegend = ({ t, classes }) => (
         <strong>{t("metrics_title_class")}: </strong>
       </Typography>
       {metricsData["classes"] &&
-        metricsData["classes"].map(item => (
+        metricsData["classes"].map((item) => (
           <ListItem
             style={{
               paddingBottom: "4px",
-              paddingTop: "4px"
+              paddingTop: "4px",
             }}
           >
             <Typography component="p">
@@ -182,30 +182,31 @@ class MapTestDrive extends React.Component {
     maxZoom: 20,
     layersOpacity: {
       annotations: 100,
-      tiles: 100
+      tiles: 100,
     },
     layers: [
       {
         uuid: "annotations",
-        name: "select_layer_results"
+        name: "select_layer_results",
       },
       {
         uuid: "tiles",
-        name: "select_layer_tiles"
-      }
+        name: "select_layer_tiles",
+      },
     ],
     activeLayers: ["tiles", "annotations"],
-    askEmail: false
+    askEmail: false,
   };
 
   handleMouseLeave = () => {
     console.log("user leaving...");
     if (
-      !cookie.get("testdrive-subscribed") && 
-      !cookie.get("testdrive-subscription-read") ) {
-      this.setState({ askEmail: true});
+      !cookie.get("testdrive-subscribed") &&
+      !cookie.get("testdrive-subscription-read")
+    ) {
+      this.setState({ askEmail: true });
     }
-  }
+  };
 
   handleEmailDialogClose = () => {
     cookie.set("testdrive-subscription-read", true);
@@ -218,7 +219,7 @@ class MapTestDrive extends React.Component {
 
   static async getInitialProps() {
     return {
-      namespacesRequired: ["testdrive"]
+      namespacesRequired: ["testdrive"],
     };
   }
 
@@ -263,11 +264,11 @@ class MapTestDrive extends React.Component {
     this.setState({ viewport: initialViewport });
   }
 
-  _onMapViewportChanged = viewport => {
+  _onMapViewportChanged = (viewport) => {
     this.setState({ viewport });
   };
 
-  onToggle = layer => {
+  onToggle = (layer) => {
     var { activeLayers } = this.state;
 
     if (activeLayers.includes(layer.uuid)) {
@@ -295,7 +296,7 @@ class MapTestDrive extends React.Component {
       layersOpacity,
       layers,
       activeLayers,
-      askEmail
+      askEmail,
     } = this.state;
 
     const { t, classes } = this.props;
@@ -314,7 +315,7 @@ class MapTestDrive extends React.Component {
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
         </Head>
-        <ModalContactEmail 
+        <ModalContactEmail
           open={askEmail}
           onClose={this.handleEmailDialogClose}
         />
@@ -325,7 +326,7 @@ class MapTestDrive extends React.Component {
           maxZoom={maxZoom}
         >
           <LayersFab
-            layers={layers.map(layer => ({ ...layer, name: t(layer.name) }))}
+            layers={layers.map((layer) => ({ ...layer, name: t(layer.name) }))}
             activeLayers={activeLayers}
             layersOpacity={layersOpacity}
             onToggle={this.onToggle}
