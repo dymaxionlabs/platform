@@ -55,7 +55,7 @@ ${modelVar} = Estimator.create(
     labels=${JSON.stringify(modelClasses)})`}
     </CodeBlock>
 
-    <Link href="/testdrive/upload">
+    <Link href="/demo/upload">
       <Button
         type="submit"
         fullWidth
@@ -94,7 +94,7 @@ class CreateStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace("/testdrive");
+      routerReplace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
@@ -157,7 +157,7 @@ class CreateStep extends React.Component {
       isSubmitting: true,
     });
 
-    routerPush("/testdrive/upload");
+    routerPush("/demo/upload");
   };
 
   handleNameChange = (e) => {

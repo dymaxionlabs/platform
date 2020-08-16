@@ -229,7 +229,7 @@ let APIContent = ({ classes, t, path, name, modelVar }) => (
       {`labels = File.upload("labels.geojson", ${JSON.stringify(path)})
 ${modelVar}.add_labels_for(labels, img, ${JSON.stringify(name)})`}
     </CodeBlock>
-    <Link href="/testdrive/train">
+    <Link href="/demo/train">
       <Button
         type="submit"
         fullWidth
@@ -262,7 +262,7 @@ class AnnotateStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace("/testdrive");
+      routerReplace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
@@ -443,7 +443,7 @@ class AnnotateStep extends React.Component {
 
     if (canAdvance) {
       this._trackEvent("AnnotateStep", "buttonClick");
-      routerPush("/testdrive/train");
+      routerPush("/demo/train");
     }
   };
 

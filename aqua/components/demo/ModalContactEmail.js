@@ -12,22 +12,22 @@ import {
   DialogTitle,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 class ModalContactEmail extends React.Component {
   state = {
     email: "",
     errorMsg: "",
     successMsg: "",
-    submitting: false
+    submitting: false,
   };
 
-  handleEmailChange = event => {
+  handleEmailChange = (event) => {
     this.setState({ email: event.target.value });
   };
 
-  onKeyDown = event => {
-    if (event.key === 'Enter') {
+  onKeyDown = (event) => {
+    if (event.key === "Enter") {
       event.preventDefault();
       event.stopPropagation();
       this.handleSubmit();
@@ -38,7 +38,7 @@ class ModalContactEmail extends React.Component {
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: false
+      submitting: false,
     });
   };
 
@@ -47,32 +47,32 @@ class ModalContactEmail extends React.Component {
     const { email } = this.state;
 
     const errorMsg = t("subscribe.error_msg", {
-      contactLink: "contact@dymaxionlabs.com"
+      contactLink: "contact@dymaxionlabs.com",
     });
 
     this.setState({
       errorMsg: "",
       successMsg: "",
-      submitting: true
+      submitting: true,
     });
 
     if (email === "") {
       this.setState({
         errorMsg: errorMsg,
         successMsg: "",
-        submitting: false
+        submitting: false,
       });
       return;
     }
 
     try {
       await axios.post(buildApiUrl("/subscribe/api_beta/"), {
-        email: email
+        email: email,
       });
 
       this.setState({
         successMsg: t("subscribe.success_msg"),
-        email: ""
+        email: "",
       });
 
       cookie.set("testdrive-subscribed", true, { expires: 365 });
@@ -80,7 +80,7 @@ class ModalContactEmail extends React.Component {
       setTimeout(() => {
         this.setState({
           successMsg: "",
-          errorMsg: ""
+          errorMsg: "",
         });
         this.props.onClose();
       }, 3000);
@@ -90,7 +90,7 @@ class ModalContactEmail extends React.Component {
       this.setState({
         errorMsg: errorMsg,
         submitting: false,
-        successMsg: ""
+        successMsg: "",
       });
     }
   };

@@ -3,46 +3,48 @@ import { withStyles } from "@material-ui/core/styles";
 import { Link, withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 
-import { Typography, Button, Grid } from '@material-ui/core';
+import { Typography, Button, Grid } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(5),
-    textAlign: "center"
+    textAlign: "center",
   },
   guide: {
-    marginBottom: theme.spacing(5)
+    marginBottom: theme.spacing(5),
   },
   step: {
     textAlign: "center",
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   stepImage: {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 });
 
 const steps = [
   {
     title: "Problem",
-    desc: "Problem definition. Available data. Alternative sources."
+    desc: "Object Detection in Satellite, SAR, Aerial imagery.",
   },
   {
     title: "Data",
-    desc: "Data wrangling. Preprocessing. Outlier removal."
+    desc:
+      "3-band imagery. Upload different indexes and band combinations besides RGB.",
   },
   {
     title: "Annotation",
-    desc: "Imagery labeling. Experts validation. Ground truth."
+    desc: "GeoJSON vector file. One rectangle per object.",
   },
   {
     title: "Modeling",
-    desc: "Train/Test split. Deep Neural Network. Hyperparameters."
+    desc:
+      "RetinaNet architecture. Tuneable parameters: epochs, steps, tile size.",
   },
   {
     title: "Deploy",
-    desc: "Map tile server. Data compression. Visualization."
-  }
+    desc: "Deploy your custom model to predict in large areas.",
+  },
 ];
 
 let GuideSteps = ({ classes, t }) => (
@@ -70,7 +72,7 @@ let InitialStep = ({ classes, t }) => (
       {t("header")}
     </Typography>
     <GuideSteps />
-    <Link href="/testdrive/choose-usecase">
+    <Link href="/demo/choose-usecase">
       <Button color="primary" variant="contained">
         {t("start")}
       </Button>

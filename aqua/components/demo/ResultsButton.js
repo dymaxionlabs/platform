@@ -1,34 +1,34 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { withTranslation, Link } from "../../i18n";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import { Button, Menu, MenuItem } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     position: "fixed",
     top: 10,
     left: 10,
     zIndex: 1000,
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   menu: {
     position: "fixed",
     top: 40,
-    zIndex: 1000
+    zIndex: 1000,
   },
   anchor: {
     color: "rgba(0, 0, 0, 0.87)",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 class ResultsButton extends React.Component {
   state = {
     contextualMenuOpen: null,
     contactModalOpen: false,
-    currentModel: null
+    currentModel: null,
   };
 
   componentDidMount() {
@@ -38,7 +38,7 @@ class ResultsButton extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace.replace("/testdrive");
+      routerReplace.replace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
@@ -47,11 +47,11 @@ class ResultsButton extends React.Component {
     this.setState({ currentModel });
   }
 
-  onClick = e => {
+  onClick = (e) => {
     console.log("resultsbutton click");
   };
 
-  handleContextualMenuClick = event => {
+  handleContextualMenuClick = (event) => {
     this.setState({ contextualMenuOpen: event.currentTarget });
   };
 
@@ -116,11 +116,11 @@ class ResultsButton extends React.Component {
 ResultsButton.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
 };
 
 ResultsButton.defaultProps = {
-  isAuthenticated: false
+  isAuthenticated: false,
 };
 
 ResultsButton = withStyles(styles)(ResultsButton);

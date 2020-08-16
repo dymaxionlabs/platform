@@ -4,15 +4,23 @@ import { withTranslation } from "../../i18n";
 import StepContentContainer from "../StepContentContainer";
 import { routerPush } from "../../utils/router";
 
-import { Button, Paper, Grid, Card, CardContent, CardActions, Typography } from '@material-ui/core';
+import {
+  Button,
+  Paper,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+} from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(3),
-    textAlign: "center"
+    textAlign: "center",
   },
   grid: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   card: {
     display: "flex", // Fix IE 11 issue.
@@ -20,25 +28,25 @@ const styles = theme => ({
     height: "100%",
     [theme.breakpoints.up(220 + theme.spacing(2) * 2)]: {
       marginLeft: 18,
-      marginTop: 15
-    }
+      marginTop: 15,
+    },
   },
   cardContent: {
     display: "flex",
     flex: "1 0 auto",
     alignItems: "flex-start",
     flexDirection: "column",
-    height: "75%"
+    height: "75%",
   },
   cardActions: {
     display: "flex",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   image: {
     marginTop: theme.spacing(2),
     width: "100%",
-    cursor: "pointer"
-  }
+    cursor: "pointer",
+  },
 });
 
 const useCases = ["pools", "cattle"];
@@ -46,20 +54,20 @@ const useCases = ["pools", "cattle"];
 const useCasesDesc = {
   pools: {
     title: "Pools",
-    desc: "Detect pools"
+    desc: "Detect pools",
   },
   cattle: {
     title: "Cattle",
-    desc: "Detect and count cattle"
-  }
+    desc: "Detect and count cattle",
+  },
 };
 
 class ChooseUseCaseStep extends React.Component {
-  handleButtonClick = useCase => {
+  handleButtonClick = (useCase) => {
     const estimator = { useCase };
     window.localStorage.setItem("current", JSON.stringify(estimator));
 
-    routerPush("/testdrive/create");
+    routerPush("/demo/create");
   };
 
   render() {

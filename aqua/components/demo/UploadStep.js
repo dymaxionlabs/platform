@@ -55,7 +55,7 @@ pools_detector.add_image(img)`}
 tiling_task.is_running()
 #=> True`}
     </CodeBlock>
-    <Link href="/testdrive/annotate">
+    <Link href="/demo/annotate">
       <Button
         type="submit"
         fullWidth
@@ -111,13 +111,13 @@ class UploadStep extends React.Component {
     this._saveSelectedFiles();
     this._trackEvent("UploadStep", "buttonClick");
 
-    routerPush("/testdrive/annotate");
+    routerPush("/demo/annotate");
   };
 
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace.replace("/testdrive");
+      routerReplace.replace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);

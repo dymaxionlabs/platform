@@ -101,7 +101,7 @@ class PredictStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace("/testdrive");
+      routerReplace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);

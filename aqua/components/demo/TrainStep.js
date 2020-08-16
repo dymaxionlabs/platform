@@ -54,7 +54,7 @@ let APIContent = ({ classes, t, modelVar }) => (
       {`task.is_running()
 #=> True`}
     </CodeBlock>
-    <Link href="/testdrive/select">
+    <Link href="/demo/select">
       <Button
         type="submit"
         fullWidth
@@ -108,7 +108,7 @@ class TrainStep extends React.Component {
   _loadCurrentModel() {
     const current = window.localStorage.getItem("current");
     if (!current) {
-      routerReplace("/testdrive");
+      routerReplace("/demo");
       return;
     }
     const currentModel = JSON.parse(current);
@@ -119,7 +119,7 @@ class TrainStep extends React.Component {
 
   handleClickContinue() {
     this._trackEvent("TrainStep", "buttonClick");
-    routerPush(`/testdrive/select`);
+    routerPush(`/demo/select`);
   }
 
   render() {
