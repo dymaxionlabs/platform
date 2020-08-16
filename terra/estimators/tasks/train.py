@@ -27,12 +27,12 @@ def start_training_job(task_id):
         task.internal_metadata.update(cloudml_job_name=job_name)
         task.save(update_fields=["internal_metadata"])
     except Exception as err:
+        err_msg = str(err)
         TaskLogEntry.objects.create(task=task,
-                            log={'error':str(err)},
-                            logged_at=datetime.now())
-        print("Error: {}".format(err))
-        task.mark_as_failed(error=str(err))
-    
+                                    log=dict(error=err_msg),
+                                    logged_at=datetime.now())
+        print(f"Error: {err_msg}")
+        task.mark_as_failed(reason=err_msg)
 
 
 def prepare_artifacts(task):
@@ -85,8 +85,9 @@ def build_annotations_csv_rows(annotations):
 def generate_annotations_csv(task):
     annotations = Annotation.objects.filter(
         estimator__uuid=task.kwargs["estimator"])
-    
-    if sum([len(a.segments) for a in annotations]) < settings.MIN_ANNOTATION_NEEDED:
+
+    if sum([len(a.segments)
+            for a in annotations]) < settings.MIN_ANNOTATION_NEEDED:
         raise Exception("There is not enough annotations")
 
     rows = build_annotations_csv_rows(annotations)

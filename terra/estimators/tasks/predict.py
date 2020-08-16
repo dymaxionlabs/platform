@@ -26,11 +26,12 @@ def start_prediction_job(task_id):
         task.internal_metadata.update(cloudml_job_name=job_name)
         task.save(update_fields=["internal_metadata"])
     except Exception as err:
+        err_msg = str(err)
         TaskLogEntry.objects.create(task=task,
-                            log={'error':str(err)},
+                            log=dict(error=err_msg),
                             logged_at=datetime.now())
-        print("Error: {}".format(err))
-        task.mark_as_failed(error=str(err))
+        print(f"Error: {err_msg}")
+        task.mark_as_failed(reason=err_msg
 
 
 def prepare_artifacts(task):

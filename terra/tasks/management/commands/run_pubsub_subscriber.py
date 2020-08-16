@@ -43,7 +43,7 @@ class Command(BaseCommand):
                         if payload.get('done'):
                             task.mark_as_finished()
                         elif payload.get('failed'):
-                            task.mark_as_failed(error=payload.get('error'))
+                            task.mark_as_failed(reason=payload.get('error'))
                 else:
                     self.stdout.write(f'Unknow Task message: {message.data}')
             except Exception as err:

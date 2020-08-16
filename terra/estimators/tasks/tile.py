@@ -77,7 +77,7 @@ def generate_image_tiles(task_id):
         TaskLogEntry.objects.create(task=job,
                                     log=dict(error=err_msg),
                                     logged_at=datetime.now())
-        print("Error: {}".format(err_msg))
+        print(f"Error: {err_msg}")
         job.mark_as_failed(reason=err_msg)
     else:
         job.mark_as_finished()
