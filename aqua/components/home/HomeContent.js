@@ -92,7 +92,7 @@ let WelcomeCard = ({ classes }) => (
       </Typography>
     </CardContent>
     <CardActions>
-      <Link href="/testdrive">
+      <Link href="/demo">
         <Button size="small" color="primary">
           Test Drive
         </Button>
