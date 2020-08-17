@@ -21,7 +21,7 @@ from projects.permissions import HasUserAPIKey
 from projects.renderers import BinaryFileRenderer
 from projects.views import RelatedProjectAPIView
 
-from .client import Client
+from .client import GCSClient
 from .serializers import FileSerializer
 from .models import File
 
@@ -31,7 +31,7 @@ class StorageAPIView(RelatedProjectAPIView):
 
     def get_client(self):
         project = self.get_project()
-        return Client(project)
+        return GCSClient(project)
 
 
 class ListFilesView(RelatedProjectAPIView):
@@ -64,9 +64,11 @@ class ListFilesView(RelatedProjectAPIView):
         clean_path = path.lstrip(" /").rstrip()
         prefix = clean_path.split("*")[0]
         files = self.queryset.filter(project=project, path__startswith=prefix)
-        response_status = status.HTTP_204_NO_CONTENT if files.first() is None else status.HTTP_200_OK
+        response_status = status.HTTP_204_NO_CONTENT if files.first(
+        ) is None else status.HTTP_200_OK
         match_files = (f for f in files if fnmatch(f.path, clean_path))
-        return Response(FileSerializer(match_files, many=True).data, status=response_status)
+        return Response(FileSerializer(match_files, many=True).data,
+                        status=response_status)
 
 
 class UploadFileView(StorageAPIView):
@@ -108,17 +110,15 @@ class UploadFileView(StorageAPIView):
         File.check_quota(request.user, fileobj.size)
 
         client = self.get_client()
-        storage_file = client.upload_from_file(fileobj,
-                                       to=path,
-                                       content_type=fileobj.content_type)
-        file, _ = File.objects.get_or_create(
-            project=self.get_project(),
-            path=storage_file.path,
-            defaults={
-                'size': fileobj.size,
-                'metadata': storage_file.metadata
-            }
-        )
+        storage_file = client.upload_from_file(
+            fileobj, to=path, content_type=fileobj.content_type)
+        file, _ = File.objects.get_or_create(project=self.get_project(),
+                                             path=storage_file.path,
+                                             defaults={
+                                                 'size': fileobj.size,
+                                                 'metadata':
+                                                 storage_file.metadata
+                                             })
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -137,7 +137,6 @@ class FileView(StorageAPIView):
                              200: FileSerializer(many=False),
                              404: openapi.Response('File not found'),
                          })
-    
     def get(self, request, format=None):
         """
         Return the content of a file
@@ -166,7 +165,7 @@ class FileView(StorageAPIView):
             return Response(None, status=status.HTTP_404_NOT_FOUND)
         file.delete()
         return Response(dict(detail='File deleted.'),
-                status=status.HTTP_200_OK)
+                        status=status.HTTP_200_OK)
 
 
 class DownloadFileView(StorageAPIView):
@@ -177,7 +176,7 @@ class DownloadFileView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         project = self.get_project()
-        client = Client(project)
+        client = GCSClient(project)
         files = list(client.list_files(path))
         if not files:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
@@ -230,31 +229,29 @@ class CreateResumableUploadView(StorageAPIView):
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-        File.objects.get_or_create(
-            project=self.get_project(),
-            path=path,
-            defaults={
-                'size': size,
-                'complete': False,
-            }
-        )
+        File.objects.get_or_create(project=self.get_project(),
+                                   path=path,
+                                   defaults={
+                                       'size': size,
+                                       'complete': False,
+                                   })
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)
 
 
 class CheckCompletedFileView(StorageAPIView):
-
     def post(self, request):
         path = request.query_params.get('path', None)
         if not path:
             raise ParseError("'path' missing")
 
-        file = File.objects.filter(project=self.get_project(), path=path).first()
+        file = File.objects.filter(project=self.get_project(),
+                                   path=path).first()
         if not file:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
 
         file.complete = True
-        file.save()        
-        
+        file.save()
+
         content = FileSerializer(file).data
         return Response(dict(detail=content), status=status.HTTP_200_OK)

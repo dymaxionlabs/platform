@@ -8,7 +8,7 @@ from google.cloud import storage as gcs
 logger = logging.getLogger(__name__)
 
 
-class Client:
+class GCSClient:
     def __init__(self, project):
         self.project = project
         self._client = None
@@ -22,7 +22,7 @@ class Client:
         blobs = self.client.list_blobs(settings.FILES_BUCKET,
                                        prefix=full_prefix,
                                        versions=False)
-        files = (File(blob) for blob in blobs)
+        files = (GCSFile(blob) for blob in blobs)
         return (f for f in files if fnmatch(f.path, clean_path))
 
     def upload_from_filename(self, filename, to='', content_type=None):
@@ -32,7 +32,7 @@ class Client:
         logger.info("Upload from filename {} with content type {}".format(
             filename, content_type))
         blob.upload_from_filename(filename=filename, content_type=content_type)
-        return File(blob)
+        return GCSFile(blob)
 
     def upload_from_file(self,
                          file_obj,
@@ -50,7 +50,7 @@ class Client:
                               rewind=rewind,
                               size=size,
                               content_type=content_type)
-        return File(blob)
+        return GCSFile(blob)
 
     def create_resumable_upload_session(self,
                                         to,
@@ -91,13 +91,13 @@ class Client:
         return res
 
 
-class File:
+class GCSFile:
     def __init__(self, blob):
         self.blob = blob
         self.deleted = False
-    
+
     def __eq__(self, other):
-        if isinstance(other, File):
+        if isinstance(other, GCSFile):
             return self.path == other.path
         return False
 
@@ -124,7 +124,7 @@ class File:
         return self.blob.metadata or {}
 
     def __repr__(self):
-        return "<File path={path}{deleted}>".format(
+        return "<GCSFile path={path}{deleted}>".format(
             path=self.path, deleted=" deleted" if self.deleted else "")
 
 

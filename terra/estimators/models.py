@@ -14,7 +14,7 @@ from django.utils.translation import gettext as _
 from rasterio.windows import Window
 
 from projects.models import Project
-from storage.client import Client
+from storage.client import GCSClient
 
 # Import fiona last
 import fiona
@@ -188,7 +188,7 @@ class Annotation(models.Model):
         if label not in estimator.classes:
             raise ValueError("invalid label for estimator")
 
-        client = Client(project)
+        client = GCSClient(project)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name

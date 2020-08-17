@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from projects.models import Project
-from storage.client import Client
+from storage.client import GCSClient
 from storage.models import File
 
 
@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for project in Project.objects.all():
             self.stdout.write(f"Loading files from {project}")
-            client = Client(project)
+            client = GCSClient(project)
             files = client.list_files()
             for file in files:
                 File.objects.get_or_create(project=project,

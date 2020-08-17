@@ -9,7 +9,7 @@ from datetime import datetime
 
 from terra.utils import gsutilCopy, list_chunks
 from estimators.models import Estimator, ImageTile
-from storage.client import Client
+from storage.client import GCSClient
 from tasks.models import Task, TaskLogEntry
 
 from . import run_cloudml
@@ -46,7 +46,7 @@ def prepare_artifacts(task):
 
 
 def upload_prediction_image_tiles(task):
-    client = Client(task.project)
+    client = GCSClient(task.project)
     task.kwargs["image_files"] = []
     for path in task.kwargs['tiles_folders']:
         image_tiles = ImageTile.objects.filter(project=task.project,
