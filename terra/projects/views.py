@@ -19,8 +19,8 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 
 from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
-from .models import (File, Layer, Map, Project, ProjectInvitationToken,
-                     UserProfile, UserAPIKey)
+from .models import (Layer, Map, Project, ProjectInvitationToken, UserProfile,
+                     UserAPIKey)
 from .permissions import (HasAccessToMapPermission,
                           HasAccessToProjectPermission,
                           HasAccessToRelatedProjectFilesPermission,
@@ -28,7 +28,7 @@ from .permissions import (HasAccessToMapPermission,
                           UserProfilePermission, HasUserAPIKey,
                           HasAccessToAPIKeyPermission)
 from .renderers import BinaryFileRenderer
-from .serializers import (ContactSerializer, FileSerializer, LayerSerializer,
+from .serializers import (ContactSerializer, LayerSerializer,
                           LoginUserSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
                           SubscribeBetaSerializer, UserProfileSerializer,
@@ -277,96 +277,6 @@ class LayerViewSet(ProjectRelatedModelListMixin,
     permission_classes = (permissions.IsAuthenticated,
                           HasAccessToRelatedProjectPermission)
     lookup_field = 'uuid'
-
-
-# FIXME Use CreateAPIView and a serializer for consistent validation
-class FileUploadView(APIView):
-    parser_classes = (FileUploadParser, )
-    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
-
-    def post(self, request, filename, format=None):
-        user = request.user
-        project = request.project
-
-        project_param = self.request.query_params.get('project', None)
-        if project_param:
-            projects_qs = allowed_projects_for(project.objects, user)
-            project = projects_qs.filter(uuid=project_param).first()
-            if not project:
-                raise ValidationError(
-                    {'project': 'Project invalid or not found'})
-
-        if not project:
-            raise ValidationError({'project': 'Field is not present'})
-
-        filename = File.prepare_filename(filename)
-
-        file = File(name=filename, owner=request.user, project=project)
-        file.file = request.data['file']
-        file.save()
-
-        serializer = FileSerializer(file)
-        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
-
-
-class FileDownloadView(APIView):
-    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
-    renderer_classes = (BinaryFileRenderer, )
-
-    def get(self, request, filename):
-        user = request.user
-
-        if hasattr(request, 'project'):
-            project = request.project
-
-        project_param = self.request.query_params.get('project', None)
-        if project_param:
-            projects_qs = allowed_projects_for(Project.objects, user)
-            project = projects_qs.filter(uuid=project_param).first()
-            if not project:
-                raise ValidationError(
-                    {'project': 'Project invalid or not found'})
-
-        if not project:
-            raise ValidationError({'project': 'Field is not present'})
-
-        filters = dict(name=filename, project=project)
-        if not user.is_staff:
-            filters.update(owner=user)
-        file = File.objects.filter(**filters).first()
-
-        if not file:
-            raise NotFound(detail=None, code=None)
-
-        return self.try_download_file(file)
-
-    def try_download_file(self, file):
-        # Copy file from storage to a temporary file
-        tmp = tempfile.NamedTemporaryFile(delete=False)
-        shutil.copyfileobj(file.file, tmp)
-        tmp.close()
-
-        try:
-            # Reopen temporary file as binary for streaming download
-            stream_file = open(tmp.name, 'rb')
-
-            # Monkey patch .close method so that file is removed after closing it
-            # i.e. when response finishes
-            original_close = stream_file.close
-
-            def new_close():
-                original_close()
-                os.remove(tmp.name)
-
-            stream_file.close = new_close
-
-            return FileResponse(stream_file,
-                                as_attachment=True,
-                                filename=file.name)
-        except Exception as err:
-            # Make sure to remove temp file
-            os.remove(tmp.name)
-            raise APIException(err)
 
 
 class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):

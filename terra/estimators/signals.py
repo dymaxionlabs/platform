@@ -6,11 +6,7 @@ from django.conf import settings
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from terra.utils import gsutilCopy
-from projects.models import File
 from quotas.models import UserQuota
-from storage.models import File
-from storage.client import Client
 from tasks.models import Task
 from tasks.signals import task_finished
 from terra.emails import TrainingCompletedEmail, PredictionCompletedEmail

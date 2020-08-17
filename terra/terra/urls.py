@@ -24,12 +24,11 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
 from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            FileDownloadView, FileUploadView, LayerViewSet,
-                            MapViewSet, ProjectInvitationTokenViewSet,
-                            ProjectViewSet, SubscribeApiBetaView,
-                            SubscribeBetaView, TestAuthView, TestErrorView,
-                            TestTaskErrorView, UserAPIKeyViewSet,
-                            UserProfileViewSet, UserViewSet)
+                            LayerViewSet, MapViewSet,
+                            ProjectInvitationTokenViewSet, ProjectViewSet,
+                            SubscribeApiBetaView, SubscribeBetaView,
+                            TestAuthView, TestErrorView, TestTaskErrorView,
+                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
 from stac.views import SearchView
 
 router = SimpleRouter()
@@ -80,8 +79,6 @@ urlpatterns = [
     url(r'^contact/?', ContactView.as_view()),
     url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
     url(r'^subscribe/api_beta/?', SubscribeApiBetaView.as_view()),
-    url(r'^files/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
-    url(r'^files/download/(?P<filename>[^/]+)$', FileDownloadView.as_view()),
     url(
         r'^api_keys/(?P<prefix>[^/]+)$',
         UserAPIKeyViewSet.as_view(),

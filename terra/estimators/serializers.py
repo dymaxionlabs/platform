@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from projects.mixins import allowed_projects_for
-from projects.models import File, Project
+from projects.models import Project
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 from .models import Annotation, Estimator, ImageTile
@@ -33,19 +33,19 @@ class EstimatorSerializer(serializers.ModelSerializer):
 
     def get_training_tasks(self, obj):
         tasks = Task.objects.filter(
-            kwargs__estimator=str(obj.uuid), 
+            kwargs__estimator=str(obj.uuid),
             name=Estimator.TRAINING_JOB_TASK).order_by('-created_at')
         return TaskSerializer(tasks, many=True).data
 
     def get_prediction_tasks(self, obj):
         tasks = Task.objects.filter(
-            kwargs__estimator=str(obj.uuid), 
+            kwargs__estimator=str(obj.uuid),
             name=Estimator.PREDICTION_JOB_TASK).order_by('-created_at')
         return TaskSerializer(tasks, many=True).data
 
     class Meta:
         model = Estimator
-        exclude = ('id', '_image_files')
+        exclude = ('id', )
 
 
 class ImageTileSerializer(serializers.ModelSerializer):

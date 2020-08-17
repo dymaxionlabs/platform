@@ -11,8 +11,8 @@ from rest_framework import serializers
 
 from terra.emails import EarlyAccessBetaEmail
 
-from .models import (File, Layer, Map, MapLayer, Project,
-                     ProjectInvitationToken, UserProfile, UserAPIKey)
+from .models import (Layer, Map, MapLayer, Project, ProjectInvitationToken,
+                     UserProfile, UserAPIKey)
 
 import rest_auth.registration.serializers
 
@@ -137,8 +137,7 @@ class SubscribeBetaSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def save(self):
-        email = EarlyAccessBetaEmail(
-            recipients=[self.data['email']])
+        email = EarlyAccessBetaEmail(recipients=[self.data['email']])
         email.send_mail()
 
 
@@ -189,16 +188,6 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
         exclude = ('id', )
-
-
-class FileSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(slug_field='uuid', read_only=True)
-    file = serializers.FileField(use_url=True, read_only=True)
-    metadata = serializers.JSONField()
-
-    class Meta:
-        model = File
-        fields = ('project', 'name', 'metadata', 'file', 'created_at')
 
 
 class UserAPIKeySerializer(serializers.ModelSerializer):
