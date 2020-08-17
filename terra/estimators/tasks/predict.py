@@ -28,10 +28,10 @@ def start_prediction_job(task_id):
     except Exception as err:
         err_msg = str(err)
         TaskLogEntry.objects.create(task=task,
-                            log=dict(error=err_msg),
-                            logged_at=datetime.now())
+                                    log=dict(error=err_msg),
+                                    logged_at=datetime.now())
         print(f"Error: {err_msg}")
-        task.mark_as_failed(reason=err_msg
+        task.mark_as_failed(reason=err_msg)
 
 
 def prepare_artifacts(task):
@@ -52,7 +52,8 @@ def upload_prediction_image_tiles(task):
         image_tiles = ImageTile.objects.filter(project=task.project,
                                                source_tile_path=path)
         if image_tiles.count() == 0:
-            raise Exception("There are no tiles to predict. Please check your input.")
+            raise Exception(
+                "There are no tiles to predict. Please check your input.")
         if image_tiles.first() is not None:
             source_file = image_tiles.first().source_image_file
             if source_file not in task.kwargs["image_files"]:
