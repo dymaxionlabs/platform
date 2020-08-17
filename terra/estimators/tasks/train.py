@@ -11,7 +11,7 @@ from datetime import datetime
 
 from terra.utils import gsutilCopy
 from estimators.models import Annotation, Estimator, ImageTile
-from tasks.models import Task
+from tasks.models import Task, TaskLogEntry
 
 from . import run_cloudml
 
@@ -19,12 +19,20 @@ from . import run_cloudml
 @job("default")
 def start_training_job(task_id):
     task = Task.objects.get(pk=task_id)
-    prepare_artifacts(task)
-    job_name = f'train_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
-    task.internal_metadata.update(uses_cloudml=True)
-    run_cloudml(task, './submit_job.sh', job_name)
-    task.internal_metadata.update(cloudml_job_name=job_name)
-    task.save(update_fields=["internal_metadata"])
+    try:
+        prepare_artifacts(task)
+        job_name = f'train_{task_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+        task.internal_metadata.update(uses_cloudml=True)
+        run_cloudml(task, './submit_job.sh', job_name)
+        task.internal_metadata.update(cloudml_job_name=job_name)
+        task.save(update_fields=["internal_metadata"])
+    except Exception as err:
+        err_msg = str(err)
+        TaskLogEntry.objects.create(task=task,
+                                    log=dict(error=err_msg),
+                                    logged_at=datetime.now())
+        print(f"Error: {err_msg}")
+        task.mark_as_failed(reason=err_msg)
 
 
 def prepare_artifacts(task):
@@ -78,6 +86,12 @@ def generate_annotations_csv(task):
     annotations = Annotation.objects.filter(
         estimator__uuid=task.kwargs["estimator"])
 
+    if sum([len(a.segments)
+            for a in annotations]) < settings.MIN_ANNOTATION_NEEDED:
+        raise Exception("Not enough labels for training. "
+                        "You need at least {} objects of each class.".format(
+                            settings.MIN_ANNOTATION_NEEDED))
+
     rows = build_annotations_csv_rows(annotations)
 
     rows_train, rows_val = train_val_split_rows(rows)
@@ -114,6 +128,10 @@ def upload_image_tiles(job):
     annotations = Annotation.objects.filter(
         estimator__uuid=job.kwargs["estimator"]).all()
     image_tiles = [a.image_tile for a in annotations]
+
+    if len(image_tiles) == 0:
+        raise Exception(
+            "There are no tiles with labels. Please check your input.")
 
     image_tile_urls = [
         'gs://{bucket}/{name}'.format(bucket=settings.GS_BUCKET_NAME,

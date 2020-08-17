@@ -35,7 +35,8 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
         # If CloudML job has finished, update state of task
         for task in cloudml_tasks:
             # Ref: https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#State
-            job = client.get_job(task.internal_metadata.get("cloudml_job_name"))
+            job = client.get_job(
+                task.internal_metadata.get("cloudml_job_name"))
             task_is_too_old = task.age > self.INVALID_TASK_EXPIRATION_TIME
             if not job:
                 if task_is_too_old:
@@ -52,7 +53,8 @@ class UpdateCloudMLTasksCronJob(CronJobBase):
 
             # Use real endTime as finished_at, not current time
             job_end_time = job.get('endTime')
-            finished_at = parse_datetime(job_end_time) if job_end_time else None
+            finished_at = parse_datetime(
+                job_end_time) if job_end_time else None
 
             if state == 'SUCCEEDED':
                 print(f'Task {task.pk}: Mark as finished at {finished_at}')

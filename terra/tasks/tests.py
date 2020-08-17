@@ -68,9 +68,10 @@ class TaskTestCase(TestCase):
         self.assertEqual(task.state, states.STARTED)
         self.assertIsNone(task.finished_at)
 
-        task.mark_as_failed()
+        task.mark_as_failed(reason='invalid arguments')
         self.assertEqual(task.state, states.FAILED)
         self.assertIsNotNone(task.finished_at)
+        self.assertEqual(task.error, 'invalid arguments')
         signals_mock.task_failed.send.assert_called_once_with(sender=Task,
                                                               task=task)
 

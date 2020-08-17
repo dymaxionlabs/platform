@@ -330,3 +330,5 @@ CRON_CLASSES = [
     "tasks.cron.UpdateCloudMLTasksCronJob",
     # ...
 ]
+
+MIN_ANNOTATION_NEEDED = 1
