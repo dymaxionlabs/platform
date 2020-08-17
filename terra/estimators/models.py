@@ -13,7 +13,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
 from rasterio.windows import Window
 
-from projects.models import File, Project
+from projects.models import Project
 from storage.client import Client
 
 # Import fiona last
@@ -48,10 +48,6 @@ class Estimator(models.Model):
     classes = ArrayField(models.CharField(max_length=32), default=list)
     configuration = JSONField(null=True, blank=True)
     metadata = JSONField(null=True, blank=True)
-    # @deprecated
-    _image_files = models.ManyToManyField(File,
-                                          related_name='files',
-                                          blank=True)
     image_files = ArrayField(models.CharField(max_length=512),
                              default=list,
                              blank=True)
@@ -85,32 +81,35 @@ class Estimator(models.Model):
                 steps = int(self.configuration['steps'])
             # Currently takes around 7 minutes per epoch (1000 steps)
             return epochs * (steps * 7 / 1000) * 60
-    
+
     @classmethod
     def _last_name_with_suffix(cls, estimator):
         estimators = cls.objects.filter(
-            project=estimator.project, 
+            project=estimator.project,
             estimator_type=estimator.estimator_type,
-            name__startswith='{name}{sep}'.format(sep=cls.suffix_sep, name=estimator.name)
-        )
+            name__startswith='{name}{sep}'.format(sep=cls.suffix_sep,
+                                                  name=estimator.name))
         last_estimator = estimators.last()
         return last_estimator and last_estimator.name
-    
+
     def prepare_estimator_cloned_name(self):
         last_name = self._last_name_with_suffix(self)
-        suffix = int(last_name.split(self.suffix_sep)[-1]) + 1 if last_name else 1
-        name = '{name}{sep}{suffix}'.format(name=self.name, sep=self.suffix_sep, suffix=suffix)
+        suffix = int(last_name.split(
+            self.suffix_sep)[-1]) + 1 if last_name else 1
+        name = '{name}{sep}{suffix}'.format(name=self.name,
+                                            sep=self.suffix_sep,
+                                            suffix=suffix)
         return name
 
     def clone(self):
         cloned = Estimator.objects.create(
-            name = self.prepare_estimator_cloned_name(),
-            project = self.project,
-            estimator_type = self.estimator_type,
-            classes = self.classes,
-            configuration = self.configuration,
-            metadata = self.metadata,
-            image_files = self.image_files,
+            name=self.prepare_estimator_cloned_name(),
+            project=self.project,
+            estimator_type=self.estimator_type,
+            classes=self.classes,
+            configuration=self.configuration,
+            metadata=self.metadata,
+            image_files=self.image_files,
         )
         return cloned
 
@@ -135,12 +134,6 @@ def get_random_integer_value():
 
 
 class ImageTile(models.Model):
-    # @deprecated
-    file = models.ForeignKey(File,
-                             on_delete=models.CASCADE,
-                             verbose_name=_('file'),
-                             blank=True,
-                             null=True)
     source_image_file = models.CharField(max_length=512,
                                          verbose_name=_('source image path'))
     source_tile_path = models.CharField(max_length=512, default="")

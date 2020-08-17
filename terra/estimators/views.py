@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from projects.mixins import ProjectRelatedModelListMixin
-from projects.models import Project, File
+from projects.models import Project
 from projects.permissions import (HasAccessToRelatedProjectPermission,
                                   HasUserAPIKey)
 from projects.views import RelatedProjectAPIView
@@ -229,9 +229,6 @@ class StartPredictionJobView(APIView):
                     {'estimator': _('Not enough credits for prediction')},
                     status=status.HTTP_400_BAD_REQUEST)
 
-            files = File.objects.filter(name__in=request.data.get('files'),
-                                        project=estimator.project,
-                                        owner=request.user)
             job = Task.objects.create(
                 name=Estimator.PREDICTION_JOB_TASK,
                 project=estimator.project,
@@ -296,7 +293,8 @@ class CloneEstimatorView(RelatedProjectAPIView):
     permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
 
     def post(self, request, uuid):
-        estimator = Estimator.objects.filter(uuid=uuid, project=self.get_project()).first()
+        estimator = Estimator.objects.filter(
+            uuid=uuid, project=self.get_project()).first()
         if not estimator:
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)

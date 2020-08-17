@@ -6,6 +6,11 @@ from django.db import migrations, models
 import django.db.models.deletion
 import projects.models
 
+try:
+    from projects.models import user_images_path
+except ImportError as err:
+    user_images_path = ''
+
 
 class Migration(migrations.Migration):
 
@@ -19,7 +24,7 @@ class Migration(migrations.Migration):
             name='Image',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to=projects.models.user_images_path)),
+                ('file', models.FileField(upload_to=user_images_path)),
                 ('name', models.CharField(max_length=255)),
                 ('metadata', django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),

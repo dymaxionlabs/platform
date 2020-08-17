@@ -93,66 +93,6 @@ class ProjectInvitationToken(models.Model):
         return self.key
 
 
-def user_images_path(instance, filename):
-    return 'user_{user_id}/{path}/{filename}'.format(user_id=instance.owner.id,
-                                                     path=instance.path,
-                                                     filename=filename)
-
-
-class File(models.Model):
-    suffix_sep = '__'
-
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project,
-                                on_delete=models.CASCADE,
-                                verbose_name=_("Project"),
-                                default=None,
-                                blank=True,
-                                null=True)
-
-    path = models.CharField(default="", max_length=512)
-    file = models.FileField(upload_to=user_images_path)
-    name = models.CharField(max_length=255)
-    metadata = JSONField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = (('owner', 'project', 'name'), )
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def prepare_filename(cls, filename):
-        if cls._does_already_exists(filename):
-            last_fname = cls._last_filename_with_suffix(filename)
-            if last_fname:
-                suff_name, _ = os.path.splitext(last_fname)
-                suffix = int(suff_name.split(cls.suffix_sep)[-1]) + 1
-            else:
-                suffix = 1
-            name, ext = os.path.splitext(filename)
-            filename = '{name}{sep}{suffix}{ext}'.format(name=name,
-                                                         sep=cls.suffix_sep,
-                                                         suffix=suffix,
-                                                         ext=ext)
-
-        return filename
-
-    @classmethod
-    def _does_already_exists(cls, filename):
-        return cls.objects.filter(name=filename).exists()
-
-    @classmethod
-    def _last_filename_with_suffix(cls, filename):
-        name, ext = os.path.splitext(filename)
-        files = cls.objects.filter(name__startswith='{name}{sep}'.format(
-            sep=cls.suffix_sep, name=name)).filter(name__endswith=ext)
-        last_file = files.last()
-        return last_file and last_file.name
-
-
 class Layer(models.Model):
     RASTER = 'R'
     VECTOR = 'V'
