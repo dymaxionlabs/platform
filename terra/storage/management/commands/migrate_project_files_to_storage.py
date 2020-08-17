@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 
 from terra.utils import gsutilCopy
 from projects.models import File
-from storage.client import Client
+from storage.client import GCSClient
 
 
 class Command(BaseCommand):
@@ -27,7 +27,7 @@ class Command(BaseCommand):
             c = c + 1
 
     def migrate_to_storage(self, file):
-        client = Client(file.project)
+        client = GCSClient(file.project)
         try:
             with tempfile.NamedTemporaryFile() as tmpfile:
                 shutil.copyfileobj(file.file, tmpfile)

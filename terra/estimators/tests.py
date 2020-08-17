@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from terra.tests import create_some_user, loginWithAPI
 from projects.tests import create_some_project, create_some_api_key, login_with_api_key
-from storage.client import Client
+from storage.client import GCSClient
 
 from .models import Estimator
 from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView, StartImageTilingJobView
@@ -109,7 +109,7 @@ class AnnotationUploadTest(TestCase):
                                               project=self.project)
         login_with_api_key(self.client, self.api_key)
 
-        self.storage_client = Client(self.project)
+        self.storage_client = GCSClient(self.project)
         with open("/tmp/file1.txt", "w") as f:
             f.write("this is a test\n")
         with open("/tmp/vectorfile1.txt", "w") as f:
@@ -145,7 +145,7 @@ class AnnotationUploadTest(TestCase):
             estimator=estimator,
             label='label1')
 
-    @patch("estimators.views.Client.list_files")
+    @patch("estimators.views.GCSClient.list_files")
     @patch("estimators.views.Annotation.import_from_vector_file")
     def test_post_file_not_found(self, mock_import_from_vector_file,
                                  mock_list_files):
@@ -166,7 +166,7 @@ class AnnotationUploadTest(TestCase):
         mock_import_from_vector_file.assert_not_called()
         mock_list_files.assert_called_once()
 
-    @patch("estimators.views.Client.list_files", new=mock_list_vector_files)
+    @patch("estimators.views.GCSClient.list_files", new=mock_list_vector_files)
     @patch("estimators.views.Annotation.import_from_vector_file")
     def test_post_vector_not_found(self, mock_import_from_vector_file):
         estimator = Estimator.objects.create(name='Foo',

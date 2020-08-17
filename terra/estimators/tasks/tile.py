@@ -11,7 +11,7 @@ from rest_framework.exceptions import NotFound
 from skimage import exposure
 from skimage.io import imsave
 
-from storage.client import Client
+from storage.client import GCSClient
 from tasks.models import Task, TaskLogEntry
 from estimators.models import ImageTile
 
@@ -22,7 +22,7 @@ IMAGE_TILE_SIZE = 500
 def generate_image_tiles(task_id):
     job = Task.objects.get(pk=task_id)
     try:
-        client = Client(job.project)
+        client = GCSClient(job.project)
         files = list(client.list_files(job.kwargs['path']))
         if not files:
             raise NotFound(detail=None, code=None)

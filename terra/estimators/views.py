@@ -20,7 +20,7 @@ from .models import Annotation, Estimator, ImageTile
 from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer)
-from storage.client import Client
+from storage.client import GCSClient
 from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
@@ -126,7 +126,7 @@ class AnnotationUpload(APIView):
             return Response({'project': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        client = Client(project.first())
+        client = GCSClient(project.first())
 
         files = list(client.list_files(request.data['related_file']))
         if not files:

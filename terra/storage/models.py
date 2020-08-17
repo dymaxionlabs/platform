@@ -7,11 +7,13 @@ from django.contrib.postgres.fields import JSONField
 from terra.utils import gsutilCopy
 from projects.models import Project
 from quotas.models import UserQuota
-from storage.client import Client
+from storage.client import GCSClient
 
 
 class File(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='files')
+    project = models.ForeignKey(Project,
+                                on_delete=models.CASCADE,
+                                related_name='files')
     path = models.CharField(max_length=512)
     size = models.BigIntegerField()
     complete = models.BooleanField(default=True)
@@ -21,7 +23,8 @@ class File(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{path} ({project})'.format(path=self.path, project=self.project)
+        return '{path} ({project})'.format(path=self.path,
+                                           project=self.project)
 
     @classmethod
     def check_quota(cls, user, new_bytes):
@@ -30,20 +33,22 @@ class File(models.Model):
             raise ParseError("the file size exceeds the allowed limit")
 
         projects = Project.objects.filter(owner=user)
-        usage = File.objects.filter(project__in=projects).aggregate(total=Coalesce(Sum('size'),0))
+        usage = File.objects.filter(project__in=projects).aggregate(
+            total=Coalesce(Sum('size'), 0))
         if quota.total_space_per_user < usage['total'] + new_bytes:
             raise ParseError("insufficient storage")
-    
 
     @classmethod
     def copy(cls, gcs_url, out_path, *, project):
-        gsutilCopy(gcs_url.strip("/"), f'gs://{settings.FILES_BUCKET}/project_{project.pk}/{out_path}')
-        client = Client(project)
+        gsutilCopy(
+            gcs_url.strip("/"),
+            f'gs://{settings.FILES_BUCKET}/project_{project.pk}/{out_path}')
+        client = GCSClient(project)
         files = list(client.list_files(f'{out_path}*'))
         for file in files:
             File.objects.get_or_create(project=project,
-                                        path=file.path,
-                                        defaults={
-                                            'size': file.blob.size,
-                                            'metadata': file.metadata
-                                        })
+                                       path=file.path,
+                                       defaults={
+                                           'size': file.blob.size,
+                                           'metadata': file.metadata
+                                       })
