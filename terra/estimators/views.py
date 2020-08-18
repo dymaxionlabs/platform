@@ -301,3 +301,15 @@ class CloneEstimatorView(RelatedProjectAPIView):
         cloned = estimator.clone()
         serializer = EstimatorSerializer(cloned)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DescribeAnnotationsView(APIView):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
+    
+    def get(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        data = estimator.describe_annotations()
+        return Response(data, status=status.HTTP_200_OK)
