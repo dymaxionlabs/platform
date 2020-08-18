@@ -11,10 +11,12 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
+from rasterio.crs import CRS
 from rasterio.windows import Window
 
 from projects.models import Project
 from storage.client import GCSClient
+from storage.models import File
 
 # Import fiona last
 import fiona
@@ -112,6 +114,15 @@ class Estimator(models.Model):
             image_files=self.image_files,
         )
         return cloned
+
+    def check_related_file_crs(self, path):
+        file = File.objects.get(project=self.project, path=path, complete=True)
+        crs = None if file.metadata is None else file.metadata.get('crs')
+        try:
+            crs = CRS.from_string(crs)
+            return crs.is_valid
+        except:
+            return False
 
 
 def tile_images_path(instance, filename):
