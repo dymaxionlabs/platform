@@ -112,6 +112,18 @@ class Estimator(models.Model):
             image_files=self.image_files,
         )
         return cloned
+    
+
+    def describe_annotations(self):
+        result = {}
+        annotations = Annotation.objects.filter(estimator=self)
+        for annotation in annotations:
+            image = annotation.image_tile.source_image_file
+            result[image] = {} if image not in result else result[image]
+            for segment in annotation.segments:
+                label = segment['label']
+                result[image][label] = 1 if label not in result[image] else result[image][label] + 1
+        return result
 
 
 def tile_images_path(instance, filename):
