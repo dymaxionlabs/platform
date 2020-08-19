@@ -115,7 +115,7 @@ class AnnotationUploadTest(TestCase):
         self.file_data = io.BytesIO(b"this is a test\n")
         self.client.post(
             f'/storage/upload/',
-            dict(path="file1.txt", file=self.file_date),
+            dict(path="file1.txt", file=self.file_data),
             format='multipart',
         )
 
