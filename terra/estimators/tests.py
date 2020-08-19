@@ -128,8 +128,8 @@ class AnnotationUploadTest(TestCase):
             format='multipart',
         )
 
-        self.file1 = self.storage_client.list_files(self.file_path)[0]
-        self.vectorfile1 = self.storage_client.list_files(self.vector_path)[0]
+        self.file1 = list(self.storage_client.list_files(self.file_path))[0]
+        self.vectorfile1 = list(self.storage_client.list_files(self.vector_path))[0]
 
 
     def tearDown(self):
