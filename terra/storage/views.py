@@ -114,13 +114,12 @@ class UploadFileView(StorageAPIView):
         storage_file = client.upload_from_file(
             fileobj, to=path, content_type=fileobj.content_type)
         file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
-        file, _ = File.objects.get_or_create(project=self.get_project(),
-                                             path=storage_file.path,
-                                             complete=True,
-                                             defaults={
-                                                 'size': fileobj.size,
-                                                 'metadata': file_metadata,
-                                             })
+        File.objects.update_or_create(project=self.get_project(), 
+                                        path=storage_file.path,
+                                        defaults={
+                                            'size': fileobj.size,
+                                            'metadata': file_metadata,
+                                        })
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -232,9 +231,8 @@ class CreateResumableUploadView(StorageAPIView):
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-        File.objects.get_or_create(project=self.get_project(),
+        File.objects.update_or_create(project=self.get_project(),
                                    path=path,
-                                   complete=True,
                                    defaults={
                                        'size': size,
                                        'complete': False,
@@ -251,7 +249,9 @@ class CheckCompletedFileView(StorageAPIView):
             raise ParseError("'path' missing")
 
         file = File.objects.filter(project=self.get_project(),
-                                   path=path).first()
+                                   path=path, 
+                                   complete=False,
+                                   ).first()
         if not file:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
 

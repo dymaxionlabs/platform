@@ -1,4 +1,5 @@
 import os
+import pyproj
 import random
 import uuid
 import tempfile
@@ -11,8 +12,11 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
+from functools import partial
 from rasterio.crs import CRS
+from rasterio.transform import Affine
 from rasterio.windows import Window
+from shapely.ops import transform
 
 from projects.models import Project
 from storage.client import GCSClient
@@ -201,12 +205,19 @@ class Annotation(models.Model):
 
         client = GCSClient(project)
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            src = tmpfile.name
-            image_file.download_to_filename(src)
-            with rasterio.open(src) as ds:
-                if ds.driver == 'GTiff':
-                    transform = ds.transform
+        if image_file.metadata is not None:
+            crs = image_file.metadata.get('crs')
+            t = image_file.metadata.get('transform')
+            transform = Affine(t[0], t[1], t[2], t[3], t[4], t[5]) if t is not None else None
+        if crs is None or transform is None:
+            images_files = list(client.list_files(image_file.path))
+            with tempfile.NamedTemporaryFile() as tmpfile:
+                src = tmpfile.name
+                images_files[0].download_to_filename(src)
+                with rasterio.open(src) as ds:
+                    if ds.driver == 'GTiff':
+                        transform = ds.transform
+                        crs = ds.crs
 
         res = []
         vector_files = list(client.list_files(vector_file.path))
@@ -215,6 +226,9 @@ class Annotation(models.Model):
             vector_files[0].download_to_filename(src)
 
             with fiona.open(src, "r") as dataset:
+                partial_func = partial(pyproj.transform, pyproj.Proj(dataset.crs['init']), pyproj.Proj(crs))
+                transform_project = None if dataset.crs['init'] == crs else None
+
                 for tile in ImageTile.objects.filter(
                         project=project, source_image_file=image_file.path):
                     win = Window(tile.col_off, tile.row_off, tile.width,
@@ -231,7 +245,8 @@ class Annotation(models.Model):
                                                  index=(tile.col_off,
                                                         tile.row_off),
                                                  transform=transform,
-                                                 label=label)
+                                                 label=label,
+                                                 transform_project=transform_project,)
                     annotation = cls.objects.create(estimator=estimator,
                                                     image_tile=tile,
                                                     segments=segments)
@@ -239,13 +254,15 @@ class Annotation(models.Model):
         return res
 
     @classmethod
-    def _process_hits(cls, hits, *, window_bounds, index, transform, label):
+    def _process_hits(cls, hits, *, window_bounds, index, transform, label, transform_project):
         window_box = box(*window_bounds)
 
         segments = []
         for hit in hits:
             # Generate a bounding box from the original geometry
             hit_shape = shape(hit['geometry'])
+            if transform_project:
+                hit_shape = transform(transform_project, hit_shape)
             bbox = box(*hit_shape.bounds)
             inter_bbox = window_box.intersection(bbox)
             inter_bbox_bounds = inter_bbox.bounds
