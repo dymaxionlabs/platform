@@ -114,7 +114,7 @@ class UploadFileView(StorageAPIView):
         storage_file = client.upload_from_file(
             fileobj, to=path, content_type=fileobj.content_type)
         file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
-        File.objects.update_or_create(project=self.get_project(), 
+        file, _ = File.objects.update_or_create(project=self.get_project(), 
                                         path=storage_file.path,
                                         defaults={
                                             'size': fileobj.size,
