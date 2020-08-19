@@ -113,18 +113,24 @@ class AnnotationUploadTest(TestCase):
         self.storage_client = GCSClient(self.project)
 
         self.file_data = io.BytesIO(b"this is a test\n")
+        self.file_path = "file1.txt"
         self.client.post(
             f'/storage/upload/',
-            dict(path="file1.txt", file=self.file_data),
+            dict(path=self.file_path, file=self.file_data),
             format='multipart',
         )
 
         self.vector_data = io.BytesIO(b"this is another test\n")
+        self.vector_path = "vectorfile1.txt"
         self.client.post(
             f'/storage/upload/',
-            dict(path="vectorfile1.txt", file=self.vector_data),
+            dict(path=self.vector_path, file=self.vector_data),
             format='multipart',
         )
+
+        self.file1 = self.storage_client.list_files(self.file_path)[0]
+        self.vectorfile1 = self.storage_client.list_files(self.vector_path)[0]
+
 
     def tearDown(self):
         response = self.client.get(f'/storage/files/')
@@ -142,8 +148,8 @@ class AnnotationUploadTest(TestCase):
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
             dict(project=self.project.uuid,
-                 related_file=self.file1.path,
-                 vector_file=self.vectorfile1.path,
+                 related_file=self.file_path,
+                 vector_file=self.vector_path,
                  label='label1'))
         self.assertEquals(rv.status_code, 200)
         self.assertIn('annotation_created', rv.data['detail'].keys())
@@ -186,7 +192,7 @@ class AnnotationUploadTest(TestCase):
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
             dict(project=self.project.uuid,
-                 related_file='file1.txt',
+                 related_file=self.file_path,
                  vector_file='v1',
                  label='label1'))
         self.assertEquals(rv.status_code, 404)
