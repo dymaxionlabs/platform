@@ -1,3 +1,4 @@
+import io
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.db.models import Q
