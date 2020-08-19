@@ -10,6 +10,7 @@ from unittest.mock import patch
 from terra.tests import create_some_user, loginWithAPI
 from projects.tests import create_some_project, create_some_api_key, login_with_api_key
 from storage.client import GCSClient
+from storage.models import File
 
 from .models import Estimator
 from .views import AnnotationUpload, StartTrainingJobView, StartPredictionJobView, StartImageTilingJobView
@@ -128,8 +129,8 @@ class AnnotationUploadTest(TestCase):
             format='multipart',
         )
 
-        self.file1 = list(self.storage_client.list_files(self.file_path))[0]
-        self.vectorfile1 = list(self.storage_client.list_files(self.vector_path))[0]
+        self.file1 = File.objects.get(project=self.project, path=self.file_path)
+        self.vectorfile1 = File.objects.get(project=self.project, path=self.vector_path)
 
 
     def tearDown(self):
