@@ -110,17 +110,26 @@ class AnnotationUploadTest(TestCase):
         login_with_api_key(self.client, self.api_key)
 
         self.storage_client = GCSClient(self.project)
-        with open("/tmp/file1.txt", "w") as f:
-            f.write("this is a test\n")
-        with open("/tmp/vectorfile1.txt", "w") as f:
-            f.write("this is another test\n")
-        self.file1 = self.storage_client.upload_from_filename("/tmp/file1.txt")
-        self.vectorfile1 = self.storage_client.upload_from_filename(
-            "/tmp/vectorfile1.txt")
+
+        self.file_data = io.BytesIO(b"this is a test\n")
+        self.client.post(
+            f'/storage/upload/',
+            dict(path="file1.txt", file=self.file_date),
+            format='multipart',
+        )
+
+        self.vector_data = io.BytesIO(b"this is another test\n")
+        self.client.post(
+            f'/storage/upload/',
+            dict(path="vectorfile1.txt", file=self.vector_data),
+            format='multipart',
+        )
 
     def tearDown(self):
-        for f in self.storage_client.list_files():
-            f.delete()
+        response = self.client.get(f'/storage/files/')
+        for file in response.data:
+            response = self.client.delete(
+                '/storage/file/?path={path}'.format(path=file['path']))
 
     @patch("estimators.views.Annotation.import_from_vector_file")
     def test_post_ok(self, mock_import_from_vector_file):
@@ -176,7 +185,7 @@ class AnnotationUploadTest(TestCase):
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
             dict(project=self.project.uuid,
-                 related_file='f1',
+                 related_file='file1.txt',
                  vector_file='v1',
                  label='label1'))
         self.assertEquals(rv.status_code, 404)
