@@ -144,6 +144,7 @@ class AnnotationUpload(APIView):
             files[0],
             estimator=estimator,
             label=request.data['label'],
+            label_property=request.data['label_property'],
         )
 
         return Response({'detail': {

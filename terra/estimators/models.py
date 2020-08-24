@@ -196,10 +196,7 @@ class Annotation(models.Model):
 
     @classmethod
     def import_from_vector_file(cls, project, vector_file, image_file, *,
-                                estimator, label):
-        if label not in estimator.classes:
-            raise ValueError("invalid label for estimator")
-
+                                estimator, label, label_property):
         client = GCSClient(project)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
@@ -232,20 +229,29 @@ class Annotation(models.Model):
                                                  index=(tile.col_off,
                                                         tile.row_off),
                                                  transform=transform,
-                                                 label=label)
-                    annotation = cls.objects.create(estimator=estimator,
-                                                    image_tile=tile,
-                                                    segments=segments)
-                    res.append(annotation)
+                                                 label=label,
+                                                 label_property=label_property)
+                    if len(segments) > 0:
+                        #TODO: Check for duplicated
+                        annotation = cls.objects.create(estimator=estimator,
+                                                        image_tile=tile,
+                                                        segments=segments)
+                        res.append(annotation)
         return res
 
     @classmethod
-    def _process_hits(cls, hits, *, window_bounds, index, transform, label):
+    def _process_hits(cls, hits, *, window_bounds, index, transform, label, label_property):
         window_box = box(*window_bounds)
 
         segments = []
         for hit in hits:
             # Generate a bounding box from the original geometry
+            if label is None:
+                print(hit)
+                if 'properties' in hit and label_property in hit['properties']:
+                    label = hit['properties'][label_property]
+            if label is None or label == '':
+                continue
             hit_shape = shape(hit['geometry'])
             bbox = box(*hit_shape.bounds)
             inter_bbox = window_box.intersection(bbox)
