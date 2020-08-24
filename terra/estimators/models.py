@@ -4,8 +4,8 @@ import random
 import uuid
 import tempfile
 import shutil
-
 import rasterio
+
 from shapely.geometry import box, shape
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -122,6 +122,25 @@ class Estimator(models.Model):
     def check_related_file_crs(self, path):
         file = File.objects.get(project=self.project, path=path, complete=True)
         crs = None if file.metadata is None else file.metadata.get('crs')
+        if crs is None:
+            try:
+                client = GCSClient(self.project)
+                with tempfile.NamedTemporaryFile() as tmpfile:
+                    src = tmpfile.name
+                    files = list(client.list_files(file.path))
+                    files[0].download_to_filename(src)
+                    with rasterio.open(src) as ds:
+                        if ds.driver == 'GTiff':
+                            if file.metadata is None:
+                                file.metadata = {'crs': str(ds.crs), 'transform': ds.transform }
+                            else: 
+                                file.metadata.update(crs=str(ds.crs))
+                                file.metadata.update(transform=ds.transform)
+                            file.save(update_fields=["metadata"])
+                    crs = file.metadata.get('crs')
+            except Exception as e:
+                print(f"Error getting crs from bucker - {e}")
+                return False
         try:
             crs = CRS.from_string(crs)
             return crs.is_valid
