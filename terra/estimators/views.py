@@ -137,14 +137,17 @@ class AnnotationUpload(APIView):
         if not vector_files:
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
+        
+        label_property = request.data['label_property'] if 'label_property' in request.data else None
+        label = request.data['label'] if 'label' in request.data else None
 
         annotations = Annotation.import_from_vector_file(
             project.first(),
             vector_files[0],
             files[0],
             estimator=estimator,
-            label=request.data['label'],
-            label_property=request.data['label_property'],
+            label=label,
+            label_property=label_property,
         )
 
         return Response({'detail': {

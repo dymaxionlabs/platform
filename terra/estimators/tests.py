@@ -121,7 +121,8 @@ class AnnotationUploadTest(TestCase):
             self.vectorfile1,
             self.file1,
             estimator=estimator,
-            label='label1')
+            label='label1',
+            label_property=None)
 
     @patch("estimators.views.GCSClient.list_files")
     @patch("estimators.views.Annotation.import_from_vector_file")
