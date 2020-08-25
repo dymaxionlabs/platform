@@ -279,21 +279,29 @@ class Annotation(models.Model):
             hit_shape = shape(hit['geometry'])
             if transform_project:
                 hit_shape = transform(transform_project, hit_shape)
-            bbox = box(*hit_shape.bounds)
-            inter_bbox = window_box.intersection(bbox)
-            inter_bbox_bounds = inter_bbox.bounds
-            minx, maxy = ~transform * (inter_bbox_bounds[0],
-                                       inter_bbox_bounds[1])
-            maxx, miny = ~transform * (inter_bbox_bounds[2],
-                                       inter_bbox_bounds[3])
-            segment = dict(x=minx - index[0],
-                           y=miny - index[1],
-                           width=round(maxx - minx),
-                           height=round(maxy - miny),
-                           label=label)
-            estimator.add_class(label)
-            if segment['width'] > 0 and segment['height'] > 0:
+            if estimator.type == 'OD':
+                bbox = box(*hit_shape.bounds)
+                inter_bbox = window_box.intersection(bbox)
+                inter_bbox_bounds = inter_bbox.bounds
+                minx, maxy = ~transform * (inter_bbox_bounds[0],
+                                        inter_bbox_bounds[1])
+                maxx, miny = ~transform * (inter_bbox_bounds[2],
+                                        inter_bbox_bounds[3])
+                segment = dict(x=minx - index[0],
+                            y=miny - index[1],
+                            width=round(maxx - minx),
+                            height=round(maxy - miny),
+                            label=label)
+
+                if segment['width'] > 0 and segment['height'] > 0:
+                    segments.append(segment)
+            elif estimator.type == 'SG':
+                #TODO: Store hit_shape in dict
+                segment = dict(label=label)
                 segments.append(segment)
+
+            estimator.add_class(label)
+
         return segments
 
     def __str__(self):
