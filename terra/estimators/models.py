@@ -29,7 +29,9 @@ class Estimator(models.Model):
 
     OBJECT_DETECTION = 'OD'
     CLASSIFICATION = 'C'
+    SEGMENTATION = 'SG'
     TYPE_CHOICES = ((OBJECT_DETECTION, _('Object detection')),
+                    (SEGMENTATION, _('Segmentation'))
                     # (CLASSIFICATION, _('Classification')),
                     )
 
