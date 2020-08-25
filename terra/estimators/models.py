@@ -247,7 +247,6 @@ class Annotation(models.Model):
         for hit in hits:
             # Generate a bounding box from the original geometry
             if label is None:
-                print(hit)
                 if 'properties' in hit and label_property in hit['properties']:
                     label = hit['properties'][label_property]
             if label is None or label == '':
