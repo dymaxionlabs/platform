@@ -43,6 +43,13 @@ class EstimatorSerializer(serializers.ModelSerializer):
             name=Estimator.PREDICTION_JOB_TASK).order_by('-created_at')
         return TaskSerializer(tasks, many=True).data
 
+    def validate_image_files(self, value):
+        news = [path for path in value if path not in self.instance.image_files]
+        for new_file in news:
+            if not self.instance.check_related_file_crs(new_file):
+                raise serializers.ValidationError(f"Invalid CRS - {new_file}")
+        return value
+
     class Meta:
         model = Estimator
         exclude = ('id', )

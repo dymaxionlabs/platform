@@ -21,6 +21,7 @@ from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer)
 from storage.client import GCSClient
+from storage.models import File
 from tasks import states
 from tasks.serializers import TaskSerializer
 from tasks.models import Task
@@ -116,25 +117,25 @@ class AnnotationUpload(APIView):
                           HasAccessToRelatedEstimatorPermission)
 
     def post(self, request, uuid):
-        estimator = Estimator.objects.get(uuid=uuid)
+        estimator = Estimator.objects.filter(uuid=uuid).first()
         if not estimator:
             return Response({'estimator': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        project = Project.objects.filter(uuid=request.data['project'])
+        project = Project.objects.filter(uuid=request.data['project']).first()
         if not project:
             return Response({'project': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        client = GCSClient(project.first())
+        client = GCSClient(project)
 
-        files = list(client.list_files(request.data['related_file']))
-        if not files:
+        file = File.objects.filter(project=project, path=request.data['related_file'], complete=True).first()
+        if not file:
             return Response({'related_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        vector_files = list(client.list_files(request.data['vector_file']))
-        if not vector_files:
+        vector_file = File.objects.filter(project=project, path=request.data['vector_file'], complete=True).first()
+        if not vector_file:
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
         
@@ -142,9 +143,9 @@ class AnnotationUpload(APIView):
         label = request.data['label'] if 'label' in request.data else None
 
         annotations = Annotation.import_from_vector_file(
-            project.first(),
-            vector_files[0],
-            files[0],
+            project,
+            vector_file,
+            file,
             estimator=estimator,
             label=label,
             label_property=label_property,
