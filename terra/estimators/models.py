@@ -92,6 +92,11 @@ class Estimator(models.Model):
         last_estimator = estimators.last()
         return last_estimator and last_estimator.name
 
+    def add_class(self, label):
+        self.classes.append(label)
+        self.classes = list(set(self.classes))
+        self.save()
+
     def prepare_estimator_cloned_name(self):
         last_name = self._last_name_with_suffix(self)
         suffix = int(last_name.split(
@@ -230,7 +235,8 @@ class Annotation(models.Model):
                                                         tile.row_off),
                                                  transform=transform,
                                                  label=label,
-                                                 label_property=label_property)
+                                                 label_property=label_property,
+                                                 estimator=estimator)
                     if len(segments) > 0:
                         annotation, created = cls.objects.get_or_create(estimator=estimator, 
                                                                         image_tile=tile)
@@ -243,7 +249,7 @@ class Annotation(models.Model):
         return res
 
     @classmethod
-    def _process_hits(cls, hits, *, window_bounds, index, transform, label, label_property):
+    def _process_hits(cls, hits, *, window_bounds, index, transform, label, label_property, estimator):
         window_box = box(*window_bounds)
 
         segments = []
@@ -267,6 +273,7 @@ class Annotation(models.Model):
                            width=round(maxx - minx),
                            height=round(maxy - miny),
                            label=label)
+            estimator.add_class(label)
             if segment['width'] > 0 and segment['height'] > 0:
                 segments.append(segment)
         return segments
