@@ -92,6 +92,11 @@ class Estimator(models.Model):
         last_estimator = estimators.last()
         return last_estimator and last_estimator.name
 
+    def add_class(self, label):
+        self.classes.append(label)
+        self.classes = list(set(self.classes))
+        self.save()
+
     def prepare_estimator_cloned_name(self):
         last_name = self._last_name_with_suffix(self)
         suffix = int(last_name.split(
@@ -196,10 +201,7 @@ class Annotation(models.Model):
 
     @classmethod
     def import_from_vector_file(cls, project, vector_file, image_file, *,
-                                estimator, label):
-        if label not in estimator.classes:
-            raise ValueError("invalid label for estimator")
-
+                                estimator, label, label_property):
         client = GCSClient(project)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
@@ -232,20 +234,32 @@ class Annotation(models.Model):
                                                  index=(tile.col_off,
                                                         tile.row_off),
                                                  transform=transform,
-                                                 label=label)
-                    annotation = cls.objects.create(estimator=estimator,
-                                                    image_tile=tile,
-                                                    segments=segments)
-                    res.append(annotation)
+                                                 label=label,
+                                                 label_property=label_property,
+                                                 estimator=estimator)
+                    if len(segments) > 0:
+                        annotation, created = cls.objects.get_or_create(estimator=estimator, 
+                                                                        image_tile=tile)
+                        if created:
+                            annotation.segments = segments
+                        else:
+                            annotation.segments = annotation.segments + segments
+                        annotation.save()
+                        res.append(annotation)
         return res
 
     @classmethod
-    def _process_hits(cls, hits, *, window_bounds, index, transform, label):
+    def _process_hits(cls, hits, *, window_bounds, index, transform, label, label_property, estimator):
         window_box = box(*window_bounds)
 
         segments = []
         for hit in hits:
             # Generate a bounding box from the original geometry
+            if label is None:
+                if 'properties' in hit and label_property in hit['properties']:
+                    label = hit['properties'][label_property]
+            if label is None or label == '':
+                continue
             hit_shape = shape(hit['geometry'])
             bbox = box(*hit_shape.bounds)
             inter_bbox = window_box.intersection(bbox)
@@ -259,6 +273,7 @@ class Annotation(models.Model):
                            width=round(maxx - minx),
                            height=round(maxy - miny),
                            label=label)
+            estimator.add_class(label)
             if segment['width'] > 0 and segment['height'] > 0:
                 segments.append(segment)
         return segments
