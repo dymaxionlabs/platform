@@ -232,7 +232,6 @@ class Annotation(models.Model):
                                                  label=label,
                                                  label_property=label_property)
                     if len(segments) > 0:
-                        #TODO: Check for duplicated
                         annotation = cls.objects.create(estimator=estimator,
                                                         image_tile=tile,
                                                         segments=segments)
