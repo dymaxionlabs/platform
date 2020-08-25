@@ -14,7 +14,6 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
 from functools import partial
 from rasterio.crs import CRS
-from rasterio.transform import Affine
 from rasterio.windows import Window
 from shapely.ops import transform
 
@@ -206,19 +205,7 @@ class Annotation(models.Model):
 
         client = GCSClient(project)
 
-        if image_file.metadata is not None:
-            crs = image_file.metadata.get('crs')
-            t = image_file.metadata.get('transform')
-            transform = Affine(t[0], t[1], t[2], t[3], t[4], t[5]) if t is not None else None
-        if crs is None or transform is None:
-            images_files = list(client.list_files(image_file.path))
-            with tempfile.NamedTemporaryFile() as tmpfile:
-                src = tmpfile.name
-                images_files[0].download_to_filename(src)
-                with rasterio.open(src) as ds:
-                    if ds.driver == 'GTiff':
-                        transform = ds.transform
-                        crs = ds.crs
+        crs, transform = get_raster_metadata(image_file)
 
         res = []
         vector_files = list(client.list_files(vector_file.path))
