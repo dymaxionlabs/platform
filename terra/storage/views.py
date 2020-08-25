@@ -106,19 +106,20 @@ class UploadFileView(StorageAPIView):
         fileobj = request.data.get('file', None)
         if not fileobj:
             raise ParseError("'file' missing")
+        metadata = request.data.get('metadata', {})
 
         File.check_quota(request.user, fileobj.size)
 
         client = self.get_client()
         storage_file = client.upload_from_file(
             fileobj, to=path, content_type=fileobj.content_type)
-        file, _ = File.objects.get_or_create(project=self.get_project(),
-                                             path=storage_file.path,
-                                             defaults={
-                                                 'size': fileobj.size,
-                                                 'metadata':
-                                                 storage_file.metadata
-                                             })
+        file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
+        file, _ = File.objects.update_or_create(project=self.get_project(), 
+                                        path=storage_file.path,
+                                        defaults={
+                                            'size': fileobj.size,
+                                            'metadata': file_metadata,
+                                        })
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -223,17 +224,19 @@ class CreateResumableUploadView(StorageAPIView):
             raise ParseError("'size' missing")
         else:
             size = int(size)
+        metadata = request.data.get('metadata', {})
 
         File.check_quota(request.user, size)
 
         client = self.get_client()
         session_url = client.create_resumable_upload_session(
             to=path, size=size, content_type=request.content_type)
-        File.objects.get_or_create(project=self.get_project(),
+        File.objects.update_or_create(project=self.get_project(),
                                    path=path,
                                    defaults={
                                        'size': size,
                                        'complete': False,
+                                       'metadata': metadata,
                                    })
         return Response(dict(session_url=session_url),
                         status=status.HTTP_200_OK)
@@ -246,7 +249,9 @@ class CheckCompletedFileView(StorageAPIView):
             raise ParseError("'path' missing")
 
         file = File.objects.filter(project=self.get_project(),
-                                   path=path).first()
+                                   path=path, 
+                                   complete=False,
+                                   ).first()
         if not file:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
 
