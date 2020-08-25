@@ -232,9 +232,13 @@ class Annotation(models.Model):
                                                  label=label,
                                                  label_property=label_property)
                     if len(segments) > 0:
-                        annotation = cls.objects.create(estimator=estimator,
-                                                        image_tile=tile,
-                                                        segments=segments)
+                        annotation, created = cls.objects.get_or_create(estimator=estimator, 
+                                                                        image_tile=tile)
+                        if created:
+                            annotation.segments = segments
+                        else:
+                            annotation.segments = annotation.segments + segments
+                        annotation.save()
                         res.append(annotation)
         return res
 
