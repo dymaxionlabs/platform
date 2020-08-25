@@ -27,7 +27,7 @@ class EstimatorSlugField(serializers.SlugRelatedField):
 
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
-    classes = serializers.ListField(required=True, validators=[non_empty])
+    classes = serializers.ListField()
     training_tasks = serializers.SerializerMethodField()
     prediction_tasks = serializers.SerializerMethodField()
 

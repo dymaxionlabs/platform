@@ -70,28 +70,6 @@ class EstimatorViewSetTest(TestCase):
                 ]
             }, response.data)
 
-    def test_classes_required(self):
-        response = self.client.post('/estimators/', {
-            'name': 'Foo',
-            'project': self.project.uuid,
-        },
-                                    format='json')
-
-        self.assertEquals(400, response.status_code)
-        self.assertEquals({'classes': ['This field is required.']},
-                          response.data)
-
-        response = self.client.post('/estimators/', {
-            'name': 'Foo',
-            'project': self.project.uuid,
-            'classes': []
-        },
-                                    format='json')
-
-        self.assertEquals(400, response.status_code)
-        self.assertEquals({'classes': ['This field is required.']},
-                          response.data)
-
 
 def mock_list_vector_files(client, arg):
     if arg == 'f1':
@@ -160,7 +138,8 @@ class AnnotationUploadTest(TestCase):
             self.vectorfile1,
             self.file1,
             estimator=estimator,
-            label='label1')
+            label='label1',
+            label_property=None)
 
     @patch("estimators.views.Annotation.import_from_vector_file")
     def test_post_file_not_found(self, mock_import_from_vector_file):

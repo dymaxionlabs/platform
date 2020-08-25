@@ -138,13 +138,17 @@ class AnnotationUpload(APIView):
         if not vector_file:
             return Response({'vector_file': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
+        
+        label_property = request.data['label_property'] if 'label_property' in request.data else None
+        label = request.data['label'] if 'label' in request.data else None
 
         annotations = Annotation.import_from_vector_file(
             project,
             vector_file,
             file,
             estimator=estimator,
-            label=request.data['label'],
+            label=label,
+            label_property=label_property,
         )
 
         return Response({'detail': {
@@ -302,3 +306,15 @@ class CloneEstimatorView(RelatedProjectAPIView):
         cloned = estimator.clone()
         serializer = EstimatorSerializer(cloned)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DescribeAnnotationsView(APIView):
+    permission_classes = (HasUserAPIKey | permissions.IsAuthenticated, )
+    
+    def get(self, request, uuid):
+        estimator = Estimator.objects.get(uuid=uuid)
+        if not estimator:
+            return Response({'estimator': _('Not found')},
+                            status=status.HTTP_404_NOT_FOUND)
+        data = estimator.describe_annotations()
+        return Response(data, status=status.HTTP_200_OK)

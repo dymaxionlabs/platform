@@ -12,6 +12,7 @@ import {
   Menu,
   MenuItem,
   Toolbar,
+  Tooltip,
   Typography,
   Chip,
 } from "@material-ui/core";
@@ -381,11 +382,13 @@ class Home extends React.Component {
             <ListItem
               button
               onClick={() => this.handleSectionChange(null)}
-              selected={!section}
+              selected={!section}             
             >
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
+               <Tooltip title={open ? "" : t(`sidebar.dashboard`)}> 
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                </Tooltip>
               <ListItemText primary={t(`sidebar.dashboard`)} />
             </ListItem>
           </Link>
@@ -405,7 +408,9 @@ class Home extends React.Component {
                     onClick={() => this.handleSectionChange(key)}
                     selected={section === key}
                   >
-                    <ListItemIcon>{sections[key].icon}</ListItemIcon>
+                    <Tooltip title={open ? "" : t(`sidebar.${key}`)}>
+                      <ListItemIcon>{sections[key].icon}</ListItemIcon>
+                    </Tooltip>
                     <ListItemText primary={t(`sidebar.${key}`)} />
                   </ListItem>
                 </Link>
