@@ -139,7 +139,7 @@ class Estimator(models.Model):
                             file.save(update_fields=["metadata"])
                     crs = file.metadata.get('crs')
             except Exception as e:
-                print(f"Error getting crs from bucker - {e}")
+                print(f"Error getting crs from bucket - {e}")
                 return False
         try:
             crs = CRS.from_string(crs)
