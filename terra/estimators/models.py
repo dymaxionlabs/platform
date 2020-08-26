@@ -6,7 +6,7 @@ import tempfile
 import shutil
 import rasterio
 
-from shapely.geometry import box, shape
+from shapely.geometry import box, mapping, shape
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
@@ -279,7 +279,7 @@ class Annotation(models.Model):
             hit_shape = shape(hit['geometry'])
             if transform_project:
                 hit_shape = transform(transform_project, hit_shape)
-            if estimator.type == 'OD':
+            if estimator.estimator_type == 'OD':
                 bbox = box(*hit_shape.bounds)
                 inter_bbox = window_box.intersection(bbox)
                 inter_bbox_bounds = inter_bbox.bounds
@@ -295,9 +295,8 @@ class Annotation(models.Model):
 
                 if segment['width'] > 0 and segment['height'] > 0:
                     segments.append(segment)
-            elif estimator.type == 'SG':
-                #TODO: Store hit_shape in dict
-                segment = dict(label=label)
+            elif estimator.estimator_type == 'SG':
+                segment = dict(geom=mapping(hit_shape), label=label)
                 segments.append(segment)
 
             estimator.add_class(label)
