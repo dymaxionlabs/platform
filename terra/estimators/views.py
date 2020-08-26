@@ -20,7 +20,6 @@ from .models import Annotation, Estimator, ImageTile
 from .permissions import HasAccessToRelatedEstimatorPermission
 from .serializers import (AnnotationSerializer, EstimatorSerializer,
                           ImageTileSerializer)
-from storage.client import GCSClient
 from storage.models import File
 from tasks import states
 from tasks.serializers import TaskSerializer
@@ -127,34 +126,40 @@ class AnnotationUpload(APIView):
             return Response({'project': _('Not found')},
                             status=status.HTTP_404_NOT_FOUND)
 
-        client = GCSClient(project)
-
-        file = File.objects.filter(project=project, path=request.data['related_file'], complete=True).first()
-        if not file:
-            return Response({'related_file': _('Not found')},
-                            status=status.HTTP_404_NOT_FOUND)
-
-        vector_file = File.objects.filter(project=project, path=request.data['vector_file'], complete=True).first()
-        if not vector_file:
-            return Response({'vector_file': _('Not found')},
-                            status=status.HTTP_404_NOT_FOUND)
+        job = Task.objects.filter(Q(state='STARTED') | Q(state='PENDING'),
+                    kwargs__estimator=str(estimator.uuid),
+                    kwargs__image_file=request.data['related_file'],
+                    kwargs__vector_file=request.data['vector_file'],
+                    name=Estimator.ANNOTATION_TASK).first()
         
-        label_property = request.data['label_property'] if 'label_property' in request.data else None
-        label = request.data['label'] if 'label' in request.data else None
+        if not job:
+            file = File.objects.filter(project=project, path=request.data['related_file'], complete=True).first()
+            if not file:
+                return Response({'related_file': _('Not found')},
+                                status=status.HTTP_404_NOT_FOUND)
 
-        annotations = Annotation.import_from_vector_file(
-            project,
-            vector_file,
-            file,
-            estimator=estimator,
-            label=label,
-            label_property=label_property,
-        )
+            vector_file = File.objects.filter(project=project, path=request.data['vector_file'], complete=True).first()
+            if not vector_file:
+                return Response({'vector_file': _('Not found')},
+                                status=status.HTTP_404_NOT_FOUND)
+            
+            label_property = request.data['label_property'] if 'label_property' in request.data else None
+            label = request.data['label'] if 'label' in request.data else None
 
-        return Response({'detail': {
-            'annotation_created': len(annotations)
-        }},
-                        status=status.HTTP_200_OK)
+            job = Task.objects.create(
+                name=Estimator.ANNOTATION_TASK,
+                project=project,
+                kwargs=dict(
+                    estimator=str(estimator.uuid),
+                    image_file=file.path,
+                    vector_file=vector_file.path,
+                    label=label,
+                    label_property=label_property,
+                ))
+            job.start()
+
+        serializer = TaskSerializer(job)
+        return Response({'detail': serializer.data}, status=status.HTTP_200_OK)
 
 
 class StartTrainingJobView(APIView):
