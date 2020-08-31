@@ -27,7 +27,7 @@ class EstimatorSlugField(serializers.SlugRelatedField):
 
 class EstimatorSerializer(serializers.ModelSerializer):
     project = ProjectSlugField(slug_field='uuid')
-    classes = serializers.ListField(required=True, validators=[non_empty])
+    classes = serializers.ListField()
     training_tasks = serializers.SerializerMethodField()
     prediction_tasks = serializers.SerializerMethodField()
 
@@ -42,6 +42,13 @@ class EstimatorSerializer(serializers.ModelSerializer):
             kwargs__estimator=str(obj.uuid),
             name=Estimator.PREDICTION_JOB_TASK).order_by('-created_at')
         return TaskSerializer(tasks, many=True).data
+
+    def validate_image_files(self, value):
+        news = [path for path in value if path not in self.instance.image_files]
+        for new_file in news:
+            if not self.instance.check_related_file_crs(new_file):
+                raise serializers.ValidationError(f"Invalid CRS - {new_file}")
+        return value
 
     class Meta:
         model = Estimator

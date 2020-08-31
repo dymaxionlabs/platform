@@ -39,6 +39,7 @@ class RelatedProjectAPIView(APIView):
     def get_project(self):
         user = self.request.user
 
+        project = None
         if hasattr(self.request, 'project'):
             project = self.request.project
 

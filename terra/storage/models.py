@@ -60,16 +60,16 @@ class File(models.Model):
             return None
         return files[0]
 
-    def upload(cls, user, fileobj):
+    def upload(cls, user, fileobj, metadata):
         cls.check_quota(user, fileobj.size)
         client = GCSClient(cls.project)
         storage_file = client.upload_from_file(
             fileobj, to=cls.path, content_type=fileobj.content_type)
+        file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
         file, _ = File.objects.get_or_create(project=cls.project,
                                              path=storage_file.path,
                                              defaults={
                                                  'size': fileobj.size,
-                                                 'metadata':
-                                                 storage_file.metadata
+                                                 'metadata': file_metadata
                                              })
         return file
