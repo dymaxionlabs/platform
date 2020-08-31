@@ -176,14 +176,14 @@ class DownloadFileView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         project = self.get_project()
-        client = GCSClient(project)
-        files = list(client.list_files(path))
-        if not files:
+        file = File(path=path, project=project).download()
+
+        if file == None:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
-            files[0].download_to_filename(src)
+            file.download_to_filename(src)
 
             content_disp = 'attachment; filename="{file_name}"'.format(
                 file_name=path)

@@ -52,3 +52,10 @@ class File(models.Model):
                                            'size': file.blob.size,
                                            'metadata': file.metadata
                                        })
+
+    def download(cls):
+        client = GCSClient(cls.project)
+        files = list(client.list_files(cls.path))
+        if not files:
+            return None
+        return files[0]
