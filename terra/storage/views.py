@@ -106,19 +106,8 @@ class UploadFileView(StorageAPIView):
         fileobj = request.data.get('file', None)
         if not fileobj:
             raise ParseError("'file' missing")
-
-        File.check_quota(request.user, fileobj.size)
-
-        client = self.get_client()
-        storage_file = client.upload_from_file(
-            fileobj, to=path, content_type=fileobj.content_type)
-        file, _ = File.objects.get_or_create(project=self.get_project(),
-                                             path=storage_file.path,
-                                             defaults={
-                                                 'size': fileobj.size,
-                                                 'metadata':
-                                                 storage_file.metadata
-                                             })
+        project = self.get_project()
+        file = File(path=path, project=project).upload(request.user, fileobj)
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
