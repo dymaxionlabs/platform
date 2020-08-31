@@ -32,10 +32,12 @@ class Estimator(models.Model):
     TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'
     PREDICTION_JOB_TASK = 'estimators.tasks.predict.start_prediction_job'
     IMAGE_TILING_TASK = 'estimators.tasks.tile.generate_image_tiles'
+    ANNOTATION_TASK = 'estimators.tasks.annotation.import_from_vector_file'
 
     OBJECT_DETECTION = 'OD'
-    CLASSIFICATION = 'C'
+    SEGMENTATION = 'SG'
     TYPE_CHOICES = ((OBJECT_DETECTION, _('Object detection')),
+                    (SEGMENTATION, _('Segmentation'))
                     # (CLASSIFICATION, _('Classification')),
                     )
 
