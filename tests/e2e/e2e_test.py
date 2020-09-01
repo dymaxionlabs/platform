@@ -43,8 +43,13 @@ def run_object_detection_e2e_test():
     annotations_filename = 'vineyard_annotations.geojson'
     labels = File.upload(annotations_filename, storage_root)
     print("Labels uploaded")
-    estimator.add_labels_for(labels, img, "tree")
+    annotation_task = estimator.add_labels_for(labels, img, label="tree")
+    while annotation_task.is_running():
+        time.sleep(5)
     print("Labels added")
+
+    if annotation_task.state == "FAILED":
+        raise RuntimeError("Annotation task failed!")
 
     # Training time
     estimator.configuration.update(epochs=1, steps=150)

@@ -117,12 +117,10 @@ class AnnotationUploadTest(TestCase):
             response = self.client.delete(
                 '/storage/file/?path={path}'.format(path=file['path']))
 
-    @patch("estimators.views.Annotation.import_from_vector_file")
-    def test_post_ok(self, mock_import_from_vector_file):
+    def test_post_ok(self):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        mock_import_from_vector_file.return_value = ['label1']
 
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
@@ -130,23 +128,19 @@ class AnnotationUploadTest(TestCase):
                  related_file=self.file_path,
                  vector_file=self.vector_path,
                  label='label1'))
+        job = Task.objects.filter(Q(state='STARTED'),
+                                    project=self.project,
+                                    kwargs__estimator=str(estimator.uuid),
+                                    kwargs__vector_file=self.vector_path,
+                                    kwargs__image_file=self.file_path,
+                                    name=Estimator.ANNOTATION_TASK).first()
+        self.assertIsNotNone(job)
         self.assertEquals(rv.status_code, 200)
-        self.assertIn('annotation_created', rv.data['detail'].keys())
-        self.assertEquals(rv.data['detail']['annotation_created'], 1)
-        mock_import_from_vector_file.assert_called_once_with(
-            self.project,
-            self.vectorfile1,
-            self.file1,
-            estimator=estimator,
-            label='label1',
-            label_property=None)
 
-    @patch("estimators.views.Annotation.import_from_vector_file")
-    def test_post_file_not_found(self, mock_import_from_vector_file):
+    def test_post_file_not_found(self):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        mock_import_from_vector_file.return_value = ['label1']
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
             dict(project=self.project.uuid,
@@ -156,15 +150,11 @@ class AnnotationUploadTest(TestCase):
         self.assertEquals(rv.status_code, 404)
         self.assertIn('related_file', rv.data.keys())
         self.assertEquals(rv.data['related_file'], "Not found")
-        mock_import_from_vector_file.assert_not_called()
 
-    @patch("estimators.views.GCSClient.list_files", new=mock_list_vector_files)
-    @patch("estimators.views.Annotation.import_from_vector_file")
-    def test_post_vector_not_found(self, mock_import_from_vector_file):
+    def test_post_vector_not_found(self):
         estimator = Estimator.objects.create(name='Foo',
                                              project=self.project,
                                              classes=['a', 'b'])
-        mock_import_from_vector_file.return_value = ['label1']
         rv = self.client.post(
             '/estimators/{}/load_labels/'.format(estimator.uuid),
             dict(project=self.project.uuid,
@@ -174,7 +164,6 @@ class AnnotationUploadTest(TestCase):
         self.assertEquals(rv.status_code, 404)
         self.assertIn('vector_file', rv.data.keys())
         self.assertEquals(rv.data['vector_file'], "Not found")
-        mock_import_from_vector_file.assert_not_called()
 
 
 class StartTrainingJobViewTest(TestCase):
