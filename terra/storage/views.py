@@ -174,7 +174,10 @@ class DownloadFileView(StorageAPIView):
             raise ParseError("'path' missing")
         project = self.get_project()
 
-        file = File.objects.get(path=path, project=project)
+        try:
+            file = File.objects.get(path=path, project=project)
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         if not file:
             return Response(status=status.HTTP_404_NOT_FOUND)
