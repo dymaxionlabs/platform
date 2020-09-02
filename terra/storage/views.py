@@ -108,7 +108,14 @@ class UploadFileView(StorageAPIView):
             raise ParseError("'file' missing")
         metadata = request.data.get('metadata', {})
         project = self.get_project()
-        file = File(path=path, project=project).upload(request.user, fileobj, metadata)
+
+        file = File.upload_from_file(
+            fileobj, 
+            path=path, 
+            project=project, 
+            metadata=metadata
+        )
+
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -166,10 +173,11 @@ class DownloadFileView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         project = self.get_project()
-        file = File(path=path, project=project).download()
 
-        if file == None:
-            return Response(None, status=status.HTTP_404_NOT_FOUND)
+        file = File.objects.get(path=path, project=project)
+
+        if not file:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name

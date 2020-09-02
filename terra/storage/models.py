@@ -53,20 +53,20 @@ class File(models.Model):
                                            'metadata': file.metadata
                                        })
 
-    def download(cls):
-        client = GCSClient(cls.project)
-        files = list(client.list_files(cls.path))
-        if not files:
-            return None
-        return files[0]
+    def download_to_filename(self, path):
+        client = GCSClient(self.project)
+        files = list(client.list_files(self.path))
+        if files:
+            files[0].download_to_filename(path)
 
-    def upload(cls, user, fileobj, metadata):
-        cls.check_quota(user, fileobj.size)
-        client = GCSClient(cls.project)
+    @classmethod
+    def upload_from_file(cls, fileobj, path, project, metadata):
+        cls.check_quota(project.owner, fileobj.size)
+        client = GCSClient(project)
         storage_file = client.upload_from_file(
-            fileobj, to=cls.path, content_type=fileobj.content_type)
+            fileobj, to=path, content_type=fileobj.content_type)
         file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
-        file, _ = File.objects.get_or_create(project=cls.project,
+        file, _ = File.objects.get_or_create(project=project,
                                              path=storage_file.path,
                                              defaults={
                                                  'size': fileobj.size,
