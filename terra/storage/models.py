@@ -52,3 +52,27 @@ class File(models.Model):
                                            'size': file.blob.size,
                                            'metadata': file.metadata
                                        })
+
+    def download_to_filename(self, path):
+        client = GCSClient(self.project)
+        files = list(client.list_files(self.path))
+        if files:
+            files[0].download_to_filename(path)
+        else:
+            raise RuntimeError("File not found in storage")
+
+
+    @classmethod
+    def upload_from_file(cls, fileobj, path, project, metadata):
+        cls.check_quota(project.owner, fileobj.size)
+        client = GCSClient(project)
+        storage_file = client.upload_from_file(
+            fileobj, to=path, content_type=fileobj.content_type)
+        file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
+        file, _ = File.objects.get_or_create(project=project,
+                                             path=storage_file.path,
+                                             defaults={
+                                                 'size': fileobj.size,
+                                                 'metadata': file_metadata
+                                             })
+        return file

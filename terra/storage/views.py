@@ -107,19 +107,15 @@ class UploadFileView(StorageAPIView):
         if not fileobj:
             raise ParseError("'file' missing")
         metadata = request.data.get('metadata', {})
+        project = self.get_project()
 
-        File.check_quota(request.user, fileobj.size)
+        file = File.upload_from_file(
+            fileobj, 
+            path=path, 
+            project=project, 
+            metadata=metadata
+        )
 
-        client = self.get_client()
-        storage_file = client.upload_from_file(
-            fileobj, to=path, content_type=fileobj.content_type)
-        file_metadata = metadata if storage_file.metadata is None else {**metadata, **storage_file.metadata}
-        file, _ = File.objects.update_or_create(project=self.get_project(), 
-                                        path=storage_file.path,
-                                        defaults={
-                                            'size': fileobj.size,
-                                            'metadata': file_metadata,
-                                        })
         return Response(dict(detail=FileSerializer(file).data),
                         status=status.HTTP_200_OK)
 
@@ -177,14 +173,15 @@ class DownloadFileView(StorageAPIView):
         if not path:
             raise ParseError("'path' missing")
         project = self.get_project()
-        client = GCSClient(project)
-        files = list(client.list_files(path))
-        if not files:
-            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            file = File.objects.get(path=path, project=project)
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
-            files[0].download_to_filename(src)
+            file.download_to_filename(src)
 
             content_disp = 'attachment; filename="{file_name}"'.format(
                 file_name=path)
