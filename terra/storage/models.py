@@ -58,6 +58,9 @@ class File(models.Model):
         files = list(client.list_files(self.path))
         if files:
             files[0].download_to_filename(path)
+        else:
+            raise RuntimeError("File not found in storage")
+
 
     @classmethod
     def upload_from_file(cls, fileobj, path, project, metadata):

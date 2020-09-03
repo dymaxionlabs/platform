@@ -179,9 +179,6 @@ class DownloadFileView(StorageAPIView):
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if not file:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
         with tempfile.NamedTemporaryFile() as tmpfile:
             src = tmpfile.name
             file.download_to_filename(src)
