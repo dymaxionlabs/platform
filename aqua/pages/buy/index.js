@@ -6,13 +6,12 @@ import axios from "axios";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(
-  "pk_test_51GvnHlJbe4J7GDndRs5UK3Mu5xOYGsBwwp6wi98JL6Y4C39OizshWMhU9J63K161FUlAgQyEKYkxMksgIjv7cuS700IOCcGkHp"
-);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY);
 
 class BuyPage extends React.Component {
   state = {
     pack: null,
+    error: null,
   };
 
   static async getInitialProps({ query }) {
@@ -41,7 +40,6 @@ class BuyPage extends React.Component {
           headers: { Authorization: this.props.token },
         }
       );
-      console.log(response);
 
       // Get Stripe.js instance
       const stripe = await stripePromise;
@@ -55,15 +53,17 @@ class BuyPage extends React.Component {
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
         // using `result.error.message`.
-        alert(results.error.message);
+        this.setState({ error: results.error.message });
       }
     } catch (err) {
+      this.setState({ error: "An error occurred. Please retry later." });
       console.error(err);
     }
   }
 
   render() {
-    return <span>Redirecting...</span>;
+    const { error } = this.state;
+    return <p style={{ margin: "1em" }}>{error || "Redirecting..."}</p>;
   }
 }
 
