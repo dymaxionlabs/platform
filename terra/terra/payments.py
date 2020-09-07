@@ -1,7 +1,7 @@
 import json
 import os
 
-import mercadopago
+# import mercadopago
 
 
 class MercadoPagoClient:
