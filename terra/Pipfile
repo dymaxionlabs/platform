@@ -37,6 +37,7 @@ google-cloud-storage = "*"
 google-resumable-media = "*"
 google-cloud-bigquery = "*"
 django-cron = "*"
+stripe = "*"
 
 [dev-packages]
 yapf = "*"
