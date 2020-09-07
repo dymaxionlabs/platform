@@ -338,10 +338,10 @@ STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 CREDITS_PACKS = {
     'basic': {
         'name': 'Pack: Basic',
-        'unit_amount': 190
+        'unit_amount': 19000
     },
     'pro': {
         'name': 'Pack: Pro',
-        'unit_amount': 760
+        'unit_amount': 76000
     },
 }
