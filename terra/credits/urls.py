@@ -11,4 +11,5 @@ router.register(r'log', views.LogEntryViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^available/?$', views.AvailableCreditsView.as_view()),
+    url(r'^buy-pack/(?P<pack_id>[^/]+)/?$', views.BuyPackView.as_view())
 ]
