@@ -26,6 +26,7 @@ class BuyPage extends React.Component {
     const { pack } = this.props.query;
     if (!pack) {
       routerReplace("//dymaxionlabs.com/pricing");
+      return;
     }
 
     const successUrl = `${location.protocol}//${location.host}/buy/thanks`;
