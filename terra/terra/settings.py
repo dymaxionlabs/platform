@@ -332,3 +332,16 @@ CRON_CLASSES = [
 ]
 
 MIN_ANNOTATION_NEEDED = 1
+
+STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
+
+CREDITS_PACKS = {
+    'basic': {
+        'name': 'Pack: Basic',
+        'unit_amount': 190
+    },
+    'pro': {
+        'name': 'Pack: Pro',
+        'unit_amount': 760
+    },
+}
