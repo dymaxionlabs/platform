@@ -2,7 +2,7 @@ import {
   Map as LeafletMap,
   TileLayer,
   ZoomControl,
-  GeoJSON
+  GeoJSON,
 } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 const mapContainerStyle = {
   width: "100vw",
   height: "100vh",
-  flex: 1
+  flex: 1,
 };
 
 // FIXME Move this to config/
@@ -24,24 +24,24 @@ const ROIPolygon = ({ data }) => (
       fillColor: "#000",
       fillOpacity: 0.05,
       color: "#fff",
-      weight: 2
+      weight: 2,
     }}
   />
 );
 
 const MapboxBasemap = ({ style }) => {
-  const styleId = style || "mapbox.satellite";
+  const styleId = style || "mapbox/satellite-v9";
   return (
     <Basemap
-      url={`https://api.tiles.mapbox.com/v4/${styleId}/{z}/{x}/{y}.png?access_token=${MAPBOX_TOKEN}`}
+      url={`https://api.mapbox.com/styles/v1/${styleId}/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`}
       attribution='&amp;copy <a href="http://mapbox.com/copyright">Mapbox</a> contributors'
+      tileSize={512}
+      zoomOffset={-1}
     />
   );
 };
 
-const Basemap = ({ url, attribution }) => (
-  <TileLayer url={url} attribution={attribution} zIndex={-1} />
-);
+const Basemap = (props) => <TileLayer {...props} zIndex={-1} />;
 
 class Map extends React.Component {
   render() {
