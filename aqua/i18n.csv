@@ -157,6 +157,7 @@ me,sidebar.tasks,Tareas,Tasks
 me,sidebar.credits,Créditos,Credits
 me,sidebar.keys,API Keys,API Keys
 me,sidebar.profile,Perfil,Profile
+me,sidebar.tables,Tablas,
 me,download,Descargar,Download
 me,view,Ver,View
 me,models.title,Modelos,Models
@@ -189,6 +190,7 @@ me,maps.created_at,Fecha de creación,Creation date
 me,files.title,Archivos,Files
 me,files.name,Nombre del archivo,File name
 me,files.created_at,Fecha de subida,Upload date
+me,tables.title,Tablas,Tables
 me,requests.title,Pedidos,Requests
 me,requests.created_at,Fecha,Date
 me,requests.layers,Capas,Layers

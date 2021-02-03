@@ -23,10 +23,11 @@ import AllInboxIcon from "@material-ui/icons/AllInbox";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CollectionsIcon from "@material-ui/icons/Collections";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import MapIcon from "@material-ui/icons/Map";
+import BarChartIcon from "@material-ui/icons/BarChart";
 import MemoryIcon from "@material-ui/icons/Memory";
 import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
+import MapIcon from "@material-ui/icons/Map";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import classNames from "classnames";
@@ -42,6 +43,7 @@ import MapsContent from "../../components/home/MapsContent";
 import ModalContactContent from "../../components/home/ModalContactContent";
 import ModelsContent from "../../components/home/ModelsContent";
 import TasksContent from "../../components/home/TasksContent";
+import TablesContent from "../../components/home/TablesContent";
 import UserProfileContent from "../../components/home/UserProfileContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withTranslation } from "../../i18n";
@@ -150,6 +152,7 @@ const sortedSections = [
   "files",
   "tasks",
   "models",
+  "tables",
   "viewer",
   "_divider",
   "keys",
@@ -169,6 +172,12 @@ const sections = {
     path: "/models",
     icon: <MemoryIcon />,
     content: <ModelsContent />,
+  },
+  tables: {
+    key: "tables",
+    path: "/tables",
+    icon: <BarChartIcon />,
+    content: <TablesContent />,
   },
   files: {
     key: "files",
@@ -382,9 +391,9 @@ class Home extends React.Component {
             <ListItem
               button
               onClick={() => this.handleSectionChange(null)}
-              selected={!section}             
+              selected={!section}
             >
-               <Tooltip title={open ? "" : t(`sidebar.dashboard`)}> 
+               <Tooltip title={open ? "" : t(`sidebar.dashboard`)}>
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>

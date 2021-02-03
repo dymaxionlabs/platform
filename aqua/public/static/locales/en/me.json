@@ -92,8 +92,12 @@
     "models": "Models",
     "profile": "Profile",
     "requests": "Requests",
+    "tables": "",
     "tasks": "Tasks",
     "viewer": "Viewer"
+  },
+  "tables": {
+    "title": "Tables"
   },
   "tasks": {
     "states": {
