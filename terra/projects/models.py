@@ -44,6 +44,8 @@ class Project(models.Model):
     no_images = models.BooleanField(_("No images"), default=False)
     estimators_module = models.BooleanField(_("Enable Estimators module"),
                                             default=True)
+    redash_dashboard_url = models.URLField(_("Redash Dashboard URL"),
+                                           blank=True)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
