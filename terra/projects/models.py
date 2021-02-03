@@ -42,6 +42,8 @@ class Project(models.Model):
                                    max_length=255,
                                    blank=True)
     no_images = models.BooleanField(_("No images"), default=False)
+    estimators_module = models.BooleanField(_("Enable Estimators module"),
+                                            default=True)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
