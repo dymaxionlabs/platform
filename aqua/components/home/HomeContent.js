@@ -22,10 +22,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import Moment from "react-moment";
 import { i18n, withTranslation, Link } from "../../i18n";
+import { logout } from "../../utils/auth";
 import { buildApiUrl } from "../../utils/api";
 import { formatBytes } from "../../utils/utils";
 import FileDownload from "../../utils/file-download";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import { withSnackbar } from "notistack";
 
 const styles = (theme) => ({
   root: {
@@ -453,5 +455,6 @@ HomeContent.propTypes = {
 
 HomeContent = withStyles(styles)(HomeContent);
 HomeContent = withTranslation("me")(HomeContent);
+HomeContent = withSnackbar(HomeContent);
 
 export default HomeContent;
