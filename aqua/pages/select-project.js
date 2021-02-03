@@ -99,8 +99,10 @@ class NewProjectForm extends React.Component {
           },
         }
       );
-      const { uuid } = response.data;
+      const { uuid, redash_dashboard_url, estimators_module } = response.data;
       cookie.set("project", uuid);
+      cookie.set("tablesEnabled", redash_dashboard_url !== "");
+      cookie.set("modelsEnabled", estimators_module);
       routerPush("/home/");
     } catch (err) {
       const response = err.response;
@@ -191,7 +193,8 @@ class OpenProjectList extends React.Component {
       const { count, results } = response.data;
       this.setState({ count, results });
       if (count == 1 && !cookie.get("project")) {
-        this.handleSelectProject(results[0].uuid);
+        const project = results[0];
+        this.handleSelectProject(project);
       }
     } catch (err) {
       const response = err.response;
@@ -206,8 +209,10 @@ class OpenProjectList extends React.Component {
     }
   }
 
-  handleSelectProject = (uuid) => {
-    cookie.set("project", uuid);
+  handleSelectProject = (project) => {
+    cookie.set("project", project.uuid);
+    cookie.set("tablesEnabled", project.redash_dashboard_url !== "");
+    cookie.set("modelsEnabled", project.estimators_module);
     routerPush("/home/");
   };
 
@@ -225,7 +230,7 @@ class OpenProjectList extends React.Component {
             <ListItem
               button
               key={project.uuid}
-              onClick={() => this.handleSelectProject(project.uuid)}
+              onClick={() => this.handleSelectProject(project)}
             >
               <ListItemAvatar>
                 <Avatar>

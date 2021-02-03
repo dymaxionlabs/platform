@@ -240,7 +240,10 @@ class Home extends React.Component {
   componentDidMount() {
     // If there is not selected project, go there
     const projectId = cookie.get("project");
-    if (!projectId) {
+    const tablesEnabled = cookie.get("tablesEnabled");
+    const modelsEnabled = cookie.get("modelsEnabled");
+
+    if (!projectId || !tablesEnabled || !modelsEnabled) {
       routerReplace("/select-project");
     }
   }
@@ -281,7 +284,20 @@ class Home extends React.Component {
     const { t, classes, token, username } = this.props;
     const { section, open, contextualMenuOpen } = this.state;
 
-    const sectionList = sortedSections;
+    const modelsEnabled = cookie.get("modelsEnabled") === "true" ? true : false;
+    const tablesEnabled = cookie.get("tablesEnabled") === "true" ? true : false;
+
+    const sectionList = sortedSections.filter(
+      (section) =>
+        (section === "models" && modelsEnabled) ||
+        (section === "tables" && tablesEnabled) ||
+        (section !== "models" && section !== "tables")
+    );
+
+    console.log("modelsEnabled:", modelsEnabled);
+    console.log("tablesEnabled:", tablesEnabled);
+    console.log(sectionList);
+
     const { contactModalOpen } = this.state;
 
     const originalContent = section && sections[section].content;
