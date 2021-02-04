@@ -61,13 +61,13 @@ class TablesContent extends React.Component {
     const { dashboardUrl } = this.state;
 
     return (
-      <div>
+      <div style={{  overflow: "hidden"  }}>
         <Typography variant="h6" gutterBottom component="h2">
           {t("tables.title")}
         </Typography>
         <Paper className={classes.root}>
           <iframe
-            style={{ border: "none", width: "100vw", height: "100vh" }}
+            style={{ border: "none", width: "100%", height: "75vh" }}
             src={dashboardUrl}
           ></iframe>
         </Paper>
