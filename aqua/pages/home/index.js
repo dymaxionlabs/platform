@@ -48,7 +48,10 @@ import UserProfileContent from "../../components/home/UserProfileContent";
 import SelectProjectButton from "../../components/SelectProjectButton";
 import { Link, withTranslation } from "../../i18n";
 import { logout, withAuthSync } from "../../utils/auth";
-import { routerReplace } from "../../utils/router";
+import { routerPush } from "../../utils/router";
+import { withSnackbar } from "notistack";
+import { buildApiUrl } from "../../utils/api";
+import axios from "axios";
 
 const drawerWidth = 200;
 
@@ -213,8 +216,10 @@ const sections = {
 
 class Home extends React.Component {
   state = {
-    open: true,
+    loading: true,
+    projectName: null,
     section: null,
+    open: true,
     contextualMenuOpen: null,
     contactModalOpen: false,
   };
@@ -237,14 +242,45 @@ class Home extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // If there is not selected project, go there
-    const projectId = cookie.get("project");
+  async componentDidMount() {
+    await this.getCurrentProject();
+  }
+
+  async getCurrentProject() {
+    const id = cookie.get("project");
     const tablesEnabled = cookie.get("tablesEnabled");
     const modelsEnabled = cookie.get("modelsEnabled");
 
-    if (!projectId || !tablesEnabled || !modelsEnabled) {
-      routerReplace("/select-project");
+    // If some cookie is not present, force user to select project again
+    if (!id || !tablesEnabled || !modelsEnabled) {
+      routerPush("/select-project");
+      return;
+    }
+
+    const { token } = this.props;
+
+    try {
+      const response = await axios.get(buildApiUrl(`/projects/${id}/`), {
+        headers: { Authorization: token },
+      });
+      this.setState({
+        projectName: response.data.name,
+        loading: false,
+      });
+    } catch (err) {
+      const response = err.response;
+      if (response) {
+        if (response.status === 401) {
+          logout();
+          return;
+        } else {
+          console.error(response);
+        }
+      } else {
+        console.error(err);
+      }
+      // Force user to select another project
+      routerPush("/select-project");
     }
   }
 
@@ -282,7 +318,13 @@ class Home extends React.Component {
 
   render() {
     const { t, classes, token, username } = this.props;
-    const { section, open, contextualMenuOpen } = this.state;
+    const {
+      loading,
+      section,
+      projectName,
+      open,
+      contextualMenuOpen,
+    } = this.state;
 
     const modelsEnabled = cookie.get("modelsEnabled") === "true" ? true : false;
     const tablesEnabled = cookie.get("tablesEnabled") === "true" ? true : false;
@@ -293,10 +335,6 @@ class Home extends React.Component {
         (section === "tables" && tablesEnabled) ||
         (section !== "models" && section !== "tables")
     );
-
-    // console.log("modelsEnabled:", modelsEnabled);
-    // console.log("tablesEnabled:", tablesEnabled);
-    // console.log(sectionList);
 
     const { contactModalOpen } = this.state;
 
@@ -348,7 +386,7 @@ class Home extends React.Component {
                 color="secondary"
               />
             </div>
-            <SelectProjectButton token={token} />
+            <SelectProjectButton token={token} name={projectName} />
             <Button className={classes.button} onClick={this.handleClickOpen}>
               {t("simple_modal_contact_form:header")}
             </Button>
@@ -445,7 +483,8 @@ class Home extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {section == null ? <HomeContent token={token} /> : content}
+          {!loading &&
+            (section == null ? <HomeContent token={token} /> : content)}
         </main>
       </div>
     );
@@ -459,5 +498,6 @@ Home.propTypes = {
 Home = withStyles(styles)(Home);
 Home = withTranslation(["me", "common", "simple_modal_contact_form"])(Home);
 Home = withAuthSync(Home);
+Home = withSnackbar(Home);
 
 export default Home;
