@@ -34,7 +34,7 @@ class TablesContent extends React.Component {
       const response = await axios.get(buildApiUrl(`/projects/${projectId}/`), {
         headers: { Authorization: this.props.token },
       });
-      console.log(response.data);
+      // console.log(response.data);
       this.setState({
         dashboardUrl: response.data.redash_dashboard_url,
       });

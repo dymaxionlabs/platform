@@ -294,9 +294,9 @@ class Home extends React.Component {
         (section !== "models" && section !== "tables")
     );
 
-    console.log("modelsEnabled:", modelsEnabled);
-    console.log("tablesEnabled:", tablesEnabled);
-    console.log(sectionList);
+    // console.log("modelsEnabled:", modelsEnabled);
+    // console.log("tablesEnabled:", tablesEnabled);
+    // console.log(sectionList);
 
     const { contactModalOpen } = this.state;
 
@@ -409,11 +409,11 @@ class Home extends React.Component {
               onClick={() => this.handleSectionChange(null)}
               selected={!section}
             >
-               <Tooltip title={open ? "" : t(`sidebar.dashboard`)}>
-                  <ListItemIcon>
-                    <DashboardIcon />
-                  </ListItemIcon>
-                </Tooltip>
+              <Tooltip title={open ? "" : t(`sidebar.dashboard`)}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+              </Tooltip>
               <ListItemText primary={t(`sidebar.dashboard`)} />
             </ListItem>
           </Link>
