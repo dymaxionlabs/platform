@@ -222,6 +222,8 @@ class Home extends React.Component {
     open: true,
     contextualMenuOpen: null,
     contactModalOpen: false,
+    modelsEnabled: false,
+    tablesEnabled: false,
   };
 
   static async getInitialProps({ query }) {
@@ -248,11 +250,9 @@ class Home extends React.Component {
 
   async getCurrentProject() {
     const id = cookie.get("project");
-    const tablesEnabled = cookie.get("tablesEnabled");
-    const modelsEnabled = cookie.get("modelsEnabled");
 
-    // If some cookie is not present, force user to select project again
-    if (!id || !tablesEnabled || !modelsEnabled) {
+    // If id cookie is not present, force user to select project again
+    if (!id) {
       routerPush("/select-project");
       return;
     }
@@ -263,8 +263,11 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/projects/${id}/`), {
         headers: { Authorization: token },
       });
+      const { name, estimators_module, redash_dashboard_url } = response.data;
       this.setState({
-        projectName: response.data.name,
+        projectName: name,
+        modelsEnabled: estimators_module,
+        tablesEnabled: redash_dashboard_url !== "",
         loading: false,
       });
     } catch (err) {
@@ -324,10 +327,9 @@ class Home extends React.Component {
       projectName,
       open,
       contextualMenuOpen,
+      modelsEnabled,
+      tablesEnabled,
     } = this.state;
-
-    const modelsEnabled = cookie.get("modelsEnabled") === "true" ? true : false;
-    const tablesEnabled = cookie.get("tablesEnabled") === "true" ? true : false;
 
     const sectionList = sortedSections.filter(
       (section) =>

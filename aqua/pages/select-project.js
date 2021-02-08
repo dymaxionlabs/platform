@@ -99,10 +99,8 @@ class NewProjectForm extends React.Component {
           },
         }
       );
-      const { uuid, redash_dashboard_url, estimators_module } = response.data;
+      const { uuid } = response.data;
       cookie.set("project", uuid);
-      cookie.set("tablesEnabled", redash_dashboard_url !== "");
-      cookie.set("modelsEnabled", estimators_module);
       routerPush("/home/");
     } catch (err) {
       const response = err.response;
@@ -211,8 +209,6 @@ class OpenProjectList extends React.Component {
 
   handleSelectProject = (project) => {
     cookie.set("project", project.uuid);
-    cookie.set("tablesEnabled", project.redash_dashboard_url !== "");
-    cookie.set("modelsEnabled", project.estimators_module);
     routerPush("/home/");
   };
 
