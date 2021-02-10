@@ -6,10 +6,14 @@ class Command(BaseCommand):
     help = 'Clone a Map, including all of its Layers, to another Project'
 
     def add_arguments(self, parser):
-        parser.add_argument('--map-id', type=int, help="map id to clone from")
-        parser.add_argument('--project-id',
+        parser.add_argument('--map-id',
+                            required=True,
                             type=int,
-                            help="project id to copy map to")
+                            help='map id to clone from')
+        parser.add_argument('--project-id',
+                            required=True,
+                            type=int,
+                            help='project id to copy map to')
 
     def handle(self, *args, **options):
         project = Project.objects.get(pk=options['project_id'])
