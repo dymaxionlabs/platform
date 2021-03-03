@@ -345,3 +345,5 @@ CREDITS_PACKS = {
         'unit_amount': 76000
     },
 }
+
+TITILER_URL = os.getenv('TITILER_URL', 'localhost:7500')
