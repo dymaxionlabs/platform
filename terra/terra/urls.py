@@ -23,12 +23,11 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            LayerViewSet, MapViewSet,
-                            ProjectInvitationTokenViewSet, ProjectViewSet,
-                            SubscribeApiBetaView, SubscribeBetaView,
-                            TestAuthView, TestErrorView, TestTaskErrorView,
-                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
+from projects.views import (
+    ConfirmProjectInvitationView, ContactView, LayerViewSet, MapViewSet,
+    ProjectInvitationTokenViewSet, ProjectViewSet, SubscribeApiBetaView,
+    SubscribeBetaView, TestAuthView, TestErrorView, TestTaskErrorView,
+    UserAPIKeyViewSet, UserProfileViewSet, UserViewSet, TilesView)
 from stac.views import SearchView
 
 router = SimpleRouter()
@@ -90,6 +89,10 @@ urlpatterns = [
 
     #STAC urls
     url(r'^stac/search/?', SearchView.as_view()),
+
+    # Tiles (Titiler proxy view)
+    url(r'tiles/(?P<z>)/(?P<x>)/(?P<y>)(@(?P<scale>)x)?(\.(?P<format>))?',
+        TilesView.as_view()),
 
     # Test views
     url(r'^test/auth/?', TestAuthView.as_view()),

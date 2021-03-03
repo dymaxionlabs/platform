@@ -1,38 +1,28 @@
-import mimetypes
-import os
-import shutil
-import tempfile
 import django_rq
-
+import rest_auth.serializers
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models import Q
-from django.http import FileResponse
+from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
+from django.views import View
 from mailchimp3 import MailChimp
-from rest_auth.registration.views import RegisterView
 from rest_framework import generics, mixins, permissions, status, viewsets
-from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound
 
 from .mixins import ProjectRelatedModelListMixin, allowed_projects_for
-from .models import (Layer, Map, Project, ProjectInvitationToken, UserProfile,
-                     UserAPIKey)
-from .permissions import (HasAccessToMapPermission,
+from .models import (Layer, Map, Project, ProjectInvitationToken, UserAPIKey,
+                     UserProfile)
+from .permissions import (HasAccessToAPIKeyPermission,
+                          HasAccessToMapPermission,
                           HasAccessToProjectPermission,
-                          HasAccessToRelatedProjectFilesPermission,
-                          HasAccessToRelatedProjectPermission, UserPermission,
-                          UserProfilePermission, HasUserAPIKey,
-                          HasAccessToAPIKeyPermission)
-from .renderers import BinaryFileRenderer
-from .serializers import (ContactSerializer, LayerSerializer,
-                          LoginUserSerializer, MapSerializer,
+                          HasAccessToRelatedProjectPermission, HasUserAPIKey,
+                          UserPermission, UserProfilePermission)
+from .serializers import (ContactSerializer, LayerSerializer, MapSerializer,
                           ProjectInvitationTokenSerializer, ProjectSerializer,
-                          SubscribeBetaSerializer, UserProfileSerializer,
-                          UserSerializer, UserAPIKeySerializer)
+                          SubscribeBetaSerializer, UserAPIKeySerializer,
+                          UserProfileSerializer, UserSerializer)
 
 
 class RelatedProjectAPIView(APIView):
@@ -310,3 +300,8 @@ class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class TilesView(View):
+    def get(self, request):
+        return HttpResponse('nothing', status=status.HTTP_200_OK)
