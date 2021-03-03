@@ -1,0 +1,15 @@
+[Unit]
+Description=Titiler
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/
+ExecStart=/home/ubuntu/.local/bin/uvicorn \
+          --workers 3 \
+          --port 7500 \
+          titiler.main:app
+
+[Install]
+WantedBy=multi-user.target
