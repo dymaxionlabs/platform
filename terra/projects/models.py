@@ -117,6 +117,7 @@ class Layer(models.Model):
     area_geom = models.PolygonField()
     date = models.DateField(null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
+    use_cog_tiles = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
