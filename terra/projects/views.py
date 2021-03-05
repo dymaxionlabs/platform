@@ -300,8 +300,3 @@ class UserAPIKeyViewSet(generics.ListCreateAPIView, mixins.UpdateModelMixin):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
-
-class TilesView(View):
-    def get(self, request):
-        return HttpResponse('nothing', status=status.HTTP_200_OK)
