@@ -8,6 +8,8 @@ import { withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { logout, withAuthSync } from "../utils/auth";
 
+const TILER_URL = process.env.NEXT_PUBLIC_TILER_URL;
+
 const initialViewport = {
   center: [-36.179114636463652, -62.846142338298094],
   zoom: 12
@@ -81,12 +83,12 @@ class Layers extends React.Component {
     // Build tile layer: use TileLayer or VectorTileLayer based on layer type
     let tileLayer;
     if (layer) {
-      const url = layer.tiles_url;
+      const url = layer.use_cog_tiles ? `${TILER_URL}/layer/${layer.uuid}/{z}/{x}/{y}.png` : layer.tiles_url;
       const maxZoom = (layer.extra_fields && layer.extra_fields.maxZoom) || 18;
 
       if (layer.layer_type === "R") {
         tileLayer = (
-          <TileLayer type="raster" url={layer.tiles_url} maxZoom={maxZoom} />
+          <TileLayer type="raster" url={url} maxZoom={maxZoom} />
         );
       } else {
         const styles = layer.extra_fields && layer.extra_fields["styles"];

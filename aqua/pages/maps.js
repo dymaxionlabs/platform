@@ -10,6 +10,8 @@ import { withTranslation } from "../i18n";
 import { buildApiUrl } from "../utils/api";
 import { withAuthSync } from "../utils/auth";
 
+const TILER_URL = process.env.NEXT_PUBLIC_TILER_URL;
+
 // const sentinelModifiedAttribution =
 //   'Contains modified <a href="http://www.esa.int/Our_Activities/Observing_the_Earth/Copernicus">Copernicus</a> Sentinel data 2019, processed by ESA.';
 // const dymaxionAttribution = "&copy; Dymaxion Labs 2019";
@@ -150,7 +152,7 @@ class Maps extends React.Component {
         const opacity = (layersOpacity[layer.uuid] || 100) / 100;
         const maxZoom =
           (layer.extra_fields && layer.extra_fields.maxZoom) || 18;
-        const url = layer.tiles_url;
+        const url = layer.use_cog_tiles ? `${TILER_URL}/layer/${layer.uuid}/{z}/{x}/{y}.png` : layer.tiles_url;
 
         if (layer.layer_type === "R") {
           tileLayers.push(
