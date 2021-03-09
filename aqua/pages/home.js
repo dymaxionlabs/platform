@@ -14,7 +14,6 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  Chip,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
@@ -102,10 +101,6 @@ const styles = (theme) => ({
   },
   titleLogo: {
     marginRight: 5,
-  },
-  betaChip: {
-    marginLeft: theme.spacing(1),
-    marginTop: 3,
   },
   drawerPaper: {
     position: "relative",
@@ -382,11 +377,6 @@ class Home extends React.Component {
                   Dymaxion Labs Platform
                 </Typography>
               </Link>
-              <Chip
-                className={classes.betaChip}
-                label="Beta"
-                color="secondary"
-              />
             </div>
             <SelectProjectButton token={token} name={projectName} />
             <Button className={classes.button} onClick={this.handleClickOpen}>
