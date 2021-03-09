@@ -7,16 +7,16 @@ name = "pypi"
 django = "==3.0.5"
 djangorestframework = "==3.11"
 python-dotenv = "*"
-django-anymail = {version = "*",extras = ["mailgun"]}
+django-anymail = {extras = ["mailgun"], version = "*"}
 "psycopg2-binary" = "*"
 gunicorn = "*"
-django-rest-auth = {version = "*",extras = ["with_social"]}
+django-rest-auth = {extras = ["with_social"], version = "*"}
 django-cors-headers = "*"
 drf-yasg = "*"
 djangorestframework-gis = "*"
 django-jsoneditor = "*"
 django-guardian = "*"
-django-storages = {version = "*",extras = ["google"]}
+django-storages = {extras = ["google"], version = "*"}
 sentry-sdk = "==0.12.3"
 honcho = "*"
 rasterio = "*"
