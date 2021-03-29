@@ -306,7 +306,7 @@ class LayerViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     lookup_field = "uuid"
 
 
-class DashboardViewSet(viewsets.ReadOnlyModelViewSet):
+class DashboardViewSet(ProjectRelatedModelListMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Dashboard.objects.all().order_by("-created_at")
     serializer_class = DashboardSerializer
     permission_classes = (
