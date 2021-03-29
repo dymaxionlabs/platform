@@ -23,91 +23,104 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            LayerViewSet, MapViewSet,
-                            ProjectInvitationTokenViewSet, ProjectViewSet,
-                            SubscribeApiBetaView, SubscribeBetaView,
-                            TestAuthView, TestErrorView, TestTaskErrorView,
-                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
+from projects.views import (
+    ConfirmProjectInvitationView,
+    ContactView,
+    LayerViewSet,
+    MapViewSet,
+    ProjectInvitationTokenViewSet,
+    ProjectViewSet,
+    SubscribeApiBetaView,
+    SubscribeBetaView,
+    TestAuthView,
+    TestErrorView,
+    TestTaskErrorView,
+    UserAPIKeyViewSet,
+    UserProfileViewSet,
+    UserViewSet,
+    DashboardViewSet,
+)
 from stac.views import SearchView
 
 router = SimpleRouter()
-router.register(r'users', UserViewSet)
-router.register(r'user-profiles', UserProfileViewSet)
-router.register(r'projects', ProjectViewSet)
-router.register(r'layers', LayerViewSet)
-router.register(r'maps', MapViewSet)
-router.register(r'projects/invitations', ProjectInvitationTokenViewSet)
+router.register(r"users", UserViewSet)
+router.register(r"user-profiles", UserProfileViewSet)
+router.register(r"projects", ProjectViewSet)
+router.register(r"layers", LayerViewSet)
+router.register(r"maps", MapViewSet)
+router.register(r"dashboards", DashboardViewSet)
+router.register(r"projects/invitations", ProjectInvitationTokenViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='Terra API',
-        default_version='v1',
-        description='This is the description of the API',
-        terms_of_service='https://www.dymaxionlabs.com/terms/',
-        contact=openapi.Contact(email='contact@dymaxionlabs.com'),
-        license=openapi.License(name='BSD License'),
+        title="Terra API",
+        default_version="v1",
+        description="This is the description of the API",
+        terms_of_service="https://www.dymaxionlabs.com/terms/",
+        contact=openapi.Contact(email="contact@dymaxionlabs.com"),
+        license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=(permissions.AllowAny, ),
+    permission_classes=(permissions.AllowAny,),
 )
 
 swagger_urls = [
     # Documentation
-    url(r'^swagger(?P<format>\.json|\.yaml)$',
+    url(
+        r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
-        name='schema-json'),
-    url(r'^swagger/$',
-        schema_view.with_ui('swagger', cache_timeout=0),
-        name='schema-swagger-ui'),
-    url(r'^redoc/$',
-        schema_view.with_ui('redoc', cache_timeout=0),
-        name='schema-redoc'),
+        name="schema-json",
+    ),
+    url(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    url(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+    ),
 ]
 
 urlpatterns = [
     # Authentication
-    url(r'^auth/', include('rest_auth.urls')),
-    url(r'^auth/registration/', include('rest_auth.registration.urls')),
-
+    url(r"^auth/", include("rest_auth.urls")),
+    url(r"^auth/registration/", include("rest_auth.registration.urls")),
     # Administration
-    url(r'^admin/', admin.site.urls),
-
+    url(r"^admin/", admin.site.urls),
     # Other custom views
-    url(r'^projects/invitations/(?P<key>[^/]+)/confirm/?',
-        ConfirmProjectInvitationView.as_view()),
-    url(r'^contact/?', ContactView.as_view()),
-    url(r'^subscribe/beta/?', SubscribeBetaView.as_view()),
-    url(r'^subscribe/api_beta/?', SubscribeApiBetaView.as_view()),
     url(
-        r'^api_keys/(?P<prefix>[^/]+)$',
+        r"^projects/invitations/(?P<key>[^/]+)/confirm/?",
+        ConfirmProjectInvitationView.as_view(),
+    ),
+    url(r"^contact/?", ContactView.as_view()),
+    url(r"^subscribe/beta/?", SubscribeBetaView.as_view()),
+    url(r"^subscribe/api_beta/?", SubscribeApiBetaView.as_view()),
+    url(
+        r"^api_keys/(?P<prefix>[^/]+)$",
         UserAPIKeyViewSet.as_view(),
     ),
     url(
-        r'^api_keys/',
+        r"^api_keys/",
         UserAPIKeyViewSet.as_view(),
     ),
-
-    #STAC urls
-    url(r'^stac/search/?', SearchView.as_view()),
-
+    # STAC urls
+    url(r"^stac/search/?", SearchView.as_view()),
     # Test views
-    url(r'^test/auth/?', TestAuthView.as_view()),
-    url(r'^test/error/?', TestErrorView.as_view()),
-    url(r'^test/taskerror/?', TestTaskErrorView.as_view()),
-
+    url(r"^test/auth/?", TestAuthView.as_view()),
+    url(r"^test/error/?", TestErrorView.as_view()),
+    url(r"^test/taskerror/?", TestTaskErrorView.as_view()),
     # ...
-    url(r'^', include(router.urls)),
+    url(r"^", include(router.urls)),
 ]
 
 # API documentation only if DEBUG=1
 if settings.DEBUG:
     urlpatterns += swagger_urls
 
-urlpatterns += [path('storage/', include('storage.urls'))]
-urlpatterns += [path('tasks/', include('tasks.urls'))]
-urlpatterns += [path('estimators/', include('estimators.urls'))]
-urlpatterns += [path('credits/', include('credits.urls'))]
-urlpatterns += [path('admin/django-rq/', include('django_rq.urls'))]
-urlpatterns += [path('quotas/', include('quotas.urls'))]
+urlpatterns += [path("storage/", include("storage.urls"))]
+urlpatterns += [path("tasks/", include("tasks.urls"))]
+urlpatterns += [path("estimators/", include("estimators.urls"))]
+urlpatterns += [path("credits/", include("credits.urls"))]
+urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
+urlpatterns += [path("quotas/", include("quotas.urls"))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

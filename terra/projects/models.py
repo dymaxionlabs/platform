@@ -30,28 +30,24 @@ class UserProfile(models.Model):
 
 class Project(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    owner = models.ForeignKey(User,
-                              on_delete=models.CASCADE,
-                              related_name=_('projects'))
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name=_("projects")
+    )
     collaborators = models.ManyToManyField(User)
     # FIXME Deprecated, replaced by object-level permissions
     groups = models.ManyToManyField(Group, blank=True)
 
     name = models.CharField(_("Name"), max_length=80)
-    description = models.CharField(_("Description"),
-                                   max_length=255,
-                                   blank=True)
+    description = models.CharField(_("Description"), max_length=255, blank=True)
     no_images = models.BooleanField(_("No images"), default=False)
-    estimators_module = models.BooleanField(_("Enable Estimators module"),
-                                            default=True)
-    redash_dashboard_url = models.URLField(_("Redash Dashboard URL"),
-                                           blank=True)
+    estimators_module = models.BooleanField(_("Enable Estimators module"), default=True)
+    redash_dashboard_url = models.URLField(_("Redash Dashboard URL"), blank=True)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     class Meta:
-        unique_together = (('owner', 'name'), )
+        unique_together = (("owner", "name"),)
         verbose_name = _("Project")
         verbose_name_plural = _("Projects")
 
@@ -62,21 +58,19 @@ class Project(models.Model):
 class ProjectInvitationToken(models.Model):
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
 
-    project = models.ForeignKey(Project,
-                                on_delete=models.CASCADE,
-                                verbose_name=_("Project"))
-    email = models.CharField(_("Email"),
-                             max_length=75,
-                             blank=True,
-                             default=None,
-                             null=True)
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, verbose_name=_("Project")
+    )
+    email = models.CharField(
+        _("Email"), max_length=75, blank=True, default=None, null=True
+    )
     confirmed = models.BooleanField(_("Confirmed"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'email'), )
+        unique_together = (("project", "email"),)
         verbose_name = _("Project invitation token")
         verbose_name_plural = _("Project invitation tokens")
 
@@ -89,7 +83,7 @@ class ProjectInvitationToken(models.Model):
         return binascii.hexlify(os.urandom(20)).decode()
 
     def confirm_for(self, user):
-        assign_perm('view_project', user, self.project)
+        assign_perm("view_project", user, self.project)
         self.confirmed = True
         self.save(update_fields=["confirmed"])
 
@@ -98,20 +92,18 @@ class ProjectInvitationToken(models.Model):
 
 
 class Layer(models.Model):
-    RASTER = 'R'
-    VECTOR = 'V'
+    RASTER = "R"
+    VECTOR = "V"
     LAYER_CHOICES = (
-        (RASTER, 'Raster'),
-        (VECTOR, 'Vector'),
+        (RASTER, "Raster"),
+        (VECTOR, "Vector"),
     )
-    BASE_TILE_URL = 'https://storage.googleapis.com/{bucket}/{uuid}'
+    BASE_TILE_URL = "https://storage.googleapis.com/{bucket}/{uuid}"
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
-    layer_type = models.CharField(max_length=1,
-                                  choices=LAYER_CHOICES,
-                                  default=RASTER)
+    layer_type = models.CharField(max_length=1, choices=LAYER_CHOICES, default=RASTER)
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
     area_geom = models.PolygonField()
@@ -123,27 +115,29 @@ class Layer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'name', 'date'), )
+        unique_together = (("project", "name", "date"),)
 
     def __str__(self):
-        return '{name} ({date})'.format(name=self.name, date=self.date)
+        return "{name} ({date})".format(name=self.name, date=self.date)
 
     def tiles_url(self):
-        base_url = self.BASE_TILE_URL.format(bucket=settings.TILES_BUCKET,
-                                             uuid=self.uuid)
-        return base_url + '/{z}/{x}/{y}.' + self.tiles_extension()
+        base_url = self.BASE_TILE_URL.format(
+            bucket=settings.TILES_BUCKET, uuid=self.uuid
+        )
+        return base_url + "/{z}/{x}/{y}." + self.tiles_extension()
 
     def tiles_bucket_url(self):
-        return 'gs://{bucket}/{uuid}'.format(bucket=settings.TILES_BUCKET,
-                                             uuid=self.uuid)
+        return "gs://{bucket}/{uuid}".format(
+            bucket=settings.TILES_BUCKET, uuid=self.uuid
+        )
 
     def tiles_extension(self):
         if self.layer_type == self.RASTER:
-            return 'png'
+            return "png"
         elif self.layer_type == self.VECTOR:
-            return 'pbf'
+            return "pbf"
         else:
-            raise TypeError('unknown layer type {}'.format(self.layer_type))
+            raise TypeError("unknown layer type {}".format(self.layer_type))
 
     def extent(self):
         """ Get area extent """
@@ -159,7 +153,7 @@ class Layer(models.Model):
                     "stroke": True,
                     "weight": 0.5,
                     "fillColor": order % len(settings.LAYERS_FILL_COLOR),
-                    "fillOpacity": 0.5
+                    "fillOpacity": 0.5,
                 }
             }
         }
@@ -178,7 +172,7 @@ class Map(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('project', 'name'), )
+        unique_together = (("project", "name"),)
 
     def __str__(self):
         return self.name
@@ -190,20 +184,19 @@ class Map(models.Model):
 
 
 class MapLayer(models.Model):
-    map = models.ForeignKey(Map,
-                            related_name='layers',
-                            on_delete=models.CASCADE)
+    map = models.ForeignKey(Map, related_name="layers", on_delete=models.CASCADE)
     layer = models.OneToOneField(Layer, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = (('map', 'order'), ('map', 'layer'))
-        ordering = ('order', )
+        unique_together = (("map", "order"), ("map", "layer"))
+        ordering = ("order",)
 
     def __str__(self):
-        return '{layer_name} ({map_name})'.format(layer_name=self.layer.name,
-                                                  map_name=self.map.name)
+        return "{layer_name} ({map_name})".format(
+            layer_name=self.layer.name, map_name=self.map.name
+        )
 
     def save(self, swapping=False, *args, **kwargs):
         if not self.id:
@@ -212,7 +205,7 @@ class MapLayer(models.Model):
             except IndexError:
                 self.order = 1  # 0 is a special index used in swap
         if self.order == 0 and not swapping:
-            raise ValidationError(_('Cannot set order to 0'), code='invalid')
+            raise ValidationError(_("Cannot set order to 0"), code="invalid")
         super().save(*args, **kwargs)
 
     @classmethod
@@ -225,7 +218,22 @@ class MapLayer(models.Model):
 
     @classmethod
     def max_order(cls):
-        return cls.objects.order_by('-order')[0].order
+        return cls.objects.order_by("-order")[0].order
+
+
+class Dashboard(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
+    url = models.URLField()
+    name = models.CharField(max_length=80)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (("project", "url"),)
+
+    def __str__(self):
+        return self.name
 
 
 class UserAPIKey(AbstractAPIKey):
