@@ -440,12 +440,12 @@ class Home extends React.Component {
               onClick={() => this.handleSectionChange(null)}
               selected={!section}
             >
-              <Tooltip title={open ? "" : t(`sidebar.dashboard`)}>
+              <Tooltip title={open ? "" : t(`sidebar.home`)}>
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
               </Tooltip>
-              <ListItemText primary={t(`sidebar.dashboard`)} />
+              <ListItemText primary={t(`sidebar.home`)} />
             </ListItem>
           </Link>
           <Divider />

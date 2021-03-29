@@ -85,9 +85,9 @@
   },
   "sidebar": {
     "credits": "Credits",
-    "dashboard": "Dashboard",
     "dashboards": "Dashboards",
     "files": "Files",
+    "home": "Home",
     "keys": "API Keys",
     "layers": "Layers",
     "models": "Models",
