@@ -42,7 +42,7 @@ import MapsContent from "../components/home/MapsContent";
 import ModalContactContent from "../components/home/ModalContactContent";
 import ModelsContent from "../components/home/ModelsContent";
 import TasksContent from "../components/home/TasksContent";
-import TablesContent from "../components/home/TablesContent";
+import DashboardsContent from "../components/home/DashboardsContent";
 import UserProfileContent from "../components/home/UserProfileContent";
 import SelectProjectButton from "../components/SelectProjectButton";
 import { Link, withTranslation } from "../i18n";
@@ -150,7 +150,7 @@ const sortedSections = [
   "files",
   "tasks",
   "models",
-  "tables",
+  "dashboards",
   "viewer",
   "_divider",
   "keys",
@@ -171,11 +171,11 @@ const sections = {
     icon: <MemoryIcon />,
     content: <ModelsContent />,
   },
-  tables: {
-    key: "tables",
-    path: "/tables",
+  dashboards: {
+    key: "dashboards",
+    path: "/dashboards",
     icon: <BarChartIcon />,
-    content: <TablesContent />,
+    content: <DashboardsContent />,
   },
   files: {
     key: "files",
@@ -218,7 +218,7 @@ class Home extends React.Component {
     contextualMenuOpen: null,
     contactModalOpen: false,
     modelsEnabled: false,
-    tablesEnabled: false,
+    dashboardsEnabled: false,
   };
 
   static async getInitialProps({ query }) {
@@ -258,11 +258,11 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/projects/${id}/`), {
         headers: { Authorization: token },
       });
-      const { name, estimators_module, redash_dashboard_url } = response.data;
+      const { name, estimators_module, dashboards_module } = response.data;
       this.setState({
         projectName: name,
         modelsEnabled: estimators_module,
-        tablesEnabled: redash_dashboard_url !== "",
+        dashboardsEnabled: dashboards_module,
         loading: false,
       });
     } catch (err) {
@@ -315,7 +315,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const { t, classes, token, username } = this.props;
+    const { t, query, classes, token, username } = this.props;
     const {
       loading,
       section,
@@ -323,14 +323,14 @@ class Home extends React.Component {
       open,
       contextualMenuOpen,
       modelsEnabled,
-      tablesEnabled,
+      dashboardsEnabled,
     } = this.state;
 
     const sectionList = sortedSections.filter(
       (section) =>
         (section === "models" && modelsEnabled) ||
-        (section === "tables" && tablesEnabled) ||
-        (section !== "models" && section !== "tables")
+        (section === "dashboards" && dashboardsEnabled) ||
+        (section !== "models" && section !== "dashboards")
     );
 
     const { contactModalOpen } = this.state;
@@ -341,6 +341,7 @@ class Home extends React.Component {
       React.cloneElement(originalContent, {
         token,
         username,
+        id: query.id,
       });
 
     return (

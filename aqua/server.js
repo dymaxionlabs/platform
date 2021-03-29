@@ -56,6 +56,11 @@ const handle = app.getRequestHandler();
     return app.render(req, res, "/home", { section: section });
   });
 
+  server.get("/home/dashboards/:id", (req, res) => {
+    const { id } = req.params;
+    return app.render(req, res, "/home", { section: "dashboards", id });
+  });
+
   server.get("/models", (req, res) => {
     return res.redirect("/home/models");
   });
