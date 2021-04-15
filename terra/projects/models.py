@@ -187,12 +187,12 @@ class Map(models.Model):
 
 class MapLayer(models.Model):
     map = models.ForeignKey(Map, related_name="layers", on_delete=models.CASCADE)
-    layer = models.OneToOneField(Layer, on_delete=models.CASCADE)
+    layer = models.ForeignKey(Layer, related_name="maps", on_delete=models.CASCADE)
     order = models.PositiveIntegerField(blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = (("map", "order"), ("map", "layer"))
+        unique_together = ("map", "layer", "order")
         ordering = ("order",)
 
     def __str__(self):
