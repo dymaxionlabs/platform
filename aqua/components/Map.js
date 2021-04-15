@@ -45,7 +45,7 @@ const Basemap = (props) => <TileLayer {...props} zIndex={-1} />;
 
 class Map extends React.Component {
   render() {
-    const { children, roiData, mapboxStyle, ...extraProps } = this.props;
+    const { children, roiData, mapboxStyle, basemap, ...extraProps } = this.props;
 
     return (
       <LeafletMap
@@ -54,7 +54,7 @@ class Map extends React.Component {
         zoomControl={false}
         {...extraProps}
       >
-        <MapboxBasemap style={mapboxStyle} />
+        {basemap ? <Basemap url={basemap.url} attribution={basemap.attribution} /> : <MapboxBasemap style={mapboxStyle} />}
         {children}
         {roiData && <ROIPolygon data={roiData} />}
 

@@ -133,8 +133,8 @@ class Maps extends React.Component {
 
     const layers = map
       ? map.layers
-          .sort((a, b) => a.order - b.order)
-          .map(mapLayer => mapLayer.layer)
+        .sort((a, b) => a.order - b.order)
+        .map(mapLayer => mapLayer.layer)
       : [];
 
     // Sorted active layers
@@ -192,6 +192,7 @@ class Maps extends React.Component {
     );
 
     const mapboxStyle = map && map.extra_fields && map.extra_fields.mapboxStyle;
+    const basemap = map && map.extra_fields && map.extra_fields.basemap;
 
     let areaData;
     if (
@@ -223,6 +224,7 @@ class Maps extends React.Component {
           viewport={viewport}
           onViewportChanged={this.handleMapViewportChanged}
           mapboxStyle={mapboxStyle}
+          basemap={basemap}
           roiData={areaData}
         >
           <LayersFab
