@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import LayersIcon from "@material-ui/icons/Layers";
 import { withTranslation } from "../i18n";
 import OpacitySlider from "./OpacitySlider";
+import MapSelector from "./MapsSelector"
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -47,7 +48,7 @@ class LayersFab extends React.Component {
   }
 
   render() {
-    const { t, classes, layers, activeLayers, onOpacityChange } = this.props;
+    const { t, classes, layers, activeLayers, onOpacityChange, basemaps, onBasemapChange, currentBasemap } = this.props;
     const layersOpacity = this.props.layersOpacity || {};
 
     const { anchorEl } = this.state;
@@ -92,6 +93,15 @@ class LayersFab extends React.Component {
               />
             </MenuItem>
           ))}
+          {basemaps ? 
+            <MenuItem>
+              <MapSelector
+                basemaps={basemaps}
+                onBasemapChange={onBasemapChange}
+                currentBasemap={currentBasemap}
+              />
+            </MenuItem>
+          : null }
         </Menu>
       </div>
     );

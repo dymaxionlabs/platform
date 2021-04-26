@@ -39,7 +39,12 @@ class Maps extends React.Component {
       center: [-36.179114636463652, -62.846142338298094],
       zoom: 12
     },
-    layersOpacity: {}
+    layersOpacity: {},
+    basemap: {
+      "name": "Satélite (Mapbox)",
+      "type": "mapbox",
+      "style": "mapbox/satellite-v9"
+    }
   };
 
   static async getInitialProps({ query }) {
@@ -139,9 +144,13 @@ class Maps extends React.Component {
     });
   };
 
+  handleBasemapChange = (basemap) => {
+    this.setState({ basemap: basemap})
+  }
+
   render() {
     const { token } = this.props;
-    const { viewport, bounds, map, activeLayers, layersOpacity } = this.state;
+    const { viewport, bounds, map, activeLayers, layersOpacity, basemap } = this.state;
 
     const layers = map
       ? map.layers
@@ -203,8 +212,21 @@ class Maps extends React.Component {
         layer.extra_fields.legend
     );
 
-    const mapboxStyle = map && map.extra_fields && map.extra_fields.mapboxStyle;
-    const basemap = map && map.extra_fields && map.extra_fields.basemap;
+    const basemaps = map && map.extra_fields && map.extra_fields.basemaps;
+    //json de prueba
+    // [
+    //   {
+    //     "name": "OpenStreetMap",
+    //     "type": "xyz",
+    //     "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    //     "attribution": "OpenStreetMap contributors, CC-BY-SA"
+    //   },
+    //   {
+    //     "name": "Satélite (Mapbox)",
+    //     "type": "mapbox",
+    //     "style": "mapbox/satellite-v9"
+    //   }
+    // ];
 
     let areaData;
     if (
@@ -235,7 +257,6 @@ class Maps extends React.Component {
           bounds={bounds}
           viewport={viewport}
           onViewportChanged={this.handleMapViewportChanged}
-          mapboxStyle={mapboxStyle}
           basemap={basemap}
           roiData={areaData}
         >
@@ -245,6 +266,9 @@ class Maps extends React.Component {
             layersOpacity={layersOpacity}
             onToggle={this.handleToggleLayer}
             onOpacityChange={this.handleOpacityChange}
+            basemaps={basemaps}
+            onBasemapChange={this.handleBasemapChange}
+            currentBasemap={basemap}
           />
           <LayersLegendExpansionPanel layers={layersWithLegend} />
           {tileLayers}
