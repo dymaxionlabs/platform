@@ -59,11 +59,21 @@ class Maps extends React.Component {
       .get(buildApiUrl(`/maps/${uuid}/`), { headers: headers })
       .then(response => {
         const map = response.data;
-        const minBounds = [map.extent[1], map.extent[0]];
-        const maxBounds = [map.extent[3], map.extent[2]];
-        const bounds = [minBounds, maxBounds];
 
-        this.setState({ map: map, bounds: bounds });
+        const center = map && map.extra_fields && map.extra_fields.center;
+        const zoom = map && map.extra_fields && map.extra_fields.zoom;
+
+        if (center && zoom) {
+          console.log("Custom center and zoom:", center, zoom);
+          this.setState({ map: map, viewport: { center, zoom } });
+        } else {
+          const minBounds = [map.extent[1], map.extent[0]];
+          const maxBounds = [map.extent[3], map.extent[2]];
+          const bounds = [minBounds, maxBounds];
+
+          this.setState({ map: map, bounds: bounds });
+        }
+
         this._toggleActiveLayers(map.layers);
       })
       .catch(err => {
@@ -77,6 +87,8 @@ class Maps extends React.Component {
             );
           }
           window.location.href = "/";
+        } else {
+          console.error(err);
         }
       });
   }
