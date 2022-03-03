@@ -42,6 +42,7 @@ Shapely = "1.7.1"
 stripe = "2.51.0"
 rasterio = "^1.2.10"
 Fiona = "^1.8.21"
+django-allauth = "0.42.0"
 
 [tool.poetry.dev-dependencies]
 honcho = "^1.1.0"
