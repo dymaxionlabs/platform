@@ -1,0 +1,6 @@
+.coverage
+Dockerfile
+.dockerignore
+.pytest_cache
+README.md
+.venv
