@@ -50,15 +50,16 @@ psql terra -c "CREATE EXTENSION IF NOT EXISTS postgis CASCADE"
 cp env.sample .env
 ```
 
-* Install Python dependencies using Pipenv. Install it first if you don't have it:
+* If you haven't yet, install [Poetry](https://python-poetry.org/) first by
+  following [these instructions](https://python-poetry.org/docs/master/#installation).
+
+* Install all dependencies
 
 ```
-pip install --user -U pipenv
-pipenv install
-pipenv install django-anymail[mailgun] django-rest-auth[with_social] django-storages[google]
+poetry install
 ```
 
-Then inside a pipenv shell (use `pipenv shell`) you should first do the following:
+Then inside a poetry shell (use `poetry shell`) you should first do the following:
 
 * Run migrations: `./manage.py migrate`
 * Create superuser: `./manage.py createsuperuser`
