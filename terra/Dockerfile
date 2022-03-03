@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libproj-dev \
   libspatialindex-dev \
   postgresql-client \
+  proj-bin \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 RUN curl -sSL https://install.python-poetry.org | python3 -
