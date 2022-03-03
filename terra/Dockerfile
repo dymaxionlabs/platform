@@ -16,15 +16,13 @@ WORKDIR /app
 
 ENV PATH="/root/.local/bin:${PATH}"
 
-RUN poetry --version
-
 COPY pyproject.toml poetry.lock /app/
-RUN poetry install
+RUN poetry config virtualenvs.in-project true && poetry install
 
 # Rebuild the source code only when needed
 FROM python:3.9 AS builder
 WORKDIR /app
-COPY --from=deps /app/__pypackages__ ./__pypackages__
+COPY --from=deps /app/.venv ./.venv
 COPY . .
 
 ENV PYTHONUNBUFFERED=1
