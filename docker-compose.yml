@@ -1,46 +1,53 @@
-version: "3.6"
-
-x-terra-opts: &terra-opts
-  build: terra/
-  image: "dymaxionlabs/platform:latest"
-  volumes:
-    - ./terra/:/app
-  depends_on:
-    - db
-    - redis
-  environment:
-    - PIPENV_DONT_LOAD_ENV=1
-    - DB_HOST=db
-    - DB_NAME=terra
-    - DB_USER=postgres
-    - RQ_REDIS_URL=redis://redis:6379/0
-    - SECRET_KEY=foobar
-    - WEBCLIENT_URL=http://localhost:3000
-    - SENTRY_DNS=
+version: "3.3"
 
 services:
   db:
-    image: mdillon/postgis
+    image: "postgis/postgis:latest"
     ports:
-      - "5433:5432"
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    labels:
+      kompose.volume.size: 1Gi
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
   redis:
-    image: redis
+    image: "redis:alpine"
     ports:
-      - "6380:6379"
+      - "6379:6379"
 
   terra:
-    <<: *terra-opts
-    command: [
-      "wait-for-postgres.sh", "db",
-      "pipenv", "run", "./manage.py", "runserver", "0.0.0.0:8000"
-    ]
+    build: terra/
+    image: dymaxionlabs/terra:latest
+    stdin_open: true
+    tty: true
+    # entrypoint: /bin/bash
+    volumes:
+      - ./terra/:/app
     ports:
       - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
 
-  terra-worker:
-    <<: *terra-opts
-    command: [
-      "wait-for-postgres.sh", "db",
-      "pipenv", "run", "./manage.py", "rqworker"
-    ]
+  aqua:
+    build: aqua/
+    image: dymaxionlabs/aqua:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./aqua/:/app
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
