@@ -255,8 +255,8 @@ RQ_QUEUES = {
 RQ_SHOW_ADMIN_LINK = True
 
 # Configure Sentry
-if os.environ['SENTRY_DNS']:
-    sentry_sdk.init(dsn=os.environ['SENTRY_DNS'],
+if os.getenv('SENTRY_DNS'):
+    sentry_sdk.init(dsn=os.getenv('SENTRY_DNS'),
                     integrations=[DjangoIntegration()])
 
 CELERY_RESULT_BACKEND = 'tasks.backends.DatabaseBackend'

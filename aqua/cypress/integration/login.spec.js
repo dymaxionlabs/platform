@@ -72,7 +72,7 @@ describe('Login', () => {
 
     cy.get('.MuiButton-label').click()
 
-    cy.location('pathname', { timeout: 20000 })
+    cy.location('pathname', { timeout: 60000 })
       .should('include', '/home');
   })
 })
