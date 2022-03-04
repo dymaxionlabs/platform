@@ -43,6 +43,7 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: terra
+      RQ_REDIS_URL: redis://redis:6379/0
       SECRET_KEY: enter-secret-key
       TILES_BUCKET: dym-platform-test-tiles
       FILES_BUCKET: dym-platform-test-files
