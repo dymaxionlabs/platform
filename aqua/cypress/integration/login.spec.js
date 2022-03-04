@@ -5,6 +5,8 @@
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
 
+const apiBaseUrl = "http://localhost:8000"
+
 beforeEach(() => {
   const username = "john"
   const projectUuid = "4d14cbf0-2a73-43cc-aebe-6b4643d0d2c7";
@@ -23,22 +25,22 @@ beforeEach(() => {
   };
 
   cy.intercept(
-    { url: "http://localhost:8000/projects/" },
+    { url: `${apiBaseUrl}/projects/` },
     { "count": 1, "next": null, "previous": null, "results": [project] }
   )
 
   cy.intercept(
-    { url: `http://localhost:8000/projects/${projectUuid}/` },
+    { url: `${apiBaseUrl}/projects/${projectUuid}/` },
     project
   )
 
   cy.intercept(
-    { url: "http://localhost:8000/credits/available/" },
+    { url: `${apiBaseUrl}/credits/available/` },
     { "available": 10000.0 }
   )
 
   cy.intercept(
-    { url: `http://localhost:8000/quotas/usage/?project=${projectUuid}` },
+    { url: `${apiBaseUrl}/quotas/usage/?project=${projectUuid}` },
     {
       "user": { "username": username, "storage": { "used": 0, "available": 26843545600 } },
       "projects": [{ "name": "Default", "uuid": projectUuid, "estimators": { "count": 0, "limit": 100 }, "tasks": 0, "files": 0 }]
@@ -46,7 +48,7 @@ beforeEach(() => {
   )
 
   cy.intercept(
-    { url: `http://localhost:8000/tasks/?limit=5&project=${projectUuid}` },
+    { url: `${apiBaseUrl}/tasks/?limit=5&project=${projectUuid}` },
     { "count": 0, "next": null, "previous": null, "results": [] }
   )
 })
@@ -54,15 +56,15 @@ beforeEach(() => {
 describe('Login', () => {
   it('shows a login form asking for username and password', () => {
     cy.intercept(
-      { method: 'POST', url: 'http://localhost:8000/auth/login/' },
+      { method: 'POST', url: `${apiBaseUrl}/auth/login/` },
       { username: "john", email: "john@example.com", key: "user-token" }
     )
 
-    cy.visit('http://localhost:3000/login')
+    cy.visit('/login')
 
     cy.get('#username')
-      .type('john@example.com')
-      .should('have.value', 'john@example.com')
+      .type('john')
+      .should('have.value', 'john')
 
     cy.get('#password')
       .type('secretpassword')
@@ -70,7 +72,7 @@ describe('Login', () => {
 
     cy.get('.MuiButton-label').click()
 
-    cy.location('pathname', { timeout: 10000 })
+    cy.location('pathname', { timeout: 20000 })
       .should('include', '/home');
   })
 })
