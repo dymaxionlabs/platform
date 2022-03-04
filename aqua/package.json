@@ -47,7 +47,9 @@
     "ci:test": "start-server-and-test dev http://localhost:3000 test"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.9.12",
     "@material-ui/codemod": "^4.5.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "csv-parse": "^4.3.3",
     "cypress": "^9.5.1",
     "file-loader": "^2.0.0",

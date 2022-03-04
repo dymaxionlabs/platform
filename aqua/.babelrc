@@ -7,10 +7,10 @@
           "targets": "> 0.25%, not dead",
           "debug": false,
           "useBuiltIns": "usage",
-          "corejs": 3,
-        },
+          "corejs": 3
+        }
       }
     ]
   ],
-  "plugins": []
+  "plugins": ["istanbul"]
 }
