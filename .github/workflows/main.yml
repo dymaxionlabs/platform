@@ -42,6 +42,8 @@ jobs:
       SECRET_KEY: enter-secret-key
 
     steps:
+      - uses: actions/checkout@v2
+
       - id: "auth"
         uses: "google-github-actions/auth@v0"
         with:
@@ -70,8 +72,6 @@ jobs:
         run: |
           pip3 install poetry
         shell: bash
-
-      - uses: actions/checkout@v2
 
       - name: Install Python dependencies
         run: |
