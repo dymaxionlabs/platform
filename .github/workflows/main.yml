@@ -98,26 +98,26 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           root_dir: terra/
 
-  # aqua:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 16
+  aqua:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
 
-  #     - name: Install yarn
-  #       run: npm install -g yarn
+      - name: Install yarn
+        run: npm install -g yarn
 
-  #     - name: Install dependencies
-  #       run: cd aqua/ && yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: cd aqua/ && yarn install --frozen-lockfile
 
-  #     - name: Run tests and generate coverage report
-  #       run: cd aqua/ && yarn ci:test
+      - name: Run tests and generate coverage report
+        run: cd aqua/ && yarn ci:test
 
-  #     - name: Upload coverage to Codecov
-  #       uses: codecov/codecov-action@v2
-  #       with:
-  #         fail_ci_if_error: true
-  #         root_dir: aqua/
-  #         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+          root_dir: aqua/
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
