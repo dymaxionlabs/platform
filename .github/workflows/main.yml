@@ -93,8 +93,8 @@ jobs:
       - name: Generate coverage report
         run: |
           cd terra/
-          poetry run -v coverage run manage.py test
-          poetry run -v coverage xml
+          poetry run coverage run manage.py test
+          poetry run coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
