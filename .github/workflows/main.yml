@@ -40,6 +40,10 @@ jobs:
       DB_PASSWORD: postgres
       DB_NAME: terra
       SECRET_KEY: enter-secret-key
+      TILES_BUCKET: dym-platform-test-tiles
+      FILES_BUCKET: dym-platform-test-files
+      TASK_ARTIFACTS_BUCKET: dym-platform-test-task-artifacts
+      MODELS_BUCKET: dym-platform-test-models
 
     steps:
       - uses: actions/checkout@v2
