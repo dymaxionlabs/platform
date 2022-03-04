@@ -1,5 +1,5 @@
 {
-  "name": "cartolatam",
+  "name": "aqua",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -42,13 +42,16 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
-    "export": "yarn build && next export"
+    "export": "yarn build && next export",
+    "test": "cypress run",
+    "ci:test": "start-server-and-test dev http://localhost:3000 test"
   },
   "devDependencies": {
     "@material-ui/codemod": "^4.5.0",
     "csv-parse": "^4.3.3",
     "cypress": "^9.5.1",
     "file-loader": "^2.0.0",
+    "start-server-and-test": "^1.14.0",
     "url-loader": "^1.1.2"
   }
 }
