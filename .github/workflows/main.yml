@@ -92,13 +92,13 @@ jobs:
           node-version: 16
 
       - name: Install yarn
-      - run: npm install -g yarn
+        run: npm install -g yarn
 
       - name: Install dependencies
-      - run: cd aqua/ && yarn install --frozen-lockfile
+        run: cd aqua/ && yarn install --frozen-lockfile
 
       - name: Run tests and generate coverage report
-      - run: cd aqua/ && yarn ci:test
+        run: cd aqua/ && yarn ci:test
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
