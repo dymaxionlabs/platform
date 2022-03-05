@@ -45,7 +45,9 @@
     "export": "yarn build && next export",
     "test": "cypress run",
     "test:novideo": "cypress run --config video=false",
-    "ci:test": "start-server-and-test dev http://localhost:3000 test:novideo"
+    "ci:start:terra": "script/start-terra-testserver.sh",
+    "ci:start:aqua": "yarn dev",
+    "ci:test": "start-server-and-test ci:start:terra 8000 ci:start:aqua 3000 test:novideo"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.12",
