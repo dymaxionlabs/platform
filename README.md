@@ -1,5 +1,10 @@
 # Dymaxion Labs Platform
 
+[![codecov](https://codecov.io/gh/dymaxionlabs/platform/branch/main/graph/badge.svg?token=7SIMOR5WIK)](https://codecov.io/gh/dymaxionlabs/platform)
+[![CI](https://github.com/dymaxionlabs/platform/actions/workflows/main.yml/badge.svg)](https://github.com/dymaxionlabs/platform/actions/workflows/main.yml)
+[![Issues](https://img.shields.io/github/issues-closed/dymaxionlabs/platform)](https://github.com/dymaxionlabs/platform/issues)
+[![License](https://img.shields.io/github/license/dymaxionlabs/platform)](LICENSE.txt)
+
 This repository contains the source code of both Dymaxion Labs Platform API
 server and the web application.
 
