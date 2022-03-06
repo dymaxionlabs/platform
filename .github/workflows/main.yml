@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  terra:
+  tests:
     runs-on: ubuntu-latest
     container:
       image: python:3.9
@@ -103,10 +103,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           root_dir: terra/
 
-  aqua:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
