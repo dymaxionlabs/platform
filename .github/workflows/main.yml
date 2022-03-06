@@ -77,20 +77,20 @@ jobs:
             proj-bin \
             python3-dev
 
-      - name: Install Poetry
+      - name: Set up Poetry
         run: |
           pip3 install poetry
         shell: bash
 
-      - name: Install Python dependencies
+      - name: Install Terra dependencies
         run: |
           cd terra/ && poetry install
 
-      - name: Run tests
+      - name: Run Terra tests
         run: |
           cd terra/ && poetry run python manage.py test
 
-      - name: Generate coverage report
+      - name: Generate coverage report for Terra
         run: |
           cd terra/
           poetry run coverage run manage.py test
@@ -107,13 +107,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install yarn
+      - name: Set up Yarn
         run: npm install -g yarn
 
-      - name: Install dependencies
+      - name: Install Aqua dependencies
         run: cd aqua/ && yarn install --frozen-lockfile
 
-      - name: Run tests and generate coverage report
+      - name: Run Aqua tests and generate coverage report
         run: cd aqua/ && yarn ci:test
 
       - name: Upload coverage to Codecov
