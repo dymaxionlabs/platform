@@ -77,7 +77,8 @@ jobs:
             libspatialindex-dev \
             postgresql-client \
             proj-bin \
-            python3-dev
+            python3-dev \
+            xvfb
 
       - name: Set up Poetry
         run: |
