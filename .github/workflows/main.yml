@@ -72,12 +72,22 @@ jobs:
             binutils \
             gdal-bin \
             gettext \
+            libasound2 \
+            libgbm-dev \
+            libgconf-2-4 \
             libgdal-dev \
+            libgtk-3-0 \
+            libgtk2.0-0 \
+            libnotify-dev \
+            libnss3 \
             libproj-dev \
             libspatialindex-dev \
+            libxss1 \
+            libxtst6 \
             postgresql-client \
             proj-bin \
             python3-dev \
+            xauth \
             xvfb
 
       - name: Set up Poetry
