@@ -20,12 +20,10 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions
-from rest_framework.routers import SimpleRouter
-
 from projects.views import (
     ConfirmProjectInvitationView,
     ContactView,
+    DashboardViewSet,
     LayerViewSet,
     MapViewSet,
     ProjectInvitationTokenViewSet,
@@ -38,9 +36,12 @@ from projects.views import (
     UserAPIKeyViewSet,
     UserProfileViewSet,
     UserViewSet,
-    DashboardViewSet,
 )
+from rest_framework import permissions
+from rest_framework.routers import SimpleRouter
 from stac.views import SearchView
+
+from terra import views
 
 router = SimpleRouter()
 router.register(r"users", UserViewSet)
@@ -111,6 +112,7 @@ urlpatterns = [
     url(r"^test/taskerror/?", TestTaskErrorView.as_view()),
     # ...
     url(r"^", include(router.urls)),
+    path("", views.index),
 ]
 
 # API documentation only if DEBUG=1

@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  terra:
+  tests:
     runs-on: ubuntu-latest
     container:
       image: python:3.9
@@ -49,6 +49,8 @@ jobs:
       FILES_BUCKET: dym-platform-test-files
       TASK_ARTIFACTS_BUCKET: dym-platform-test-task-artifacts
       MODELS_BUCKET: dym-platform-test-models
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DEBUG: 1
 
     steps:
       - uses: actions/checkout@v2
@@ -70,27 +72,34 @@ jobs:
             binutils \
             gdal-bin \
             gettext \
+            libasound2 \
+            libgbm-dev \
+            libgconf-2-4 \
             libgdal-dev \
+            libgtk-3-0 \
+            libgtk2.0-0 \
+            libnotify-dev \
+            libnss3 \
             libproj-dev \
             libspatialindex-dev \
+            libxss1 \
+            libxtst6 \
             postgresql-client \
             proj-bin \
-            python3-dev
+            python3-dev \
+            xauth \
+            xvfb
 
-      - name: Install Poetry
+      - name: Set up Poetry
         run: |
           pip3 install poetry
         shell: bash
 
-      - name: Install Python dependencies
+      - name: Install Terra dependencies
         run: |
           cd terra/ && poetry install
 
-      - name: Run tests
-        run: |
-          cd terra/ && poetry run python manage.py test
-
-      - name: Generate coverage report
+      - name: Run Terra tests and generate coverage report
         run: |
           cd terra/
           poetry run coverage run manage.py test
@@ -103,21 +112,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           root_dir: terra/
 
-  aqua:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
 
-      - name: Install yarn
+      - name: Set up Yarn
         run: npm install -g yarn
 
-      - name: Install dependencies
+      - name: Install Aqua dependencies
         run: cd aqua/ && yarn install --frozen-lockfile
 
-      - name: Run tests and generate coverage report
+      - name: Run Aqua tests and generate coverage report
         run: cd aqua/ && yarn ci:test
 
       - name: Upload coverage to Codecov
