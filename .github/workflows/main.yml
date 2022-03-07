@@ -49,6 +49,8 @@ jobs:
       FILES_BUCKET: dym-platform-test-files
       TASK_ARTIFACTS_BUCKET: dym-platform-test-task-artifacts
       MODELS_BUCKET: dym-platform-test-models
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DEBUG: 1
 
     steps:
       - uses: actions/checkout@v2
