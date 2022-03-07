@@ -88,11 +88,7 @@ jobs:
         run: |
           cd terra/ && poetry install
 
-      - name: Run Terra tests
-        run: |
-          cd terra/ && poetry run python manage.py test
-
-      - name: Generate coverage report for Terra
+      - name: Run Terra tests and generate coverage report
         run: |
           cd terra/
           poetry run coverage run manage.py test
