@@ -65,8 +65,8 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-swagger_urls = [
-    # Documentation
+# Documentation
+docs_urls = [
     url(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
@@ -115,10 +115,7 @@ urlpatterns = [
     path("", views.index),
 ]
 
-# API documentation only if DEBUG=1
-if settings.DEBUG:
-    urlpatterns += swagger_urls
-
+urlpatterns += docs_urls
 urlpatterns += [path("storage/", include("storage.urls"))]
 urlpatterns += [path("tasks/", include("tasks.urls"))]
 urlpatterns += [path("estimators/", include("estimators.urls"))]
