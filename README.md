@@ -10,6 +10,8 @@ server and the web application.
 
 You can access our hosted server on https://app.dymaxionlabs.com/
 
+OpenAPI documentation for our REST API can be found [here](https://api.dymaxionlabs.com/swagger).
+
 ## Bugs / Questions
 
 * [Report bugs/feature requests](https://github.com/dymaxionlabs/platform/issues)
