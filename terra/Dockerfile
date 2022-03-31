@@ -19,20 +19,14 @@ ENV PATH="/root/.local/bin:${PATH}"
 COPY pyproject.toml poetry.lock /app/
 RUN poetry config virtualenvs.in-project true && poetry install
 
-# Rebuild the source code only when needed
-FROM python:3.9 AS builder
 WORKDIR /app
-COPY --from=deps /app/.venv ./.venv
+
 COPY . .
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN poetry run python manage.py collectstatic --clear --no-input
-
-# Production image, copy all the files and run next
-FROM python:3.9 AS runner
-WORKDIR /app
 
 RUN addgroup --system --gid 1001 django
 RUN adduser --system --uid 1001 django
