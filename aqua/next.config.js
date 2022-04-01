@@ -1,7 +1,7 @@
 const withCSS = require("@zeit/next-css");
 
 module.exports = withCSS({
-  webpack: function(config, options) {
+  webpack: function (config, options) {
     config.module.rules.push({
       test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
       use: {
@@ -22,6 +22,9 @@ module.exports = withCSS({
     });
 
     return config;
+  },
+  experimental: {
+    outputStandalone: true,
   },
   presets: ["next/babel"]
 });
