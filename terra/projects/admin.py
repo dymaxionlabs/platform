@@ -2,6 +2,7 @@ import json
 
 from django import forms
 from django.contrib import admin
+from django.contrib.gis import admin
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.postgres.fields import JSONField
 from guardian.admin import GuardedModelAdmin
@@ -9,14 +10,14 @@ from jsoneditor.forms import JSONEditor
 from rest_framework_api_key.admin import APIKeyModelAdmin
 
 from .models import (
+    Dashboard,
     Layer,
     Map,
     MapLayer,
     Project,
     ProjectInvitationToken,
-    UserProfile,
     UserAPIKey,
-    Dashboard,
+    UserProfile,
 )
 
 

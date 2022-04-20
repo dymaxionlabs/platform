@@ -41,6 +41,7 @@ from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 from stac.views import SearchView
 
+import terra.admin
 from terra import views
 
 router = SimpleRouter()
