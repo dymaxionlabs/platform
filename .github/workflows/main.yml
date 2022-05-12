@@ -15,7 +15,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     container:
-      image: python:3.9
+      image: python:3.10
 
     services:
       postgres:
