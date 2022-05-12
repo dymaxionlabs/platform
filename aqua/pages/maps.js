@@ -68,15 +68,18 @@ class Maps extends React.Component {
         const center = map && map.extra_fields && map.extra_fields.center;
         const zoom = map && map.extra_fields && map.extra_fields.zoom;
 
+        const basemaps = map && map.extra_fields && map.extra_fields.basemaps;
+        const basemap = basemaps && basemaps[0];
+
         if (center && zoom) {
           console.log("Custom center and zoom:", center, zoom);
-          this.setState({ map: map, viewport: { center, zoom } });
+          this.setState({ map, viewport: { center, zoom }, basemap });
         } else {
           const minBounds = [map.extent[1], map.extent[0]];
           const maxBounds = [map.extent[3], map.extent[2]];
           const bounds = [minBounds, maxBounds];
 
-          this.setState({ map: map, bounds: bounds });
+          this.setState({ map, bounds, basemap });
         }
 
         this._toggleActiveLayers(map.layers);
@@ -145,7 +148,7 @@ class Maps extends React.Component {
   };
 
   handleBasemapChange = (basemap) => {
-    this.setState({ basemap: basemap})
+    this.setState({ basemap: basemap })
   }
 
   render() {
@@ -213,20 +216,6 @@ class Maps extends React.Component {
     );
 
     const basemaps = map && map.extra_fields && map.extra_fields.basemaps;
-    //json de prueba
-    // [
-    //   {
-    //     "name": "OpenStreetMap",
-    //     "type": "xyz",
-    //     "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    //     "attribution": "OpenStreetMap contributors, CC-BY-SA"
-    //   },
-    //   {
-    //     "name": "Satélite (Mapbox)",
-    //     "type": "mapbox",
-    //     "style": "mapbox/satellite-v9"
-    //   }
-    // ];
 
     let areaData;
     if (
