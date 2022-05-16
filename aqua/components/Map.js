@@ -30,7 +30,7 @@ const ROIPolygon = ({ data }) => (
 );
 
 const MapboxBasemap = ({ style }) => {
-  const styleId = style || "mapbox/satellite-v9";
+  const styleId = style || "mapbox/light-v10";
   return (
     <Basemap
       url={`https://api.mapbox.com/styles/v1/${styleId}/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`}
@@ -46,6 +46,7 @@ const Basemap = (props) => <TileLayer {...props} zIndex={-1} />;
 class Map extends React.Component {
   render() {
     const { children, roiData, basemap, ...extraProps } = this.props;
+    const basemapStyle = basemap && basemap.style;
 
     return (
       <LeafletMap
@@ -54,7 +55,7 @@ class Map extends React.Component {
         zoomControl={false}
         {...extraProps}
       >
-        {basemap.type == "xyz" ? <Basemap url={basemap.url} attribution={basemap.attribution} /> : <MapboxBasemap style={basemap.style} />}
+        {basemapStyle == "xyz" ? <Basemap url={basemap.url} attribution={basemap.attribution} /> : <MapboxBasemap style={basemapStyle} />}
         {children}
         {roiData && <ROIPolygon data={roiData} />}
 
