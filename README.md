@@ -26,6 +26,9 @@ a safe, welcoming space for collaboration, and contributors are expected to
 adhere to the [Contributor Covenant](http://contributor-covenant.org) code of
 conduct.
 
+The current roadmap is available at GitHub at the
+[projects page](https://github.com/dymaxionlabs/platform/projects/1).
+
 ## License
 
 Source code is released under a BSD-2 license.  Please refer to
