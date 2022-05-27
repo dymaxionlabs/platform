@@ -16,7 +16,7 @@ OpenAPI documentation for our REST API can be found [here](https://api.dymaxionl
 ## Bugs / Questions
 
 * [Report bugs/feature requests](https://github.com/dymaxionlabs/platform/issues)
-* [Ask questions](https://gitter.im/dymaxionlabs/platform)
+* [Ask questions in our chat room](https://gitter.im/dymaxionlabs/platform)
 
 ## Contributing
 
