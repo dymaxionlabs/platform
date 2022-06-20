@@ -112,6 +112,7 @@ urlpatterns = [
     url(r"^test/error/?", TestErrorView.as_view()),
     url(r"^test/taskerror/?", TestTaskErrorView.as_view()),
     # ...
+    url(r"^ping/?", views.ping),
     url(r"^", include(router.urls)),
     path("", views.index),
 ]
