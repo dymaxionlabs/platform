@@ -11,25 +11,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   proj-bin \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
-RUN curl -sSL https://install.python-poetry.org | python3 -
+
 WORKDIR /app
 
-ENV PATH="/root/.local/bin:${PATH}"
+ENV POETRY_VERSION=1.1.13
+RUN pip install poetry==$POETRY_VERSION
 
 COPY pyproject.toml poetry.lock /app/
 RUN poetry config virtualenvs.in-project true && poetry install
 
+FROM python:3.9 AS runner
 WORKDIR /app
-
-COPY . .
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-
-RUN poetry run python manage.py collectstatic --clear --no-input
+ENV POETRY_VERSION=1.1.13
 
 RUN addgroup --system --gid 1001 django
 RUN adduser --system --uid 1001 django
+
+RUN pip install poetry==$POETRY_VERSION
+
+COPY --from=deps --chown=django:django /app/.venv ./.venv
+COPY --chown=django:django . .
+
+RUN poetry run python manage.py collectstatic --clear --no-input
 
 USER django
 
