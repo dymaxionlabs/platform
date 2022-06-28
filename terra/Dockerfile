@@ -30,17 +30,14 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV POETRY_VERSION=1.1.13
 
 RUN addgroup --system --gid 1001 django
 RUN adduser --system --uid 1001 django
 
-RUN pip install poetry==$POETRY_VERSION
-
-COPY --from=deps --chown=django:django /app/.venv ./.venv
+COPY --from=deps --chown=django:django /app/.venv /venv/
 COPY --chown=django:django . .
 
-RUN poetry run python manage.py collectstatic --clear --no-input
+RUN /venv/bin/python manage.py collectstatic --clear --no-input
 
 USER django
 
@@ -48,4 +45,4 @@ EXPOSE 8000
 
 ENV PORT 8000
 
-CMD [ "poetry", "run", "python", "manage.py", "runserver" ]
+CMD ["/venv/bin/python", "./manage.py", "runserver"]
