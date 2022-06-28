@@ -24,7 +24,8 @@ services:
     image: dymaxionlabs/terra:latest
     stdin_open: true
     tty: true
-    # entrypoint: /bin/bash
+    env_file: .env.docker
+    user: ${UID}:${GID}
     volumes:
       - ./terra/:/app
     ports:
@@ -44,6 +45,8 @@ services:
     image: dymaxionlabs/aqua:latest
     stdin_open: true
     tty: true
+    env_file: .env.docker
+    user: ${UID}:${GID}
     volumes:
       - ./aqua/:/app
     ports:
