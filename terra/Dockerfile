@@ -21,6 +21,11 @@ COPY pyproject.toml poetry.lock /app/
 RUN poetry config virtualenvs.in-project true && poetry install
 
 FROM python:3.9 AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  gdal-bin \
+  proj-bin \
+  && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
