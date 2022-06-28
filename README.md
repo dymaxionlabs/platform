@@ -13,6 +13,24 @@ You can access our hosted server on https://app.dymaxionlabs.com/
 
 OpenAPI documentation for our REST API can be found [here](https://api.dymaxionlabs.com/swagger).
 
+## Development
+
+There is a Docker compose file for development, that builds Terra and Aqua
+(backend and frontend), and that sets up Postgres and Redis databases.
+
+First make sure to copy `env.docker` as `.env.docker`, and set UID and GID
+appropriately. Then, to build and start all services run: 
+
+```
+docker compose --env-file .env.docker up --build
+```
+
+These Docker images are not prepared for production use. The Docker Compose
+configuration mounts the repository as volumes on /app, so any changes done in
+the host machine are replicated automatically on the container.  That is the
+reason we need to set the user id and group id from the host when running the
+containers.
+
 ## Bugs / Questions
 
 * [Report bugs/feature requests](https://github.com/dymaxionlabs/platform/issues)
