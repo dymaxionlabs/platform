@@ -60,7 +60,7 @@ schema_view = get_schema_view(
         description="This is the description of the API",
         terms_of_service="https://www.dymaxionlabs.com/terms/",
         contact=openapi.Contact(email="contact@dymaxionlabs.com"),
-        license=openapi.License(name="BSD License"),
+        license=openapi.License(name="Apache-2.0 License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
