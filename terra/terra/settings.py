@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',
     'quotas.apps.QuotasConfig',
+    'ml_models.apps.MlModelsConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',

@@ -37,6 +37,7 @@ from projects.views import (
     UserProfileViewSet,
     UserViewSet,
 )
+from ml_models.views import MLModelViewSet
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 from stac.views import SearchView
@@ -52,6 +53,7 @@ router.register(r"layers", LayerViewSet)
 router.register(r"maps", MapViewSet)
 router.register(r"dashboards", DashboardViewSet)
 router.register(r"projects/invitations", ProjectInvitationTokenViewSet)
+router.register(r"ml_models", MLModelViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
