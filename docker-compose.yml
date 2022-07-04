@@ -32,10 +32,12 @@ services:
       - "8001:8000"
     environment:
       - DB_HOST=db
-      - DB_USER=postgres
+      - DB_NAME=terra
       - DB_PASSWORD=postgres
       - DB_PORT=5432
-      - REDIS_HOST=redis
+      - DB_USER=postgres
+      - RQ_REDIS_URL=redis://redis:6379/0
+      - WEBCLIENT_URL=http://aqua:3000
     depends_on:
       - db
       - redis
