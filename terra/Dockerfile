@@ -39,6 +39,8 @@ COPY --chown=django:django . .
 
 RUN /venv/bin/python manage.py collectstatic --clear --no-input
 
+ENV PATH=/venv/bin:$PATH
+
 USER django
 
 EXPOSE 8000
