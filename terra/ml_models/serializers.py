@@ -6,3 +6,4 @@ class MLModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = MLModel
         fields = '__all__'
+        read_only_fields = ('created_at', 'updated_at')
