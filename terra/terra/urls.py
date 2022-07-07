@@ -53,7 +53,7 @@ router.register(r"layers", LayerViewSet)
 router.register(r"maps", MapViewSet)
 router.register(r"dashboards", DashboardViewSet)
 router.register(r"projects/invitations", ProjectInvitationTokenViewSet)
-router.register(r"ml_models", MLModelViewSet)
+router.register(r"models", MLModelViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
