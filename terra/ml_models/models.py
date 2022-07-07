@@ -16,6 +16,6 @@ class MLModel(models.Model):
     )
     version = models.CharField(_('version'), max_length=10, null=True)
     repo_url = models.URLField(_('git repository url'), null=True)
-    is_public = models.BooleanField(_('is public'), default=True)
+    is_public = models.BooleanField(_('is public'), default=False)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
