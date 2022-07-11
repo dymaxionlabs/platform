@@ -37,23 +37,27 @@ from projects.views import (
     UserProfileViewSet,
     UserViewSet,
 )
-from ml_models.views import MLModelViewSet
+from ml_models.views import MLModelVersionViewSet, UserMLModelViewSet
 from rest_framework import permissions
-from rest_framework.routers import SimpleRouter
+from rest_framework_nested import routers
 from stac.views import SearchView
 
 import terra.admin
 from terra import views
 
-router = SimpleRouter()
+router = routers.SimpleRouter()
 router.register(r"users", UserViewSet)
+users_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
+users_router.register(r'models', UserMLModelViewSet, basename='models')
+models_router = routers.NestedSimpleRouter(users_router, r'models', lookup='model')
+models_router.register(r'versions', MLModelVersionViewSet, basename='versions')
 router.register(r"user-profiles", UserProfileViewSet)
 router.register(r"projects", ProjectViewSet)
 router.register(r"layers", LayerViewSet)
 router.register(r"maps", MapViewSet)
 router.register(r"dashboards", DashboardViewSet)
 router.register(r"projects/invitations", ProjectInvitationTokenViewSet)
-router.register(r"models", MLModelViewSet)
+# router.register(r"models", MLModelViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -115,7 +119,9 @@ urlpatterns = [
     url(r"^test/taskerror/?", TestTaskErrorView.as_view()),
     # ...
     url(r"^ping/?", views.ping),
-    url(r"^", include(router.urls)),
+    path(r"", include(router.urls)),
+    path(r"", include(users_router.urls)),
+    path(r"", include(models_router.urls)),
     path("", views.index),
 ]
 
