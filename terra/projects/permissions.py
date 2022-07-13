@@ -1,6 +1,6 @@
 from rest_framework import permissions
 from rest_framework_api_key.permissions import BaseHasAPIKey
-from ml_models.models import MLModel
+from ml_models.models import MLModel, MLModelVersion
 
 from .models import UserAPIKey
 
@@ -120,3 +120,10 @@ class IsModelPublic(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.is_public
+
+class IsModelVersionModelPublic(permissions.BasePermission):
+
+    model = MLModelVersion
+
+    def has_object_permission(self, request, view, obj):
+        return obj.model.is_public

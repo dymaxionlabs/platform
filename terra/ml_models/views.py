@@ -2,7 +2,7 @@ from django.db.models import Q
 from rest_framework import permissions, views, viewsets
 from ml_models.models import MLModel, MLModelVersion
 from ml_models.serializers import MLModelSerializer, MLModelVersionSerializer
-from projects.permissions import HasUserAPIKey, IsModelPublic, IsOwnerOrReadOnly
+from projects.permissions import HasUserAPIKey, IsModelPublic, IsModelVersionModelPublic, IsOwnerOrReadOnly
 
 
 class MLModelViewSet(viewsets.ModelViewSet):
@@ -29,7 +29,7 @@ class UserMLModelViewSet(MLModelViewSet):
 class MLModelVersionViewSet(viewsets.ModelViewSet):
     queryset = MLModelVersion.objects.all()
     serializer_class = MLModelVersionSerializer
-    permission_classes = [HasUserAPIKey | permissions.IsAuthenticated, IsOwnerOrReadOnly, IsModelPublic]
+    permission_classes = [HasUserAPIKey | permissions.IsAuthenticated, IsOwnerOrReadOnly, IsModelVersionModelPublic]
     lookup_field = "name"
 
     def get_queryset(self):

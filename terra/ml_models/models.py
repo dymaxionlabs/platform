@@ -10,7 +10,8 @@ class MLModel(models.Model):
     description = models.TextField(_('description'))
     tags = ArrayField(
         models.CharField(max_length=30),
-        verbose_name=_('tags')
+        verbose_name=_('tags'),
+        null=True
     )
     repo_url = models.URLField(_('git repository url'), null=True)
     is_public = models.BooleanField(_('is public'), default=False)
