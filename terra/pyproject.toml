@@ -49,6 +49,7 @@ pytest-mock = "^3.8.2"
 pytest-django = "^4.5.2"
 pytest-dotenv = "^0.5.2"
 drf-nested-routers = "^0.93.4"
+setuptools = "^63.2.0"
 
 [tool.poetry.dev-dependencies]
 honcho = "^1.1.0"

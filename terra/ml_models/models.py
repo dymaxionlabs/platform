@@ -13,6 +13,7 @@ class MLModel(models.Model):
         verbose_name=_('tags'),
         null=True
     )
+    lf_project_id = models.CharField(max_length=123)
     repo_url = models.URLField(_('git repository url'), null=True)
     is_public = models.BooleanField(_('is public'), default=False)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)

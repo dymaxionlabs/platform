@@ -348,3 +348,5 @@ CREDITS_PACKS = {
 }
 
 TITILER_URL = os.getenv('TITILER_URL', 'localhost:7500')
+
+LABFUNCTIONS_URL = os.getenv('LABFUNCTIONS_URL')
