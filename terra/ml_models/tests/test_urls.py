@@ -3,13 +3,10 @@ from django.urls import resolve, reverse
 
 
 class TestMLModelViewSetURLs:
-    @pytest.mark.parametrize('url_name, expected_path, kwargs, viewname',[
-        ('model',   '/api/model/',      None,       'MLModelViewSet'),
-        ('model', '/api/model/1/',    {'pk': 1},  'MLModelViewSet'),
+    @pytest.mark.parametrize('incoming_path, viewname',[
+        ('/users/lucas/models/test_model/versions/latest/',         'MLModelVersionViewSet'),
+        ('/users/lucas/models/test_model/versions/latest/predict/', 'MLModelVersionViewSet'),
     ])
-    def test_url_name(self, url_name, expected_path, kwargs, viewname):
-        url = reverse(url_name, kwargs=kwargs)
-        assert url == expected_path
-
-        resolver = resolve(expected_path)
+    def test_url_name(self, incoming_path, viewname):
+        resolver = resolve(incoming_path)
         assert resolver.func.__name__ == viewname
