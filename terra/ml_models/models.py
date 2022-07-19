@@ -11,7 +11,8 @@ class MLModel(models.Model):
     tags = ArrayField(
         models.CharField(max_length=30),
         verbose_name=_('tags'),
-        null=True
+        null=True,
+        blank=True
     )
     lf_project_id = models.CharField(max_length=123)
     repo_url = models.URLField(_('git repository url'), blank=True, null=True)
