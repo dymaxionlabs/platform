@@ -78,7 +78,7 @@ class MLModelVersionViewSet(viewsets.ModelViewSet):
         ml_model_version = get_object_or_404(qs)
         task = enqueue_task(
             'predict',
-            version_id=ml_model_version.id,
+            ml_model_version_id=ml_model_version.id,
             project_id=self.request.project.id,
             **user_params
         )
