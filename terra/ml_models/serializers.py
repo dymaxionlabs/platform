@@ -9,6 +9,7 @@ class BaseMeta:
 class MLModelSerializer(serializers.ModelSerializer):
     class Meta(BaseMeta):
         model = MLModel
+        exclude = ('lf_project_id',)
 
 class MLModelVersionSerializer(serializers.ModelSerializer):
     class Meta(BaseMeta):
