@@ -9,7 +9,7 @@ def wait_for_lf_exec(
     exec_completed = False
     while not exec_completed:
         time.sleep(5)
-        execution_log_url = f"{settings.LABFUNCTIONS_URL}/v1/history/task/{execution_id}"
+        execution_log_url = f"{settings.LF_SERVER_URL}/v1/history/task/{execution_id}"
         is_completed_response = request.get(execution_log_url)
         exec_completed = is_completed_response.json().get("status") == "complete"
         if exec_completed and is_completed_response.json().get["error"]:

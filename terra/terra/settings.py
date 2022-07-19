@@ -349,4 +349,6 @@ CREDITS_PACKS = {
 
 TITILER_URL = os.getenv('TITILER_URL', 'localhost:7500')
 
-LABFUNCTIONS_URL = os.getenv('LABFUNCTIONS_URL')
+LF_SERVER_URL = os.getenv('LF_SERVER_URL')
+LF_USERNAME = os.getenv('LF_USERNAME')
+LF_PASSWORD = os.getenv('LF_PASSWORD')

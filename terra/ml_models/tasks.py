@@ -2,8 +2,7 @@ import json
 
 from django.conf import settings
 from requests import request
-from terra.ml_models.constants import (CREATE_INSTANCE_BODY,
-                                       RUN_NOTEBOOK_BASE_BODY)
+from terra.ml_models.constants import CREATE_INSTANCE_BODY, RUN_NOTEBOOK_BASE_BODY
 from terra.ml_models.models import MLModelVersion
 from terra.ml_models.utils import wait_for_lf_exec
 from terra.tasks.models import Task
@@ -21,7 +20,7 @@ def predict(task: Task):
 
 def create_instance_gpu():
     res = request.post(
-        f"{settings.LABFUNCTIONS_URL}/v1/clusters",
+        f"{settings.LF_SERVER_URL}/v1/clusters",
         data=json.dumps(CREATE_INSTANCE_BODY),
     )
     execid = res.json().get("jobid")
@@ -41,7 +40,7 @@ def run_predict_notebook(model_version):
         | {"version": model_version.name}
     )
     res = request.post(
-        f"{settings.LABFUNCTIONS_URL}/v1/workflows/{model_version.model.lf_project_id}/notebooks/_run",
+        f"{settings.LF_SERVER_URL}/v1/workflows/{model_version.model.lf_project_id}/notebooks/_run",
         data=json.dumps(body),
     )
     execid = res.json().get("execid")
@@ -49,4 +48,4 @@ def run_predict_notebook(model_version):
 
 
 def destroy_instance(machine_name):
-    return request.delete(f"{settings.LABFUNCTIONS_URL}/v1/clusters/gpu/{machine_name}")
+    return request.delete(f"{settings.LF_SERVER_URL}/v1/clusters/gpu/{machine_name}")
