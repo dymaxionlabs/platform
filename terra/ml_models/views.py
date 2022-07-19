@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, views, viewsets
+from rest_framework import permissions, views, viewsets, status
 from ml_models.models import MLModel, MLModelVersion
 from ml_models.serializers import MLModelSerializer, MLModelVersionSerializer
 from projects.permissions import HasUserAPIKey, IsModelPublic, IsModelVersionModelPublic, IsOwnerOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from tasks.serializers import TaskSerializer
 
-from terra.tasks.utils import enqueue_task
+from tasks.utils import enqueue_task
 
 
 class MLModelViewSet(viewsets.ModelViewSet):
@@ -65,15 +66,20 @@ class MLModelVersionViewSet(viewsets.ModelViewSet):
         serializer = MLModelVersionSerializer(ml_model_version)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['POST'], name='Predict model')
+    @action(detail=True, methods=['POST'], name='Predict model', permission_classes=[HasUserAPIKey | permissions.IsAuthenticated, IsOwnerOrReadOnly, IsModelVersionModelPublic])
     def predict(self, *args, **kwargs):
         user_username, model_name, model_version_name = list(self.kwargs.values())
-        model_version_filter = {
-            'name': model_version_name,
+        ml_model_version_filter = {
             'model__name': model_name,
             'model__owner__username': user_username,
-        }
-        model_version = get_object_or_404(MLModelVersion, **model_version_filter)
-        task = enqueue_task('predict', version_id=model_version.id)
-        # TODO: devolver task serializado
-        return task.id
+        } | {} if model_version_name == 'latest' else {'name': model_version_name}
+        user_params = self.request.POST
+        qs = MLModelVersion.objects.filter(**ml_model_version_filter).order_by('-created_at')
+        ml_model_version = get_object_or_404(qs)
+        task = enqueue_task(
+            'predict',
+            version_id=ml_model_version.id,
+            project_id=self.request.project.id,
+            **user_params
+        )
+        return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)

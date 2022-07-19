@@ -6,16 +6,6 @@ from requests import request
 def wait_for_lf_exec(
     execution_id: str
     ):
-    '''
-    Returns the .
-
-            Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
-
-            Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
     exec_completed = False
     while not exec_completed:
         time.sleep(5)

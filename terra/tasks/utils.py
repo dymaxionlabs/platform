@@ -45,15 +45,11 @@ def run_command(cmd):
     subprocess.run(cmd, shell=True, check=True)
 
 
-def enqueue_task(method, queue=None, sync=False, **kwargs):
+def enqueue_task(method, project_id=None,**kwargs):
     from tasks.models import Task
 
-    logger.info("Create task %s with kwargs: %s, on queue '%s'", method, kwargs, queue)
-    task = Task.objects.create(name=method, kwargs=kwargs, queue=queue)
-    logger.info("Start task (sync=%s)", sync)
-    task.start(sync=sync)
+    logger.info("Create task %s with kwargs: %s", method, kwargs)
+    task = Task.objects.create(name=method, kwargs=kwargs, project_id=project_id)
+    logger.info("Start task")
+    task.start()
     return task
-
-
-def run_task(method, queue=None, **kwargs):
-    return enqueue_task(method, sync=True, queue=queue, **kwargs)
