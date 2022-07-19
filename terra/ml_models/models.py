@@ -7,14 +7,14 @@ from django.utils.translation import gettext_lazy as _
 class MLModel(models.Model):
     name = models.CharField(_('name'), max_length=134)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    description = models.TextField(_('description'))
+    description = models.TextField(_('description'), blank=True, null=True)
     tags = ArrayField(
         models.CharField(max_length=30),
         verbose_name=_('tags'),
         null=True
     )
     lf_project_id = models.CharField(max_length=123)
-    repo_url = models.URLField(_('git repository url'), null=True)
+    repo_url = models.URLField(_('git repository url'), blank=True, null=True)
     is_public = models.BooleanField(_('is public'), default=False)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
@@ -25,7 +25,7 @@ class MLModel(models.Model):
 class MLModelVersion(models.Model):
     model = models.ForeignKey(MLModel, on_delete=models.CASCADE)
     name = models.CharField(_('name'), max_length=100)
-    description = models.TextField(_('description'))
+    description = models.TextField(_('description'), blank=True, null=True)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
