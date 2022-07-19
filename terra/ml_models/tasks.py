@@ -1,51 +1,33 @@
-import json
+import logging
 
-from django.conf import settings
-from requests import request
-from terra.ml_models.constants import CREATE_INSTANCE_BODY, RUN_NOTEBOOK_BASE_BODY
-from terra.ml_models.models import MLModelVersion
-from terra.ml_models.utils import wait_for_lf_exec
-from terra.tasks.models import Task
-
+from tasks.models import Task
 from tasks.utils import task
+
+from .labfunctions import (
+    create_instance_gpu,
+    destroy_instance,
+    login,
+    run_predict_notebook,
+)
+from .models import MLModelVersion
+
+logger = logging.getLogger(__name__)
 
 
 @task("default")
 def predict(task: Task):
     model_version = MLModelVersion.objects.get(pk=task.kwargs["ml_model_version_id"])
-    machine_name = create_instance_gpu()
-    run_predict_notebook(model_version)
-    destroy_instance(machine_name)
 
+    token = login()
+    logger.info("Logged in Lab Functions server")
 
-def create_instance_gpu():
-    res = request.post(
-        f"{settings.LF_SERVER_URL}/v1/clusters",
-        data=json.dumps(CREATE_INSTANCE_BODY),
-    )
-    execid = res.json().get("jobid")
-    res = wait_for_lf_exec(execid)
-    result = res.json().get("result")
-    return result["name"]
+    logger.info("Creating a new GPU VM...")
+    machine_name = create_instance_gpu(token=token)
+    logger.info(f"Machine {machine_name} created")
 
+    logger.info(f"Running prediction notebook for {model_version}")
+    run_predict_notebook(model_version=model_version, task=task, token=token)
+    logger.info(f"Prediction run succesfully for {model_version}")
 
-def run_predict_notebook(model_version):
-    artifact_params = {
-        "input_artifacts_url": task.input_artifacts_url,
-        "output_artifacts_url": task.output_artifacts_url,
-    }
-    body = (
-        RUN_NOTEBOOK_BASE_BODY
-        | {"params": artifact_params | task.kwargs}
-        | {"version": model_version.name}
-    )
-    res = request.post(
-        f"{settings.LF_SERVER_URL}/v1/workflows/{model_version.model.lf_project_id}/notebooks/_run",
-        data=json.dumps(body),
-    )
-    execid = res.json().get("execid")
-    return wait_for_lf_exec(execid)
-
-
-def destroy_instance(machine_name):
-    return request.delete(f"{settings.LF_SERVER_URL}/v1/clusters/gpu/{machine_name}")
+    logger.info(f"Destroy VM {machine_name}")
+    destroy_instance(machine_name=machine_name, token=token)
