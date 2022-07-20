@@ -3,6 +3,9 @@ import django.dispatch
 # Sent when a new task is started
 task_started = django.dispatch.Signal(providing_args=["task"])
 
+# Sent when a task starts to actually be executed by a worker
+task_progress = django.dispatch.Signal(providing_args=["task"])
+
 # Sent when a task finished, either succesfully or not (failed or canceled)
 task_finished = django.dispatch.Signal(providing_args=["task"])
 
