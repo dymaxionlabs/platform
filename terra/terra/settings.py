@@ -357,9 +357,16 @@ LF_PASSWORD = os.getenv('LF_PASSWORD')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'timestamp': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'timestamp'
         },
     },
     'root': {
