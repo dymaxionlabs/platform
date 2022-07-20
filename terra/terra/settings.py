@@ -349,6 +349,21 @@ CREDITS_PACKS = {
 
 TITILER_URL = os.getenv('TITILER_URL', 'localhost:7500')
 
+# Lab Functions
 LF_SERVER_URL = os.getenv('LF_SERVER_URL')
 LF_USERNAME = os.getenv('LF_USERNAME')
 LF_PASSWORD = os.getenv('LF_PASSWORD')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
