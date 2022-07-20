@@ -41,7 +41,7 @@ def run_predict_notebook(*, model_version, task, token: str):
 
     # If reserved `input_dir` parameter was specified, use that as path prefix on user storage
     user_params = task.kwargs.get("user_params", {})
-    input_dir = user_params.get("input_dir")
+    input_dir = user_params.get("input_dir").strip("/")
     input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir}" if input_dir else ''
 
     artifact_params = {
