@@ -22,7 +22,7 @@ class MLModel(models.Model):
 
     @property
     def latest_version(self):
-        return self.mlmodelversion_set.order_by("name").first()
+        return self.mlmodelversion_set.order_by("name").last()
 
     def __str__(self):
         return f"{self.owner.username}/{self.name}"

@@ -83,7 +83,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
             "model__name": model_name,
             "name": model_version_name,
         }
-        qs = MLModelVersion.objects.filter(**base_filter).order_by("-created_at")
+        qs = MLModelVersion.objects.filter(**base_filter)
         ml_model_version = get_object_or_404(qs)
         serializer = MLModelVersionSerializer(ml_model_version)
         return Response(serializer.data)
@@ -100,19 +100,13 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
     )
     def predict(self, *args, **kwargs):
         user_username, model_name, model_version_name = list(self.kwargs.values())
-        ml_model_version_filter = (
-            {
-                "model__name": model_name,
-                "model__owner__username": user_username,
-            }
-            | {}
-            if model_version_name == "latest"
-            else {"name": model_version_name}
-        )
-        user_params = self.request.POST
-        qs = MLModelVersion.objects.filter(**ml_model_version_filter).order_by(
-            "-created_at"
-        )
+        base_filter = {
+            "model__owner__username": user_username,
+            "model__name": model_name,
+            "name": model_version_name,
+        }
+        user_params = self.request.data.get("parameters", {})
+        qs = MLModelVersion.objects.filter(**base_filter)
         ml_model_version = get_object_or_404(qs)
         task = enqueue_task(
             "predict",
@@ -120,4 +114,5 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
             project_id=self.request.project.id,
             user_params=user_params,
         )
-        return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
