@@ -81,14 +81,9 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         base_filter = {
             "model__owner__username": user_username,
             "model__name": model_name,
+            "name": model_version_name,
         }
-        if model_version_name == "latest":
-            version_filter = {}
-        else:
-            version_filter = {"name": model_version_name}
-        qs = MLModelVersion.objects.filter(**(base_filter | version_filter)).order_by(
-            "-created_at"
-        )
+        qs = MLModelVersion.objects.filter(**base_filter).order_by("-created_at")
         ml_model_version = get_object_or_404(qs)
         serializer = MLModelVersionSerializer(ml_model_version)
         return Response(serializer.data)
