@@ -1,20 +1,20 @@
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, views, viewsets, status, mixins
-from ml_models.models import MLModel, MLModelVersion
-from ml_models.serializers import MLModelSerializer, MLModelVersionSerializer
 from projects.permissions import (
     HasUserAPIKey,
     IsModelPublic,
     IsModelVersionModelPublic,
     IsOwnerOrReadOnly,
 )
+from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from tasks.serializers import TaskSerializer
-from django.db.models import Max
 
+from tasks.serializers import TaskSerializer
 from tasks.utils import enqueue_task
+
+from .constants import PREDICT_TASK
+from .models import MLModel, MLModelVersion
+from .serializers import MLModelSerializer, MLModelVersionSerializer
 
 
 class AllMLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -109,7 +109,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         qs = MLModelVersion.objects.filter(**base_filter)
         ml_model_version = get_object_or_404(qs)
         task = enqueue_task(
-            "predict",
+            PREDICT_TASK,
             ml_model_version_id=ml_model_version.id,
             project_id=self.request.project.id,
             user_params=user_params,
