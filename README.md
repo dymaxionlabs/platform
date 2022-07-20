@@ -49,5 +49,5 @@ The current roadmap is available at GitHub at the
 
 ## License
 
-Source code is released under a BSD-2 license.  Please refer to
-[LICENSE.md](LICENSE.md) for more information.
+This project is licensed under Apache 2.0. Refer to
+[LICENSE.txt](https://github.com/dymaxionlabs/platform/blob/main/LICENSE.txt).
