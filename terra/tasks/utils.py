@@ -20,8 +20,10 @@ def task(func_or_queue, connection=None, *args, **kwargs):
     def wrapper(func):
         def monitored_func(job_pk, sync=False):
             from tasks.models import Task
+            from tasks import states
 
             task = Task.objects.get(pk=job_pk)
+            task.mark_as_in_progress()
 
             try:
                 func(task)
@@ -42,12 +44,13 @@ def task(func_or_queue, connection=None, *args, **kwargs):
 
     return wrapper
 
+
 def run_command(cmd):
     logging.info(cmd)
     subprocess.run(cmd, shell=True, check=True)
 
 
-def enqueue_task(method, project_id=None,**kwargs):
+def enqueue_task(method, project_id=None, **kwargs):
     from tasks.models import Task
 
     logger.info("Create task %s with kwargs: %s", method, kwargs)
