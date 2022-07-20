@@ -1,10 +1,13 @@
 import json
+import logging
 import time
 
-from django.conf import settings
 import requests
+from django.conf import settings
 
 from .constants import CREATE_INSTANCE_BODY, RUN_NOTEBOOK_BASE_BODY
+
+logger = logging.getLogger(__name__)
 
 
 def login():
@@ -35,17 +38,26 @@ def create_instance_gpu(*, token: str):
 
 def run_predict_notebook(*, model_version, task, token: str):
     lf_project_id = model_version.model.lf_project_id
+
+    # If reserved `input_dir` parameter was specified, use that as path prefix on user storage
+    user_params = task.kwargs.get("user_params", {})
+    input_dir = user_params.get("input_dir")
+    input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir}" if input_dir else ''
+
     artifact_params = {
-        "INPUT_ARTIFACTS_URL": task.input_artifacts_url,
+        "INPUT_ARTIFACTS_URL": input_url if input_dir else task.input_artifacts_url,
         "OUTPUT_ARTIFACTS_URL": task.output_artifacts_url,
     }
+
     user_params = task.kwargs.get("user_params", {})
-    user_params = {k.uppercase(): v for k, v in user_params.items()}
+    user_params = {k.upper(): v for k, v in user_params.items()}
     body = (
         RUN_NOTEBOOK_BASE_BODY
         | {"params": artifact_params | user_params}
         | {"version": model_version.name}
     )
+    logger.info(f"Parameters: {body['params']}")
+
     response = requests.post(
         f"{settings.LF_SERVER_URL}/v1/workflows/{lf_project_id}/notebooks/_run",
         data=json.dumps(body),
