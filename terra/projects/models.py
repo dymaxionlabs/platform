@@ -16,7 +16,7 @@ from rest_framework_api_key.models import AbstractAPIKey
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
     phone = models.CharField(max_length=40, blank=True)
     city = models.CharField(max_length=120, blank=True)
