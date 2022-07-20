@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',
     'quotas.apps.QuotasConfig',
+    'ml_models.apps.MlModelsConfig',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
@@ -347,3 +348,29 @@ CREDITS_PACKS = {
 }
 
 TITILER_URL = os.getenv('TITILER_URL', 'localhost:7500')
+
+# Lab Functions
+LF_SERVER_URL = os.getenv('LF_SERVER_URL')
+LF_USERNAME = os.getenv('LF_USERNAME')
+LF_PASSWORD = os.getenv('LF_PASSWORD')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'timestamp': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timestamp'
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
