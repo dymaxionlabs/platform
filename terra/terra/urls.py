@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from ml_models.views import MLModelVersionViewSet, MLModelViewSet, UserMLModelViewSet
+from ml_models.views import MLModelVersionViewSet, AllMLModelViewSet, MLModelViewSet
 from projects.views import (
     ConfirmProjectInvitationView,
     ContactView,
@@ -52,9 +52,9 @@ router.register(r"layers", LayerViewSet)
 router.register(r"maps", MapViewSet)
 router.register(r"dashboards", DashboardViewSet)
 router.register(r"projects/invitations", ProjectInvitationTokenViewSet)
-router.register(r"models", MLModelViewSet)
+router.register(r"models", AllMLModelViewSet)
 mlmodels_users_router = routers.NestedSimpleRouter(router, r"users", lookup="user")
-mlmodels_users_router.register(r"models", UserMLModelViewSet, basename="models")
+mlmodels_users_router.register(r"models", MLModelViewSet, basename="models")
 mlmodels_models_router = routers.NestedSimpleRouter(
     mlmodels_users_router, r"models", lookup="model"
 )

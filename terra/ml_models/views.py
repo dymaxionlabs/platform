@@ -12,11 +12,12 @@ from projects.permissions import (
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from tasks.serializers import TaskSerializer
+from django.db.models import Max
 
 from tasks.utils import enqueue_task
 
 
-class MLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class AllMLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = MLModel.objects.all()
     serializer_class = MLModelSerializer
     permission_classes = [
@@ -30,18 +31,26 @@ class MLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             super()
             .get_queryset()
             .filter(Q(is_public=True) | Q(owner=self.request.user))
+            .annotate(latest_version=Max("mlmodelversion__name"))
             .order_by("-created_at")
         )
 
 
-class UserMLModelViewSet(MLModelViewSet):
+class MLModelViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "name"
 
     def get_queryset(self):
-        return super().get_queryset().filter(owner__username=self.kwargs["username"])
+        # FIXME: If user == authenticated user, list all models (public or
+        # private), otherwise, only public models
+        return (
+            super()
+            .get_queryset()
+            .filter(owner__username=self.kwargs["username"])
+            .annotate(latest_version=Max("mlmodelversion__name"))
+        )
 
 
-class MLModelVersionViewSet(viewsets.ModelViewSet):
+class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = MLModelVersion.objects.all()
     serializer_class = MLModelVersionSerializer
     permission_classes = [
