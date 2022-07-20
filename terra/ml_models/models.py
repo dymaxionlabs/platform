@@ -37,4 +37,4 @@ class MLModelVersion(models.Model):
         unique_together = ('model', 'name')
 
     def __str__(self):
-        return f'{self.owner.username}/{self.name}@{self.name}'
+        return f'{self.model}@{self.name}'
