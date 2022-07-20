@@ -14,7 +14,7 @@ from .models import MLModelVersion
 logger = logging.getLogger(__name__)
 
 
-@task("default", timeout=60 * 60 * 2)  # 2 hours timeout
+@task("default")
 def predict(task: Task):
     model_version = MLModelVersion.objects.get(pk=task.kwargs["ml_model_version_id"])
 
