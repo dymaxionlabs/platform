@@ -25,9 +25,14 @@ def predict(task: Task):
     machine_name = create_instance_gpu(token=token)
     logger.info(f"Machine {machine_name} created")
 
-    logger.info(f"Running prediction notebook for {model_version}")
-    run_predict_notebook(model_version=model_version, task=task, token=token)
-    logger.info(f"Prediction run succesfully for {model_version}")
-
-    logger.info(f"Destroy VM {machine_name}")
-    destroy_instance(machine_name=machine_name, token=token)
+    try:
+        logger.info(f"Running prediction notebook for {model_version}")
+        run_predict_notebook(model_version=model_version, task=task, token=token)
+    except Exception as err:
+        logger.warn(f"Notebook failed!")
+        raise err
+    else:
+        logger.info(f"Prediction run succesfully for {model_version}")
+    finally:
+        logger.info(f"Destroy VM {machine_name}")
+        destroy_instance(machine_name=machine_name, token=token)
