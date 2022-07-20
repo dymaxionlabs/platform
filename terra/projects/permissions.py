@@ -128,3 +128,8 @@ class IsModelVersionModelPublic(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.model.is_public
+
+class HasBetaAccess(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.profile.beta
