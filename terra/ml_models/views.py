@@ -27,27 +27,28 @@ class AllMLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ]
 
     def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(Q(is_public=True) | Q(owner=self.request.user))
-            .annotate(latest_version=Max("mlmodelversion__name"))
-            .order_by("-created_at")
-        )
+        base_qs = super().get_queryset().order_by("-created_at")
+        all_public_qs = base_qs.filter(is_public=True)
+        user_qs = base_qs.filter(owner=self.request.user)
+        return all_public_qs.union(user_qs)
 
 
 class MLModelViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = MLModel.objects.all()
+    serializer_class = MLModelSerializer
+    permission_classes = [
+        HasUserAPIKey | permissions.IsAuthenticated,
+        IsOwnerOrReadOnly,
+        IsModelPublic,
+    ]
     lookup_field = "name"
 
     def get_queryset(self):
-        # FIXME: If user == authenticated user, list all models (public or
-        # private), otherwise, only public models
-        return (
-            super()
-            .get_queryset()
-            .filter(owner__username=self.kwargs["username"])
-            .annotate(latest_version=Max("mlmodelversion__name"))
-        )
+        username = self.kwargs["user_username"]
+        base_qs = super().get_queryset().filter(owner__username=username)
+        if self.request.user.username != username:
+            return base_qs.filter(is_public=True)
+        return base_qs
 
 
 class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -59,17 +60,21 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         IsModelVersionModelPublic,
     ]
     lookup_field = "name"
+    lookup_value_regex = "[^/]+"
 
     def get_queryset(self):
-        return (
+        username = self.kwargs["user_username"]
+        modelname = self.kwargs["model_name"]
+        base_qs = (
             super()
             .get_queryset()
-            .filter(
-                Q(model__is_public=True) | Q(model__owner=self.request.user),
-                model__name=self.kwargs["model_name"],
-            )
+            .filter(model__name=modelname)
+            .filter(model__owner__username=username)
             .order_by("-created_at")
         )
+        if self.request.user.username != username:
+            return base_qs.filter(model__is_public=True)
+        return base_qs
 
     def retrieve(self, request, *args, **kwargs):
         user_username, model_name, model_version_name = list(self.kwargs.values())

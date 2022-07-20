@@ -13,15 +13,16 @@ class MLModelAdmin(admin.ModelAdmin):
         "owner",
         "name",
         "description",
+        "is_public",
         "created_at",
         "updated_at",
-        "latest_version"
+        "latest_version",
     )
     inlines = [MLModelVersionInline]
 
     def latest_version(self, obj):
         last_version = obj.mlmodelversion_set.last()
-        return last_version.name if last_version else '-'
+        return last_version.name if last_version else "-"
 
 
 admin.site.register(MLModel, MLModelAdmin)
