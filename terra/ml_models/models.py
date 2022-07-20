@@ -23,6 +23,9 @@ class MLModel(models.Model):
     class Meta:
         unique_together = ('name', 'owner')
 
+    def __str__(self):
+        return f'{self.owner.username}/{self.name}'
+
 class MLModelVersion(models.Model):
     model = models.ForeignKey(MLModel, on_delete=models.CASCADE)
     name = models.CharField(_('name'), max_length=100)
@@ -32,3 +35,6 @@ class MLModelVersion(models.Model):
 
     class Meta:
         unique_together = ('model', 'name')
+
+    def __str__(self):
+        return f'{self.owner.username}/{self.name}@{self.name}'
