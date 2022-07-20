@@ -27,7 +27,9 @@ def task(func_or_queue, connection=None, *args, **kwargs):
                 func(task)
             except Exception as err:
                 tb = traceback.format_exc()
-                task.mark_as_failed(reason=err, traceback=tb)
+                # FIXME: Add column traceback (see other project)
+                # task.mark_as_failed(reason=err, traceback=tb)
+                task.mark_as_failed(reason=err)
                 if sync:
                     raise err
             else:
