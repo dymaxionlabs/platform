@@ -36,12 +36,14 @@ def create_instance_gpu(*, token: str):
 def run_predict_notebook(*, model_version, task, token: str):
     lf_project_id = model_version.model.lf_project_id
     artifact_params = {
-        "input_artifacts_url": task.input_artifacts_url,
-        "output_artifacts_url": task.output_artifacts_url,
+        "INPUT_ARTIFACTS_URL": task.input_artifacts_url,
+        "OUTPUT_ARTIFACTS_URL": task.output_artifacts_url,
     }
+    user_params = task.kwargs.get("user_params", {})
+    user_params = {k.uppercase(): v for k, v in user_params.items()}
     body = (
         RUN_NOTEBOOK_BASE_BODY
-        | {"params": artifact_params | task.kwargs}
+        | {"params": artifact_params | user_params}
         | {"version": model_version.name}
     )
     response = requests.post(

@@ -80,6 +80,6 @@ class MLModelVersionViewSet(viewsets.ModelViewSet):
             'predict',
             ml_model_version_id=ml_model_version.id,
             project_id=self.request.project.id,
-            **user_params
+            user_params=user_params
         )
         return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
