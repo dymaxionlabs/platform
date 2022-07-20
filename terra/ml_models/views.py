@@ -4,6 +4,7 @@ from projects.permissions import (
     IsModelPublic,
     IsModelVersionModelPublic,
     IsOwnerOrReadOnly,
+    HasBetaAccess,
 )
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
@@ -96,6 +97,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
             HasUserAPIKey | permissions.IsAuthenticated,
             IsOwnerOrReadOnly,
             IsModelVersionModelPublic,
+            HasBetaAccess
         ],
     )
     def predict(self, *args, **kwargs):
