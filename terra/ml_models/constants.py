@@ -14,7 +14,7 @@ CREATE_INSTANCE_BODY = {
 }
 
 RUN_NOTEBOOK_BASE_BODY = {
-  "nb_name": "test-tf-gpu",
+  "nb_name": "predict",
   "runtime": "gpu",
   "machine": "cpu",
   "cluster": "gpu",
