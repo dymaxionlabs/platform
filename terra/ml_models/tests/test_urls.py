@@ -8,8 +8,8 @@ class TestMLModelURLs:
         'url_path, viewname, url_kwargs, url_name',
         (
             ('/models/',                                                            'AllMLModelViewSet',        None,                                                                               'mlmodel-list'),
-            ('/users/test_user/models/',                                            'MLModelViewSet',       {"user_username": "test_user"},                                                     'models-list'),
-            ('/users/test_user/models/test_model/',                                 'MLModelViewSet',       {"user_username": "test_user", "name": "test_model"},                               'models-detail'),
+            ('/users/test_user/models/',                                            'MLModelViewSet',           {"user_username": "test_user"},                                                     'models-list'),
+            ('/users/test_user/models/test_model/',                                 'MLModelViewSet',           {"user_username": "test_user", "name": "test_model"},                               'models-detail'),
             ('/users/test_user/models/test_model/versions/',                        'MLModelVersionViewSet',    {"user_username": "test_user", "model_name": "test_model"},                         'versions-list'),
             ('/users/test_user/models/test_model/versions/test_version/',           'MLModelVersionViewSet',    {"user_username": "test_user", "model_name": "test_model", "name": "test_version"}, 'versions-detail'),
             ('/users/test_user/models/test_model/versions/test_version/predict/',   'MLModelVersionViewSet',    {"user_username": "test_user", "model_name": "test_model", "name": "test_version"}, 'versions-predict'),
