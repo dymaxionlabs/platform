@@ -16,6 +16,7 @@ from tasks.models import Task
 from ..serializers import MLModelSerializer
 from ..views import MLModelVersionViewSet, MLModelViewSet
 from ..models import MLModel, MLModelVersion
+from ml_models.constants import PREDICT_TASK
 
 
 prepare_ml_model = lambda: baker.prepare(MLModel)
@@ -199,27 +200,53 @@ class TestMLModelVersionViewSet:
             kwargs=endpoint_kwargs,
         )
         request = rf.get(url)
-        request.project = baker.prepare(Project, id=1)
+        test_project = baker.prepare(Project, id=1)
+        request.project = test_project
         view = MLModelVersionViewSet.as_view({"get": "predict"})
 
         # Mock
+        version_filter_mock = mocker.patch(
+            'ml_models.views.MLModelVersion.objects.filter',
+            return_value=MockSet(),
+        )
         mocker.patch(
             'ml_models.views.get_object_or_404',
             return_value=self.test_model_version,
         )
-        mocker.patch(
+        test_task = baker.prepare(Task)
+        enqueue_task_mock = mocker.patch(
             'ml_models.views.enqueue_task',
-            return_value=baker.prepare(Task)
+            return_value=test_task
         )
-        serialized_data_mock = mocker.Mock()
-        serialized_data_mock.data = {}
-        mocker.patch(
-            'tasks.serializers.TaskSerializer',
-            return_value=serialized_data_mock
+        serializer_mock_return_value = mocker.Mock()
+        serializer_mock_return_value_data = {}
+        serializer_mock_return_value.data = serializer_mock_return_value_data
+        serializer_mock = mocker.patch(
+            'ml_models.views.TaskSerializer',
+            return_value=serializer_mock_return_value,
+        )
+        response_mock = mocker.patch(
+            'ml_models.views.Response',
+            return_value=Response(serializer_mock_return_value_data)
         )
 
         # Act
         response = view(request, **endpoint_kwargs).render()
 
         # Assert
+        version_filter_mock.assert_called_with(**{
+            "model__owner__username": test_user.get_username(),
+            "model__name": test_model.name,
+            "name": self.test_model_version.name,
+        })
+        enqueue_task_mock.assert_called_with(
+            PREDICT_TASK,
+            **{
+                "ml_model_version_id": self.test_model_version.id,
+                "project_id": test_project.id,
+                "user_params": {},             
+            }
+        )
+        serializer_mock.assert_called_with(test_task)
+        response_mock.assert_called_with(serializer_mock_return_value_data)
         assert response.status_code == 200
