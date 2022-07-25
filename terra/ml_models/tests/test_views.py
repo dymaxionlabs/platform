@@ -50,12 +50,6 @@ class TestAllMLModelViewset:
 
 class TestMLModelViewset:
 
-    valid_data_dict = {
-        k: v
-        for (k, v) in test_model.__dict__.items()
-        if k in MLModel._meta.get_fields()
-    }
-
     def test_list(self, mocker, rf):
 
         # Arrange
