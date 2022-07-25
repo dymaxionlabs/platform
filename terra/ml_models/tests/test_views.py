@@ -13,7 +13,6 @@ from ..views import MLModelViewSet
 from ..models import MLModel
 
 
-ml_model_fields = [field.name for field in MLModel._meta.get_fields()]
 prepare_ml_model = lambda self=None: baker.prepare(MLModel)
 ml_model_1 = prepare_ml_model()
 test_user = baker.prepare(get_user_model())
@@ -46,7 +45,7 @@ class TestAllMLModelViewset:
 class TestMLModelViewset:
 
     valid_data_dict = {
-        k: v for (k, v) in ml_model_1.__dict__.items() if k in ml_model_fields
+        k: v for (k, v) in ml_model_1.__dict__.items() if k in MLModel._meta.get_fields()
     }
 
     def test_list(self, mocker, rf):
