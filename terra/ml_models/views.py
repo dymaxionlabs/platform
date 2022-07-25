@@ -94,7 +94,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         methods=["POST"],
         name="Predict model",
         permission_classes=[
-            HasUserAPIKey | permissions.IsAuthenticated,
+            HasUserAPIKey,
             IsOwnerOrReadOnly,
             IsModelVersionModelPublic,
             HasBetaAccess
