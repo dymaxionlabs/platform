@@ -7,6 +7,8 @@ from django_mock_queries.mocks import MockSet
 from model_bakery import baker
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.response import Response
+
 
 from projects.models import Project
 from tasks.models import Task
@@ -151,15 +153,37 @@ class TestMLModelVersionViewSet:
         view = MLModelVersionViewSet.as_view({"get": "retrieve"})
 
         # Mock
+        version_filter_mock = mocker.patch(
+            'ml_models.views.MLModelVersion.objects.filter',
+            return_value=MockSet(),
+        )
         mocker.patch(
             'ml_models.views.get_object_or_404',
             return_value=self.test_model_version,
+        )
+        serializer_mock_return_value = mocker.Mock()
+        serializer_mock_return_value_data = {}
+        serializer_mock_return_value.data = serializer_mock_return_value_data
+        serializer_mock = mocker.patch(
+            'ml_models.views.MLModelVersionSerializer',
+            return_value=serializer_mock_return_value,
+        )
+        response_mock = mocker.patch(
+            'ml_models.views.Response',
+            return_value=Response(serializer_mock_return_value_data)
         )
 
         # Act
         response = view(request, **endpoint_kwargs).render()
 
         # Assert
+        version_filter_mock.assert_called_with(**{
+            "model__owner__username": test_user.get_username(),
+            "model__name": test_model.name,
+            "name": self.test_model_version.name,
+        })
+        serializer_mock.assert_called_with(self.test_model_version)
+        response_mock.assert_called_with(serializer_mock_return_value_data)
         assert response.status_code == 200
 
     def test_predict(self, mocker, rf):
