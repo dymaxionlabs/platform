@@ -9,12 +9,12 @@ from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import AnonymousUser
 
 from ..serializers import MLModelSerializer
-from ..views import MLModelViewSet
-from ..models import MLModel
+from ..views import MLModelVersionViewSet, MLModelViewSet
+from ..models import MLModel, MLModelVersion
 
 
-prepare_ml_model = lambda self=None: baker.prepare(MLModel)
-ml_model_1 = prepare_ml_model()
+prepare_ml_model = lambda: baker.prepare(MLModel)
+test_model = prepare_ml_model()
 test_user = baker.prepare(get_user_model())
 
 
@@ -23,7 +23,7 @@ class TestAllMLModelViewset:
 
         # Arrange
         qs = MockSet(
-            ml_model_1,
+            test_model,
             prepare_ml_model(),
             prepare_ml_model(),
         )
@@ -45,14 +45,16 @@ class TestAllMLModelViewset:
 class TestMLModelViewset:
 
     valid_data_dict = {
-        k: v for (k, v) in ml_model_1.__dict__.items() if k in MLModel._meta.get_fields()
+        k: v
+        for (k, v) in test_model.__dict__.items()
+        if k in MLModel._meta.get_fields()
     }
 
     def test_list(self, mocker, rf):
 
         # Arrange
         qs = MockSet(
-            ml_model_1,
+            test_model,
             prepare_ml_model(),
             prepare_ml_model(),
         )
@@ -73,7 +75,10 @@ class TestMLModelViewset:
     def test_retrieve(self, mocker, rf):
 
         # Arrange
-        endpoint_kwargs = {"user_username": test_user.get_username(), "name": ml_model_1.name}
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "name": test_model.name,
+        }
         url = reverse(
             "models-detail",
             kwargs=endpoint_kwargs,
@@ -83,10 +88,10 @@ class TestMLModelViewset:
 
         # Mock
         mocker.patch.object(
-            MLModelViewSet, "get_queryset", return_value=MockSet(ml_model_1)
+            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
         )
         mocker.patch.object(
-            MLModelViewSet, "get_queryset", return_value=MockSet(ml_model_1)
+            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
         )
 
         # Act
@@ -95,3 +100,61 @@ class TestMLModelViewset:
         # Assert
         assert response.status_code == 200
 
+
+class TestMLModelVersionViewSet:
+
+    prepare_model_version = lambda self=None: baker.prepare(MLModelVersion)
+    test_model_version = prepare_model_version()
+
+    def test_list(self, mocker, rf):
+
+        # Arrange
+        qs = MockSet(
+            self.test_model_version,
+            self.prepare_model_version(),
+            self.prepare_model_version(),
+        )
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+        }
+        url = reverse("versions-list", kwargs=endpoint_kwargs)
+        request = rf.get(url)
+        view = MLModelVersionViewSet.as_view({"get": "list"})
+
+        # Mock
+        mocker.patch.object(MLModelVersionViewSet, "get_queryset", return_value=qs)
+
+        # Act
+        response = view(request).render()
+
+        # Assert
+        assert response.status_code == 200
+        assert json.loads(response.content)["count"] == 3
+
+    def test_retrieve(self, mocker, rf):
+
+        # Arrange
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+            "name": self.test_model_version.name,
+        }
+        url = reverse(
+            "versions-detail",
+            kwargs=endpoint_kwargs,
+        )
+        request = rf.get(url)
+        view = MLModelVersionViewSet.as_view({"get": "retrieve"})
+
+        # Mock
+        mocker.patch(
+            'ml_models.views.get_object_or_404',
+            return_value=self.test_model_version,
+        )
+
+        # Act
+        response = view(request, **endpoint_kwargs).render()
+
+        # Assert
+        assert response.status_code == 200
