@@ -133,5 +133,5 @@ class IsModelVersionModelPublic(permissions.BasePermission):
 class HasBetaAccess(permissions.BasePermission):
     message = 'This feature is only available to beta users.'
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         return request.user.profile.beta
