@@ -8,6 +8,9 @@ from model_bakery import baker
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import AnonymousUser
 
+from projects.models import Project
+from tasks.models import Task
+
 from ..serializers import MLModelSerializer
 from ..views import MLModelVersionViewSet, MLModelViewSet
 from ..models import MLModel, MLModelVersion
@@ -151,6 +154,44 @@ class TestMLModelVersionViewSet:
         mocker.patch(
             'ml_models.views.get_object_or_404',
             return_value=self.test_model_version,
+        )
+
+        # Act
+        response = view(request, **endpoint_kwargs).render()
+
+        # Assert
+        assert response.status_code == 200
+
+    def test_predict(self, mocker, rf):
+
+        # Arrange
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+            "name": self.test_model_version.name,
+        }
+        url = reverse(
+            "versions-predict",
+            kwargs=endpoint_kwargs,
+        )
+        request = rf.get(url)
+        request.project = baker.prepare(Project, id=1)
+        view = MLModelVersionViewSet.as_view({"get": "predict"})
+
+        # Mock
+        mocker.patch(
+            'ml_models.views.get_object_or_404',
+            return_value=self.test_model_version,
+        )
+        mocker.patch(
+            'ml_models.views.enqueue_task',
+            return_value=baker.prepare(Task)
+        )
+        serialized_data_mock = mocker.Mock()
+        serialized_data_mock.data = {}
+        mocker.patch(
+            'tasks.serializers.TaskSerializer',
+            return_value=serialized_data_mock
         )
 
         # Act
