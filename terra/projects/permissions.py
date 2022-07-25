@@ -78,6 +78,7 @@ class HasAccessToProjectPermission(permissions.BasePermission):
 
 
 class HasUserAPIKey(BaseHasAPIKey):
+    message = 'API key not provided or is not valid.'
     model = UserAPIKey
 
     def has_permission(self, request, view):
@@ -130,6 +131,7 @@ class IsModelVersionModelPublic(permissions.BasePermission):
         return obj.model.is_public
 
 class HasBetaAccess(permissions.BasePermission):
+    message = 'This feature is only available to beta users.'
 
     def has_object_permission(self, request, view, obj):
         return request.user.profile.beta
