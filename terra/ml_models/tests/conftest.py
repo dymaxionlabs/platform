@@ -16,7 +16,7 @@ def _shut_logger(session_mocker):
         yield
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function")
 def _mock_views_permissions():
 
     patch_perm = lambda perm: mock.patch.multiple(

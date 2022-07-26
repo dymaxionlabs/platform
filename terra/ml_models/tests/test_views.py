@@ -25,7 +25,7 @@ test_user = baker.prepare(get_user_model())
 
 
 class TestAllMLModelViewset:
-    def test_list(self, mocker, rf):
+    def test_list(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         qs = MockSet(
@@ -50,7 +50,7 @@ class TestAllMLModelViewset:
 
 class TestMLModelViewset:
 
-    def test_list(self, mocker, rf):
+    def test_list(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         qs = MockSet(
@@ -72,7 +72,7 @@ class TestMLModelViewset:
         assert response.status_code == 200
         assert json.loads(response.content)["count"] == 3
 
-    def test_retrieve(self, mocker, rf):
+    def test_retrieve(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         endpoint_kwargs = {
@@ -106,7 +106,7 @@ class TestMLModelVersionViewSet:
     prepare_model_version = lambda self=None: baker.prepare(MLModelVersion)
     test_model_version = prepare_model_version()
 
-    def test_list(self, mocker, rf):
+    def test_list(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         qs = MockSet(
@@ -132,7 +132,7 @@ class TestMLModelVersionViewSet:
         assert response.status_code == 200
         assert json.loads(response.content)["count"] == 3
 
-    def test_retrieve(self, mocker, rf):
+    def test_retrieve(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         endpoint_kwargs = {
@@ -181,7 +181,7 @@ class TestMLModelVersionViewSet:
         response_mock.assert_called_with(serializer_mock_return_value_data)
         assert response.status_code == 200
 
-    def test_predict(self, mocker, rf):
+    def test_predict(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
         endpoint_kwargs = {
