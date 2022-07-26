@@ -1,8 +1,8 @@
 import pytest
 from model_bakery import baker
 
-from ml_models.serializers import MLModelSerializer
-from ml_models.models import MLModel
+from ml_models.serializers import MLModelSerializer, MLModelVersionSerializer
+from ml_models.models import MLModel, MLModelVersion
 
 
 class TestMLModelSerializer:
@@ -15,9 +15,10 @@ class TestMLModelSerializer:
         assert serializer.data
 
     def test_deserialize(self):
-        ml_model_fields = [field.name for field in MLModel._meta.get_fields()]
         valid_serialized_data = {
-            k: v for (k, v) in self.ml_model.__dict__.items() if k in ml_model_fields
+            k: v
+            for (k, v) in self.ml_model.__dict__.items()
+            if k not in MLModelSerializer.Meta.exclude
         }
 
         serializer = MLModelSerializer(data=valid_serialized_data)
@@ -48,3 +49,26 @@ class TestMLModelSerializer:
 
         assert not serializer.is_valid()
         assert serializer.errors != {}
+
+
+class TestMLModelVersionSerializer:
+    ml_model_version = baker.prepare(MLModelVersion)
+
+    def test_serialize(self):
+        serializer = MLModelVersionSerializer(self.ml_model_version)
+
+        assert serializer.data
+
+    def test_deserialize(self):
+        valid_serialized_data = {
+            k: v
+            for (k, v) in self.ml_model_version.__dict__.items()
+            if k not in MLModelVersionSerializer.Meta.exclude
+        }
+
+        serializer = MLModelVersionSerializer(data=valid_serialized_data)
+
+        assert serializer.is_valid()
+        assert serializer.errors == {}
+
+    ml_model_version_name_max_chars = 100
