@@ -1,4 +1,6 @@
+import os
 import pytest
+import logging
 from unittest import mock
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -7,8 +9,14 @@ from rest_framework.permissions import IsAuthenticated
 from projects.permissions import HasUserAPIKey, IsModelPublic, IsOwnerOrReadOnly
 
 
+@pytest.fixture(autouse=True, scope="session")
+def _shut_logger(session_mocker):
+    with session_mocker.patch("ml_models.tasks.logger"):
+        yield
+
+
 @pytest.fixture(scope="session", autouse=True)
-def mock_views_permissions():
+def _mock_views_permissions():
 
     patch_perm = lambda perm: mock.patch.multiple(
         perm,
