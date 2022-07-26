@@ -16,7 +16,7 @@ from tasks.models import Task
 from ..serializers import MLModelSerializer
 from ..views import MLModelVersionViewSet, MLModelViewSet
 from ..models import MLModel, MLModelVersion
-from ml_models.constants import PREDICT_TASK
+from ml_models.utils.constants import PREDICT_TASK
 
 
 prepare_ml_model = lambda: baker.prepare(MLModel)

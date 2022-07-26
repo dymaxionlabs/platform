@@ -6,7 +6,8 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.base_user import AbstractBaseUser
 from rest_framework.permissions import IsAuthenticated
 
-from projects.permissions import HasUserAPIKey, IsModelPublic, IsOwnerOrReadOnly
+from projects.permissions import HasUserAPIKey
+from ml_models.permissions import IsModelPublic, IsOwnerOrReadOnly
 
 
 @pytest.fixture(autouse=True, scope="session")

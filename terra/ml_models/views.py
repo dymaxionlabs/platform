@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
-from projects.permissions import (
-    HasUserAPIKey,
+from projects.permissions import HasUserAPIKey
+from ml_models.permissions import (
     IsModelPublic,
     IsModelVersionModelPublic,
     IsOwnerOrReadOnly,
@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from tasks.serializers import TaskSerializer
 from tasks.utils import enqueue_task
 
-from .constants import PREDICT_TASK
+from .utils.constants import PREDICT_TASK
 from .models import MLModel, MLModelVersion
 from .serializers import MLModelSerializer, MLModelVersionSerializer
 
