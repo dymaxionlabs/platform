@@ -8,9 +8,11 @@ from terra.utils import gsutilCopy
 from projects.models import Project
 from quotas.models import UserQuota
 from storage.client import GCSClient
+from ml_models.models import CreatedAtUpdatedAtModel
 
 
-class File(models.Model):
+
+class File(CreatedAtUpdatedAtModel):
     project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
                                 related_name='files')
@@ -18,9 +20,6 @@ class File(models.Model):
     size = models.BigIntegerField()
     complete = models.BooleanField(default=True)
     metadata = JSONField(null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '{path} ({project})'.format(path=self.path,

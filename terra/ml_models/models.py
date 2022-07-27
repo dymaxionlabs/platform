@@ -4,7 +4,20 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 
 
-class MLModel(models.Model):
+class CreatedAtUpdatedAtModel(models.Model):
+    """
+    Model that has the `created_at` & `updated_at` fields and is
+    by default ordered by `created_at`
+    """
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ("-created_at",)
+
+class MLModel(CreatedAtUpdatedAtModel):
     name = models.CharField(_("name"), max_length=134)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     description = models.TextField(_("description"), blank=True, null=True)
@@ -14,9 +27,8 @@ class MLModel(models.Model):
     lf_project_id = models.CharField(max_length=123)
     repo_url = models.URLField(_("git repository url"), blank=True, null=True)
     is_public = models.BooleanField(_("is public"), default=False)
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
 
+    
     class Meta:
         unique_together = ("name", "owner")
 
@@ -28,13 +40,11 @@ class MLModel(models.Model):
         return f"{self.owner.username}/{self.name}"
 
 
-class MLModelVersion(models.Model):
+class MLModelVersion(CreatedAtUpdatedAtModel):
     model = models.ForeignKey(MLModel, on_delete=models.CASCADE)
     name = models.CharField(_("name"), max_length=100)
     description = models.TextField(_("description"), blank=True, null=True)
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
-
+    
     class Meta:
         unique_together = ("model", "name")
 

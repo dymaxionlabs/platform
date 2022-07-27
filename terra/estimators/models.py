@@ -21,12 +21,14 @@ from estimators.utils import get_raster_metadata
 from projects.models import Project
 from storage.client import GCSClient
 from storage.models import File
+from ml_models.models import CreatedAtUpdatedAtModel
+
 
 # Import fiona last
 import fiona
 
 
-class Estimator(models.Model):
+class Estimator(CreatedAtUpdatedAtModel):
     suffix_sep = '__'
 
     TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'
@@ -59,9 +61,6 @@ class Estimator(models.Model):
     image_files = ArrayField(models.CharField(max_length=512),
                              default=list,
                              blank=True)
-
-    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
     class Meta:
         unique_together = (('project', 'estimator_type', 'name'), )
