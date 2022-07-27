@@ -2,8 +2,8 @@ import pytest
 from model_bakery import baker
 from django.contrib.auth import get_user_model
 
-from ml_models.permissions import IsOwnerOrReadOnly
-
+from ml_models.permissions import IsModelPublic, IsModelVersionModelPublic, IsOwnerOrReadOnly
+from ml_models.models import MLModel, MLModelVersion
 
 class TestIsOwnerOrReadOnly:
     def test_safe_method(self, rf):
@@ -47,16 +47,52 @@ class TestIsOwnerOrReadOnly:
 
 
 class TestIsModelPublic:
-    def test_is_public(self):
-        pass
 
-    def test_is_not_public(self):
-        pass
+    def test_is_public(self, rf):
+        # Arrange
+        request = rf.get("/")
+        obj = baker.prepare(MLModel, is_public=True)
+
+        # Act
+        perm_check = IsModelPublic()
+
+        # Assert
+        assert perm_check.has_object_permission(request, None, obj)
+
+    def test_is_not_public(self, rf):
+        # Arrange
+        request = rf.get("/")
+        obj = baker.prepare(MLModel, is_public=False)
+
+        # Act
+        perm_check = IsModelPublic()
+
+        # Assert
+        assert not perm_check.has_object_permission(request, None, obj)
 
 
 class TestIsModelVersionPublic:
-    def test_is_public(self):
-        pass
+    
+    def test_is_public(self, rf):
+        # Arrange
+        request = rf.get("/")
+        model = baker.prepare(MLModel, is_public=True)
+        obj = baker.prepare(MLModelVersion, model=model)
 
-    def test_is_not_public(self):
-        pass
+        # Act
+        perm_check = IsModelVersionModelPublic()
+
+        # Assert
+        assert perm_check.has_object_permission(request, None, obj)
+
+    def test_is_not_public(self, rf):
+        # Arrange
+        request = rf.get("/")
+        model = baker.prepare(MLModel, is_public=False)
+        obj = baker.prepare(MLModelVersion, model=model)
+
+        # Act
+        perm_check = IsModelVersionModelPublic()
+
+        # Assert
+        assert not perm_check.has_object_permission(request, None, obj)
