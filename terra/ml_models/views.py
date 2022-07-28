@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from projects.permissions import HasUserAPIKey
+from projects.permissions import HasBetaAccess, HasUserAPIKey
 from ml_models.permissions import (
     IsModelPublic,
     IsModelVersionModelPublic,
@@ -93,9 +93,10 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         methods=["POST"],
         name="Predict model",
         permission_classes=[
-            HasUserAPIKey | permissions.IsAuthenticated,
+            HasUserAPIKey,
             IsOwnerOrReadOnly,
             IsModelVersionModelPublic,
+            HasBetaAccess
         ],
     )
     def predict(self, *args, **kwargs):
