@@ -1,9 +1,16 @@
 import json
 from django.conf import settings
 from model_bakery import baker
+import pytest
 
 from ml_models.utils.constants import CREATE_INSTANCE_BODY
-from ml_models.utils.logic import create_instance_gpu, destroy_instance, login, run_predict_notebook
+from ml_models.utils.logic import (
+    create_instance_gpu,
+    destroy_instance,
+    login,
+    run_predict_notebook,
+    wait_for_task,
+)
 from ml_models.models import MLModel, MLModelVersion
 from tasks.models import Task
 from projects.models import Project
@@ -73,9 +80,7 @@ class TestRunPredictNotebook:
         project_pk = 1
         project = baker.prepare(Project, pk=project_pk)
         task_pk = 1
-        task_obj = baker.prepare(
-            Task, kwargs=task_kwargs, project=project, pk=task_pk
-        )
+        task_obj = baker.prepare(Task, kwargs=task_kwargs, project=project, pk=task_pk)
         token_value = "test_token"
         params = {
             "model_version": model_version_obj,
@@ -101,7 +106,6 @@ class TestRunPredictNotebook:
         wait_for_task_mock.assert_called()
         assert wait_for_task_result == wait_for_task_mock_return
 
-
     def test_no_input_dir(self, mocker):
         lf_project_id = "test_lf_project_id"
         model_obj = baker.prepare(MLModel, lf_project_id=lf_project_id)
@@ -110,9 +114,7 @@ class TestRunPredictNotebook:
         project_pk = 1
         project = baker.prepare(Project, pk=project_pk)
         task_pk = 1
-        task_obj = baker.prepare(
-            Task, kwargs=task_kwargs, project=project, pk=task_pk
-        )
+        task_obj = baker.prepare(Task, kwargs=task_kwargs, project=project, pk=task_pk)
         token_value = "test_token"
         params = {
             "model_version": model_version_obj,
@@ -150,16 +152,61 @@ class TestDestroyInstance:
         )
 
         destroy_instance_resp = destroy_instance(machine_name=machine_name, token=token)
-        
+
         del_mock.assert_called_with(
             f"{settings.LF_SERVER_URL}/v1/clusters/gpu/{machine_name}",
             headers={"Authorization": token},
         )
         assert destroy_instance_resp == del_mock_return
 
+
 class TestWaitForTask:
     def test_task_executed(self, mocker):
-        assert False
+        execid = "test_execid"
+        token = "test_token"
+        get_mock_return = mocker.Mock()
+        resp_result = {}
+        get_mock_return.json.side_effect = (
+            {"status": "started"},
+            {"status": "complete", "result": resp_result},
+        )
+        mocker.patch(
+            'ml_models.utils.logic.time.sleep'
+        )
+        get_mock = mocker.patch(
+            "ml_models.utils.logic.requests.get",
+            return_value=get_mock_return,
+        )
+
+        result = wait_for_task(execid=execid, token=token)
+
+        get_mock.assert_called_with(
+            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}",
+            headers={"Authorization": token}
+        )
+        assert result == resp_result 
+
 
     def test_task_error(self, mocker):
-        assert False
+        execid = "test_execid"
+        token = "test_token"
+        get_mock_return = mocker.Mock()
+        get_mock_return.json.side_effect = (
+            {"status": "started"},
+            {"status": "complete", "result": {"error": "test_error"}},
+        )
+        mocker.patch(
+            'ml_models.utils.logic.time.sleep'
+        )
+        get_mock = mocker.patch(
+            "ml_models.utils.logic.requests.get",
+            return_value=get_mock_return,
+        )
+
+        with pytest.raises(RuntimeError):
+            wait_for_task(execid=execid, token=token)
+
+        get_mock.assert_called_with(
+            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}",
+            headers={"Authorization": token}
+        )
