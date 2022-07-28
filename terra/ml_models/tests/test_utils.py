@@ -3,7 +3,7 @@ from django.conf import settings
 from model_bakery import baker
 
 from ml_models.utils.constants import CREATE_INSTANCE_BODY
-from ml_models.utils.logic import create_instance_gpu, login, run_predict_notebook
+from ml_models.utils.logic import create_instance_gpu, destroy_instance, login, run_predict_notebook
 from ml_models.models import MLModel, MLModelVersion
 from tasks.models import Task
 from projects.models import Project
@@ -141,8 +141,21 @@ class TestRunPredictNotebook:
 
 class TestDestroyInstance:
     def test_destroy_instance(self, mocker):
-        assert False
+        token = "test_token"
+        machine_name = "test_machine_name"
+        del_mock_return = {"test": "success"}
+        del_mock = mocker.patch(
+            "ml_models.utils.logic.requests.delete",
+            return_value=del_mock_return,
+        )
 
+        destroy_instance_resp = destroy_instance(machine_name=machine_name, token=token)
+        
+        del_mock.assert_called_with(
+            f"{settings.LF_SERVER_URL}/v1/clusters/gpu/{machine_name}",
+            headers={"Authorization": token},
+        )
+        assert destroy_instance_resp == del_mock_return
 
 class TestWaitForTask:
     def test_task_executed(self, mocker):
