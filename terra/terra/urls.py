@@ -1,17 +1,17 @@
 """terra URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The `urls_list` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+    2. Add a URL to urls_list:  path('', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+    2. Add a URL to urls_list:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urls_list:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
 from django.conf.urls import url
@@ -90,7 +90,7 @@ docs_urls = [
     ),
 ]
 
-urlpatterns = [
+urls_list = [
     # Authentication
     url(r"^auth/", include("rest_auth.urls")),
     url(r"^auth/registration/", include("rest_auth.registration.urls")),
@@ -126,11 +126,15 @@ urlpatterns = [
     path("", views.index),
 ]
 
-urlpatterns += docs_urls
-urlpatterns += [path("storage/", include("storage.urls"))]
-urlpatterns += [path("tasks/", include("tasks.urls"))]
-urlpatterns += [path("estimators/", include("estimators.urls"))]
-urlpatterns += [path("credits/", include("credits.urls"))]
-urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
-urlpatterns += [path("quotas/", include("quotas.urls"))]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urls_list += docs_urls
+urls_list += [path("storage/", include("storage.urls"))]
+urls_list += [path("tasks/", include("tasks.urls"))]
+urls_list += [path("estimators/", include("estimators.urls"))]
+urls_list += [path("credits/", include("credits.urls"))]
+urls_list += [path("admin/django-rq/", include("django_rq.urls"))]
+urls_list += [path("quotas/", include("quotas.urls"))]
+urls_list += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = [
+    path('v1/', include(urls_list))
+]
