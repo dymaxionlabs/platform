@@ -3,7 +3,7 @@ import logging
 from tasks.models import Task
 from tasks.utils import task
 
-from .labfunctions import (
+from .utils.logic import (
     create_instance_gpu,
     destroy_instance,
     login,

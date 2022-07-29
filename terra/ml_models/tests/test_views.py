@@ -2,144 +2,245 @@ import json
 
 import pytest
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from django_mock_queries.mocks import MockSet
 from model_bakery import baker
 from rest_framework.serializers import ModelSerializer
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.response import Response
+
+
+from projects.models import Project
+from tasks.models import Task
 
 from ..serializers import MLModelSerializer
-from ..views import MLModelViewSet
-from ..models import MLModel
+from ..views import MLModelVersionViewSet, MLModelViewSet
+from ..models import MLModel, MLModelVersion
+from ml_models.utils.constants import PREDICT_TASK
 
-ml_model_fields = [
-    field.name for field in MLModel._meta.get_fields()
-    if (not field.name in MLModelSerializer.Meta.exclude)
-]
 
-prepare_ml_model = lambda self=None: baker.prepare(MLModel)
+prepare_ml_model = lambda: baker.prepare(MLModel)
+test_model = prepare_ml_model()
+test_user = baker.prepare(get_user_model())
+
+
+class TestAllMLModelViewset:
+    def test_list(self, mocker, rf, _mock_views_permissions):
+
+        # Arrange
+        qs = MockSet(
+            test_model,
+            prepare_ml_model(),
+            prepare_ml_model(),
+        )
+        url = reverse("mlmodel-list", kwargs=None)
+        request = rf.get(url)
+        view = MLModelViewSet.as_view({"get": "list"})
+
+        # Mock
+        mocker.patch.object(MLModelViewSet, "get_queryset", return_value=qs)
+
+        # Act
+        response = view(request).render()
+
+        # Assert
+        assert response.status_code == 200
+        assert json.loads(response.content)["count"] == 3
+
 
 class TestMLModelViewset:
 
-    ml_model_1 = prepare_ml_model()
-    valid_data_dict = {
-        k: v for (k, v) in ml_model_1.__dict__.items() if k in ml_model_fields
-    }
+    def test_list(self, mocker, rf, _mock_views_permissions):
 
-    def test_list(self, mocker, rf):
         # Arrange
         qs = MockSet(
-            self.ml_model_1,
+            test_model,
             prepare_ml_model(),
             prepare_ml_model(),
         )
-        url = reverse('provider-list')
+        url = reverse("models-list", kwargs={"user_username": test_user.get_username()})
         request = rf.get(url)
-        view = MLModelViewSet.as_view(
-            {'get': 'list'}
-        )
-        # Mcking
-        mocker.patch.object(
-            MLModelViewSet, 'get_queryset', return_value=qs
-        )
+        view = MLModelViewSet.as_view({"get": "list"})
+
+        # Mock
+        mocker.patch.object(MLModelViewSet, "get_queryset", return_value=qs)
+
         # Act
         response = view(request).render()
+
         # Assert
         assert response.status_code == 200
-        assert len(json.loads(response.content)) == 3
+        assert json.loads(response.content)["count"] == 3
 
-    def test_retrieve(self, mocker, rf):
-        url = reverse('model-detail', kwargs={'pk': self.ml_model_1.id})
+    def test_retrieve(self, mocker, rf, _mock_views_permissions):
+
+        # Arrange
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "name": test_model.name,
+        }
+        url = reverse(
+            "models-detail",
+            kwargs=endpoint_kwargs,
+        )
         request = rf.get(url)
+        view = MLModelViewSet.as_view({"get": "retrieve"})
+
+        # Mock
         mocker.patch.object(
-            MLModelViewSet, 'get_queryset', return_value=MockSet(self.ml_model_1)
+            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
         )
-        view = MLModelViewSet.as_view(
-            {'get': 'retrieve'}
+        mocker.patch.object(
+            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
         )
 
-        response = view(request, pk=self.ml_model_1.id).render()
+        # Act
+        response = view(request, **endpoint_kwargs).render()
 
+        # Assert
         assert response.status_code == 200
 
-    def test_create(self, mocker, rf):
-        url = reverse('model-list')
-        request = rf.post(
-            url,
-            content_type='application/json',
-            data=json.dumps(self.valid_data_dict)
-        )
-        save_mock = mocker.patch.object(
-            MLModelSerializer, 'save'
-        )
-        view = MLModelViewSet.as_view(
-            {'post': 'create'}
-        )
 
+class TestMLModelVersionViewSet:
+
+    prepare_model_version = lambda self=None: baker.prepare(MLModelVersion)
+    test_model_version = prepare_model_version()
+
+    def test_list(self, mocker, rf, _mock_views_permissions):
+
+        # Arrange
+        qs = MockSet(
+            self.test_model_version,
+            self.prepare_model_version(),
+            self.prepare_model_version(),
+        )
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+        }
+        url = reverse("versions-list", kwargs=endpoint_kwargs)
+        request = rf.get(url)
+        view = MLModelVersionViewSet.as_view({"get": "list"})
+
+        # Mock
+        mocker.patch.object(MLModelVersionViewSet, "get_queryset", return_value=qs)
+
+        # Act
         response = view(request).render()
 
-        assert response.status_code == 201
-        save_mock.assert_called()
-
-    def test_update(self, mocker, rf):
-        url = reverse('model-detail', kwargs={'pk': self.ml_model_1.id})
-        request = rf.put(
-            url,
-            content_type='application/json',
-            data=json.dumps(self.valid_data_dict)
-        )
-        mocker.patch.object(
-            MLModelViewSet, 'get_object', return_value=self.ml_model_1
-        )
-        save_mock = mocker.patch.object(
-            MLModelSerializer, 'save'
-        )
-        view = MLModelViewSet.as_view(
-            {'put': 'update'}
-        )
-
-        response = view(request, pk=self.ml_model_1.id).render()
-
+        # Assert
         assert response.status_code == 200
-        save_mock.assert_called()
+        assert json.loads(response.content)["count"] == 3
 
-    @pytest.mark.parametrize('field', ml_model_fields)
-    def test_partial_update(self, mocker, rf, field):
-        field_value = self.ml_model_1.__dict__[field]
-        valid_field = str(field_value) if field == "phone" else field_value
-        url = reverse('model-detail', kwargs={'pk': self.ml_model_1.id})
-        request = rf.patch(
-            url,
-            content_type='application/json',
-            data=json.dumps({field: valid_field})
+    def test_retrieve(self, mocker, rf, _mock_views_permissions):
+
+        # Arrange
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+            "name": self.test_model_version.name,
+        }
+        url = reverse(
+            "versions-detail",
+            kwargs=endpoint_kwargs,
         )
-        mocker.patch.object(
-            MLModelViewSet, 'get_object', return_value=self.ml_model_1
+        request = rf.get(url)
+        view = MLModelVersionViewSet.as_view({"get": "retrieve"})
+
+        # Mock
+        version_filter_mock = mocker.patch(
+            'ml_models.views.MLModelVersion.objects.filter',
+            return_value=MockSet(),
         )
-        save_mock = mocker.patch.object(
-            MLModel, 'save'
+        mocker.patch(
+            'ml_models.views.get_object_or_404',
+            return_value=self.test_model_version,
         )
-        view = MLModelViewSet.as_view(
-            {'patch': 'partial_update'}
+        serializer_mock_return_value = mocker.Mock()
+        serializer_mock_return_value_data = {}
+        serializer_mock_return_value.data = serializer_mock_return_value_data
+        serializer_mock = mocker.patch(
+            'ml_models.views.MLModelVersionSerializer',
+            return_value=serializer_mock_return_value,
+        )
+        response_mock = mocker.patch(
+            'ml_models.views.Response',
+            return_value=Response(serializer_mock_return_value_data)
         )
 
-        response = view(request).render()
+        # Act
+        response = view(request, **endpoint_kwargs).render()
 
+        # Assert
+        version_filter_mock.assert_called_with(**{
+            "model__owner__username": test_user.get_username(),
+            "model__name": test_model.name,
+            "name": self.test_model_version.name,
+        })
+        serializer_mock.assert_called_with(self.test_model_version)
+        response_mock.assert_called_with(serializer_mock_return_value_data)
         assert response.status_code == 200
-        save_mock.assert_called()
 
-    def test_delete(self, mocker, rf):
-        url = reverse('provider-detail', kwargs={'pk': self.ml_model_1.id})
-        request = rf.delete(url)
-        mocker.patch.object(
-            MLModelViewSet, 'get_object', return_value=self.ml_model_1
+    def test_predict(self, mocker, rf, _mock_views_permissions):
+
+        # Arrange
+        endpoint_kwargs = {
+            "user_username": test_user.get_username(),
+            "model_name": test_model.name,
+            "name": self.test_model_version.name,
+        }
+        url = reverse(
+            "versions-predict",
+            kwargs=endpoint_kwargs,
         )
-        del_mock = mocker.patch.object(
-            MLModel, 'delete'
+        request = rf.get(url)
+        test_project = baker.prepare(Project, id=1)
+        request.project = test_project
+        view = MLModelVersionViewSet.as_view({"get": "predict"})
+
+        # Mock
+        version_filter_mock = mocker.patch(
+            'ml_models.views.MLModelVersion.objects.filter',
+            return_value=MockSet(),
         )
-        view = MLModelViewSet.as_view(
-            {'delete': 'destroy'}
+        mocker.patch(
+            'ml_models.views.get_object_or_404',
+            return_value=self.test_model_version,
+        )
+        test_task = baker.prepare(Task)
+        enqueue_task_mock = mocker.patch(
+            'ml_models.views.enqueue_task',
+            return_value=test_task
+        )
+        serializer_mock_return_value = mocker.Mock()
+        serializer_mock_return_value_data = {}
+        serializer_mock_return_value.data = serializer_mock_return_value_data
+        serializer_mock = mocker.patch(
+            'ml_models.views.TaskSerializer',
+            return_value=serializer_mock_return_value,
+        )
+        response_mock = mocker.patch(
+            'ml_models.views.Response',
+            return_value=Response(serializer_mock_return_value_data)
         )
 
-        response = view(request).render()
+        # Act
+        response = view(request, **endpoint_kwargs).render()
 
-        assert response.status_code == 204
-        del_mock.assert_called()
+        # Assert
+        version_filter_mock.assert_called_with(**{
+            "model__owner__username": test_user.get_username(),
+            "model__name": test_model.name,
+            "name": self.test_model_version.name,
+        })
+        enqueue_task_mock.assert_called_with(
+            PREDICT_TASK,
+            **{
+                "ml_model_version_id": self.test_model_version.id,
+                "project_id": test_project.id,
+                "user_params": {},             
+            }
+        )
+        serializer_mock.assert_called_with(test_task)
+        response_mock.assert_called_with(serializer_mock_return_value_data)
+        assert response.status_code == 200

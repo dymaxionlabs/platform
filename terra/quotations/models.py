@@ -2,9 +2,9 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
+from projects.models import CreatedAtUpdatedAtModelMixin
 
-
-class Request(models.Model):
+class Request(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.ForeignKey(
         User, blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -12,8 +12,6 @@ class Request(models.Model):
     message = models.TextField(null=True, blank=True)
     layers = ArrayField(models.CharField(max_length=30), null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def state(self):
@@ -68,7 +66,7 @@ class RequestArea(models.Model):
         return "Area of {} km²".format(round(self.area_km2()))
 
 
-class RequestStateUpdate(models.Model):
+class RequestStateUpdate(CreatedAtUpdatedAtModelMixin, models.Model):
     PENDING_STATE = 'PENDING'
     EVALUATING_STATE = 'EVALUATING'
     AWAITING_PAYMENT_STATE = 'AWAITING_PAYMENT'
@@ -91,9 +89,6 @@ class RequestStateUpdate(models.Model):
         max_length=24, choices=STATE_CHOICES, default=PENDING_STATE)
     description = models.TextField(null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ('created_at', )

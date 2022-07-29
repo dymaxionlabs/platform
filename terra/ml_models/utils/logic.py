@@ -41,26 +41,24 @@ def run_predict_notebook(*, model_version, task, token: str):
 
     # If reserved `input_dir` parameter was specified, use that as path prefix on user storage
     user_params = task.kwargs.get("user_params", {})
-    input_dir = user_params.get("input_dir").strip("/")
-    input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir}" if input_dir else ''
+    input_dir = user_params.get("input_dir", None)
+    input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir.strip('/')}" if input_dir else ''
 
     artifact_params = {
         "INPUT_ARTIFACTS_URL": input_url if input_dir else task.input_artifacts_url,
         "OUTPUT_ARTIFACTS_URL": task.output_artifacts_url,
     }
-
-    user_params = task.kwargs.get("user_params", {})
-    user_params = {k.upper(): v for k, v in user_params.items()}
-    body = (
+    user_params_upper = {k.upper(): v for k, v in user_params.items()}
+    run_notebook_body = (
         RUN_NOTEBOOK_BASE_BODY
-        | {"params": artifact_params | user_params}
+        | {"params": artifact_params | user_params_upper}
         | {"version": model_version.name}
     )
-    logger.info(f"Parameters: {body['params']}")
+    logger.info(f"Parameters: {run_notebook_body['params']}")
 
     response = requests.post(
         f"{settings.LF_SERVER_URL}/v1/workflows/{lf_project_id}/notebooks/_run",
-        data=json.dumps(body),
+        data=json.dumps(run_notebook_body),
         headers={"Authorization": token},
     )
     execid = response.json()["execid"]
@@ -83,6 +81,6 @@ def wait_for_task(execid: str, *, token: str):
         response = requests.get(task_log_url, headers={"Authorization": token})
         res = response.json()
         task_completed = res["status"] == "complete"
-        if task_completed and res["result"].get("error"):
+        if task_completed and res["result"].get("error", False):
             raise RuntimeError(f"LF task failed: {res}")
     return res["result"]

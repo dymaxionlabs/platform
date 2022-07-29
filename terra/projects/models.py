@@ -14,9 +14,22 @@ from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
 from rest_framework_api_key.models import AbstractAPIKey
 
+class CreatedAtUpdatedAtModelMixin(models.Model):
+    """
+    Model that has the `created_at` & `updated_at` fields and is
+    by default ordered by `created_at`
+    """
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ("-created_at",)
+
+
+class UserProfile(CreatedAtUpdatedAtModelMixin, models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     phone = models.CharField(max_length=40, blank=True)
     city = models.CharField(max_length=120, blank=True)
@@ -24,11 +37,8 @@ class UserProfile(models.Model):
     beta = models.BooleanField(default=False)
     send_notification_emails = models.BooleanField(default=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-
-class Project(models.Model):
+class Project(CreatedAtUpdatedAtModelMixin, models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name=_("projects")
@@ -45,9 +55,6 @@ class Project(models.Model):
         _("Enable Dashboards module"), default=False
     )
 
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-
     class Meta:
         unique_together = (("owner", "name"),)
         verbose_name = _("Project")
@@ -57,7 +64,7 @@ class Project(models.Model):
         return self.name
 
 
-class ProjectInvitationToken(models.Model):
+class ProjectInvitationToken(CreatedAtUpdatedAtModelMixin, models.Model):
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
 
     project = models.ForeignKey(
@@ -67,9 +74,6 @@ class ProjectInvitationToken(models.Model):
         _("Email"), max_length=75, blank=True, default=None, null=True
     )
     confirmed = models.BooleanField(_("Confirmed"), default=False)
-
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     class Meta:
         unique_together = (("project", "email"),)
@@ -93,7 +97,7 @@ class ProjectInvitationToken(models.Model):
         return self.key
 
 
-class Layer(models.Model):
+class Layer(CreatedAtUpdatedAtModelMixin, models.Model):
     RASTER = "R"
     VECTOR = "V"
     LAYER_CHOICES = (
@@ -112,9 +116,6 @@ class Layer(models.Model):
     date = models.DateField(null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
     use_cog_tiles = models.BooleanField(default=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = (("project", "name", "date"),)
@@ -162,16 +163,13 @@ class Layer(models.Model):
         return style
 
 
-class Map(models.Model):
+class Map(CreatedAtUpdatedAtModelMixin, models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
     extra_fields = JSONField(null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = (("project", "name"),)
@@ -223,13 +221,11 @@ class MapLayer(models.Model):
         return cls.objects.order_by("-order")[0].order
 
 
-class Dashboard(models.Model):
+class Dashboard(CreatedAtUpdatedAtModelMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     url = models.URLField()
     name = models.CharField(max_length=80)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = (("project", "url"),)
@@ -238,12 +234,9 @@ class Dashboard(models.Model):
         return self.name
 
 
-class UserAPIKey(AbstractAPIKey):
+class UserAPIKey(CreatedAtUpdatedAtModelMixin, AbstractAPIKey):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta(AbstractAPIKey.Meta):
         verbose_name = "User API key"

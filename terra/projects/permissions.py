@@ -1,6 +1,5 @@
 from rest_framework import permissions
 from rest_framework_api_key.permissions import BaseHasAPIKey
-from ml_models.models import MLModel, MLModelVersion
 
 from .models import UserAPIKey
 
@@ -107,28 +106,6 @@ class HasAccessToAPIKeyPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
 
-
-class IsOwnerOrReadOnly(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        else:
-            return obj.owner == request.user
-
-class IsModelPublic(permissions.BasePermission):
-
-    model = MLModel
-
-    def has_object_permission(self, request, view, obj):
-        return obj.is_public
-
-class IsModelVersionModelPublic(permissions.BasePermission):
-
-    model = MLModelVersion
-
-    def has_object_permission(self, request, view, obj):
-        return obj.model.is_public
 
 class HasBetaAccess(permissions.BasePermission):
     message = 'This feature is only available to beta users.'

@@ -1,18 +1,15 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from projects.models import CreatedAtUpdatedAtModelMixin
 
-
-class UserQuota(models.Model):
+class UserQuota(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     max_projects_per_user = models.IntegerField(default=settings.MAX_PROJECTS_PER_USER)
     max_file_size = models.BigIntegerField(default=settings.MAX_FILE_SIZE)
     total_space_per_user = models.BigIntegerField(default=settings.TOTAL_SPACE_PER_USER)
     max_estimator_per_project = models.IntegerField(default=settings.MAX_ESTIMATORS_PER_PROJECT)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return """{user}: Projects: {projects}, User Storage: {user_storage}, 
