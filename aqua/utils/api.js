@@ -12,5 +12,5 @@ export function buildApiUrl(path) {
       break;
     }
   }
-  return `${location.protocol}//${apiHostname}${path}`;
+  return `${location.protocol}//${apiHostname}/v1${path}`;
 }
