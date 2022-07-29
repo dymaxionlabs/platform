@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 
 
-class CreatedAtUpdatedAtModel(models.Model):
+class CreatedAtUpdatedAtModelMixin(models.Model):
     """
     Model that has the `created_at` & `updated_at` fields and is
     by default ordered by `created_at`
@@ -17,7 +17,7 @@ class CreatedAtUpdatedAtModel(models.Model):
         abstract = True
         ordering = ("-created_at",)
 
-class MLModel(CreatedAtUpdatedAtModel):
+class MLModel(CreatedAtUpdatedAtModelMixin, models.Model):
     name = models.CharField(_("name"), max_length=134)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     description = models.TextField(_("description"), blank=True, null=True)
@@ -40,7 +40,7 @@ class MLModel(CreatedAtUpdatedAtModel):
         return f"{self.owner.username}/{self.name}"
 
 
-class MLModelVersion(CreatedAtUpdatedAtModel):
+class MLModelVersion(CreatedAtUpdatedAtModelMixin, models.Model):
     model = models.ForeignKey(MLModel, on_delete=models.CASCADE)
     name = models.CharField(_("name"), max_length=100)
     description = models.TextField(_("description"), blank=True, null=True)

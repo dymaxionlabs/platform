@@ -21,14 +21,14 @@ from estimators.utils import get_raster_metadata
 from projects.models import Project
 from storage.client import GCSClient
 from storage.models import File
-from ml_models.models import CreatedAtUpdatedAtModel
+from ml_models.models import CreatedAtUpdatedAtModelMixin
 
 
 # Import fiona last
 import fiona
 
 
-class Estimator(CreatedAtUpdatedAtModel):
+class Estimator(CreatedAtUpdatedAtModelMixin, models.Model):
     suffix_sep = '__'
 
     TRAINING_JOB_TASK = 'estimators.tasks.train.start_training_job'

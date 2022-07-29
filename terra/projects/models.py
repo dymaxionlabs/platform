@@ -13,10 +13,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
 from rest_framework_api_key.models import AbstractAPIKey
-from ml_models.models import CreatedAtUpdatedAtModel
+from ml_models.models import CreatedAtUpdatedAtModelMixin
 
 
-class UserProfile(CreatedAtUpdatedAtModel):
+class UserProfile(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     phone = models.CharField(max_length=40, blank=True)
@@ -26,7 +26,7 @@ class UserProfile(CreatedAtUpdatedAtModel):
     send_notification_emails = models.BooleanField(default=True)
 
 
-class Project(CreatedAtUpdatedAtModel):
+class Project(CreatedAtUpdatedAtModelMixin, models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name=_("projects")
@@ -52,7 +52,7 @@ class Project(CreatedAtUpdatedAtModel):
         return self.name
 
 
-class ProjectInvitationToken(CreatedAtUpdatedAtModel):
+class ProjectInvitationToken(CreatedAtUpdatedAtModelMixin, models.Model):
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
 
     project = models.ForeignKey(
@@ -85,7 +85,7 @@ class ProjectInvitationToken(CreatedAtUpdatedAtModel):
         return self.key
 
 
-class Layer(CreatedAtUpdatedAtModel):
+class Layer(CreatedAtUpdatedAtModelMixin, models.Model):
     RASTER = "R"
     VECTOR = "V"
     LAYER_CHOICES = (
@@ -151,7 +151,7 @@ class Layer(CreatedAtUpdatedAtModel):
         return style
 
 
-class Map(CreatedAtUpdatedAtModel):
+class Map(CreatedAtUpdatedAtModelMixin, models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
@@ -209,7 +209,7 @@ class MapLayer(models.Model):
         return cls.objects.order_by("-order")[0].order
 
 
-class Dashboard(CreatedAtUpdatedAtModel):
+class Dashboard(CreatedAtUpdatedAtModelMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     url = models.URLField()
@@ -222,7 +222,7 @@ class Dashboard(CreatedAtUpdatedAtModel):
         return self.name
 
 
-class UserAPIKey(CreatedAtUpdatedAtModel, AbstractAPIKey):
+class UserAPIKey(CreatedAtUpdatedAtModelMixin, AbstractAPIKey):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 

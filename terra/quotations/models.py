@@ -2,10 +2,10 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
-from ml_models.models import CreatedAtUpdatedAtModel
+from ml_models.models import CreatedAtUpdatedAtModelMixin
 
 
-class Request(CreatedAtUpdatedAtModel):
+class Request(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.ForeignKey(
         User, blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -67,7 +67,7 @@ class RequestArea(models.Model):
         return "Area of {} km²".format(round(self.area_km2()))
 
 
-class RequestStateUpdate(CreatedAtUpdatedAtModel):
+class RequestStateUpdate(CreatedAtUpdatedAtModelMixin, models.Model):
     PENDING_STATE = 'PENDING'
     EVALUATING_STATE = 'EVALUATING'
     AWAITING_PAYMENT_STATE = 'AWAITING_PAYMENT'

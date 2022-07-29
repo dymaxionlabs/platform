@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from ml_models.models import CreatedAtUpdatedAtModel
+from ml_models.models import CreatedAtUpdatedAtModelMixin
 
 
-class UserQuota(CreatedAtUpdatedAtModel):
+class UserQuota(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     max_projects_per_user = models.IntegerField(default=settings.MAX_PROJECTS_PER_USER)

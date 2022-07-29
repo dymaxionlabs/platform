@@ -8,11 +8,11 @@ from terra.utils import gsutilCopy
 from projects.models import Project
 from quotas.models import UserQuota
 from storage.client import GCSClient
-from ml_models.models import CreatedAtUpdatedAtModel
+from ml_models.models import CreatedAtUpdatedAtModelMixin
 
 
 
-class File(CreatedAtUpdatedAtModel):
+class File(CreatedAtUpdatedAtModelMixin, models.Model):
     project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
                                 related_name='files')
