@@ -2,8 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.translation import gettext as _
-from ml_models.models import CreatedAtUpdatedAtModelMixin
-
+from projects.models import CreatedAtUpdatedAtModelMixin
 
 class Request(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.ForeignKey(

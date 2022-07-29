@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from ml_models.models import CreatedAtUpdatedAtModelMixin
-
+from projects.models import CreatedAtUpdatedAtModelMixin
 
 class UserQuota(CreatedAtUpdatedAtModelMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

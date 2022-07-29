@@ -2,20 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
+from projects.models import CreatedAtUpdatedAtModelMixin
 
-
-class CreatedAtUpdatedAtModelMixin(models.Model):
-    """
-    Model that has the `created_at` & `updated_at` fields and is
-    by default ordered by `created_at`
-    """
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-        ordering = ("-created_at",)
 
 class MLModel(CreatedAtUpdatedAtModelMixin, models.Model):
     name = models.CharField(_("name"), max_length=134)

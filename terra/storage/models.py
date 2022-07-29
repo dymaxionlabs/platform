@@ -8,8 +8,7 @@ from terra.utils import gsutilCopy
 from projects.models import Project
 from quotas.models import UserQuota
 from storage.client import GCSClient
-from ml_models.models import CreatedAtUpdatedAtModelMixin
-
+from projects.models import CreatedAtUpdatedAtModelMixin
 
 
 class File(CreatedAtUpdatedAtModelMixin, models.Model):

@@ -21,8 +21,7 @@ from estimators.utils import get_raster_metadata
 from projects.models import Project
 from storage.client import GCSClient
 from storage.models import File
-from ml_models.models import CreatedAtUpdatedAtModelMixin
-
+from projects.models import CreatedAtUpdatedAtModelMixin
 
 # Import fiona last
 import fiona

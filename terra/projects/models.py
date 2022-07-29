@@ -13,7 +13,19 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
 from rest_framework_api_key.models import AbstractAPIKey
-from ml_models.models import CreatedAtUpdatedAtModelMixin
+
+class CreatedAtUpdatedAtModelMixin(models.Model):
+    """
+    Model that has the `created_at` & `updated_at` fields and is
+    by default ordered by `created_at`
+    """
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ("-created_at",)
 
 
 class UserProfile(CreatedAtUpdatedAtModelMixin, models.Model):
