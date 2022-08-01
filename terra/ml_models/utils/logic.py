@@ -85,6 +85,6 @@ def wait_for_task(execid: str, *, token: str):
         response = requests.get(task_log_url, headers={"Authorization": token})
         res = response.json()
         task_completed = res["status"] in ("complete", "failed")
-        if task_completed and res["result"].get("error", True):
+        if task_completed and res["result"].get("error", False):
             raise RuntimeError(f"LF task failed: {res}")
     return res["result"]
