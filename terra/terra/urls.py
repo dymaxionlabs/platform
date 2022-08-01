@@ -131,10 +131,10 @@ urls_list += [path("storage/", include("storage.urls"))]
 urls_list += [path("tasks/", include("tasks.urls"))]
 urls_list += [path("estimators/", include("estimators.urls"))]
 urls_list += [path("credits/", include("credits.urls"))]
-urls_list += [path("admin/django-rq/", include("django_rq.urls"))]
 urls_list += [path("quotas/", include("quotas.urls"))]
-urls_list += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = [
     path('v1/', include(urls_list))
 ]
+urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
