@@ -42,7 +42,11 @@ def run_predict_notebook(*, model_version, task, token: str):
     # If reserved `input_dir` parameter was specified, use that as path prefix on user storage
     user_params = task.kwargs.get("user_params", {})
     input_dir = user_params.get("input_dir", None)
-    input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir.strip('/')}" if input_dir else ''
+    input_url = (
+        f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir.strip('/')}"
+        if input_dir
+        else ""
+    )
 
     artifact_params = {
         "INPUT_ARTIFACTS_URL": input_url if input_dir else task.input_artifacts_url,
@@ -80,7 +84,7 @@ def wait_for_task(execid: str, *, token: str):
         task_log_url = f"{settings.LF_SERVER_URL}/v1/history/task/{execid}"
         response = requests.get(task_log_url, headers={"Authorization": token})
         res = response.json()
-        task_completed = res["status"] == "complete"
-        if task_completed and res["result"].get("error", False):
+        task_completed = res["status"] in ("complete", "failed")
+        if task_completed and res["result"].get("error", True):
             raise RuntimeError(f"LF task failed: {res}")
     return res["result"]
