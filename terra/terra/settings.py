@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.sites',
     'projects.apps.ProjectsConfig',
-    'estimators.apps.EstimatorsConfig',
     'storage.apps.StorageConfig',
     'tasks.apps.TasksConfig',
     'credits.apps.CreditsConfig',
@@ -232,7 +231,6 @@ FILES_BUCKET = os.getenv('FILES_BUCKET')
 TILES_BUCKET = os.getenv('TILES_BUCKET')
 
 # deprecated, replaced by artifacts and models buckets
-ESTIMATORS_BUCKET = os.getenv('ESTIMATORS_BUCKET')
 TASK_ARTIFACTS_BUCKET = os.getenv('TASK_ARTIFACTS_BUCKET')
 MODELS_BUCKET = os.getenv('MODELS_BUCKET')
 
@@ -325,7 +323,6 @@ SLACK_HOOK_URL = os.getenv('SLACK_HOOK_URL')
 MAX_PROJECTS_PER_USER = 100
 MAX_FILE_SIZE = 10 * 2**30  #10GB
 TOTAL_SPACE_PER_USER = 25 * 2**30  #25GB
-MAX_ESTIMATORS_PER_PROJECT = 100
 
 CRON_CLASSES = [
     "tasks.cron.UpdateCloudMLTasksCronJob",

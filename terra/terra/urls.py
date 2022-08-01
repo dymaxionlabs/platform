@@ -90,7 +90,7 @@ docs_urls = [
     ),
 ]
 
-urlpatterns = [
+urls_list = [
     # Authentication
     url(r"^auth/", include("rest_auth.urls")),
     url(r"^auth/registration/", include("rest_auth.registration.urls")),
@@ -126,11 +126,14 @@ urlpatterns = [
     path("", views.index),
 ]
 
-urlpatterns += docs_urls
-urlpatterns += [path("storage/", include("storage.urls"))]
-urlpatterns += [path("tasks/", include("tasks.urls"))]
-urlpatterns += [path("estimators/", include("estimators.urls"))]
-urlpatterns += [path("credits/", include("credits.urls"))]
+urls_list += docs_urls
+urls_list += [path("storage/", include("storage.urls"))]
+urls_list += [path("tasks/", include("tasks.urls"))]
+urls_list += [path("credits/", include("credits.urls"))]
+urls_list += [path("quotas/", include("quotas.urls"))]
+
+urlpatterns = [
+    path('v1/', include(urls_list))
+]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
-urlpatterns += [path("quotas/", include("quotas.urls"))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

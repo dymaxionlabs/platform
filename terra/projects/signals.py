@@ -37,6 +37,6 @@ def send_welcome_email(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Project)
 def pre_save_handler(sender, instance, *args, **kwargs):
     quota = UserQuota.objects.get(user=instance.owner)
-    created_estimators = Project.objects.filter(owner=instance.owner).count()
-    if created_estimators >= quota.max_projects_per_user:
+    created_projects = Project.objects.filter(owner=instance.owner).count()
+    if created_projects >= quota.max_projects_per_user:
         raise Exception('Quota exceeded')

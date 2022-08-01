@@ -50,7 +50,6 @@ class Project(CreatedAtUpdatedAtModelMixin, models.Model):
     name = models.CharField(_("Name"), max_length=80)
     description = models.CharField(_("Description"), max_length=255, blank=True)
     no_images = models.BooleanField(_("No images"), default=False)
-    estimators_module = models.BooleanField(_("Enable Estimators module"), default=True)
     dashboards_module = models.BooleanField(
         _("Enable Dashboards module"), default=False
     )
