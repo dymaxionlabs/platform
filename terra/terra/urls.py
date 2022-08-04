@@ -94,8 +94,6 @@ urls_list = [
     # Authentication
     url(r"^auth/", include("rest_auth.urls")),
     url(r"^auth/registration/", include("rest_auth.registration.urls")),
-    # Administration
-    url(r"^admin/", admin.site.urls),
     # Other custom views
     url(
         r"^projects/invitations/(?P<key>[^/]+)/confirm/?",
@@ -134,7 +132,8 @@ urls_list += [path("credits/", include("credits.urls"))]
 urls_list += [path("quotas/", include("quotas.urls"))]
 
 urlpatterns = [
-    path('v1/', include(urls_list))
+    path('v1/', include(urls_list)),
+    url(r"^admin/", admin.site.urls),
 ]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
