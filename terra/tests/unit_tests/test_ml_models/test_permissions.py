@@ -1,9 +1,8 @@
-import pytest
-from model_bakery import baker
 from django.contrib.auth import get_user_model
-
-from ml_models.permissions import IsModelPublic, IsModelVersionModelPublic, IsOwnerOrReadOnly
 from ml_models.models import MLModel, MLModelVersion
+from ml_models.permissions import IsModelPublic, IsModelVersionModelPublic, IsOwnerOrReadOnly
+from model_bakery import baker
+
 
 class TestIsOwnerOrReadOnly:
     def test_safe_method(self, rf):
@@ -47,7 +46,6 @@ class TestIsOwnerOrReadOnly:
 
 
 class TestIsModelPublic:
-
     def test_is_public(self, rf):
         # Arrange
         request = rf.get("/")
@@ -72,7 +70,6 @@ class TestIsModelPublic:
 
 
 class TestIsModelVersionPublic:
-    
     def test_is_public(self, rf):
         # Arrange
         request = rf.get("/")

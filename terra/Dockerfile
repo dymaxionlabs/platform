@@ -1,5 +1,6 @@
 # Install dependencies only when needed
 FROM python:3.9 AS deps
+ARG ENV=dev
 RUN apt-get update && apt-get install -y --no-install-recommends \
   binutils \
   gdal-bin \
@@ -12,6 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
+RUN if [ "$ENV" = "dev" ]; then apt-get install -y git; fi
+
 WORKDIR /app
 
 ENV POETRY_VERSION=1.1.13 \
@@ -19,8 +22,9 @@ ENV POETRY_VERSION=1.1.13 \
 
 RUN pip install poetry==$POETRY_VERSION
 
-COPY pyproject.toml poetry.lock /app/
-RUN poetry install
+COPY --chown=django:django . /app/
+RUN if [ "$ENV" != "dev" ]; then poetry install --no-dev; else poetry install; fi
+RUN if [ "$ENV" == "dev" ]; then git init . && cd terra && pre-commit install && pre-commit install-hooks; fi
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -28,7 +32,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 RUN addgroup --system --gid 1001 django
 RUN adduser --system --uid 1001 django
 
-COPY --chown=django:django . .
+
 
 RUN python manage.py collectstatic --clear --no-input
 

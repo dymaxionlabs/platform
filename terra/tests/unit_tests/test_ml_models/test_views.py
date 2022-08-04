@@ -1,23 +1,15 @@
 import json
 
-import pytest
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from django_mock_queries.mocks import MockSet
-from model_bakery import baker
-from rest_framework.serializers import ModelSerializer
-from django.contrib.auth.models import AnonymousUser
-from rest_framework.response import Response
-
-
-from projects.models import Project
-from tasks.models import Task
-
-from ..serializers import MLModelSerializer
-from ..views import MLModelVersionViewSet, MLModelViewSet
-from ..models import MLModel, MLModelVersion
+from ml_models.models import MLModel, MLModelVersion
 from ml_models.utils.constants import PREDICT_TASK
-
+from ml_models.views import MLModelVersionViewSet, MLModelViewSet
+from model_bakery import baker
+from projects.models import Project
+from rest_framework.response import Response
+from tasks.models import Task
 
 prepare_ml_model = lambda: baker.prepare(MLModel)
 test_model = prepare_ml_model()
@@ -49,7 +41,6 @@ class TestAllMLModelViewset:
 
 
 class TestMLModelViewset:
-
     def test_list(self, mocker, rf, _mock_views_permissions):
 
         # Arrange
@@ -87,12 +78,8 @@ class TestMLModelViewset:
         view = MLModelViewSet.as_view({"get": "retrieve"})
 
         # Mock
-        mocker.patch.object(
-            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
-        )
-        mocker.patch.object(
-            MLModelViewSet, "get_queryset", return_value=MockSet(test_model)
-        )
+        mocker.patch.object(MLModelViewSet, "get_queryset", return_value=MockSet(test_model))
+        mocker.patch.object(MLModelViewSet, "get_queryset", return_value=MockSet(test_model))
 
         # Act
         response = view(request, **endpoint_kwargs).render()
@@ -149,34 +136,36 @@ class TestMLModelVersionViewSet:
 
         # Mock
         version_filter_mock = mocker.patch(
-            'ml_models.views.MLModelVersion.objects.filter',
+            "ml_models.views.MLModelVersion.objects.filter",
             return_value=MockSet(),
         )
         mocker.patch(
-            'ml_models.views.get_object_or_404',
+            "ml_models.views.get_object_or_404",
             return_value=self.test_model_version,
         )
         serializer_mock_return_value = mocker.Mock()
         serializer_mock_return_value_data = {}
         serializer_mock_return_value.data = serializer_mock_return_value_data
         serializer_mock = mocker.patch(
-            'ml_models.views.MLModelVersionSerializer',
+            "ml_models.views.MLModelVersionSerializer",
             return_value=serializer_mock_return_value,
         )
         response_mock = mocker.patch(
-            'ml_models.views.Response',
-            return_value=Response(serializer_mock_return_value_data)
+            "ml_models.views.Response",
+            return_value=Response(serializer_mock_return_value_data),
         )
 
         # Act
         response = view(request, **endpoint_kwargs).render()
 
         # Assert
-        version_filter_mock.assert_called_with(**{
-            "model__owner__username": test_user.get_username(),
-            "model__name": test_model.name,
-            "name": self.test_model_version.name,
-        })
+        version_filter_mock.assert_called_with(
+            **{
+                "model__owner__username": test_user.get_username(),
+                "model__name": test_model.name,
+                "name": self.test_model_version.name,
+            }
+        )
         serializer_mock.assert_called_with(self.test_model_version)
         response_mock.assert_called_with(serializer_mock_return_value_data)
         assert response.status_code == 200
@@ -200,45 +189,44 @@ class TestMLModelVersionViewSet:
 
         # Mock
         version_filter_mock = mocker.patch(
-            'ml_models.views.MLModelVersion.objects.filter',
+            "ml_models.views.MLModelVersion.objects.filter",
             return_value=MockSet(),
         )
         mocker.patch(
-            'ml_models.views.get_object_or_404',
+            "ml_models.views.get_object_or_404",
             return_value=self.test_model_version,
         )
         test_task = baker.prepare(Task)
-        enqueue_task_mock = mocker.patch(
-            'ml_models.views.enqueue_task',
-            return_value=test_task
-        )
+        enqueue_task_mock = mocker.patch("ml_models.views.enqueue_task", return_value=test_task)
         serializer_mock_return_value = mocker.Mock()
         serializer_mock_return_value_data = {}
         serializer_mock_return_value.data = serializer_mock_return_value_data
         serializer_mock = mocker.patch(
-            'ml_models.views.TaskSerializer',
+            "ml_models.views.TaskSerializer",
             return_value=serializer_mock_return_value,
         )
         response_mock = mocker.patch(
-            'ml_models.views.Response',
-            return_value=Response(serializer_mock_return_value_data)
+            "ml_models.views.Response",
+            return_value=Response(serializer_mock_return_value_data),
         )
 
         # Act
         response = view(request, **endpoint_kwargs).render()
 
         # Assert
-        version_filter_mock.assert_called_with(**{
-            "model__owner__username": test_user.get_username(),
-            "model__name": test_model.name,
-            "name": self.test_model_version.name,
-        })
+        version_filter_mock.assert_called_with(
+            **{
+                "model__owner__username": test_user.get_username(),
+                "model__name": test_model.name,
+                "name": self.test_model_version.name,
+            }
+        )
         enqueue_task_mock.assert_called_with(
             PREDICT_TASK,
             **{
                 "ml_model_version_id": self.test_model_version.id,
                 "project_id": test_project.id,
-                "user_params": {},             
+                "user_params": {},
             }
         )
         serializer_mock.assert_called_with(test_task)
