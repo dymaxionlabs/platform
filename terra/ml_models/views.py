@@ -25,6 +25,7 @@ class AllMLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         IsOwnerOrReadOnly,
         IsModelPublic,
     ]
+    lookup_field = "name"
 
     def get_queryset(self):
         base_qs = super().get_queryset().order_by("-created_at")

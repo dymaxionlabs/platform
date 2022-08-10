@@ -25,6 +25,7 @@ import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import { routerPush } from "../../utils/router";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { ModelsGallery } from "../ModelsGallery";
 import ShowUuidDialog from "../ShowUuidDialog";
 
 const styles = (theme) => ({
@@ -180,56 +181,7 @@ class ModelsContent extends React.Component {
         <Typography variant="h6" gutterBottom component="h2">
           {t("models.title")}
         </Typography>
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>{t("models.name")}</TableCell>
-                <TableCell>{t("models.estimator_type")}</TableCell>
-                <TableCell>{t("models.classes")}</TableCell>
-                <TableCell>{t("models.created_at")}</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading && <TableRowSkeleton cols={4} />}
-              {!loading && models.length === 0 && (
-                <TableRow>
-                  <TableCell>There are no models.</TableCell>
-                </TableRow>
-              )}
-              {models.map((model) => (
-                <TableRow key={model.uuid}>
-                  <TableCell component="th" scope="row">
-                    {model.name}
-                  </TableCell>
-                  <TableCell>{this.estimatorTypeName(model)}</TableCell>
-                  <TableCell>
-                    {model.classes.map((cls) => (
-                      <Chip className={classes.chip} key={cls} label={cls} />
-                    ))}
-                  </TableCell>
-                  <TableCell>
-                    <Moment locale={locale} fromNow>
-                      {model.created_at}
-                    </Moment>
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      className={classes.button}
-                      aria-label="Edit"
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                      onClick={(e) => this.handleContextualMenuClick(e, model)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+          <ModelsGallery/>
         <Menu
           id="edit-estimator-menu"
           anchorEl={contextualMenuOpen}
