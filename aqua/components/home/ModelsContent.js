@@ -181,7 +181,7 @@ class ModelsContent extends React.Component {
         <Typography variant="h6" gutterBottom component="h2">
           {t("models.title")}
         </Typography>
-          <ModelsGallery/>
+          <ModelsGallery token={this.props.token}/>
         <Menu
           id="edit-estimator-menu"
           anchorEl={contextualMenuOpen}

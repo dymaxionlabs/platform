@@ -5,6 +5,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import ModelsGalleryItem from "./ModelsGalleryItem";
+// import ModelsGalleryItem from "/ModelsGalleryItem";
 
 const modelsSectionStyle = {
   all: "none",
@@ -13,8 +14,11 @@ const modelsSectionStyle = {
   gridAutoRows: "8.5rem",
   gridTemplateColumns: "repeat(auto-fill, minmax(35rem, 1fr))"
 };
-export const ModelsGallery = () => {
+export const ModelsGallery = ({token}) => {
   // const [models, setModels] = useState([]);
+  useEffect(() => {
+    console.log(token)
+  }, [])
 
   const models = {
     "count": 1,

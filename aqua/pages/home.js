@@ -51,6 +51,7 @@ import { routerPush } from "../utils/router";
 import { withSnackbar } from "notistack";
 import { buildApiUrl } from "../utils/api";
 import axios from "axios";
+import ModelDetailContent from "../components/home/ModelDetailContent";
 
 const drawerWidth = 200;
 
@@ -157,6 +158,9 @@ const sortedSections = [
   "credits",
   "profile",
 ];
+const detailSections = [
+  "modelDetail"
+];
 
 const sections = {
   viewer: {
@@ -170,6 +174,10 @@ const sections = {
     path: "/models",
     icon: <MemoryIcon />,
     content: <ModelsContent />,
+  },
+  modelDetail: {
+    key: "modelDetail",
+    content: <ModelDetailContent />,
   },
   dashboards: {
     key: "dashboards",
@@ -234,7 +242,7 @@ class Home extends React.Component {
     let { section } = props.query;
 
     // Set current section based on path
-    if (section && sortedSections.includes(section)) {
+    if (section && (sortedSections.includes(section) || detailSections.includes(section))) {
       this.state.section = section;
     }
   }
