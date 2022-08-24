@@ -10,13 +10,13 @@ import { buildApiUrl } from "../../utils/api";
 import LoopIcon from "@material-ui/icons/Loop";
 import Tag from "@material-ui/icons/Label";
 import { CopyBlock, atomOneDark } from "react-code-blocks";
+import MarkdownToHtml from "./MarkdownToHtml";
 
 const modelsSectionStyle = {
   all: "none",
   display: "grid",
   gap: "1rem",
-  gridTemplateRows: "8.5rem 9rem",
-  gridTemplateColumns: "18rem 1fr"
+  gridTemplateColumns: "auto 1fr"
 };
 const snippetStyle = {
   margin: "1rem",
@@ -27,8 +27,11 @@ const snippetStyle = {
 const mainStyle = {
   marginTop: "3rem"
 }
-export const ModelDetailContent = () => {
-  // const [models, setModels] = useState([]);
+const hrStyle = {
+  marginTop: "1.5rem"
+}
+
+export const ModelDetailContent = (props) => {
 
   const model = {
     "owner": "lucas",
@@ -36,7 +39,7 @@ export const ModelDetailContent = () => {
     "created_at": "2022-07-11T20:51:48.554132Z",
     "updated_at": "2022-07-11T20:51:48.554153Z",
     "name": "test_model",
-    "description": "",
+    "description": "# Model\r\nHola, esta es la descripción de mi model\r\n```python\r\nprint(\"Hola mundillo\")\r\n```",
     "tags": [
       "tag1"
     ],
@@ -44,7 +47,9 @@ export const ModelDetailContent = () => {
     "is_public": false
   }
 
+
   useEffect(async () => {
+    console.log(props);
     const url = buildApiUrl("/models/")
     await axios.get(url).then((response) => console.log(response)).catch((err) => {
       console.log(err)
@@ -71,6 +76,10 @@ export const ModelDetailContent = () => {
           </div>
         </main>
       </section>
+      <hr style={hrStyle} />
+      <div className="description">
+        <MarkdownToHtml markdown={model.description} />
+      </div>
     </Container>
   )
 }

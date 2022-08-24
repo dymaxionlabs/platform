@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'guardian',
     'django_rq',
     'django_cron',
+    'mdeditor',
 ]
 
 MIDDLEWARE = [
@@ -371,3 +372,5 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+X_FRAME_OPTIONS = 'SAMEORIGIN' 
