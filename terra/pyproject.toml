@@ -47,6 +47,7 @@ pytest-django = "^4.5.2"
 drf-nested-routers = "^0.93.4"
 setuptools = "^63.2.0"
 pytest-mock = "^3.8.2"
+django-mdeditor = "^0.1.20"
 
 [tool.poetry.dev-dependencies]
 honcho = "^1.1.0"
