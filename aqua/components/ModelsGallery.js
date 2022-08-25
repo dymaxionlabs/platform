@@ -15,7 +15,6 @@ const modelsSectionStyle = {
   gridTemplateColumns: "repeat(auto-fill, minmax(35rem, 1fr))"
 };
 export const ModelsGallery = ({token}) => {
-  // const [models, setModels] = useState([]);
   const [models, setModels] = useState([]);
 
   useEffect(async () => {

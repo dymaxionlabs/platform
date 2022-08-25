@@ -229,10 +229,11 @@ class Home extends React.Component {
     dashboardsEnabled: false,
   };
 
-  static async getInitialProps({ query }) {
+  static async getInitialProps({ query, params }) {
     return {
       namespacesRequired: ["me", "common"],
       query: query,
+      params,
     };
   }
 
@@ -324,6 +325,7 @@ class Home extends React.Component {
 
   render() {
     const { t, query, classes, token, username } = this.props;
+    const {modelOwner, modelName} = query;
     const {
       loading,
       section,
@@ -349,6 +351,8 @@ class Home extends React.Component {
       React.cloneElement(originalContent, {
         token,
         username,
+        modelOwner,
+        modelName,
         id: query.id,
       });
 

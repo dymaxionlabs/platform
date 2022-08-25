@@ -31,58 +31,59 @@ const hrStyle = {
   marginTop: "1.5rem"
 }
 
-export const ModelDetailContent = (props) => {
+export const ModelDetailContent = ({ modelOwner, modelName, token }) => {
 
-  const model = {
-    "owner": "lucas",
-    "latest_version": "test_version",
-    "created_at": "2022-07-11T20:51:48.554132Z",
-    "updated_at": "2022-07-11T20:51:48.554153Z",
-    "name": "test_model",
-    "description": "# Model\r\nHola, esta es la descripción de mi model\r\n```python\r\nprint(\"Hola mundillo\")\r\n```",
-    "tags": [
-      "tag1"
-    ],
-    "repo_url": null,
-    "is_public": false
-  }
+  const [model, setModel] = useState(undefined);
+  const [modelTitle, setModelTitle] = useState("");
 
 
   useEffect(async () => {
-    console.log(props);
-    const url = buildApiUrl("/models/")
-    await axios.get(url).then((response) => console.log(response)).catch((err) => {
+    const url = buildApiUrl(`/users/${modelOwner}/models/${modelName}/`);
+    await axios.get(url, { headers: { Authorization: token } }).then((response) => {
+      setModel(response.data);
+    }).catch((err) => {
       console.log(err)
     });
   }, []);
 
-  const modelName = `${model.owner}/${model.name}`;
+  useEffect(() => {
+    if(model){
+      setModelTitle(`${model.owner}/${model.name}`)
+    }
+  }, [model]);
 
-  return (
-    <Container>
-      <section id="models-section" style={modelsSectionStyle}>
-        <aside>
-          <h1>{modelName}</h1>
-          <p style={{ marginRight: "1rem" }}><Chip size="small" icon={<Tag />} label={`Latest version: ${model.latest_version}`} style={{ paddingLeft: "0.2rem" }} /></p>
-          <p style={{ marginRight: "1rem" }}><Chip icon={<LoopIcon />} label={`Last updated: ${isoStringToDay(model.updated_at)}`} size="small" /></p>
-        </aside>
-        <main>
-          <div class="snippet" style={mainStyle}>
-            <CopyBlock
-              text={generateSnippet(modelName, model.latest_version)}
-              language={"python"}
-              theme={atomOneDark}
-            />
-          </div>
-        </main>
-      </section>
-      <hr style={hrStyle} />
-      <div className="description">
-        <MarkdownToHtml markdown={model.description} />
-      </div>
-    </Container>
-  )
-}
+
+  if (model && modelTitle) {
+    return (
+      <Container>
+        <section id="models-section" style={modelsSectionStyle}>
+          <aside>
+            <h1>{modelTitle}</h1>
+            <p style={{ marginRight: "1rem" }}><Chip size="small" icon={<Tag />} label={`Latest version: ${model.latest_version}`} style={{ paddingLeft: "0.2rem" }} /></p>
+            <p style={{ marginRight: "1rem" }}><Chip icon={<LoopIcon />} label={`Last updated: ${isoStringToDay(model.updated_at)}`} size="small" /></p>
+          </aside>
+          <main>
+            <div class="snippet" style={mainStyle}>
+              <CopyBlock
+                text={generateSnippet(modelName, model.latest_version)}
+                language={"python"}
+                theme={atomOneDark}
+              />
+            </div>
+          </main>
+        </section>
+        <hr style={hrStyle} />
+        <div className="description">
+          <MarkdownToHtml markdown={model.description} />
+        </div>
+      </Container>
+    )
+  } else {
+    return (
+      <div>Loading model...</div>
+    )
+  }
+};
 
 
 export default ModelDetailContent;
