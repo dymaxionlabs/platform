@@ -6,7 +6,7 @@ from .payments import MP_CLIENT, MercadoPagoClient
 
 
 def loginWithAPI(client, username, password):
-    response = client.post('/auth/login/',
+    response = client.post('/v1/auth/login/',
                            dict(username=username, password=password))
     if response.status_code != status.HTTP_200_OK or 'key' not in response.data:
         raise RuntimeError('Login failed in test. Status code {}'.format(
