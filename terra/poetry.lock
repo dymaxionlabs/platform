@@ -392,7 +392,7 @@ django-common-helpers = ">=0.6.4"
 name = "django-extensions"
 version = "3.1.0"
 description = "Extensions for Django"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -1909,7 +1909,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "716642f2380290515192cf6b6a7a8cadcd33af9dedff897317d01653d57a18dd"
+content-hash = "fc8216cd9cb839468070ecf762a4f33b06d66181544c3462218d37bd9e245e67"
 
 [metadata.files]
 affine = [

@@ -4,7 +4,7 @@ import { buildApiUrl } from "../utils/api";
 import {isoStringToDay} from "../utils/utils";
 import {
   Paper,
-  Chip
+  Chip,
 } from "@material-ui/core";
 import LoopIcon from "@material-ui/icons/Loop";
 import Tag from "@material-ui/icons/Label";

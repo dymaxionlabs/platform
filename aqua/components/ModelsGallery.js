@@ -17,6 +17,7 @@ const modelsSectionStyle = {
 const rowsPerPage = 10;
 
 export const ModelsGallery = ({ token }) => {
+  const [loading, setLoading] = useState(false)
   const [paginationData, setPaginationData] = useState({
     models: [],
     page: 0,
@@ -26,26 +27,33 @@ export const ModelsGallery = ({ token }) => {
   })
 
   useEffect(async () => {
+    setLoading(true)
     await axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
-      setPaginationData({...paginationData,models:response.data.results, nextUrl:response.data.next, count:response.data.count})
+      setPaginationData({ ...paginationData, models: response.data.results, nextUrl: response.data.next, count: response.data.count })
     }).catch((err) => {
       console.log(err)
-    });
+    }).finally(() => setLoading(false))
   }, []);
 
-  function onChangePage(e){
-    setPage(e.detail);
+  function onChangePage(e) {
+    setPaginationData({ ...paginationData, page: e.detail })
   }
 
 
   useEffect(() => {
-    axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
+    console.log("1...",paginationData.url)
+    setPaginationData({...paginationData, url: paginationData.nextUrl})
+  }, [paginationData.page])
 
-      setPaginationData({...paginationData,models:response.data.results, nextUrl:response.data.next, count:response.data.count})
+  useEffect(() => {
+    setLoading(true)
+    console.log("este",paginationData.url)
+    axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
+      setPaginationData({ ...paginationData, models: response.data.results, nextUrl: response.data.next, count: response.data.count })
     }).catch((err) => {
       console.log(err)
-    });
-  }, [paginationData])
+    }).finally(() => setLoading(false))
+  },[paginationData.url])
 
   return (
     <>
@@ -54,13 +62,15 @@ export const ModelsGallery = ({ token }) => {
           <ModelsGalleryItem model={model} />
         )}
       </section>
-      <TablePagination
-        component="div"
-        count={paginationData.count}
-        page={paginationData.page}
-        onChangePage={onChangePage}
-        rowsPerPage={rowsPerPage}
-      />
+      {loading ||
+        <TablePagination
+          component="div"
+          count={paginationData.count}
+          page={paginationData.page}
+          onChangePage={onChangePage}
+          rowsPerPage={rowsPerPage}
+        />
+      }
     </>
   )
 }
