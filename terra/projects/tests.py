@@ -1,11 +1,8 @@
-from collections import OrderedDict
+from unittest import skip
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
-
+from rest_framework.test import APIClient
 from terra.tests import create_some_user, loginWithAPI
 
 from .models import Project, ProjectInvitationToken, UserAPIKey
@@ -92,13 +89,15 @@ class TestAuthViewTest(TestCase):
 
 
 class ContactViewTest(TestCase):
+    @skip("Mailchimp subscription now disabled")
     def test_create_ok(self):
-        response = self.client.post('/v1/contact/', {
-            'email': 'john@doe.com',
-            'message': 'This is a test message',
-        },
-                                    format='json')
-
+        response = self.client.post(
+            '/v1/contact/', {
+                'email': 'john@doe.com',
+                'message': 'This is a test message'
+            },
+            format='json'
+        )
         self.assertEquals(200, response.status_code)
         self.assertEquals('User subscribed', response.data['detail'])
 
