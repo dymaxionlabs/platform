@@ -1,5 +1,5 @@
 const KNOWN_HOST_PAIRS = [
-  ["localhost", "localhost:8001"],
+  ["localhost", "localhost:8000"],
   ["staging.app.dymaxionlabs.com", "staging.api.dymaxionlabs.com"],
   ["app.dymaxionlabs.com", "api.dymaxionlabs.com"]
 ];
