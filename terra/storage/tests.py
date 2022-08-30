@@ -25,11 +25,11 @@ class ListFilesTest(TestCase):
         self.storage_client = GCSClient(self.project)
         self.check_files = ["testfile1.txt", "foo/testfile2.py"]
 
-        self.client.post(f'/storage/upload/',
+        self.client.post(f'/v1/storage/upload/',
                          dict(path=self.check_files[0],
                               file=io.BytesIO(b"test file content")),
                          format='multipart')
-        self.client.post(f'/storage/upload/',
+        self.client.post(f'/v1/storage/upload/',
                          dict(path=self.check_files[1],
                               file=io.BytesIO(b"test file2 content")),
                          format='multipart')
@@ -43,18 +43,18 @@ class ListFilesTest(TestCase):
             self.assertIn(f, uploaded_files)
 
     def test_list_file(self):
-        response = self.client.get(f'/storage/files/?path=foo*')
+        response = self.client.get(f'/v1/storage/files/?path=foo*')
         self.assertEquals(200, response.status_code)
         file_retrieved = response.data[0]['path']
         self.assertIn(self.check_files[1], file_retrieved)
 
     def test_list_no_content(self):
-        response = self.client.get(f'/storage/files/?path=bar')
+        response = self.client.get(f'/v1/storage/files/?path=bar')
         self.assertEquals(204, response.status_code)
         self.assertFalse(response.data)
 
     def test_list_no_path(self):
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
 
         self.assertEquals(200, response.status_code)
 
@@ -66,10 +66,10 @@ class ListFilesTest(TestCase):
             self.assertIn(f, files_retrieved)
 
     def tearDown(self):
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
         for file in response.data:
             response = self.client.delete(
-                '/storage/file/?path={path}'.format(path=file['path']))
+                '/v1/storage/file/?path={path}'.format(path=file['path']))
 
 
 class UploadFileViewTest(TestCase):
@@ -85,7 +85,7 @@ class UploadFileViewTest(TestCase):
         f = io.BytesIO(b"some initial binary data: \x00\x01")
         path = "foo/data.bin"
 
-        response = self.client.post(f'/storage/upload/',
+        response = self.client.post(f'/v1/storage/upload/',
                                     dict(path=path, file=f),
                                     format='multipart')
         self.assertEquals(200, response.status_code)
@@ -96,17 +96,17 @@ class UploadFileViewTest(TestCase):
 
     def test_path_missing(self):
         f = io.BytesIO(b"some initial binary data: \x00\x01")
-        response = self.client.post(f'/storage/upload/',
+        response = self.client.post(f'/v1/storage/upload/',
                                     dict(file=f),
                                     format='multipart')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def tearDown(self):
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
         for file in response.data:
             response = self.client.delete(
-                '/storage/file/?path={path}'.format(path=file['path']))
+                '/v1/storage/file/?path={path}'.format(path=file['path']))
 
 
 class FileViewTest(TestCase):
@@ -123,12 +123,12 @@ class FileViewTest(TestCase):
 
     def test_retrieve_file(self):
         response = self.client.post(
-            f'/storage/upload/',
+            f'/v1/storage/upload/',
             dict(path=self.test_path, file=self.test_data),
             format='multipart',
         )
         self.assertEquals(200, response.status_code)
-        response = self.client.get(f'/storage/file/?path={self.test_path}')
+        response = self.client.get(f'/v1/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
         self.assertEqual(
@@ -139,44 +139,44 @@ class FileViewTest(TestCase):
 
     def test_file_missing(self):
         missing_path = self.test_path + '.1'
-        response = self.client.get(f'/storage/file/?path={missing_path}')
+        response = self.client.get(f'/v1/storage/file/?path={missing_path}')
         self.assertEquals(404, response.status_code)
 
     def test_path_missing(self):
-        response = self.client.get(f'/storage/file/')
+        response = self.client.get(f'/v1/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def test_destroy_file(self):
         response = self.client.post(
-            f'/storage/upload/',
+            f'/v1/storage/upload/',
             dict(path=self.test_path, file=self.test_data),
             format='multipart',
         )
         self.assertEquals(200, response.status_code)
-        response = self.client.delete(f'/storage/file/?path={self.test_path}')
+        response = self.client.delete(f'/v1/storage/file/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.assertTrue('detail' in response.data)
         self.assertEqual(response.data['detail'], 'File deleted.')
 
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
         self.assertFalse(response.data, 'File was not deleted.')
 
     def test_destroy_file_missing(self):
         missing_path = self.test_path + '.1'
-        response = self.client.delete(f'/storage/file/?path={missing_path}')
+        response = self.client.delete(f'/v1/storage/file/?path={missing_path}')
         self.assertEquals(404, response.status_code)
 
     def test_destroy_path_missing(self):
-        response = self.client.delete(f'/storage/file/')
+        response = self.client.delete(f'/v1/storage/file/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def tearDown(self):
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
         for file in response.data:
             response = self.client.delete(
-                '/storage/file/?path={path}'.format(path=file['path']))
+                '/v1/storage/file/?path={path}'.format(path=file['path']))
 
 
 class DownloadFileViewTest(TestCase):
@@ -192,32 +192,34 @@ class DownloadFileViewTest(TestCase):
         self.test_data = io.BytesIO(b"test file content")
         self.test_path = "foo/data.bin"
         self.client.post(
-            f'/storage/upload/',
+            f'/v1/storage/upload/',
             dict(path=self.test_path, file=self.test_data),
             format='multipart',
         )
 
     def test_download_file(self):
-        response = self.client.get(f'/storage/download/?path={self.test_path}')
+        response = self.client.get(f'/v1/storage/download/?path={self.test_path}')
         self.assertEquals(200, response.status_code)
         self.test_data.seek(0)
         self.assertEqual(response.data, self.test_data.read())
 
     def test_download_path_missing(self):
-        response = self.client.get(f'/storage/download/')
+        response = self.client.get(f'/v1/storage/download/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")
 
     def test_download_file_missing(self):
         missing_path = self.test_path + '.1'
-        response = self.client.get(f'/storage/download/?path={missing_path}')
+        response = self.client.get(f'/v1/storage/download/?path={missing_path}')
         self.assertEquals(404, response.status_code)
 
     def tearDown(self):
-        response = self.client.get(f'/storage/files/')
+        response = self.client.get(f'/v1/storage/files/')
+        if response.status_code != 200:
+            return
         for file in response.data:
             response = self.client.delete(
-                '/storage/file/?path={path}'.format(path=file['path']))
+                '/v1/storage/file/?path={path}'.format(path=file['path']))
 
 
 class CreateResumableUploadViewTest(TestCase):
@@ -234,7 +236,7 @@ class CreateResumableUploadViewTest(TestCase):
         bin_data = b"12345678901234567890"
 
         response = self.client.post(
-            f'/storage/create-resumable-upload/?path={path}&size={len(bin_data)}'
+            f'/v1/storage/create-resumable-upload/?path={path}&size={len(bin_data)}'
         )
 
         self.assertEquals(200, response.status_code)
@@ -245,6 +247,6 @@ class CreateResumableUploadViewTest(TestCase):
         self.assertTrue('upload_id' in parsed_url.query)
 
     def test_path_missing(self):
-        response = self.client.post('/storage/create-resumable-upload/')
+        response = self.client.post('/v1/storage/create-resumable-upload/')
         self.assertEquals(400, response.status_code)
         self.assertEqual(response.data['detail'], "'path' missing")

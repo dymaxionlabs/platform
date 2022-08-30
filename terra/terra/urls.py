@@ -90,7 +90,7 @@ docs_urls = [
     ),
 ]
 
-urls_list = [
+api_urls = [
     # Authentication
     url(r"^auth/", include("rest_auth.urls")),
     url(r"^auth/registration/", include("rest_auth.registration.urls")),
@@ -121,18 +121,18 @@ urls_list = [
     path(r"", include(router.urls)),
     path(r"", include(mlmodels_users_router.urls)),
     path(r"", include(mlmodels_models_router.urls)),
-    path("", views.index),
 ]
 
-urls_list += docs_urls
-urls_list += [path("storage/", include("storage.urls"))]
-urls_list += [path("tasks/", include("tasks.urls"))]
-urls_list += [path("estimators/", include("estimators.urls"))]
-urls_list += [path("credits/", include("credits.urls"))]
-urls_list += [path("quotas/", include("quotas.urls"))]
+api_urls += docs_urls
+api_urls += [path("storage/", include("storage.urls"))]
+api_urls += [path("tasks/", include("tasks.urls"))]
+api_urls += [path("estimators/", include("estimators.urls"))]
+api_urls += [path("credits/", include("credits.urls"))]
+api_urls += [path("quotas/", include("quotas.urls"))]
 
 urlpatterns = [
-    path('v1/', include(urls_list)),
+    path("", views.index),
+    path("v1/", include(api_urls)),
     url(r"^admin/", admin.site.urls),
 ]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]

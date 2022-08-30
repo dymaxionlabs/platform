@@ -1,11 +1,8 @@
-from collections import OrderedDict
+from unittest import skip
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
-
+from rest_framework.test import APIClient
 from terra.tests import create_some_user, loginWithAPI
 
 from .models import Project, ProjectInvitationToken, UserAPIKey
@@ -35,7 +32,7 @@ class LoginViewTest(TestCase):
         self.client = APIClient()
 
     def test_login_ok(self):
-        response = self.client.post('/auth/login/', {
+        response = self.client.post('/v1/auth/login/', {
             'username': 'test',
             'password': 'secret'
         },
@@ -44,7 +41,7 @@ class LoginViewTest(TestCase):
         self.assertTrue('key' in response.data)
 
     def test_login_fail(self):
-        response = self.client.post('/auth/login/', {
+        response = self.client.post('/v1/auth/login/', {
             'username': 'test',
             'password': 'bad_password'
         },
@@ -63,13 +60,13 @@ class LogoutViewTest(TestCase):
 
     def test_logout_ok(self):
         loginWithAPI(self.client, username='test', password='secret')
-        response = self.client.post('/auth/logout/', {}, format='json')
+        response = self.client.post('/v1/auth/logout/', {}, format='json')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'detail': 'Successfully logged out.'}, response.data)
 
     def test_logout_invalid_token(self):
         self.client.credentials(HTTP_AUTHORIZATION='foobar')
-        response = self.client.post('/auth/logout/', format='json')
+        response = self.client.post('/v1/auth/logout/', format='json')
         self.assertEqual(401, response.status_code)
         self.assertEquals("Invalid token.", response.data['detail'])
 
@@ -83,22 +80,24 @@ class TestAuthViewTest(TestCase):
 
     def test_auth_ok(self):
         loginWithAPI(self.client, 'test', 'secret')
-        response = self.client.get('/test/auth', {}, format='json')
+        response = self.client.get('/v1/test/auth', {}, format='json')
         self.assertEqual(200, response.status_code)
 
     def test_auth_fail(self):
-        response = self.client.get('/test/auth', {}, format='json')
+        response = self.client.get('/v1/test/auth', {}, format='json')
         self.assertEqual(401, response.status_code)
 
 
 class ContactViewTest(TestCase):
+    @skip("Mailchimp subscription now disabled")
     def test_create_ok(self):
-        response = self.client.post('/contact/', {
-            'email': 'john@doe.com',
-            'message': 'This is a test message',
-        },
-                                    format='json')
-
+        response = self.client.post(
+            '/v1/contact/', {
+                'email': 'john@doe.com',
+                'message': 'This is a test message'
+            },
+            format='json'
+        )
         self.assertEquals(200, response.status_code)
         self.assertEquals('User subscribed', response.data['detail'])
 
@@ -122,7 +121,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
 
         loginWithAPI(self.client, 'test', 'secret')
 
-        url = '/projects/invitations/{key}/confirm/'.format(
+        url = '/v1/projects/invitations/{key}/confirm/'.format(
             key=invite_token.key)
         response = self.client.post(url, {}, format='json')
 
@@ -138,7 +137,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
         invite_token = ProjectInvitationToken.objects.create(project=project)
 
         # Register a new user with API
-        response = self.client.post('/auth/registration/',
+        response = self.client.post('/v1/auth/registration/',
                                     dict(username='test2',
                                          email='test@example.com',
                                          password1='secret0345',
@@ -152,7 +151,7 @@ class ConfirmProjectInvitationViewTest(TestCase):
         self.assertFalse(user.has_perm('view_project', project))
 
         # Confirm invitation of user to project
-        url = '/projects/invitations/{key}/confirm/'.format(
+        url = '/v1/projects/invitations/{key}/confirm/'.format(
             key=invite_token.key)
         self.client.credentials(HTTP_AUTHORIZATION=user_token)
         response = self.client.post(url, {}, format='json')
@@ -172,7 +171,7 @@ class UserAPIKeyViewTest(TestCase):
 
     def test_create_user_api_key(self):
         params = {'name': 'default', 'project': self.project.uuid}
-        response = self.client.post('/api_keys/', params, format='json')
+        response = self.client.post('/v1/api_keys/', params, format='json')
 
         self.assertEquals(200, response.status_code)
         for field in ['key', 'prefix', 'created']:
@@ -185,7 +184,7 @@ class UserAPIKeyViewTest(TestCase):
         invalid_uuid = 'e1a6e48c-7e72-476c-954e-f0df1cd5cb8f'
 
         params = {'name': 'default', 'project': invalid_uuid}
-        response = self.client.post('/api_keys/', params, format='json')
+        response = self.client.post('/v1/api_keys/', params, format='json')
 
         self.assertEquals(400, response.status_code)
         self.assertEquals(dict(project='Project not found'), response.data)
@@ -196,7 +195,7 @@ class UserAPIKeyViewTest(TestCase):
             self.create_some_api_key(name=n)[0] for n in ['first', 'second']
         ]
 
-        response = self.client.get('/api_keys/', format='json')
+        response = self.client.get('/v1/api_keys/', format='json')
         self.assertEquals(200, response.status_code)
         expected_api_keys = [
             dict(prefix=k.prefix,
@@ -225,7 +224,7 @@ class UserAPIKeyViewTest(TestCase):
             name='second', project=second_project)
 
         # Get all API keys from second project
-        response = self.client.get('/api_keys/',
+        response = self.client.get('/v1/api_keys/',
                                    dict(project=second_project.uuid),
                                    format='json')
         self.assertEquals(200, response.status_code)
@@ -239,7 +238,7 @@ class UserAPIKeyViewTest(TestCase):
         create_some_project(name='Another project', owner=another_user)
         self.create_some_api_key(name='first', user=another_user)
 
-        response = self.client.get('/api_keys/',
+        response = self.client.get('/v1/api_keys/',
                                    dict(project=self.project.uuid),
                                    format='json')
         self.assertEquals(200, response.status_code)
@@ -250,7 +249,7 @@ class UserAPIKeyViewTest(TestCase):
         self.assertEqual(UserAPIKey.objects.get_usable_keys().count(), 1)
 
         response = self.client.patch(
-            '/api_keys/{prefix}'.format(prefix=api_key.prefix),
+            '/v1/api_keys/{prefix}'.format(prefix=api_key.prefix),
             dict(revoked=True),
             format='json')
         self.assertEquals(200, response.status_code)

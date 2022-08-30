@@ -25,12 +25,12 @@ class TaskTestCase(TestCase):
         self.assertTrue(task.artifacts_url.startswith('gs://'))
 
     @patch("tasks.models.signals")
-    @patch("tasks.models.django_rq")
-    def test_start_enqueues_job(self, django_rq_mock, signals_mock):
+    @patch("tasks.models.enqueue_rq_job")
+    def test_start_enqueues_job(self, enqueue_rq_job_mock, signals_mock):
         task = Task.objects.create(name='task', project=self.project)
         self.assertTrue(task.start())
         self.assertEqual(task.state, states.STARTED)
-        django_rq_mock.enqueue.assert_called_once_with(task.name, task.id)
+        enqueue_rq_job_mock.assert_called_once_with(task.name, task.id)
         signals_mock.task_started.send.assert_called_once_with(sender=Task,
                                                                task=task)
 
