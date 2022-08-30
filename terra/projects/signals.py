@@ -1,14 +1,11 @@
-import django_rq
-import os
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
+from quotas.models import UserQuota
 from terra.emails import WelcomeEmail
 from terra.utils import slack_notify
 
-from .models import UserProfile, Project
-from quotas.models import UserQuota
+from .models import Project, UserProfile
 
 
 @receiver(post_save, sender=User)
@@ -37,6 +34,6 @@ def send_welcome_email(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Project)
 def pre_save_handler(sender, instance, *args, **kwargs):
     quota = UserQuota.objects.get(user=instance.owner)
-    created_estimators = Project.objects.filter(owner=instance.owner).count()
-    if created_estimators >= quota.max_projects_per_user:
+    created_projects = Project.objects.filter(owner=instance.owner).count()
+    if created_projects >= quota.max_projects_per_user:
         raise Exception('Quota exceeded')

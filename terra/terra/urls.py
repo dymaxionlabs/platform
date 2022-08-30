@@ -20,24 +20,14 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from ml_models.views import MLModelVersionViewSet, AllMLModelViewSet, MLModelViewSet
-from projects.views import (
-    ConfirmProjectInvitationView,
-    ContactView,
-    DashboardViewSet,
-    LayerViewSet,
-    MapViewSet,
-    ProjectInvitationTokenViewSet,
-    ProjectViewSet,
-    SubscribeApiBetaView,
-    SubscribeBetaView,
-    TestAuthView,
-    TestErrorView,
-    TestTaskErrorView,
-    UserAPIKeyViewSet,
-    UserProfileViewSet,
-    UserViewSet,
-)
+from ml_models.views import (AllMLModelViewSet, MLModelVersionViewSet,
+                             MLModelViewSet)
+from projects.views import (ConfirmProjectInvitationView, ContactView,
+                            DashboardViewSet, LayerViewSet, MapViewSet,
+                            ProjectInvitationTokenViewSet, ProjectViewSet,
+                            SubscribeApiBetaView, SubscribeBetaView,
+                            TestAuthView, TestErrorView, TestTaskErrorView,
+                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
 from rest_framework import permissions
 from rest_framework_nested import routers
 from stac.views import SearchView
@@ -126,7 +116,6 @@ api_urls = [
 api_urls += docs_urls
 api_urls += [path("storage/", include("storage.urls"))]
 api_urls += [path("tasks/", include("tasks.urls"))]
-api_urls += [path("estimators/", include("estimators.urls"))]
 api_urls += [path("credits/", include("credits.urls"))]
 api_urls += [path("quotas/", include("quotas.urls"))]
 

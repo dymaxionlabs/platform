@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.translation import ugettext as _
-from mailchimp3 import MailChimp
 
 
 class Email:
@@ -138,83 +137,83 @@ class WelcomeEmail(Email):
         return self.user.first_name or self.user.username
 
 
-class TrainingCompletedEmail(Email):
-    template_name = 'training_completed'
+# class TrainingCompletedEmail(Email):
+#     template_name = 'training_completed'
 
-    def __init__(self, estimator, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.estimator = estimator
-        self.link = '{web_client_url}/models/new/od/select?id={uuid}'.format(
-            web_client_url = settings.WEBCLIENT_URL, uuid = estimator.uuid
-        )
+#     def __init__(self, estimator, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.estimator = estimator
+#         self.link = '{web_client_url}/models/new/od/select?id={uuid}'.format(
+#             web_client_url = settings.WEBCLIENT_URL, uuid = estimator.uuid
+#         )
 
-    @property
-    def subject(self):
-        with translation.override(self.language_code):
-            return _('training of your model completed')
+#     @property
+#     def subject(self):
+#         with translation.override(self.language_code):
+#             return _('training of your model completed')
 
-    @property
-    def template_params(self):
-        return {
-            **super().template_params,
-            'name': self.estimator_name,
-            'num_classes': self.num_classes,
-            'link': self.link,
-        }
+#     @property
+#     def template_params(self):
+#         return {
+#             **super().template_params,
+#             'name': self.estimator_name,
+#             'num_classes': self.num_classes,
+#             'link': self.link,
+#         }
 
-    @property
-    def mc_variables(self):
-        return {
-            **super().mc_variables,
-            '*|NAME|*': self.estimator_name,
-            '*|NUM_CLASSES|*': self.num_classes,
-            '*|LINK|*': self.link,
-        }
+#     @property
+#     def mc_variables(self):
+#         return {
+#             **super().mc_variables,
+#             '*|NAME|*': self.estimator_name,
+#             '*|NUM_CLASSES|*': self.num_classes,
+#             '*|LINK|*': self.link,
+#         }
 
-    @property
-    def estimator_name(self):
-        return self.estimator.name
+#     @property
+#     def estimator_name(self):
+#         return self.estimator.name
 
-    @property
-    def num_classes(self):
-        return len(self.estimator.classes)
+#     @property
+#     def num_classes(self):
+#         return len(self.estimator.classes)
 
 
-class PredictionCompletedEmail(Email):
-    template_name = 'prediction_completed'
+# class PredictionCompletedEmail(Email):
+#     template_name = 'prediction_completed'
 
-    def __init__(self, estimator, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.estimator = estimator
+#     def __init__(self, estimator, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.estimator = estimator
 
-    @property
-    def subject(self):
-        with translation.override(self.language_code):
-            return _('prediction of your model completed')
+#     @property
+#     def subject(self):
+#         with translation.override(self.language_code):
+#             return _('prediction of your model completed')
 
-    @property
-    def template_params(self):
-        return {
-            **super().template_params,
-            'name': self.estimator_name,
-            'num_classes': self.num_classes,
-        }
+#     @property
+#     def template_params(self):
+#         return {
+#             **super().template_params,
+#             'name': self.estimator_name,
+#             'num_classes': self.num_classes,
+#         }
 
-    @property
-    def mc_variables(self):
-        return {
-            **super().mc_variables,
-            '*|NAME|*': self.estimator_name,
-            '*|NUM_CLASSES|*': self.num_classes,
-        }
+#     @property
+#     def mc_variables(self):
+#         return {
+#             **super().mc_variables,
+#             '*|NAME|*': self.estimator_name,
+#             '*|NUM_CLASSES|*': self.num_classes,
+#         }
 
-    @property
-    def estimator_name(self):
-        return self.estimator.name
+#     @property
+#     def estimator_name(self):
+#         return self.estimator.name
 
-    @property
-    def num_classes(self):
-        return len(self.estimator.classes)
+#     @property
+#     def num_classes(self):
+#         return len(self.estimator.classes)
 
 
 def notify(subject, body='.'):

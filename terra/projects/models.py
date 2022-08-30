@@ -1,18 +1,16 @@
 import binascii
 import os
-import time
 import uuid
 
-import django_rq
 from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
 from guardian.shortcuts import assign_perm
 from rest_framework_api_key.models import AbstractAPIKey
+
 
 class CreatedAtUpdatedAtModelMixin(models.Model):
     """
@@ -50,7 +48,6 @@ class Project(CreatedAtUpdatedAtModelMixin, models.Model):
     name = models.CharField(_("Name"), max_length=80)
     description = models.CharField(_("Description"), max_length=255, blank=True)
     no_images = models.BooleanField(_("No images"), default=False)
-    estimators_module = models.BooleanField(_("Enable Estimators module"), default=True)
     dashboards_module = models.BooleanField(
         _("Enable Dashboards module"), default=False
     )
