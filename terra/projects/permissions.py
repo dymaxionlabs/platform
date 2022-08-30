@@ -89,7 +89,6 @@ class HasUserAPIKey(BaseHasAPIKey):
             prefix, _, _ = key.partition(".")
             instance = self.model.objects.get(prefix=prefix)
             request.user = instance.user
-            print(instance.__dict__)
             request.project = instance.project
             # Also set on body, if not present
             if 'project' not in request.data:

@@ -1,5 +1,5 @@
 const KNOWN_HOST_PAIRS = [
-  ["localhost", "localhost:8001"],
+  ["localhost", "localhost:8000"],
   ["staging.app.dymaxionlabs.com", "staging.api.dymaxionlabs.com"],
   ["app.dymaxionlabs.com", "api.dymaxionlabs.com"]
 ];
@@ -12,5 +12,5 @@ export function buildApiUrl(path) {
       break;
     }
   }
-  return `${location.protocol}//${apiHostname}${path}`;
+  return `${location.protocol}//${apiHostname}/v1${path}`;
 }

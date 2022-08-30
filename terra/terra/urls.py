@@ -1,17 +1,17 @@
 """terra URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The `urls_list` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+    2. Add a URL to urls_list:  path('', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+    2. Add a URL to urls_list:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urls_list:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
 from django.conf.urls import url
@@ -20,24 +20,14 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from ml_models.views import MLModelVersionViewSet, AllMLModelViewSet, MLModelViewSet
-from projects.views import (
-    ConfirmProjectInvitationView,
-    ContactView,
-    DashboardViewSet,
-    LayerViewSet,
-    MapViewSet,
-    ProjectInvitationTokenViewSet,
-    ProjectViewSet,
-    SubscribeApiBetaView,
-    SubscribeBetaView,
-    TestAuthView,
-    TestErrorView,
-    TestTaskErrorView,
-    UserAPIKeyViewSet,
-    UserProfileViewSet,
-    UserViewSet,
-)
+from ml_models.views import (AllMLModelViewSet, MLModelVersionViewSet,
+                             MLModelViewSet)
+from projects.views import (ConfirmProjectInvitationView, ContactView,
+                            DashboardViewSet, LayerViewSet, MapViewSet,
+                            ProjectInvitationTokenViewSet, ProjectViewSet,
+                            SubscribeApiBetaView, SubscribeBetaView,
+                            TestAuthView, TestErrorView, TestTaskErrorView,
+                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
 from rest_framework import permissions
 from rest_framework_nested import routers
 from stac.views import SearchView
@@ -90,12 +80,10 @@ docs_urls = [
     ),
 ]
 
-urls_list = [
+api_urls = [
     # Authentication
     url(r"^auth/", include("rest_auth.urls")),
     url(r"^auth/registration/", include("rest_auth.registration.urls")),
-    # Administration
-    url(r"^admin/", admin.site.urls),
     # Other custom views
     url(
         r"^projects/invitations/(?P<key>[^/]+)/confirm/?",
@@ -123,17 +111,18 @@ urls_list = [
     path(r"", include(router.urls)),
     path(r"", include(mlmodels_users_router.urls)),
     path(r"", include(mlmodels_models_router.urls)),
-    path("", views.index),
 ]
 
-urls_list += docs_urls
-urls_list += [path("storage/", include("storage.urls"))]
-urls_list += [path("tasks/", include("tasks.urls"))]
-urls_list += [path("credits/", include("credits.urls"))]
-urls_list += [path("quotas/", include("quotas.urls"))]
+api_urls += docs_urls
+api_urls += [path("storage/", include("storage.urls"))]
+api_urls += [path("tasks/", include("tasks.urls"))]
+api_urls += [path("credits/", include("credits.urls"))]
+api_urls += [path("quotas/", include("quotas.urls"))]
 
 urlpatterns = [
-    path('v1/', include(urls_list))
+    path("", views.index),
+    path("v1/", include(api_urls)),
+    url(r"^admin/", admin.site.urls),
 ]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

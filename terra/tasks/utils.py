@@ -50,6 +50,13 @@ def run_command(cmd):
     subprocess.run(cmd, shell=True, check=True)
 
 
+def enqueue_rq_job(method, *args, queue_name="default", timeout=None, **kwargs):
+    if not timeout:
+        timeout = 60 * 60 * 24
+    queue = django_rq.get_queue(queue_name)
+    queue.enqueue(method, *args, **kwargs, job_timeout=timeout)
+
+
 def enqueue_task(method, project_id=None, **kwargs):
     from tasks.models import Task
 

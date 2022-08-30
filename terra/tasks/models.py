@@ -8,6 +8,7 @@ from projects.models import Project
 
 from . import signals, states
 from .clients import CloudMLClient
+from .utils import enqueue_rq_job
 
 
 class Task(models.Model):
@@ -96,8 +97,7 @@ class Task(models.Model):
 
     def start(self):
         if self.state == states.PENDING:
-            queue = django_rq.get_queue("default")
-            queue.enqueue(self.name, self.pk, job_timeout=60 * 60 * 24)
+            enqueue_rq_job(self.name, self.pk)
             self.state = states.STARTED
             self.save(update_fields=["state", "updated_at"])
             signals.task_started.send(sender=self.__class__, task=self)

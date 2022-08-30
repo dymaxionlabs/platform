@@ -1,13 +1,17 @@
-import os
-import pytest
-import logging
 from unittest import mock
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth.base_user import AbstractBaseUser
+
+import pytest
+from ml_models.permissions import IsModelPublic, IsOwnerOrReadOnly
+from projects.permissions import HasUserAPIKey
 from rest_framework.permissions import IsAuthenticated
 
-from projects.permissions import HasUserAPIKey
-from ml_models.permissions import IsModelPublic, IsOwnerOrReadOnly
+
+def pytest_collection_modifyitems(items):
+    """
+    Marks all tests in this dir with the `unit` marker.
+    """
+    for item in items:
+        item.add_marker("unit")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -24,7 +28,7 @@ def _mock_views_permissions():
         has_permission=mock.Mock(return_value=True),
         has_object_permission=mock.Mock(return_value=True),
     )
-    with ( 
+    with (
         patch_perm(IsAuthenticated),
         patch_perm(HasUserAPIKey),
         patch_perm(IsOwnerOrReadOnly),

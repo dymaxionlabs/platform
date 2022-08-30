@@ -1,21 +1,16 @@
-import pytest
-from model_bakery import baker
-from unittest import mock
-
 from ml_models.models import MLModelVersion
 from ml_models.tasks import predict
+from model_bakery import baker
 from tasks.models import Task
-from ml_models.tests.utils import undecorated_func
+from tests.unit_tests.utils import undecorated_func
 
 
 class TestPredict:
     test_ml_model_version = baker.prepare(MLModelVersion, id=1)
-    test_task = baker.prepare(
-        Task, kwargs={"ml_model_version_id": test_ml_model_version.id}
-    )
+    test_task = baker.prepare(Task, kwargs={"ml_model_version_id": test_ml_model_version.id})
 
     def test_no_errors(self, mocker):
-        # Mock     
+        # Mock
         get_version_mock_return = self.test_ml_model_version
         get_version_mock = mocker.patch(
             "ml_models.tasks.MLModelVersion.objects.get",

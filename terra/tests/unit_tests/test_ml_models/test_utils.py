@@ -1,19 +1,13 @@
 import json
-from django.conf import settings
-from model_bakery import baker
-import pytest
 
-from ml_models.utils.constants import CREATE_INSTANCE_BODY
-from ml_models.utils.logic import (
-    create_instance_gpu,
-    destroy_instance,
-    login,
-    run_predict_notebook,
-    wait_for_task,
-)
+import pytest
+from django.conf import settings
 from ml_models.models import MLModel, MLModelVersion
-from tasks.models import Task
+from ml_models.utils.constants import CREATE_INSTANCE_BODY
+from ml_models.utils.logic import create_instance_gpu, destroy_instance, login, run_predict_notebook, wait_for_task
+from model_bakery import baker
 from projects.models import Project
+from tasks.models import Task
 
 
 class TestLogin:
@@ -170,9 +164,7 @@ class TestWaitForTask:
             {"status": "started"},
             {"status": "complete", "result": resp_result},
         )
-        mocker.patch(
-            'ml_models.utils.logic.time.sleep'
-        )
+        mocker.patch("ml_models.utils.logic.time.sleep")
         get_mock = mocker.patch(
             "ml_models.utils.logic.requests.get",
             return_value=get_mock_return,
@@ -181,11 +173,9 @@ class TestWaitForTask:
         result = wait_for_task(execid=execid, token=token)
 
         get_mock.assert_called_with(
-            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}",
-            headers={"Authorization": token}
+            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}", headers={"Authorization": token}
         )
-        assert result == resp_result 
-
+        assert result == resp_result
 
     def test_task_error(self, mocker):
         execid = "test_execid"
@@ -195,9 +185,7 @@ class TestWaitForTask:
             {"status": "started"},
             {"status": "complete", "result": {"error": "test_error"}},
         )
-        mocker.patch(
-            'ml_models.utils.logic.time.sleep'
-        )
+        mocker.patch("ml_models.utils.logic.time.sleep")
         get_mock = mocker.patch(
             "ml_models.utils.logic.requests.get",
             return_value=get_mock_return,
@@ -207,6 +195,5 @@ class TestWaitForTask:
             wait_for_task(execid=execid, token=token)
 
         get_mock.assert_called_with(
-            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}",
-            headers={"Authorization": token}
+            f"{settings.LF_SERVER_URL}/v1/history/task/{execid}", headers={"Authorization": token}
         )

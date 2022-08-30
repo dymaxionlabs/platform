@@ -42,11 +42,7 @@ def run_predict_notebook(*, model_version, task, token: str):
     # If reserved `input_dir` parameter was specified, use that as path prefix on user storage
     user_params = task.kwargs.get("user_params", {})
     input_dir = user_params.get("input_dir", None)
-    input_url = (
-        f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir.strip('/')}"
-        if input_dir
-        else ""
-    )
+    input_url = f"gs://{settings.FILES_BUCKET}/project_{task.project.pk}/{input_dir.strip('/')}" if input_dir else ""
 
     artifact_params = {
         "INPUT_ARTIFACTS_URL": input_url if input_dir else task.input_artifacts_url,
@@ -54,9 +50,7 @@ def run_predict_notebook(*, model_version, task, token: str):
     }
     user_params_upper = {k.upper(): v for k, v in user_params.items()}
     run_notebook_body = (
-        RUN_NOTEBOOK_BASE_BODY
-        | {"params": artifact_params | user_params_upper}
-        | {"version": model_version.name}
+        RUN_NOTEBOOK_BASE_BODY | {"params": artifact_params | user_params_upper} | {"version": model_version.name}
     )
     logger.info(f"Parameters: {run_notebook_body['params']}")
 
