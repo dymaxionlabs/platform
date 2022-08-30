@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
 from projects.models import Project
 
 from . import signals, states
@@ -85,6 +84,15 @@ class Task(models.Model):
 
         """
         return (timezone.now() - self.created_at).seconds
+
+    @property
+    def can_be_cancelled(self):
+        """
+        Returns True if the task can be cancelled
+
+        """
+        # NOTE: For now task cannot be cancelled
+        return False
 
     def start(self):
         if self.state == states.PENDING:

@@ -1,14 +1,11 @@
-import django_rq
-import os
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
+from quotas.models import UserQuota
 from terra.emails import WelcomeEmail
 from terra.utils import slack_notify
 
-from .models import UserProfile, Project
-from quotas.models import UserQuota
+from .models import Project, UserProfile
 
 
 @receiver(post_save, sender=User)

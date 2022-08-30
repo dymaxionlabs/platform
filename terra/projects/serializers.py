@@ -1,28 +1,17 @@
-import os
 from html import escape
 
 import rest_auth
+import rest_auth.registration.serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from mailchimp3 import MailChimp
 from rest_framework import serializers
-
 from terra.emails import EarlyAccessBetaEmail
 
-from .models import (
-    Layer,
-    Map,
-    MapLayer,
-    Project,
-    ProjectInvitationToken,
-    UserProfile,
-    UserAPIKey,
-    Dashboard,
-)
-
-import rest_auth.registration.serializers
+from .models import (Dashboard, Layer, Map, MapLayer, Project,
+                     ProjectInvitationToken, UserAPIKey, UserProfile)
 
 
 class UserProfileSimpleSerializer(serializers.ModelSerializer):

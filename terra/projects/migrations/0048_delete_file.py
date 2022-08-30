@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('estimators', '0029_remove_projects_file_fields'),
         ('projects', '0047_add_unique_name_in_projects_20200725_2334'),
     ]
 

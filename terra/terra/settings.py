@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -230,7 +231,6 @@ MEDIA_URL = '/uploads/'
 FILES_BUCKET = os.getenv('FILES_BUCKET')
 TILES_BUCKET = os.getenv('TILES_BUCKET')
 
-# deprecated, replaced by artifacts and models buckets
 TASK_ARTIFACTS_BUCKET = os.getenv('TASK_ARTIFACTS_BUCKET')
 MODELS_BUCKET = os.getenv('MODELS_BUCKET')
 

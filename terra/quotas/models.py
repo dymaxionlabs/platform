@@ -15,8 +15,8 @@ class UserQuota(CreatedAtUpdatedAtModelMixin, models.Model):
     def __str__(self):
         return """{user}: Projects: {projects}, User Storage: {user_storage},
             Max File Size: {file_size} """.format(
-            user=self.user, 
-            projects=self.max_projects_per_user, 
-            user_storage=self.total_space_per_user, 
+            user=self.user,
+            projects=self.max_projects_per_user,
+            user_storage=self.total_space_per_user,
             file_size=self.max_file_size
         )
