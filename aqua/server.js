@@ -70,6 +70,11 @@ const handle = app.getRequestHandler();
     return app.render(req, res, "/home", { section: "modelDetail", modelOwner, modelName });
   });
 
+  server.get("/home/models/:modelOwner/:modelName/:modelVersion/predict", (req, res) => {
+    const { modelOwner, modelName, modelVersion } = req.params;
+    return app.render(req, res, "/home", { section: "modelPredict", modelOwner, modelName, modelVersion });
+  });
+
   server.get("/models/new/od/:step", (req, res) => {
     const { step } = req.params;
     const { id } = req.query;

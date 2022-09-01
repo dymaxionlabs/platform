@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ParseError
 from projects.permissions import HasBetaAccess, HasUserAPIKey
 from ml_models.permissions import (
     IsOwnerOrPublicReadOnly,
     IsModelOwnerOrPublicReadOnly,
-    IsModelVersionPublic
+    IsModelVersionPublic,
+    IsModelOwner,
 )
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
@@ -12,6 +14,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from tasks.serializers import TaskSerializer
 from tasks.utils import enqueue_task
+from projects.models import Project
 
 from .utils.constants import PREDICT_TASK
 from .models import MLModel, MLModelVersion
@@ -93,8 +96,8 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         methods=["POST"],
         name="Predict model",
         permission_classes=[
-            HasUserAPIKey,
-            IsModelVersionPublic,
+            HasUserAPIKey | permissions.IsAuthenticated,
+            IsModelOwner | IsModelVersionPublic,
             HasBetaAccess
         ],
     )
@@ -106,12 +109,17 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
             "name": model_version_name,
         }
         user_params = self.request.data.get("parameters", {})
+        project_uuid = self.request.project if hasattr(self.request, 'project') else None
+        project_uuid = self.request.data.get("project")
+        if not project_uuid:
+            raise ParseError("When using tokens, you need to specify `project`")
+        project = Project.objects.get(uuid=project_uuid)
         qs = MLModelVersion.objects.filter(**base_filter)
         ml_model_version = get_object_or_404(qs)
         task = enqueue_task(
             PREDICT_TASK,
             ml_model_version_id=ml_model_version.id,
-            project_id=self.request.project.id,
+            project_id=project.id,
             user_params=user_params,
         )
         serializer = TaskSerializer(task)

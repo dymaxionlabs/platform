@@ -110,4 +110,4 @@ class HasBetaAccess(permissions.BasePermission):
     message = 'This feature is only available to beta users.'
 
     def has_permission(self, request, view):
-        return request.user.profile.beta
+        return request.user.userprofile.beta

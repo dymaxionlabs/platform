@@ -25,42 +25,32 @@ export const ModelsGallery = ({ token }) => {
     count: undefined
   })
 
-  useEffect(async () => {
+  const fetchData = async () => {
     setLoading(true)
-    await axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
+    try {
+      const response = await axios.get(paginationData.url, { headers: { Authorization: token } })
       setPaginationData({
         ...paginationData,
         models: response.data.results,
         nextUrl: response.data.next,
         count: response.data.count,
       })
-    }).catch((err) => {
+    } catch (err) {
       console.log(err)
-    }).finally(() => setLoading(false))
-  }, []);
-
-  function onChangePage(e) {
-    setPaginationData({ ...paginationData, page: e.detail })
+    }
+    setLoading(false)
   }
+
+  useEffect(() => { fetchData() }, []);
+  useEffect(() => { fetchData() }, [paginationData.url])
+
+  // function onChangePage(e) {
+  //   setPaginationData({ ...paginationData, page: e.detail })
+  // }
 
   useEffect(() => {
     setPaginationData({ ...paginationData, url: paginationData.nextUrl })
   }, [paginationData.page])
-
-  useEffect(() => {
-    setLoading(true)
-    axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
-      // console.log("pagination (response):", response.data)
-      setPaginationData({
-        ...paginationData,
-        models: response.data.results,
-        nextUrl: response.data.next,
-        count: response.data.count
-      })
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => setLoading(false))
-  }, [paginationData.url])
 
   // useEffect(() => {
   //   console.log("pagination:", paginationData)

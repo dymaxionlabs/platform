@@ -15,6 +15,12 @@ class IsModelOwnerOrPublicReadOnly(permissions.BasePermission):
         return request.user == obj.owner or (obj.model.is_public and request.method in permissions.SAFE_METHODS)
 
 
+class IsModelOwner(permissions.BasePermission):
+    model = MLModelVersion
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.model.owner
+
 class IsModelVersionPublic(permissions.BasePermission):
     model = MLModelVersion
 
