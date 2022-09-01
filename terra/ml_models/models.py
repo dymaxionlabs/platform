@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
@@ -34,6 +35,7 @@ class MLModelVersion(CreatedAtUpdatedAtModelMixin, models.Model):
     model = models.ForeignKey(MLModel, on_delete=models.CASCADE)
     name = models.CharField(_("name"), max_length=100)
     description = models.TextField(_("description"), blank=True, null=True)
+    params = JSONField(_("parameters"), null=True, blank=True, default=dict)
     
     class Meta:
         unique_together = ("model", "name")

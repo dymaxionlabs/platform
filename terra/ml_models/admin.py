@@ -1,10 +1,16 @@
 from django.contrib import admin
+from django.contrib.postgres.fields import JSONField
+from jsoneditor.forms import JSONEditor
 
 from .models import MLModel, MLModelVersion
 
 
-class MLModelVersionInline(admin.TabularInline):
+class MLModelVersionInline(admin.StackedInline):
     model = MLModelVersion
+
+    formfield_overrides = {
+        JSONField: {"widget": JSONEditor},
+    }
 
 
 class MLModelAdmin(admin.ModelAdmin):
