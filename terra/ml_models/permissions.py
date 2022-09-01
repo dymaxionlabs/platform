@@ -3,24 +3,21 @@ from rest_framework import permissions
 from ml_models.models import MLModel, MLModelVersion
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrPublicReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.owner or (obj.is_public and request.method in permissions.SAFE_METHODS)
+
+
+class IsModelOwnerOrPublicReadOnly(permissions.BasePermission):
+    model = MLModelVersion
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        else:
-            return obj.owner == request.user
+        return request.user == obj.owner or (obj.model.is_public and request.method in permissions.SAFE_METHODS)
 
-class IsModelPublic(permissions.BasePermission):
 
-    model = MLModel
-
-    def has_object_permission(self, request, view, obj):
-        return obj.is_public
-
-class IsModelVersionModelPublic(permissions.BasePermission):
-
+class IsModelVersionPublic(permissions.BasePermission):
     model = MLModelVersion
 
     def has_object_permission(self, request, view, obj):
         return obj.model.is_public
+
