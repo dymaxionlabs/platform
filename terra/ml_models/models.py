@@ -19,6 +19,7 @@ class MLModel(CreatedAtUpdatedAtModelMixin, models.Model):
 
     
     class Meta:
+        verbose_name = "Model"
         unique_together = ("name", "owner")
 
     @property
