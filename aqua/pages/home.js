@@ -227,6 +227,7 @@ class Home extends React.Component {
     contactModalOpen: false,
     modelsEnabled: false,
     dashboardsEnabled: false,
+    isBeta: false,
   };
 
   static async getInitialProps({ query, params }) {
@@ -249,7 +250,8 @@ class Home extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getCurrentProject();
+    this.getCurrentProject();
+    this.getUserProfile();
   }
 
   async getCurrentProject() {
@@ -267,10 +269,9 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/projects/${id}/`), {
         headers: { Authorization: token },
       });
-      const { name, estimators_module, dashboards_module } = response.data;
+      const { name, dashboards_module } = response.data;
       this.setState({
         projectName: name,
-        modelsEnabled: estimators_module,
         dashboardsEnabled: dashboards_module,
         loading: false,
       });
@@ -288,6 +289,20 @@ class Home extends React.Component {
       }
       // Force user to select another project
       routerPush("/select-project");
+    }
+  }
+
+  async getUserProfile() {
+    const { username, token } = this.props;
+    try {
+      const response = await axios.get(buildApiUrl(`/user-profiles/${username}/`), {
+        headers: { Authorization: token },
+      });
+      console.log("user profile", response.data)
+      const { beta } = response.data
+      this.setState({ isBeta: beta })
+    } catch (err) {
+      console.error("Error fetching user profile:", err)
     }
   }
 
@@ -325,7 +340,7 @@ class Home extends React.Component {
 
   render() {
     const { t, query, classes, token, username } = this.props;
-    const {modelOwner, modelName} = query;
+    const { modelOwner, modelName } = query;
     const {
       loading,
       section,
@@ -334,11 +349,12 @@ class Home extends React.Component {
       contextualMenuOpen,
       modelsEnabled,
       dashboardsEnabled,
+      isBeta,
     } = this.state;
 
     const sectionList = sortedSections.filter(
       (section) =>
-        (section === "models" && modelsEnabled) ||
+        (section === "models" && (modelsEnabled || isBeta)) ||
         (section === "dashboards" && dashboardsEnabled) ||
         (section !== "models" && section !== "dashboards")
     );
