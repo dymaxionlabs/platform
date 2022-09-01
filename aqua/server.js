@@ -65,6 +65,11 @@ const handle = app.getRequestHandler();
     return res.redirect("/home/models");
   });
 
+  server.get("/home/models/:modelOwner/:modelName", (req, res) => {
+    const { modelOwner, modelName } = req.params;
+    return app.render(req, res, "/home", { section: "modelDetail", modelOwner, modelName });
+  });
+
   server.get("/models/new/od/:step", (req, res) => {
     const { step } = req.params;
     const { id } = req.query;

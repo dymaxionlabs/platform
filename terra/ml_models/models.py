@@ -3,12 +3,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 from projects.models import CreatedAtUpdatedAtModelMixin
+from mdeditor.fields import MDTextField
 
 
 class MLModel(CreatedAtUpdatedAtModelMixin, models.Model):
     name = models.CharField(_("name"), max_length=134)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    description = models.TextField(_("description"), blank=True, null=True)
+    description = MDTextField()
     tags = ArrayField(
         models.CharField(max_length=30), verbose_name=_("tags"), null=True, blank=True
     )

@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
 from projects.permissions import HasBetaAccess, HasUserAPIKey
 from ml_models.permissions import (
-    IsModelPublic,
-    IsModelVersionModelPublic,
-    IsOwnerOrReadOnly,
+    IsOwnerOrPublicReadOnly,
+    IsModelOwnerOrPublicReadOnly,
+    IsModelVersionPublic
 )
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from tasks.serializers import TaskSerializer
 from tasks.utils import enqueue_task
@@ -22,9 +23,10 @@ class AllMLModelViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = MLModelSerializer
     permission_classes = [
         HasUserAPIKey | permissions.IsAuthenticated,
-        IsOwnerOrReadOnly,
-        IsModelPublic,
+        IsOwnerOrPublicReadOnly,
     ]
+    lookup_field = "name"
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         base_qs = super().get_queryset().order_by("-created_at")
@@ -38,8 +40,7 @@ class MLModelViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MLModelSerializer
     permission_classes = [
         HasUserAPIKey | permissions.IsAuthenticated,
-        IsOwnerOrReadOnly,
-        IsModelPublic,
+        IsOwnerOrPublicReadOnly,
     ]
     lookup_field = "name"
 
@@ -56,8 +57,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MLModelVersionSerializer
     permission_classes = [
         HasUserAPIKey | permissions.IsAuthenticated,
-        IsOwnerOrReadOnly,
-        IsModelVersionModelPublic,
+        IsModelOwnerOrPublicReadOnly,
     ]
     lookup_field = "name"
     lookup_value_regex = "[^/]+"
@@ -94,8 +94,7 @@ class MLModelVersionViewSet(viewsets.ReadOnlyModelViewSet):
         name="Predict model",
         permission_classes=[
             HasUserAPIKey,
-            IsOwnerOrReadOnly,
-            IsModelVersionModelPublic,
+            IsModelVersionPublic,
             HasBetaAccess
         ],
     )

@@ -51,6 +51,7 @@ import { routerPush } from "../utils/router";
 import { withSnackbar } from "notistack";
 import { buildApiUrl } from "../utils/api";
 import axios from "axios";
+import ModelDetailContent from "../components/home/ModelDetailContent";
 
 const drawerWidth = 200;
 
@@ -157,6 +158,9 @@ const sortedSections = [
   "credits",
   "profile",
 ];
+const detailSections = [
+  "modelDetail"
+];
 
 const sections = {
   viewer: {
@@ -170,6 +174,10 @@ const sections = {
     path: "/models",
     icon: <MemoryIcon />,
     content: <ModelsContent />,
+  },
+  modelDetail: {
+    key: "modelDetail",
+    content: <ModelDetailContent />,
   },
   dashboards: {
     key: "dashboards",
@@ -219,12 +227,14 @@ class Home extends React.Component {
     contactModalOpen: false,
     modelsEnabled: false,
     dashboardsEnabled: false,
+    isBeta: false,
   };
 
-  static async getInitialProps({ query }) {
+  static async getInitialProps({ query, params }) {
     return {
       namespacesRequired: ["me", "common"],
       query: query,
+      params,
     };
   }
 
@@ -234,13 +244,14 @@ class Home extends React.Component {
     let { section } = props.query;
 
     // Set current section based on path
-    if (section && sortedSections.includes(section)) {
+    if (section && (sortedSections.includes(section) || detailSections.includes(section))) {
       this.state.section = section;
     }
   }
 
   async componentDidMount() {
-    await this.getCurrentProject();
+    this.getCurrentProject();
+    this.getUserProfile();
   }
 
   async getCurrentProject() {
@@ -258,10 +269,9 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/projects/${id}/`), {
         headers: { Authorization: token },
       });
-      const { name, estimators_module, dashboards_module } = response.data;
+      const { name, dashboards_module } = response.data;
       this.setState({
         projectName: name,
-        modelsEnabled: estimators_module,
         dashboardsEnabled: dashboards_module,
         loading: false,
       });
@@ -279,6 +289,19 @@ class Home extends React.Component {
       }
       // Force user to select another project
       routerPush("/select-project");
+    }
+  }
+
+  async getUserProfile() {
+    const { username, token } = this.props;
+    try {
+      const response = await axios.get(buildApiUrl(`/user-profiles/${username}/`), {
+        headers: { Authorization: token },
+      });
+      const { beta } = response.data
+      this.setState({ isBeta: beta })
+    } catch (err) {
+      console.error("Error fetching user profile:", err)
     }
   }
 
@@ -316,6 +339,7 @@ class Home extends React.Component {
 
   render() {
     const { t, query, classes, token, username } = this.props;
+    const { modelOwner, modelName } = query;
     const {
       loading,
       section,
@@ -324,11 +348,12 @@ class Home extends React.Component {
       contextualMenuOpen,
       modelsEnabled,
       dashboardsEnabled,
+      isBeta,
     } = this.state;
 
     const sectionList = sortedSections.filter(
       (section) =>
-        (section === "models" && modelsEnabled) ||
+        (section === "models" && (modelsEnabled || isBeta)) ||
         (section === "dashboards" && dashboardsEnabled) ||
         (section !== "models" && section !== "dashboards")
     );
@@ -341,6 +366,8 @@ class Home extends React.Component {
       React.cloneElement(originalContent, {
         token,
         username,
+        modelOwner,
+        modelName,
         id: query.id,
       });
 

@@ -45,8 +45,9 @@ Fiona = "^1.8.21"
 django-allauth = "0.42.0"
 pytest-django = "^4.5.2"
 drf-nested-routers = "^0.93.4"
-setuptools = "^63.2.0"
 pytest-mock = "^3.8.2"
+django-mdeditor = "^0.1.20"
+django-extensions = "3.1"
 
 [tool.poetry.dev-dependencies]
 honcho = "^1.1.0"

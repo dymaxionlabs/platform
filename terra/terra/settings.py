@@ -77,6 +77,8 @@ INSTALLED_APPS = [
     'guardian',
     'django_rq',
     'django_cron',
+    'mdeditor',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -204,7 +206,7 @@ REST_FRAMEWORK = {
     ('rest_framework.permissions.IsAuthenticated', ),
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 25
+    'PAGE_SIZE': 10
 }
 
 # Allow all domains
@@ -371,3 +373,5 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+X_FRAME_OPTIONS = 'SAMEORIGIN' 
