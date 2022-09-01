@@ -4,6 +4,7 @@ from model_bakery import baker
 from tasks.models import Task
 from tests.unit_tests.utils import undecorated_func
 
+baker.generators.add("mdeditor.fields.MDTextField", lambda: "description")
 
 class TestPredict:
     test_ml_model_version = baker.prepare(MLModelVersion, id=1)

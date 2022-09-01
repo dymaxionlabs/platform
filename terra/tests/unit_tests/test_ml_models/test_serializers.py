@@ -3,6 +3,7 @@ from ml_models.models import MLModel
 from ml_models.serializers import MLModelSerializer
 from model_bakery import baker
 
+baker.generators.add("mdeditor.fields.MDTextField", lambda: "description")
 
 class TestMLModelSerializer:
 

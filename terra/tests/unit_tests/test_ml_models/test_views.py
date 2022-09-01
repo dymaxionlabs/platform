@@ -11,6 +11,7 @@ from projects.models import Project
 from rest_framework.response import Response
 from tasks.models import Task
 
+baker.generators.add("mdeditor.fields.MDTextField", lambda: "description")
 prepare_ml_model = lambda: baker.prepare(MLModel)
 test_model = prepare_ml_model()
 test_user = baker.prepare(get_user_model())
