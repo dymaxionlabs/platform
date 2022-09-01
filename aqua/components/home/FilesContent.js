@@ -22,6 +22,7 @@ import { i18n, withTranslation } from "../../i18n";
 import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import FileDownload from "../../utils/file-download";
+import FileUploadDialog from '../../components/FileUploadDialog'
 
 const styles = (theme) => ({
   root: {
@@ -33,6 +34,9 @@ const styles = (theme) => ({
   table: {
     minWidth: 700,
   },
+  fileUpload: {
+    margin: theme.spacing(1)
+  }
 });
 
 class FilesContent extends React.Component {
@@ -102,7 +106,7 @@ class FilesContent extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
+    const { t, classes, token } = this.props;
     const { loading, files } = this.state;
 
     const locale = i18n.language;
@@ -113,6 +117,7 @@ class FilesContent extends React.Component {
           {t("files.title")}
         </Typography>
         <Paper className={classes.root}>
+          <FileUploadDialog className={classes.fileUpload} token={token} />
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
