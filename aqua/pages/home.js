@@ -52,6 +52,7 @@ import { withSnackbar } from "notistack";
 import { buildApiUrl } from "../utils/api";
 import axios from "axios";
 import ModelDetailContent from "../components/home/ModelDetailContent";
+import ModelPredictContent from "../components/home/ModelPredictContent";
 
 const drawerWidth = 200;
 
@@ -159,7 +160,8 @@ const sortedSections = [
   "profile",
 ];
 const detailSections = [
-  "modelDetail"
+  "modelDetail",
+  "modelPredict",
 ];
 
 const sections = {
@@ -178,6 +180,10 @@ const sections = {
   modelDetail: {
     key: "modelDetail",
     content: <ModelDetailContent />,
+  },
+  modelPredict: {
+    key: "modelPredict",
+    content: <ModelPredictContent />,
   },
   dashboards: {
     key: "dashboards",
@@ -339,7 +345,7 @@ class Home extends React.Component {
 
   render() {
     const { t, query, classes, token, username } = this.props;
-    const { modelOwner, modelName } = query;
+    const { modelOwner, modelName, modelVersion } = query;
     const {
       loading,
       section,
@@ -368,6 +374,7 @@ class Home extends React.Component {
         username,
         modelOwner,
         modelName,
+        modelVersion,
         id: query.id,
       });
 
