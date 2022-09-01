@@ -298,7 +298,6 @@ class Home extends React.Component {
       const response = await axios.get(buildApiUrl(`/user-profiles/${username}/`), {
         headers: { Authorization: token },
       });
-      console.log("user profile", response.data)
       const { beta } = response.data
       this.setState({ isBeta: beta })
     } catch (err) {

@@ -5,7 +5,6 @@ import {
   TablePagination
 } from "@material-ui/core";
 import ModelsGalleryItem from "./ModelsGalleryItem";
-// import ModelsGalleryItem from "/ModelsGalleryItem";
 
 const modelsSectionStyle = {
   all: "none",
@@ -29,7 +28,12 @@ export const ModelsGallery = ({ token }) => {
   useEffect(async () => {
     setLoading(true)
     await axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
-      setPaginationData({ ...paginationData, models: response.data.results, nextUrl: response.data.next, count: response.data.count })
+      setPaginationData({
+        ...paginationData,
+        models: response.data.results,
+        nextUrl: response.data.next,
+        count: response.data.count,
+      })
     }).catch((err) => {
       console.log(err)
     }).finally(() => setLoading(false))
@@ -39,30 +43,37 @@ export const ModelsGallery = ({ token }) => {
     setPaginationData({ ...paginationData, page: e.detail })
   }
 
-
   useEffect(() => {
-    console.log("1...",paginationData.url)
-    setPaginationData({...paginationData, url: paginationData.nextUrl})
+    setPaginationData({ ...paginationData, url: paginationData.nextUrl })
   }, [paginationData.page])
 
   useEffect(() => {
     setLoading(true)
-    console.log("este",paginationData.url)
     axios.get(paginationData.url, { headers: { Authorization: token } }).then((response) => {
-      setPaginationData({ ...paginationData, models: response.data.results, nextUrl: response.data.next, count: response.data.count })
+      // console.log("pagination (response):", response.data)
+      setPaginationData({
+        ...paginationData,
+        models: response.data.results,
+        nextUrl: response.data.next,
+        count: response.data.count
+      })
     }).catch((err) => {
       console.log(err)
     }).finally(() => setLoading(false))
-  },[paginationData.url])
+  }, [paginationData.url])
+
+  // useEffect(() => {
+  //   console.log("pagination:", paginationData)
+  // }, [paginationData])
 
   return (
     <>
       <section id="models-section" style={modelsSectionStyle}>
         {paginationData.models && paginationData.models.map(model =>
-          <ModelsGalleryItem model={model} />
+          <ModelsGalleryItem key={`${model.owner}/${model.name}`} model={model} />
         )}
       </section>
-      {loading ||
+      {/* {loading ||
         <TablePagination
           component="div"
           count={paginationData.count}
@@ -70,7 +81,7 @@ export const ModelsGallery = ({ token }) => {
           onChangePage={onChangePage}
           rowsPerPage={rowsPerPage}
         />
-      }
+      } */}
     </>
   )
 }
