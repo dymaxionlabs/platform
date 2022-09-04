@@ -106,6 +106,7 @@
       "FAILED": "Fallido",
       "FINISHED": "Finalizado",
       "PENDING": "Pendiente",
+      "PROGRESS": "En progreso",
       "STARTED": "Ejecutando"
     }
   },
