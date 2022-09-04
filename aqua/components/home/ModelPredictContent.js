@@ -29,6 +29,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const coerceParameter = (parameter, type) => {
+  if (type === "int") {
+    return Math.floor(Number(parameter))
+  } else if (type === "float") {
+    return Number(parameter)
+  }
+  return String(parameter)
+}
+
 let ModelPredictContent = ({ modelOwner, modelName, modelVersion, token, enqueueSnackbar }) => {
   const classes = useStyles();
 
@@ -76,7 +85,7 @@ let ModelPredictContent = ({ modelOwner, modelName, modelVersion, token, enqueue
 
     const fixedParams = {}
     predictParams.map(param => {
-      fixedParams[param.id] = parameters[param.id].trim() || String(param?.default)
+      fixedParams[param.id] = coerceParameter(parameters[param.id].trim() || String(param?.default), param.type)
     })
     console.log("Params:", fixedParams)
 
