@@ -82,14 +82,14 @@ class KeysContent extends React.Component {
     keyToRevoke: null,
   };
 
-  async componentDidMount() {
-    await this.getApiKeys();
-    this.setState({ loading: false });
+  componentDidMount() {
+    this.getApiKeys();
   }
 
   getApiKeys = async () => {
     const project = cookie.get("project");
 
+    this.setState({ loading: true });
     try {
       const response = await axios.get(buildApiUrl(`/api_keys/`), {
         params: { project },
@@ -103,31 +103,33 @@ class KeysContent extends React.Component {
         variant: "error",
       });
     }
+    this.setState({ loading: false });
   };
 
-  revoke = async (prefix) => {
+  revoke = (prefix) => {
     this.setState({
       keyToRevoke: prefix,
       openConfirmationDialog: true,
     });
   };
 
-  onDialogResult = async (action) => {
-    if (action) {
-      const { keyToRevoke } = this.state;
-      await axios.patch(
-        buildApiUrl(`/api_keys/${keyToRevoke}`),
-        { revoked: true },
-        { headers: { Authorization: this.props.token } }
-      );
-      this.getApiKeys();
-    }
-
+  onCloseDialog = () => {
     this.setState({
       keyToRevoke: null,
       openConfirmationDialog: false,
     });
   };
+
+  onConfirmDialog = async () => {
+    const { keyToRevoke } = this.state;
+    this.onCloseDialog()
+    await axios.patch(
+      buildApiUrl(`/api_keys/${keyToRevoke}`),
+      { revoked: true },
+      { headers: { Authorization: this.props.token } }
+    );
+    this.getApiKeys();
+  }
 
   render() {
     const { t, classes, token } = this.props;
@@ -189,7 +191,8 @@ class KeysContent extends React.Component {
           </Table>
         </Paper>
         <ConfirmationDialog
-          onClose={this.onDialogResult}
+          onClose={this.onCloseDialog}
+          onConfirm={this.onConfirmDialog}
           open={openConfirmationDialog}
           title={t("keys.confirmTitle")}
           content={t("keys.confirmContent")}

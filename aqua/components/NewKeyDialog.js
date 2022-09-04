@@ -49,7 +49,7 @@ class NewKeyDialogForm extends React.Component {
       await axios
         .post(
           buildApiUrl(`/api_keys/`),
-          { name: keyname, project },
+          { name: keyname || "Default", project },
           { headers: { Authorization: this.props.token } }
         )
         .then(response => {
@@ -89,6 +89,7 @@ class NewKeyDialogForm extends React.Component {
                 label={t(`keys_new.label`)}
                 type="text"
                 fullWidth
+                placeholder="Default"
                 value={this.state.keyname}
                 onChange={e => this.setState({ keyname: e.target.value })}
               />
