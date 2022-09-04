@@ -86,6 +86,7 @@ class FileUploadDialog extends Component {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      const ratio = (i + 1) / files.length;
 
       const formData = new FormData();
       formData.append("file", file);
@@ -102,11 +103,13 @@ class FileUploadDialog extends Component {
               Authorization: this.props.token,
             },
             onUploadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
+              const filePercCompleted = Math.round(
                 (progressEvent.loaded * 100) / progressEvent.total
               );
-              this.setState({ uploadProgress: percentCompleted });
-              console.log("File upload progress:", percentCompleted);
+              const totalPercCompleted = filePercCompleted * ratio;
+
+              this.setState({ uploadProgress: totalPercCompleted });
+              console.log("Upload progress:", totalPercCompleted, "/", filePercCompleted);
             },
           }
         )
@@ -146,7 +149,7 @@ class FileUploadDialog extends Component {
           dropzoneText="Drag and drop your files here, or click to select them."
           open={open}
           onSave={this.handleSave}
-          acceptedFiles={[]}
+          acceptedFiles={[]} /* accept all files */
           filesLimit={100}
           maxFileSize={2000000000} /* 2gb */
           showPreviews={true}
