@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import axios from "axios";
 import cookie from "js-cookie";
 import { withSnackbar } from "notistack";
@@ -24,6 +24,7 @@ import { buildApiUrl } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import FileDownload from "../../utils/file-download";
 import FileUploadDialog from '../../components/FileUploadDialog'
+import ConfirmationDialog from "../ConfirmationDialog";
 
 const styles = (theme) => ({
   root: {
@@ -45,7 +46,8 @@ class FilesContent extends React.Component {
     loading: true,
     files: [],
     filesBeingDeleted: [],
-    showFileDialogOpen: false,
+    fileToDelete: null,
+    openDeleteConfirmationDialog: false,
   };
 
   async componentDidMount() {
@@ -95,6 +97,13 @@ class FilesContent extends React.Component {
   };
 
   handleFileDelete = async (file) => {
+    this.setState({
+      fileToDelete: file,
+      openDeleteConfirmationDialog: true
+    })
+  }
+
+  deleteFile = async (file) => {
     const projectId = cookie.get("project");
     this.setState((prevState) => ({
       filesBeingDeleted: [...prevState.filesBeingDeleted, file]
@@ -123,9 +132,22 @@ class FilesContent extends React.Component {
     this.setState((prevState) => ({ files: [...prevState.files, ...newFiles] }))
   }
 
+  handleCloseDeleteConfirmationDialog = () => {
+    this.setState({
+      fileToDelete: null,
+      openDeleteConfirmationDialog: false
+    })
+  }
+
+  handleConfirmDeleteConfirmationDialog = () => {
+    const file = this.state.fileToDelete
+    this.handleCloseDeleteConfirmationDialog()
+    this.deleteFile(file)
+  }
+
   render() {
     const { t, classes, token } = this.props;
-    const { loading, filesBeingDeleted, files } = this.state;
+    const { loading, filesBeingDeleted, files, openDeleteConfirmationDialog } = this.state;
 
     const locale = i18n.language;
 
@@ -139,11 +161,18 @@ class FilesContent extends React.Component {
             className={classes.fileUpload}
             token={token}
             onUploadDone={this.handleUploadDone} />
-          <Table className={classes.table}>
+          <ConfirmationDialog
+            onClose={this.handleCloseDeleteConfirmationDialog}
+            onConfirm={this.handleConfirmDeleteConfirmationDialog}
+            open={openDeleteConfirmationDialog}
+            title="Delete file"
+            content="Are you sure you want to delete this file? This process is *irreversible*."
+          />
+          <Table className={classes.table} size="small">
             <TableHead>
               <TableRow>
-                <TableCell>{t("files.created_at")}</TableCell>
                 <TableCell>{t("files.name")}</TableCell>
+                <TableCell>{t("files.created_at")}</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
@@ -156,27 +185,27 @@ class FilesContent extends React.Component {
               )}
               {files.map((file, i) => (
                 <TableRow key={i}>
+                  <TableCell component="th" scope="row">
+                    {file.path}
+                  </TableCell>
                   <TableCell>
                     <Moment locale={locale} fromNow>
                       {file.created_at}
                     </Moment>
                   </TableCell>
-                  <TableCell component="th" scope="row">
-                    {file.name}
-                  </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Delete">
-                      <IconButton
+                      <IconButton size="small"
                         onClick={() => this.handleFileDelete(file)}
                         className={classes.button}
                         disabled={filesBeingDeleted.includes(file)}
                         aria-label="Delete"
                       >
-                        <DeleteIcon />
+                        <DeleteForeverIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title={t("download")}>
-                      <IconButton
+                      <IconButton size="small"
                         onClick={() => this.handleFileDownload(file)}
                         className={classes.button}
                         disabled={filesBeingDeleted.includes(file)}
