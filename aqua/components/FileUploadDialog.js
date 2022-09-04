@@ -146,9 +146,10 @@ class FileUploadDialog extends Component {
           dropzoneText="Drag and drop your files here, or click to select them."
           open={open}
           onSave={this.handleSave}
+          acceptedFiles={[]}
           filesLimit={100}
-          showPreviews={false}
           maxFileSize={2000000000} /* 2gb */
+          showPreviews={true}
           onClose={this.handleClose}
         />
         <UploadProgressDialog

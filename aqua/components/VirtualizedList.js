@@ -1,42 +1,139 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { FixedSizeList } from 'react-window';
+import Checkbox from "@material-ui/core/Checkbox";
+import { Radio } from "@material-ui/core";
+import Input from "@material-ui/core/Input";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import { FixedSizeList } from "react-window";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: 400,
-        maxWidth: 300,
-        backgroundColor: theme.palette.background.paper,
-    },
+  filterInput: {
+    marginLeft: theme.spacing(2),
+  },
+  itemText: {
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap"
+  }
 }));
 
-function renderRow(props) {
-    const { index, style } = props;
+export default function VirtualizedList({
+  className,
+  items,
+  header,
+  showCheckbox,
+  showRadio,
+  checked,
+  onToggle,
+  showFilter,
+  onFilterChange,
+  primaryKey = "name",
+  secondaryKey,
+  disabled,
+  itemSize = 50,
+  height = 500,
+  placeholder,
+  showInputs,
+  inputValues,
+  onInputChange,
+  disableRipple,
+  showRemove,
+  onRemove,
+}) {
+  function renderRow(props) {
+    const { style, index } = props;
+    const item = items[index];
+
+    const labelId = `checkbox-list-label-${item.id}`;
 
     return (
-        <ListItem button style={style} key={index}>
-            <ListItemText primary={`Item ${index + 1}`} />
-        </ListItem>
+      <ListItem
+        style={style}
+        key={index}
+        role={undefined}
+        disableRipple={disableRipple}
+        dense
+        button
+        onClick={() => onToggle && onToggle(item.id)}
+      >
+        {showCheckbox ? (
+          <ListItemIcon>
+            <Checkbox
+              // edge="start"
+              checked={checked.includes(item.id)}
+              tabIndex={-1}
+              disableRipple
+              disabled={disabled}
+              inputProps={{ "aria-labelledby": labelId }}
+            />
+          </ListItemIcon>
+        ) : (
+          showRadio && (
+            <ListItemIcon>
+              <Radio
+                // edge="start"
+                checked={checked.includes(item.id)}
+                tabIndex={-1}
+                disableRipple
+                disabled={disabled}
+                inputProps={{ "aria-labelledby": labelId }}
+              />
+            </ListItemIcon>
+          )
+        )}
+        <ListItemText
+          className={classes.itemText}
+          id={labelId}
+          primary={item[primaryKey]}
+          secondary={secondaryKey && item[secondaryKey]}
+          disabled={disabled}
+        />
+        {showInputs && (
+          <Input
+            value={inputValues[item.id]}
+            onChange={(e) => onInputChange(item.id, e.target.value)}
+            placeholder={placeholder}
+          />
+        )}
+        {showRemove && (
+          <IconButton aria-label="delete" size="small" onClick={(e) => onRemove(item.id, e)}>
+            <DeleteIcon />
+          </IconButton>
+        )}
+      </ListItem>
     );
-}
+  }
 
-renderRow.propTypes = {
-    index: PropTypes.number.isRequired,
-    style: PropTypes.object.isRequired,
-};
+  const classes = useStyles();
 
-export default function VirtualizedList() {
-    const classes = useStyles();
-
-    return (
-        <div className={classes.root}>
-            <FixedSizeList height={400} width={300} itemSize={46} itemCount={200}>
-                {renderRow}
-            </FixedSizeList>
-        </div>
-    );
+  return (
+    <>
+      <ListSubheader component="div" id="nested-list-subheader">
+        {header}
+        {showFilter && (
+          <Input
+            className={classes.filterInput}
+            placeholder="Filter"
+            inputProps={{ "aria-label": "filter" }}
+            onChange={onFilterChange}
+          />
+        )}
+      </ListSubheader>
+      <FixedSizeList
+        width="100%"
+        height={height}
+        itemSize={itemSize}
+        itemCount={items.length}
+        className={className}
+        aria-labelledby="nested-list-subheader"
+      >
+        {renderRow}
+      </FixedSizeList>
+    </>
+  );
 }

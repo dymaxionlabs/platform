@@ -137,7 +137,7 @@ class DropzoneArea extends Component {
     }
   }
 
-  handleRemove = fileIndex => event => {
+  handleRemove = (fileIndex, event) => {
     event.stopPropagation();
     const { t } = this.props;
     const { fileObjects } = this.state;

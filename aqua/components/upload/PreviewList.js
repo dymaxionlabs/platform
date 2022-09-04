@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import Fab from "@material-ui/core/Fab";
+import VirtualizedList from "../VirtualizedList.js";
 
 const styles = {
   removeBtn: {
@@ -45,40 +46,19 @@ const styles = {
 };
 
 function PreviewList(props) {
-  const { fileObjects, handleRemove, showFileNames, classes } = props;
+  const { fileObjects, handleRemove } = props;
+
+  const items = fileObjects.map((obj, id) => ({ id, name: obj.file.name }))
+
   return (
-    <Grid container spacing={8}>
-      {fileObjects.map((fileObject, i) => {
-        const img = isImage(fileObject.file) ? (
-          <img
-            className={classes.smallPreviewImg}
-            role="presentation"
-            src={fileObject.data}
-          />
-        ) : (
-          <AttachFileIcon className={classes.smallPreviewImg} />
-        );
-        return (
-          <Grid item xs={4} key={i} className={classes.imageContainer}>
-            {img}
-
-            {showFileNames && (
-              <Typography className={classes.filename}>
-                {fileObject.file.name}
-              </Typography>
-            )}
-
-            <Fab
-              onClick={handleRemove(i)}
-              aria-label="Delete"
-              className={classes.removeBtn}
-            >
-              <DeleteIcon />
-            </Fab>
-          </Grid>
-        );
-      })}
-    </Grid>
+    <VirtualizedList
+      items={items}
+      itemSize={30}
+      height={200}
+      disableRipple
+      showRemove
+      onRemove={handleRemove}
+    />
   );
 }
 
