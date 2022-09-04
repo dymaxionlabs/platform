@@ -84,6 +84,8 @@ class FileUploadDialog extends Component {
 
     this.setState({ uploading: true, uploadProgress: 0 });
 
+    const newFiles = [];
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const ratio = (i + 1) / files.length;
@@ -114,10 +116,13 @@ class FileUploadDialog extends Component {
           }
         )
         console.log("File", i, response.data)
+        newFiles.push(response.data['detail'])
       } catch (err) {
         console.error(err);
       }
     }
+
+    this.props.onUploadDone && this.props.onUploadDone(newFiles)
 
     this.setState({ open: false, uploading: false });
   };
