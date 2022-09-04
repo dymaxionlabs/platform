@@ -107,7 +107,6 @@ api_urls = [
     url(r"^test/error/?", TestErrorView.as_view()),
     url(r"^test/taskerror/?", TestTaskErrorView.as_view()),
     # ...
-    url(r"^ping/?", views.ping),
     path(r"", include(router.urls)),
     path(r"", include(mlmodels_users_router.urls)),
     path(r"", include(mlmodels_models_router.urls)),
@@ -123,6 +122,7 @@ urlpatterns = [
     path("", views.index),
     path("v1/", include(api_urls)),
     url(r"^admin/", admin.site.urls),
+    url(r"^ping/?", views.ping),
 ]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
 urlpatterns += [url(r'admin/mdeditor/', include('mdeditor.urls'))]
