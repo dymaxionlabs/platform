@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Chip,
   Paper,
@@ -20,10 +20,11 @@ const modelsSectionStyle = {
 };
 
 export const ModelDetailContent = ({ modelOwner, modelName, token }) => {
-  const [model, setModel] = useState(undefined);
+  const [model, setModel] = useState(null);
+  const [latestModelVersion, setLatestModelVersion] = useState(null);
   const [modelTitle, setModelTitle] = useState("");
 
-  const fetchData = async () => {
+  const fetchModel = async () => {
     const url = buildApiUrl(`/users/${modelOwner}/models/${modelName}/`);
     try {
       const response = await axios.get(url, { headers: { Authorization: token } })
@@ -33,10 +34,24 @@ export const ModelDetailContent = ({ modelOwner, modelName, token }) => {
     }
   }
 
-  useEffect(() => { fetchData() }, []);
+  const fetchLatestModelVersion = async (version) => {
+    const url = buildApiUrl(`/users/${modelOwner}/models/${modelName}/versions/${version}/`);
+    try {
+      const response = await axios.get(url, { headers: { Authorization: token } })
+      setLatestModelVersion(response.data);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const hasPredictParameters = useMemo(() =>
+    latestModelVersion && latestModelVersion.params['predict'], [latestModelVersion])
+
+  useEffect(() => { fetchModel() }, []);
   useEffect(() => {
     if (model) {
       setModelTitle(`${model.owner}/${model.name}`)
+      fetchLatestModelVersion(model.latest_version)
     }
   }, [model]);
 
@@ -50,11 +65,11 @@ export const ModelDetailContent = ({ modelOwner, modelName, token }) => {
               <aside>
                 <div style={{ marginRight: "1em", display: "inline-block" }}><Chip size="small" icon={<Tag />} label={`Latest version: ${model.latest_version}`} style={{ paddingLeft: "0.2rem" }} /></div>
                 <div style={{ marginRight: "1em", display: "inline-block" }}><Chip icon={<LoopIcon />} label={`Last updated: ${isoStringToDay(model.updated_at)}`} size="small" /></div>
-                <div style={{ marginTop: "1em" }}>
+                {hasPredictParameters && (<div style={{ marginTop: "1em" }}>
                   <Link href={`/home/models/${model.owner}/${model.name}/${model.latest_version}/predict`}>
                     <Button variant="contained" color="primary">Predict</Button>
                   </Link>
-                </div>
+                </div>)}
               </aside>
             </Grid>
             <Grid item xs={6}>
