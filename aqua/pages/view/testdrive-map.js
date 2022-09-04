@@ -17,13 +17,13 @@ import cookie from "js-cookie";
 const styles = (theme) => ({
   topLeft: {
     position: "fixed",
-    left: theme.spacing.unit,
-    top: theme.spacing.unit,
+    left: theme.spacing(1),
+    top: theme.spacing(1),
     zIndex: 1000,
   },
   controlPaper: {
-    padding: theme.spacing.unit * 2,
-    margin: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
+    margin: theme.spacing(2),
   },
 });
 
