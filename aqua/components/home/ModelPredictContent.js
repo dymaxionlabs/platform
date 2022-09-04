@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(2),
     },
   },
+  formControl: {
+    maxWidth: "30em"
+  }
 }));
 
 let ModelPredictContent = ({ modelOwner, modelName, modelVersion, token, enqueueSnackbar }) => {
@@ -108,7 +111,7 @@ let ModelPredictContent = ({ modelOwner, modelName, modelVersion, token, enqueue
       <Container className={classes.container}>
         <form className={classes.root} onSubmit={handleSubmit}>
           {predictParams.map(param => (
-            <FormControl key={param.id}>
+            <FormControl className={classes.formControl} key={param.id}>
               <InputLabel htmlFor={param.id}>{param.name}</InputLabel>
               <Input id={param.id} name={param.id} disabled={loading} aria-describedby="my-helper-text" placeholder={String(param.default)} value={parameters[param.id]} onChange={handleChange} />
               <FormHelperText id={`${param.id}-helper-text`}>{param.desc}</FormHelperText>
