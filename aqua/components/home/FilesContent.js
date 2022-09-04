@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
 import cookie from "js-cookie";
 import { withSnackbar } from "notistack";
@@ -43,6 +44,7 @@ class FilesContent extends React.Component {
   state = {
     loading: true,
     files: [],
+    filesBeingDeleted: [],
     showFileDialogOpen: false,
   };
 
@@ -76,7 +78,7 @@ class FilesContent extends React.Component {
     }
   }
 
-  handleFileURL = (file) => {
+  handleFileDownload = (file) => {
     const projectId = cookie.get("project");
     axios
       .get(buildApiUrl(`/storage/download/`), {
@@ -92,22 +94,38 @@ class FilesContent extends React.Component {
       });
   };
 
-  onDialogResult = async (action) => {
-    this.setState({
-      showFileDialogOpen: false,
-    });
-    this.componentDidMount();
-  };
+  handleFileDelete = async (file) => {
+    const projectId = cookie.get("project");
+    this.setState((prevState) => ({
+      filesBeingDeleted: [...prevState.filesBeingDeleted, file]
+    }));
+    try {
+      await axios.delete(buildApiUrl(`/storage/file/`), {
+        params: { project: projectId, path: file.path },
+        headers: { Authorization: this.props.token },
+      })
+      this.setState((prevState) => ({ files: prevState.files.filter(f => f !== file) }))
+      this.props.enqueueSnackbar(`File '${file.path}' deleted`, {
+        variant: "success"
+      });
+    } catch (err) {
+      console.error(err)
+      this.props.enqueueSnackbar(`Failed to delete file '${file.path}'`, {
+        variant: "error"
+      });
+    }
+    this.setState((prevState) => ({
+      filesBeingDeleted: prevState.filesBeingDeleted.filter(f => f !== file)
+    }));
+  }
 
-  UploadImages = () => {
-    this.setState({
-      showFileDialogOpen: true,
-    });
-  };
+  handleUploadDone = (newFiles) => {
+    this.setState((prevState) => ({ files: [...prevState.files, ...newFiles] }))
+  }
 
   render() {
     const { t, classes, token } = this.props;
-    const { loading, files } = this.state;
+    const { loading, filesBeingDeleted, files } = this.state;
 
     const locale = i18n.language;
 
@@ -117,7 +135,10 @@ class FilesContent extends React.Component {
           {t("files.title")}
         </Typography>
         <Paper className={classes.root}>
-          <FileUploadDialog className={classes.fileUpload} token={token} />
+          <FileUploadDialog
+            className={classes.fileUpload}
+            token={token}
+            onUploadDone={this.handleUploadDone} />
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
@@ -144,10 +165,21 @@ class FilesContent extends React.Component {
                     {file.name}
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="Delete">
+                      <IconButton
+                        onClick={() => this.handleFileDelete(file)}
+                        className={classes.button}
+                        disabled={filesBeingDeleted.includes(file)}
+                        aria-label="Delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title={t("download")}>
                       <IconButton
-                        onClick={() => this.handleFileURL(file)}
+                        onClick={() => this.handleFileDownload(file)}
                         className={classes.button}
+                        disabled={filesBeingDeleted.includes(file)}
                         aria-label={t("download")}
                       >
                         <CloudDownloadIcon />
