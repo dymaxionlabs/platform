@@ -11,15 +11,41 @@ export function formatBytes(a, b = 2) {
     ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
   );
 };
-  
-export function isoStringToDay (isoString) {
+
+export function isoStringToDay(isoString) {
   return moment(isoString).fromNow();
 };
 
-export function generateSnippet(modelName, modelVersion){
-  return `
-  from dymaxionlabs.models import Model
+export function generateSnippet(modelName, modelVersion) {
+  return `from dymaxionlabs.models import Model
 
-  model = Model.get("${modelName}", version="${modelVersion}")
-  `
+model = Model.get("${modelName}", version="${modelVersion}")`
+};
+
+export function repr(v) {
+  if (typeof (v) === "string") {
+    return `"${v}"`
+  } else {
+    return v
+  }
+}
+
+export function objectMap(obj, fn) {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([k, v], i) => [k, fn(v, k, i)]
+    )
+  )
+}
+
+export function generatePredictSnippet(modelName, modelVersion, parameters) {
+  const predictArguments = Object.entries(parameters).map(([k, v]) => `  ${k}=${repr(v)},`).join("\n")
+
+  return `from dymaxionlabs.models import Model
+
+model = Model.get("${modelName}", version="${modelVersion}")
+
+task = model.predict(
+${predictArguments}
+)`
 };

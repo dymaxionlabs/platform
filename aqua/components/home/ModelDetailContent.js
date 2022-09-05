@@ -76,6 +76,7 @@ export const ModelDetailContent = ({ modelOwner, modelName, token }) => {
               <div className="snippet">
                 <span>Copy the following Python code to load this model:</span>
                 <CopyBlock
+                  customStyle={{ padding: 20 }}
                   text={generateSnippet(modelName, model.latest_version)}
                   language={"python"}
                   theme={atomOneDark}
