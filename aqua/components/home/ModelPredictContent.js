@@ -149,7 +149,7 @@ let ModelPredictContent = ({ modelOwner, modelName, modelVersion, token, enqueue
               </Typography>
               <CopyBlock
                 customStyle={{ padding: 20 }}
-                text={generatePredictSnippet(modelName, model.latest_version, finalParameters)}
+                text={generatePredictSnippet(modelName, modelVersion, finalParameters)}
                 language={"python"}
                 theme={atomOneDark}
               />
