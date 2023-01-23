@@ -258,7 +258,9 @@ RQ_SHOW_ADMIN_LINK = True
 # Configure Sentry
 if os.getenv('SENTRY_DNS'):
     sentry_sdk.init(dsn=os.getenv('SENTRY_DNS'),
-                    integrations=[DjangoIntegration()])
+                    integrations=[DjangoIntegration()],
+                    traces_sample_rate=os.getenv('SENTRY_TRACES_SR', 1.0),
+                    send_default_pii=True)
 
 CELERY_RESULT_BACKEND = 'tasks.backends.DatabaseBackend'
 
@@ -374,4 +376,4 @@ LOGGING = {
     },
 }
 
-X_FRAME_OPTIONS = 'SAMEORIGIN' 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
