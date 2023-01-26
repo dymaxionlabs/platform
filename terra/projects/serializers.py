@@ -8,10 +8,19 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from mailchimp3 import MailChimp
 from rest_framework import serializers
+
 from terra.emails import EarlyAccessBetaEmail
 
-from .models import (Dashboard, Layer, Map, MapLayer, Project,
-                     ProjectInvitationToken, UserAPIKey, UserProfile)
+from .models import (
+    Dashboard,
+    Layer,
+    Map,
+    MapLayer,
+    Project,
+    ProjectInvitationToken,
+    UserAPIKey,
+    UserProfile,
+)
 
 
 class UserProfileSimpleSerializer(serializers.ModelSerializer):
@@ -152,7 +161,7 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     collaborators = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="username"
+        many=True, slug_field="username", queryset=User.objects.all()
     )
 
     class Meta:
