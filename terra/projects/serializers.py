@@ -153,11 +153,18 @@ class SubscribeBetaSerializer(serializers.Serializer):
 
 class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(read_only=True, slug_field="name")
-
+    username = serializers.SerializerMethodField()
+    
     class Meta:
         model = ProjectInvitationToken
-        fields = ("key", "project", "email", "confirmed", "created_at", "updated_at")
-
+        fields = ("key", "project", "email", "confirmed", "created_at", "updated_at", "username")
+    
+    def get_username(self, obj):
+        email_ = obj.email
+        if User.objects.filter(email=email_).exists():
+            user_ = User.objects.get(email=email_)
+            return f"{user_}"
+        
 
 class ProjectSerializer(serializers.ModelSerializer):
     collaborators = serializers.SlugRelatedField(
