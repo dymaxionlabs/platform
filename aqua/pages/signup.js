@@ -99,6 +99,12 @@ class Register extends React.Component {
     this.state.email = email;
   }
 
+  componentDidMount() {
+    if (this.props.query.username && !this.state.username) {
+      this.setState({ username: this.props.query.username });
+    }
+  }
+
   onUsernameChange = (e) => {
     var uname = e.target.value.toLowerCase();
     this.setState({ username: uname });

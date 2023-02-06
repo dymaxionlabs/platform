@@ -5,9 +5,9 @@ import Head from "next/head";
 import cookie from "js-cookie";
 import axios from "axios";
 import { i18n, withTranslation, Link } from "../i18n";
-import { withAuthSync, login } from "../utils/auth";
+import { withAuthSync, login, logout } from "../utils/auth";
 import { buildApiUrl } from "../utils/api";
-import { routerPush } from "../utils/router";
+import { routerPush, routerPushQuery } from "../utils/router";
 import { withStyles } from '@material-ui/core/styles';
 
 import {
@@ -97,10 +97,10 @@ class Invite extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const { t, token } = props;
+    // console.log(props)
+    const { t, token, username } = props;
     const { key } = props.query;
-
+    
     if (!key) {
       this.state = {
         ...this.state,
@@ -116,9 +116,9 @@ class Invite extends React.Component {
   }
 
   componentDidMount() {
-    const { t } = this.props;
+    const { t, username } = this.props;
     const { key } = this.props.query;
-
+    
     if (this.state.fatalError) return;
 
     this.setState({ loading: true });
@@ -128,15 +128,20 @@ class Invite extends React.Component {
       .get(buildApiUrl(`/projects/invitations/${key}/`))
       .then(response => {
         const { data } = response;
+        // console.log("dataget: ", data)
         if (data.email && data.confirmed) {
           this.setState({
             fatalError: t("invite.already_confirmed")
           });
+          
+        
         } else {
           this.setState({
             project: data.project,
             email: data.email,
             inviteHasEmail: !!data.email,
+            username: data.username,
+            tokenUser: data.username,
             showForm: true
           });
         }
@@ -285,7 +290,7 @@ class Invite extends React.Component {
   };
 
   render() {
-    const { t, classes } = this.props;
+    const { t, classes, username } = this.props;
     const { key, redirect } = this.props.query;
     const {
       loading,
@@ -315,9 +320,13 @@ class Invite extends React.Component {
           <Typography className={classes.subheader}>
             {!loading &&
               !fatalError &&
-              (alreadyLoggedIn
+              
+              (alreadyLoggedIn && username == this.state.username 
                 ? t("invite.subheader_already_logged_in", { project })
-                : t("invite.subheader", { project, email }))}
+                : t("invite.subheader", { project, email, username })
+              )
+            }
+
           </Typography>
           <Typography className={classes.successMessage}>
             {this.state.successMsg}
@@ -326,30 +335,34 @@ class Invite extends React.Component {
             {this.state.errorMsg || fatalError}
           </Typography>
           {showForm &&
-            (alreadyLoggedIn ? (
-              <form
-                className={classes.form}
-                method="post"
-                onSubmit={this.onConfirmSubmit}
-              >
-                <FormControl margin="normal" required fullWidth>
-                  <Grid container spacing={3}>
-                    <Grid item xs>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        disabled={fatalError !== "" || loading}
-                      >
-                        {t("invite.confirm")}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </FormControl>
-              </form>
-            ) : (
-              <>
+            (alreadyLoggedIn ?
+              (this.state.tokenUser ? (
+                this.state.tokenUser == username ?(
+                    <form
+                      className={classes.form}
+                      method="post"
+                      onSubmit={this.onConfirmSubmit}
+                    >
+                      <FormControl margin="normal" required fullWidth>
+                        <Grid container spacing={3}>
+                          <Grid item xs>
+                            <Button
+                              type="submit"
+                              variant="contained"
+                              color="primary"
+                              fullWidth
+                              disabled={fatalError !== "" || loading}
+                            >
+                              {t("invite.confirm")}
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </FormControl>
+                    </form>
+                ):
+                routerPushQuery("/login", this.state.tokenUser) 
+                
+              ):(<>
                 <form
                   className={classes.form}
                   method="post"
@@ -453,8 +466,119 @@ class Invite extends React.Component {
                     <a>{t("invite.login")}</a>
                   </Link>
                 </Typography>
-              </>
-            ))}
+              </>)) 
+              : ( this.state.tokenUser ? 
+                  (this.state.tokenUser && !username  
+                  &&(routerPushQuery("/login", this.state.tokenUser)) 
+                  )
+                  :(
+                  <>
+                    <form
+                      className={classes.form}
+                      method="post"
+                      onSubmit={this.onSubmit}
+                    >
+                      <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="username">
+                          {t("invite.username_placeholder")}
+                        </InputLabel>
+                        <Input
+                          id="username"
+                          name="username"
+                          autoComplete="user"
+                          autoFocus
+                          onChange={this.onUsernameChange}
+                          value={this.state.username}
+                        />
+                        {this.state.err_username_msg && (
+                          <FormHelperText error>
+                            {this.state.err_username_msg}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                      {!this.state.inviteHasEmail && (
+                        <FormControl margin="normal" required fullWidth>
+                          <InputLabel htmlFor="email">
+                            {t("invite.email_placeholder")}
+                          </InputLabel>
+                          <Input
+                            id="email"
+                            name="email"
+                            autoComplete="email"
+                            type="email"
+                            onChange={this.onEmailChange}
+                            value={this.state.email}
+                          />
+                          {this.state.err_email_msg && (
+                            <FormHelperText error>
+                              {this.state.err_email_msg}
+                            </FormHelperText>
+                          )}
+                        </FormControl>
+                      )}
+                      <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password1">
+                          {t("invite.password1_placeholder")}
+                        </InputLabel>
+                        <Input
+                          name="password1"
+                          type="password"
+                          id="password1"
+                          onChange={this.onPassword1Change}
+                          value={this.state.password1}
+                        />
+                        {this.state.err_password1_msg && (
+                          <FormHelperText error>
+                            {this.state.err_password1_msg}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                      <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password2">
+                          {t("invite.password2_placeholder")}
+                        </InputLabel>
+                        <Input
+                          name="password2"
+                          type="password"
+                          id="password2"
+                          onChange={this.onPassword2Change}
+                          value={this.state.password2}
+                        />
+                        {this.state.err_password2_msg && (
+                          <FormHelperText error>
+                            {this.state.err_password2_msg}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                      <Grid container spacing={3}>
+                        <Grid item xs>
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            disabled={fatalError !== "" || loading}
+                            className={classes.submit}
+                          >
+                            {t("invite.submit")}
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </form>
+                    <Typography className={classes.loginPar}>
+                      {t("invite.already_has_account")}{" "}
+                      <Link
+                        href={{
+                          pathname: "/login",
+                          query: { redirect: loginRedirect }
+                        }}
+                      >
+                        <a>{t("invite.login")}</a>
+                      </Link>
+                    </Typography>
+                  </> )
+                )
+                )}
           {loading && <LinearProgress />}
         </Paper>
       </main>
