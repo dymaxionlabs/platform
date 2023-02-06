@@ -76,6 +76,12 @@ class Login extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.query.username && !this.state.username) {
+      this.setState({ username: this.props.query.username });
+    }
+  }
+
   onUsernameChange = (e) => {
     var uname = e.target.value.toLowerCase();
     this.setState({ username: uname });
@@ -131,7 +137,7 @@ class Login extends React.Component {
     const { t, classes, query } = this.props;
     const { redirect, email } = query;
     const { isSubmitting } = this.state;
-
+    
     return (
       <main className={classes.main}>
         <Head>
