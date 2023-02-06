@@ -21,14 +21,14 @@ export const routerReplace = path => {
 };
 
 // UGLY FIX FOR IE11
-export const routerPushQuery = (path, value) => {
+export const routerPushQuery = (path, value, redir) => {
   const isIE = !!document.documentMode;
   if (isIE) {
     window.location.href = path;
   } else {
     Router.push({
       pathname: path,
-      query: { username: value },
+      query: { username: value, redirect: redir},
     });
   }
 };

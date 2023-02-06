@@ -360,7 +360,17 @@ class Invite extends React.Component {
                       </FormControl>
                     </form>
                 ):
-                routerPushQuery("/login", this.state.tokenUser) 
+                <Typography className={classes.loginPar}>
+                  {" "} {this.state.tokenUser} {" "}
+                  <Link
+                    href={{
+                      pathname: "/login",
+                      query: { redirect: loginRedirect, username: this.state.tokenUser}
+                    }}
+                  >
+                    <a>{t("invite.login")}</a>
+                  </Link>
+                </Typography> 
                 
               ):(<>
                 <form
@@ -469,7 +479,7 @@ class Invite extends React.Component {
               </>)) 
               : ( this.state.tokenUser ? 
                   (this.state.tokenUser && !username  
-                  &&(routerPushQuery("/login", this.state.tokenUser)) 
+                  &&(routerPushQuery("/login", this.state.tokenUser, loginRedirect)) 
                   )
                   :(
                   <>
