@@ -157,7 +157,7 @@ DropzoneDialog.defaultProps = {
   cancelButtonText: "Cancel",
   acceptedFiles: ["image/*", "video/*", "application/*"],
   filesLimit: 3,
-  maxFileSize: 3000000,
+  maxFileSize: 500000000,
   showPreviews: true,
   showPreviewsInDropzone: false,
   showAlerts: true,
