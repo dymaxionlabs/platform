@@ -160,11 +160,10 @@ class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
         fields = ("key", "project", "email", "confirmed", "created_at", "updated_at", "username")
     
     def get_username(self, obj):
-        email_ = obj.email
-        if User.objects.filter(email=email_).exists():
-            user_ = User.objects.get(email=email_)
-            return f"{user_}"
-        
+        user = User.objects.filter(email=obj.email).first()
+        if user:
+            return user.username
+       
 
 class ProjectSerializer(serializers.ModelSerializer):
     collaborators = serializers.SlugRelatedField(
