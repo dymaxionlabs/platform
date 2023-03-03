@@ -18,12 +18,10 @@ describe('Login', () => {
       .type(user.password)
       .should('have.value', user.password)
 
-    cy.get('.MuiButton-label').click()
-
-    cy.wait(5000);
+    cy.get('.MuiButton-label').click();
 
     // Choose default project
-    cy.contains('Default').click()
+    cy.contains('Default', { timeout: 60000 }).click()
 
     cy.location('pathname', { timeout: 60000 })
       .should('include', '/home');

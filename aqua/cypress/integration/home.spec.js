@@ -19,10 +19,9 @@ describe('Home page', () => {
       .should('have.value', user.password)
 
     cy.get('.MuiButton-label').click()
-    cy.wait(2000)
 
     // Choose default project
-    cy.contains('Default').click()
+    cy.contains('Default', { timeout: 60000 }).click()
 
     cy.location('pathname', { timeout: 60000 })
       .should('include', '/home');
