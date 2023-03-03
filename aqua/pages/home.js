@@ -423,6 +423,7 @@ class Home extends React.Component {
               token={token}
             />
             <IconButton
+              className="profile-btn"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
