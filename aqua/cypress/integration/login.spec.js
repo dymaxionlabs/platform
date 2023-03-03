@@ -20,6 +20,11 @@ describe('Login', () => {
 
     cy.get('.MuiButton-label').click()
 
+    cy.wait(5000);
+
+    // Choose default project
+    cy.contains('Default').click()
+
     cy.location('pathname', { timeout: 60000 })
       .should('include', '/home');
   })

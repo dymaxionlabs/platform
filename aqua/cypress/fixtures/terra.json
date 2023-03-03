@@ -1,38 +1,56 @@
 [
-{
+  {
     "model": "auth.user",
     "pk": 1,
     "fields": {
-        "password": "pbkdf2_sha256$180000$Kj9aUbMyQaXp$co9LdaR5mD/6prrnU6v3FQ+1DioUjunMhvyJPyogJd8=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "john",
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john@example.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2022-03-05T14:26:53Z",
-        "groups": [],
-        "user_permissions": []
+      "password": "pbkdf2_sha256$180000$Kj9aUbMyQaXp$co9LdaR5mD/6prrnU6v3FQ+1DioUjunMhvyJPyogJd8=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "john",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-03-05T14:26:53Z",
+      "groups": [],
+      "user_permissions": []
     }
-},
-{
+  },
+  {
     "model": "projects.project",
     "pk": 1,
     "fields": {
-        "uuid": "31018650-8ccc-441c-8758-e67ef79076ca",
-        "owner": 1,
-        "name": "Default",
-        "description": "",
-        "no_images": false,
-        "dashboards_module": false,
-        "created_at": "2022-03-05T14:26:53.740Z",
-        "updated_at": "2022-03-05T14:26:53.740Z",
-        "collaborators": [
-            1
-        ],
-        "groups": []
+      "uuid": "31018650-8ccc-441c-8758-e67ef79076ca",
+      "owner": 1,
+      "name": "Default",
+      "description": "",
+      "no_images": false,
+      "dashboards_module": false,
+      "created_at": "2022-03-05T14:26:53.740Z",
+      "updated_at": "2022-03-05T14:26:53.740Z",
+      "collaborators": [
+        1
+      ],
+      "groups": []
     }
-}
+  },
+  {
+    "model": "projects.project",
+    "pk": 2,
+    "fields": {
+      "uuid": "27384093-8ccc-441c-8758-e67ef79076ca",
+      "owner": 1,
+      "name": "Second project",
+      "description": "",
+      "no_images": false,
+      "dashboards_module": false,
+      "created_at": "2022-03-05T14:26:53.740Z",
+      "updated_at": "2022-03-05T14:26:53.740Z",
+      "collaborators": [
+        1
+      ],
+      "groups": []
+    }
+  }
 ]
