@@ -20,14 +20,23 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from ml_models.views import (AllMLModelViewSet, MLModelVersionViewSet,
-                             MLModelViewSet)
-from projects.views import (ConfirmProjectInvitationView, ContactView,
-                            DashboardViewSet, LayerViewSet, MapViewSet,
-                            ProjectInvitationTokenViewSet, ProjectViewSet,
-                            SubscribeApiBetaView, SubscribeBetaView,
-                            TestAuthView, TestErrorView, TestTaskErrorView,
-                            UserAPIKeyViewSet, UserProfileViewSet, UserViewSet)
+from ml_models.views import AllMLModelViewSet, MLModelVersionViewSet, MLModelViewSet
+from projects.views import (
+    ConfirmProjectInvitationView,
+    ContactView,
+    DashboardViewSet,
+    LayerViewSet,
+    MapViewSet,
+    ProjectInvitationTokenViewSet,
+    ProjectViewSet,
+    SubscribeApiBetaView,
+    TestAuthView,
+    TestErrorView,
+    TestTaskErrorView,
+    UserAPIKeyViewSet,
+    UserProfileViewSet,
+    UserViewSet,
+)
 from rest_framework import permissions
 from rest_framework_nested import routers
 from stac.views import SearchView
@@ -90,7 +99,6 @@ api_urls = [
         ConfirmProjectInvitationView.as_view(),
     ),
     url(r"^contact/?", ContactView.as_view()),
-    url(r"^subscribe/beta/?", SubscribeBetaView.as_view()),
     url(r"^subscribe/api_beta/?", SubscribeApiBetaView.as_view()),
     url(
         r"^api_keys/(?P<prefix>[^/]+)$",
@@ -125,5 +133,5 @@ urlpatterns = [
     url(r"^ping/?", views.ping),
 ]
 urlpatterns += [path("admin/django-rq/", include("django_rq.urls"))]
-urlpatterns += [url(r'admin/mdeditor/', include('mdeditor.urls'))]
+urlpatterns += [url(r"admin/mdeditor/", include("mdeditor.urls"))]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
