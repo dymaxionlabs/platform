@@ -111,23 +111,3 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           root_dir: terra/
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      - name: Set up Yarn
-        run: npm install -g yarn
-
-      - name: Install Aqua dependencies
-        run: cd aqua/ && yarn install --frozen-lockfile
-
-      - name: Run Aqua tests and generate coverage report
-        run: cd aqua/ && yarn ci:test
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          fail_ci_if_error: true
-          root_dir: aqua/
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
