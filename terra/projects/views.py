@@ -36,7 +36,6 @@ from .serializers import (
     MapSerializer,
     ProjectInvitationTokenSerializer,
     ProjectSerializer,
-    SubscribeBetaSerializer,
     UserAPIKeySerializer,
     UserProfileSerializer,
     UserSerializer,
@@ -195,49 +194,6 @@ class SubscribeApiBetaView(generics.GenericAPIView):
                         "email_address": email,
                         "status": "subscribed",
                         "tags": ["api-beta"],
-                    },
-                )
-                return Response(
-                    {"detail": _("User subscribed")}, status=status.HTTP_200_OK
-                )
-            except Exception as e:
-                if "'title': 'Member Exists'" in str(e):
-                    return Response(
-                        {"detail": _("User already subscribed")},
-                        status=status.HTTP_200_OK,
-                    )
-                else:
-                    return Response(
-                        {"detail": _("Error subscribing user")},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    )
-        else:
-            return Response({"detail": _("User subscribed")}, status=status.HTTP_200_OK)
-
-
-class SubscribeBetaView(generics.GenericAPIView):
-    serializer_class = SubscribeBetaSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        email = request.data["email"]
-        list_id = settings.MAILCHIMP_AUDIENCE_IDS["default"]
-
-        if settings.MAILCHIMP_APIKEY is not None:
-            client = MailChimp(
-                mc_api=settings.MAILCHIMP_APIKEY, mc_user=settings.MAILCHIMP_USER
-            )
-            try:
-                client.lists.members.create(
-                    list_id,
-                    {
-                        "email_address": email,
-                        "status": "subscribed",
-                        "tags": ["newsletter-landing"],
                     },
                 )
                 return Response(
