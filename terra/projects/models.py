@@ -109,7 +109,7 @@ class Layer(CreatedAtUpdatedAtModelMixin, models.Model):
     layer_type = models.CharField(max_length=1, choices=LAYER_CHOICES, default=RASTER)
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=255, blank=True)
-    area_geom = models.PolygonField()
+    area_geom = models.PolygonField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     extra_fields = JSONField(null=True, blank=True)
     use_cog_tiles = models.BooleanField(default=True)
@@ -140,7 +140,7 @@ class Layer(CreatedAtUpdatedAtModelMixin, models.Model):
             raise TypeError("unknown layer type {}".format(self.layer_type))
 
     def extent(self):
-        """ Get area extent """
+        """Get area extent"""
         return self.area_geom and self.area_geom.extent
 
     @classmethod
@@ -175,7 +175,7 @@ class Map(CreatedAtUpdatedAtModelMixin, models.Model):
         return self.name
 
     def extent(self):
-        """ Get map extent based on first active layer """
+        """Get map extent based on first active layer"""
         active_map_layer = self.layers.filter(is_active=True).first()
         return active_map_layer and active_map_layer.layer.extent()
 
