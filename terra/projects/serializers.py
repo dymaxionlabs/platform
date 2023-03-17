@@ -143,20 +143,26 @@ class ContactSerializer(serializers.Serializer):
             print("Failed to create audience:", str(e))
 
 
-class SubscribeBetaSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-    def save(self):
-        email = EarlyAccessBetaEmail(recipients=[self.data["email"]])
-        email.send_mail()
-
-
 class ProjectInvitationTokenSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(read_only=True, slug_field="name")
+    username = serializers.SerializerMethodField()
 
     class Meta:
         model = ProjectInvitationToken
-        fields = ("key", "project", "email", "confirmed", "created_at", "updated_at")
+        fields = (
+            "key",
+            "project",
+            "email",
+            "confirmed",
+            "created_at",
+            "updated_at",
+            "username",
+        )
+
+    def get_username(self, obj):
+        user = User.objects.filter(email=obj.email).first()
+        if user:
+            return user.username
 
 
 class ProjectSerializer(serializers.ModelSerializer):

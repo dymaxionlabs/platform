@@ -54,7 +54,7 @@ class MapsContent extends React.Component {
 
     try {
       const response = await axios.get(buildApiUrl("/maps/"), {
-        params: { project: projectId },
+        params: { project: projectId, limit: 500, offset: 0 },
         headers: { Authorization: this.props.token },
       });
       this.setState({ maps: response.data.results });
