@@ -61,7 +61,7 @@ class Maps extends React.Component {
     const headers = token ? { Authorization: token } : {};
 
     axios
-      .get(buildApiUrl(`/maps/${uuid}/`), { headers: headers }, { params: { limit: 500 }})
+      .get(buildApiUrl(`/maps/${uuid}/`), { headers: headers })
       .then(response => {
         const map = response.data;
 
