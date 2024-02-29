@@ -9,10 +9,6 @@
 This repository contains the source code of both Dymaxion Labs Platform API
 server and the web application.
 
-You can access our hosted server on https://app.dymaxionlabs.com/
-
-OpenAPI documentation for our REST API can be found [here](https://api.dymaxionlabs.com/swagger).
-
 ## Development
 
 There is a Docker compose file for development, that builds Terra and Aqua
